@@ -1,0 +1,3722 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"mem.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.global	ram_heap
+  17              		.bss
+  18              		.align	2
+  21              	ram_heap:
+  22 0000 00000000 		.space	4115
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23 1013 00       		.align	2
+  24              	ram:
+  25 1014 00000000 		.space	4
+  27              		.align	2
+  28              	ram_end:
+  29 1018 00000000 		.space	4
+  31              		.align	2
+  32              	mem_mutex:
+  33 101c 00000000 		.space	4
+  35              		.align	2
+  36              	lfree:
+  37 1020 00000000 		.space	4
+  39              		.text
+  40              		.align	1
+  41              		.arch armv7e-m
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  45              		.fpu fpv5-d16
+  47              	ptr_to_mem:
+  48              	.LFB169:
+  49              		.file 1 "./lwip-2.1.2/src/core/mem.c"
+   1:./lwip-2.1.2/src/core/mem.c **** /**
+   2:./lwip-2.1.2/src/core/mem.c ****  * @file
+   3:./lwip-2.1.2/src/core/mem.c ****  * Dynamic memory manager
+   4:./lwip-2.1.2/src/core/mem.c ****  *
+   5:./lwip-2.1.2/src/core/mem.c ****  * This is a lightweight replacement for the standard C library malloc().
+   6:./lwip-2.1.2/src/core/mem.c ****  *
+   7:./lwip-2.1.2/src/core/mem.c ****  * If you want to use the standard C library malloc() instead, define
+   8:./lwip-2.1.2/src/core/mem.c ****  * MEM_LIBC_MALLOC to 1 in your lwipopts.h
+   9:./lwip-2.1.2/src/core/mem.c ****  *
+  10:./lwip-2.1.2/src/core/mem.c ****  * To let mem_malloc() use pools (prevents fragmentation and is much faster than
+  11:./lwip-2.1.2/src/core/mem.c ****  * a heap but might waste some memory), define MEM_USE_POOLS to 1, define
+  12:./lwip-2.1.2/src/core/mem.c ****  * MEMP_USE_CUSTOM_POOLS to 1 and create a file "lwippools.h" that includes a list
+  13:./lwip-2.1.2/src/core/mem.c ****  * of pools like this (more pools can be added between _START and _END):
+  14:./lwip-2.1.2/src/core/mem.c ****  *
+  15:./lwip-2.1.2/src/core/mem.c ****  * Define three pools with sizes 256, 512, and 1512 bytes
+  16:./lwip-2.1.2/src/core/mem.c ****  * LWIP_MALLOC_MEMPOOL_START
+  17:./lwip-2.1.2/src/core/mem.c ****  * LWIP_MALLOC_MEMPOOL(20, 256)
+  18:./lwip-2.1.2/src/core/mem.c ****  * LWIP_MALLOC_MEMPOOL(10, 512)
+  19:./lwip-2.1.2/src/core/mem.c ****  * LWIP_MALLOC_MEMPOOL(5, 1512)
+  20:./lwip-2.1.2/src/core/mem.c ****  * LWIP_MALLOC_MEMPOOL_END
+  21:./lwip-2.1.2/src/core/mem.c ****  */
+  22:./lwip-2.1.2/src/core/mem.c **** 
+  23:./lwip-2.1.2/src/core/mem.c **** /*
+  24:./lwip-2.1.2/src/core/mem.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+  25:./lwip-2.1.2/src/core/mem.c ****  * All rights reserved.
+  26:./lwip-2.1.2/src/core/mem.c ****  *
+  27:./lwip-2.1.2/src/core/mem.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  28:./lwip-2.1.2/src/core/mem.c ****  * are permitted provided that the following conditions are met:
+  29:./lwip-2.1.2/src/core/mem.c ****  *
+  30:./lwip-2.1.2/src/core/mem.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  31:./lwip-2.1.2/src/core/mem.c ****  *    this list of conditions and the following disclaimer.
+  32:./lwip-2.1.2/src/core/mem.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  33:./lwip-2.1.2/src/core/mem.c ****  *    this list of conditions and the following disclaimer in the documentation
+  34:./lwip-2.1.2/src/core/mem.c ****  *    and/or other materials provided with the distribution.
+  35:./lwip-2.1.2/src/core/mem.c ****  * 3. The name of the author may not be used to endorse or promote products
+  36:./lwip-2.1.2/src/core/mem.c ****  *    derived from this software without specific prior written permission.
+  37:./lwip-2.1.2/src/core/mem.c ****  *
+  38:./lwip-2.1.2/src/core/mem.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  39:./lwip-2.1.2/src/core/mem.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  40:./lwip-2.1.2/src/core/mem.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  41:./lwip-2.1.2/src/core/mem.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  42:./lwip-2.1.2/src/core/mem.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  43:./lwip-2.1.2/src/core/mem.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  44:./lwip-2.1.2/src/core/mem.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  45:./lwip-2.1.2/src/core/mem.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  46:./lwip-2.1.2/src/core/mem.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  47:./lwip-2.1.2/src/core/mem.c ****  * OF SUCH DAMAGE.
+  48:./lwip-2.1.2/src/core/mem.c ****  *
+  49:./lwip-2.1.2/src/core/mem.c ****  * This file is part of the lwIP TCP/IP stack.
+  50:./lwip-2.1.2/src/core/mem.c ****  *
+  51:./lwip-2.1.2/src/core/mem.c ****  * Author: Adam Dunkels <adam@sics.se>
+  52:./lwip-2.1.2/src/core/mem.c ****  *         Simon Goldschmidt
+  53:./lwip-2.1.2/src/core/mem.c ****  *
+  54:./lwip-2.1.2/src/core/mem.c ****  */
+  55:./lwip-2.1.2/src/core/mem.c **** 
+  56:./lwip-2.1.2/src/core/mem.c **** #include "lwip/opt.h"
+  57:./lwip-2.1.2/src/core/mem.c **** #include "lwip/mem.h"
+  58:./lwip-2.1.2/src/core/mem.c **** #include "lwip/def.h"
+  59:./lwip-2.1.2/src/core/mem.c **** #include "lwip/sys.h"
+  60:./lwip-2.1.2/src/core/mem.c **** #include "lwip/stats.h"
+  61:./lwip-2.1.2/src/core/mem.c **** #include "lwip/err.h"
+  62:./lwip-2.1.2/src/core/mem.c **** 
+  63:./lwip-2.1.2/src/core/mem.c **** #include <string.h>
+  64:./lwip-2.1.2/src/core/mem.c **** 
+  65:./lwip-2.1.2/src/core/mem.c **** #if MEM_LIBC_MALLOC
+  66:./lwip-2.1.2/src/core/mem.c **** #include <stdlib.h> /* for malloc()/free() */
+  67:./lwip-2.1.2/src/core/mem.c **** #endif
+  68:./lwip-2.1.2/src/core/mem.c **** 
+  69:./lwip-2.1.2/src/core/mem.c **** /* This is overridable for tests only... */
+  70:./lwip-2.1.2/src/core/mem.c **** #ifndef LWIP_MEM_ILLEGAL_FREE
+  71:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ILLEGAL_FREE(msg)         LWIP_ASSERT(msg, 0)
+  72:./lwip-2.1.2/src/core/mem.c **** #endif
+  73:./lwip-2.1.2/src/core/mem.c **** 
+  74:./lwip-2.1.2/src/core/mem.c **** #define MEM_STATS_INC_LOCKED(x)         SYS_ARCH_LOCKED(MEM_STATS_INC(x))
+  75:./lwip-2.1.2/src/core/mem.c **** #define MEM_STATS_INC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_INC_USED(x, y))
+  76:./lwip-2.1.2/src/core/mem.c **** #define MEM_STATS_DEC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_DEC_USED(x, y))
+  77:./lwip-2.1.2/src/core/mem.c **** 
+  78:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+  79:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY_OFFSET   MEM_SANITY_REGION_BEFORE_ALIGNED
+  80:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
+  81:./lwip-2.1.2/src/core/mem.c **** #else
+  82:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY_OFFSET   0
+  83:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY_OVERHEAD 0
+  84:./lwip-2.1.2/src/core/mem.c **** #endif
+  85:./lwip-2.1.2/src/core/mem.c **** 
+  86:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
+  87:./lwip-2.1.2/src/core/mem.c **** /**
+  88:./lwip-2.1.2/src/core/mem.c ****  * Check if a mep element was victim of an overflow or underflow
+  89:./lwip-2.1.2/src/core/mem.c ****  * (e.g. the restricted area after/before it has been altered)
+  90:./lwip-2.1.2/src/core/mem.c ****  *
+  91:./lwip-2.1.2/src/core/mem.c ****  * @param p the mem element to check
+  92:./lwip-2.1.2/src/core/mem.c ****  * @param size allocated size of the element
+  93:./lwip-2.1.2/src/core/mem.c ****  * @param descr1 description of the element source shown on error
+  94:./lwip-2.1.2/src/core/mem.c ****  * @param descr2 description of the element source shown on error
+  95:./lwip-2.1.2/src/core/mem.c ****  */
+  96:./lwip-2.1.2/src/core/mem.c **** void
+  97:./lwip-2.1.2/src/core/mem.c **** mem_overflow_check_raw(void *p, size_t size, const char *descr1, const char *descr2)
+  98:./lwip-2.1.2/src/core/mem.c **** {
+  99:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_AFTER_ALIGNED || MEM_SANITY_REGION_BEFORE_ALIGNED
+ 100:./lwip-2.1.2/src/core/mem.c ****   u16_t k;
+ 101:./lwip-2.1.2/src/core/mem.c ****   u8_t *m;
+ 102:./lwip-2.1.2/src/core/mem.c **** 
+ 103:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_AFTER_ALIGNED > 0
+ 104:./lwip-2.1.2/src/core/mem.c ****   m = (u8_t *)p + size;
+ 105:./lwip-2.1.2/src/core/mem.c ****   for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k++) {
+ 106:./lwip-2.1.2/src/core/mem.c ****     if (m[k] != 0xcd) {
+ 107:./lwip-2.1.2/src/core/mem.c ****       char errstr[128];
+ 108:./lwip-2.1.2/src/core/mem.c ****       snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
+ 109:./lwip-2.1.2/src/core/mem.c ****       LWIP_ASSERT(errstr, 0);
+ 110:./lwip-2.1.2/src/core/mem.c ****     }
+ 111:./lwip-2.1.2/src/core/mem.c ****   }
+ 112:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+ 113:./lwip-2.1.2/src/core/mem.c **** 
+ 114:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
+ 115:./lwip-2.1.2/src/core/mem.c ****   m = (u8_t *)p - MEM_SANITY_REGION_BEFORE_ALIGNED;
+ 116:./lwip-2.1.2/src/core/mem.c ****   for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k++) {
+ 117:./lwip-2.1.2/src/core/mem.c ****     if (m[k] != 0xcd) {
+ 118:./lwip-2.1.2/src/core/mem.c ****       char errstr[128];
+ 119:./lwip-2.1.2/src/core/mem.c ****       snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
+ 120:./lwip-2.1.2/src/core/mem.c ****       LWIP_ASSERT(errstr, 0);
+ 121:./lwip-2.1.2/src/core/mem.c ****     }
+ 122:./lwip-2.1.2/src/core/mem.c ****   }
+ 123:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 */
+ 124:./lwip-2.1.2/src/core/mem.c **** #else
+ 125:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(p);
+ 126:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(desc);
+ 127:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(descr);
+ 128:./lwip-2.1.2/src/core/mem.c **** #endif
+ 129:./lwip-2.1.2/src/core/mem.c **** }
+ 130:./lwip-2.1.2/src/core/mem.c **** 
+ 131:./lwip-2.1.2/src/core/mem.c **** /**
+ 132:./lwip-2.1.2/src/core/mem.c ****  * Initialize the restricted area of a mem element.
+ 133:./lwip-2.1.2/src/core/mem.c ****  */
+ 134:./lwip-2.1.2/src/core/mem.c **** void
+ 135:./lwip-2.1.2/src/core/mem.c **** mem_overflow_init_raw(void *p, size_t size)
+ 136:./lwip-2.1.2/src/core/mem.c **** {
+ 137:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0
+ 138:./lwip-2.1.2/src/core/mem.c ****   u8_t *m;
+ 139:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
+ 140:./lwip-2.1.2/src/core/mem.c ****   m = (u8_t *)p - MEM_SANITY_REGION_BEFORE_ALIGNED;
+ 141:./lwip-2.1.2/src/core/mem.c ****   memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
+ 142:./lwip-2.1.2/src/core/mem.c **** #endif
+ 143:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_REGION_AFTER_ALIGNED > 0
+ 144:./lwip-2.1.2/src/core/mem.c ****   m = (u8_t *)p + size;
+ 145:./lwip-2.1.2/src/core/mem.c ****   memset(m, 0xcd, MEM_SANITY_REGION_AFTER_ALIGNED);
+ 146:./lwip-2.1.2/src/core/mem.c **** #endif
+ 147:./lwip-2.1.2/src/core/mem.c **** #else /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+ 148:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(p);
+ 149:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(desc);
+ 150:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+ 151:./lwip-2.1.2/src/core/mem.c **** }
+ 152:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK */
+ 153:./lwip-2.1.2/src/core/mem.c **** 
+ 154:./lwip-2.1.2/src/core/mem.c **** #if MEM_LIBC_MALLOC || MEM_USE_POOLS
+ 155:./lwip-2.1.2/src/core/mem.c **** 
+ 156:./lwip-2.1.2/src/core/mem.c **** /** mem_init is not used when using pools instead of a heap or using
+ 157:./lwip-2.1.2/src/core/mem.c ****  * C library malloc().
+ 158:./lwip-2.1.2/src/core/mem.c ****  */
+ 159:./lwip-2.1.2/src/core/mem.c **** void
+ 160:./lwip-2.1.2/src/core/mem.c **** mem_init(void)
+ 161:./lwip-2.1.2/src/core/mem.c **** {
+ 162:./lwip-2.1.2/src/core/mem.c **** }
+ 163:./lwip-2.1.2/src/core/mem.c **** 
+ 164:./lwip-2.1.2/src/core/mem.c **** /** mem_trim is not used when using pools instead of a heap or using
+ 165:./lwip-2.1.2/src/core/mem.c ****  * C library malloc(): we can't free part of a pool element and the stack
+ 166:./lwip-2.1.2/src/core/mem.c ****  * support mem_trim() to return a different pointer
+ 167:./lwip-2.1.2/src/core/mem.c ****  */
+ 168:./lwip-2.1.2/src/core/mem.c **** void *
+ 169:./lwip-2.1.2/src/core/mem.c **** mem_trim(void *mem, mem_size_t size)
+ 170:./lwip-2.1.2/src/core/mem.c **** {
+ 171:./lwip-2.1.2/src/core/mem.c ****   LWIP_UNUSED_ARG(size);
+ 172:./lwip-2.1.2/src/core/mem.c ****   return mem;
+ 173:./lwip-2.1.2/src/core/mem.c **** }
+ 174:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_LIBC_MALLOC || MEM_USE_POOLS */
+ 175:./lwip-2.1.2/src/core/mem.c **** 
+ 176:./lwip-2.1.2/src/core/mem.c **** #if MEM_LIBC_MALLOC
+ 177:./lwip-2.1.2/src/core/mem.c **** /* lwIP heap implemented using C library malloc() */
+ 178:./lwip-2.1.2/src/core/mem.c **** 
+ 179:./lwip-2.1.2/src/core/mem.c **** /* in case C library malloc() needs extra protection,
+ 180:./lwip-2.1.2/src/core/mem.c ****  * allow these defines to be overridden.
+ 181:./lwip-2.1.2/src/core/mem.c ****  */
+ 182:./lwip-2.1.2/src/core/mem.c **** #ifndef mem_clib_free
+ 183:./lwip-2.1.2/src/core/mem.c **** #define mem_clib_free free
+ 184:./lwip-2.1.2/src/core/mem.c **** #endif
+ 185:./lwip-2.1.2/src/core/mem.c **** #ifndef mem_clib_malloc
+ 186:./lwip-2.1.2/src/core/mem.c **** #define mem_clib_malloc malloc
+ 187:./lwip-2.1.2/src/core/mem.c **** #endif
+ 188:./lwip-2.1.2/src/core/mem.c **** #ifndef mem_clib_calloc
+ 189:./lwip-2.1.2/src/core/mem.c **** #define mem_clib_calloc calloc
+ 190:./lwip-2.1.2/src/core/mem.c **** #endif
+ 191:./lwip-2.1.2/src/core/mem.c **** 
+ 192:./lwip-2.1.2/src/core/mem.c **** #if LWIP_STATS && MEM_STATS
+ 193:./lwip-2.1.2/src/core/mem.c **** #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_size_t))
+ 194:./lwip-2.1.2/src/core/mem.c **** #else
+ 195:./lwip-2.1.2/src/core/mem.c **** #define MEM_LIBC_STATSHELPER_SIZE 0
+ 196:./lwip-2.1.2/src/core/mem.c **** #endif
+ 197:./lwip-2.1.2/src/core/mem.c **** 
+ 198:./lwip-2.1.2/src/core/mem.c **** /**
+ 199:./lwip-2.1.2/src/core/mem.c ****  * Allocate a block of memory with a minimum of 'size' bytes.
+ 200:./lwip-2.1.2/src/core/mem.c ****  *
+ 201:./lwip-2.1.2/src/core/mem.c ****  * @param size is the minimum size of the requested block in bytes.
+ 202:./lwip-2.1.2/src/core/mem.c ****  * @return pointer to allocated memory or NULL if no free memory was found.
+ 203:./lwip-2.1.2/src/core/mem.c ****  *
+ 204:./lwip-2.1.2/src/core/mem.c ****  * Note that the returned value must always be aligned (as defined by MEM_ALIGNMENT).
+ 205:./lwip-2.1.2/src/core/mem.c ****  */
+ 206:./lwip-2.1.2/src/core/mem.c **** void *
+ 207:./lwip-2.1.2/src/core/mem.c **** mem_malloc(mem_size_t size)
+ 208:./lwip-2.1.2/src/core/mem.c **** {
+ 209:./lwip-2.1.2/src/core/mem.c ****   void *ret = mem_clib_malloc(size + MEM_LIBC_STATSHELPER_SIZE);
+ 210:./lwip-2.1.2/src/core/mem.c ****   if (ret == NULL) {
+ 211:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(err);
+ 212:./lwip-2.1.2/src/core/mem.c ****   } else {
+ 213:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("malloc() must return aligned memory", LWIP_MEM_ALIGN(ret) == ret);
+ 214:./lwip-2.1.2/src/core/mem.c **** #if LWIP_STATS && MEM_STATS
+ 215:./lwip-2.1.2/src/core/mem.c ****     *(mem_size_t *)ret = size;
+ 216:./lwip-2.1.2/src/core/mem.c ****     ret = (u8_t *)ret + MEM_LIBC_STATSHELPER_SIZE;
+ 217:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_USED_LOCKED(used, size);
+ 218:./lwip-2.1.2/src/core/mem.c **** #endif
+ 219:./lwip-2.1.2/src/core/mem.c ****   }
+ 220:./lwip-2.1.2/src/core/mem.c ****   return ret;
+ 221:./lwip-2.1.2/src/core/mem.c **** }
+ 222:./lwip-2.1.2/src/core/mem.c **** 
+ 223:./lwip-2.1.2/src/core/mem.c **** /** Put memory back on the heap
+ 224:./lwip-2.1.2/src/core/mem.c ****  *
+ 225:./lwip-2.1.2/src/core/mem.c ****  * @param rmem is the pointer as returned by a previous call to mem_malloc()
+ 226:./lwip-2.1.2/src/core/mem.c ****  */
+ 227:./lwip-2.1.2/src/core/mem.c **** void
+ 228:./lwip-2.1.2/src/core/mem.c **** mem_free(void *rmem)
+ 229:./lwip-2.1.2/src/core/mem.c **** {
+ 230:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+ 231:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
+ 232:./lwip-2.1.2/src/core/mem.c **** #if LWIP_STATS && MEM_STATS
+ 233:./lwip-2.1.2/src/core/mem.c ****   rmem = (u8_t *)rmem - MEM_LIBC_STATSHELPER_SIZE;
+ 234:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_DEC_USED_LOCKED(used, *(mem_size_t *)rmem);
+ 235:./lwip-2.1.2/src/core/mem.c **** #endif
+ 236:./lwip-2.1.2/src/core/mem.c ****   mem_clib_free(rmem);
+ 237:./lwip-2.1.2/src/core/mem.c **** }
+ 238:./lwip-2.1.2/src/core/mem.c **** 
+ 239:./lwip-2.1.2/src/core/mem.c **** #elif MEM_USE_POOLS
+ 240:./lwip-2.1.2/src/core/mem.c **** 
+ 241:./lwip-2.1.2/src/core/mem.c **** /* lwIP heap implemented with different sized pools */
+ 242:./lwip-2.1.2/src/core/mem.c **** 
+ 243:./lwip-2.1.2/src/core/mem.c **** /**
+ 244:./lwip-2.1.2/src/core/mem.c ****  * Allocate memory: determine the smallest pool that is big enough
+ 245:./lwip-2.1.2/src/core/mem.c ****  * to contain an element of 'size' and get an element from that pool.
+ 246:./lwip-2.1.2/src/core/mem.c ****  *
+ 247:./lwip-2.1.2/src/core/mem.c ****  * @param size the size in bytes of the memory needed
+ 248:./lwip-2.1.2/src/core/mem.c ****  * @return a pointer to the allocated memory or NULL if the pool is empty
+ 249:./lwip-2.1.2/src/core/mem.c ****  */
+ 250:./lwip-2.1.2/src/core/mem.c **** void *
+ 251:./lwip-2.1.2/src/core/mem.c **** mem_malloc(mem_size_t size)
+ 252:./lwip-2.1.2/src/core/mem.c **** {
+ 253:./lwip-2.1.2/src/core/mem.c ****   void *ret;
+ 254:./lwip-2.1.2/src/core/mem.c ****   struct memp_malloc_helper *element = NULL;
+ 255:./lwip-2.1.2/src/core/mem.c ****   memp_t poolnr;
+ 256:./lwip-2.1.2/src/core/mem.c ****   mem_size_t required_size = size + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
+ 257:./lwip-2.1.2/src/core/mem.c **** 
+ 258:./lwip-2.1.2/src/core/mem.c ****   for (poolnr = MEMP_POOL_FIRST; poolnr <= MEMP_POOL_LAST; poolnr = (memp_t)(poolnr + 1)) {
+ 259:./lwip-2.1.2/src/core/mem.c ****     /* is this pool big enough to hold an element of the required size
+ 260:./lwip-2.1.2/src/core/mem.c ****        plus a struct memp_malloc_helper that saves the pool this element came from? */
+ 261:./lwip-2.1.2/src/core/mem.c ****     if (required_size <= memp_pools[poolnr]->size) {
+ 262:./lwip-2.1.2/src/core/mem.c ****       element = (struct memp_malloc_helper *)memp_malloc(poolnr);
+ 263:./lwip-2.1.2/src/core/mem.c ****       if (element == NULL) {
+ 264:./lwip-2.1.2/src/core/mem.c ****         /* No need to DEBUGF or ASSERT: This error is already taken care of in memp.c */
+ 265:./lwip-2.1.2/src/core/mem.c **** #if MEM_USE_POOLS_TRY_BIGGER_POOL
+ 266:./lwip-2.1.2/src/core/mem.c ****         /** Try a bigger pool if this one is empty! */
+ 267:./lwip-2.1.2/src/core/mem.c ****         if (poolnr < MEMP_POOL_LAST) {
+ 268:./lwip-2.1.2/src/core/mem.c ****           continue;
+ 269:./lwip-2.1.2/src/core/mem.c ****         }
+ 270:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_USE_POOLS_TRY_BIGGER_POOL */
+ 271:./lwip-2.1.2/src/core/mem.c ****         MEM_STATS_INC_LOCKED(err);
+ 272:./lwip-2.1.2/src/core/mem.c ****         return NULL;
+ 273:./lwip-2.1.2/src/core/mem.c ****       }
+ 274:./lwip-2.1.2/src/core/mem.c ****       break;
+ 275:./lwip-2.1.2/src/core/mem.c ****     }
+ 276:./lwip-2.1.2/src/core/mem.c ****   }
+ 277:./lwip-2.1.2/src/core/mem.c ****   if (poolnr > MEMP_POOL_LAST) {
+ 278:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("mem_malloc(): no pool is that big!", 0);
+ 279:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(err);
+ 280:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 281:./lwip-2.1.2/src/core/mem.c ****   }
+ 282:./lwip-2.1.2/src/core/mem.c **** 
+ 283:./lwip-2.1.2/src/core/mem.c ****   /* save the pool number this element came from */
+ 284:./lwip-2.1.2/src/core/mem.c ****   element->poolnr = poolnr;
+ 285:./lwip-2.1.2/src/core/mem.c ****   /* and return a pointer to the memory directly after the struct memp_malloc_helper */
+ 286:./lwip-2.1.2/src/core/mem.c ****   ret = (u8_t *)element + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
+ 287:./lwip-2.1.2/src/core/mem.c **** 
+ 288:./lwip-2.1.2/src/core/mem.c **** #if MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS)
+ 289:./lwip-2.1.2/src/core/mem.c ****   /* truncating to u16_t is safe because struct memp_desc::size is u16_t */
+ 290:./lwip-2.1.2/src/core/mem.c ****   element->size = (u16_t)size;
+ 291:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_INC_USED_LOCKED(used, element->size);
+ 292:./lwip-2.1.2/src/core/mem.c **** #endif /* MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS) */
+ 293:./lwip-2.1.2/src/core/mem.c **** #if MEMP_OVERFLOW_CHECK
+ 294:./lwip-2.1.2/src/core/mem.c ****   /* initialize unused memory (diff between requested size and selected pool's size) */
+ 295:./lwip-2.1.2/src/core/mem.c ****   memset((u8_t *)ret + size, 0xcd, memp_pools[poolnr]->size - size);
+ 296:./lwip-2.1.2/src/core/mem.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 297:./lwip-2.1.2/src/core/mem.c ****   return ret;
+ 298:./lwip-2.1.2/src/core/mem.c **** }
+ 299:./lwip-2.1.2/src/core/mem.c **** 
+ 300:./lwip-2.1.2/src/core/mem.c **** /**
+ 301:./lwip-2.1.2/src/core/mem.c ****  * Free memory previously allocated by mem_malloc. Loads the pool number
+ 302:./lwip-2.1.2/src/core/mem.c ****  * and calls memp_free with that pool number to put the element back into
+ 303:./lwip-2.1.2/src/core/mem.c ****  * its pool
+ 304:./lwip-2.1.2/src/core/mem.c ****  *
+ 305:./lwip-2.1.2/src/core/mem.c ****  * @param rmem the memory element to free
+ 306:./lwip-2.1.2/src/core/mem.c ****  */
+ 307:./lwip-2.1.2/src/core/mem.c **** void
+ 308:./lwip-2.1.2/src/core/mem.c **** mem_free(void *rmem)
+ 309:./lwip-2.1.2/src/core/mem.c **** {
+ 310:./lwip-2.1.2/src/core/mem.c ****   struct memp_malloc_helper *hmem;
+ 311:./lwip-2.1.2/src/core/mem.c **** 
+ 312:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+ 313:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
+ 314:./lwip-2.1.2/src/core/mem.c **** 
+ 315:./lwip-2.1.2/src/core/mem.c ****   /* get the original struct memp_malloc_helper */
+ 316:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
+ 317:./lwip-2.1.2/src/core/mem.c ****   hmem = (struct memp_malloc_helper *)(void *)((u8_t *)rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct mem
+ 318:./lwip-2.1.2/src/core/mem.c **** 
+ 319:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("hmem != NULL", (hmem != NULL));
+ 320:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
+ 321:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("hmem->poolnr < MEMP_MAX", (hmem->poolnr < MEMP_MAX));
+ 322:./lwip-2.1.2/src/core/mem.c **** 
+ 323:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_DEC_USED_LOCKED(used, hmem->size);
+ 324:./lwip-2.1.2/src/core/mem.c **** #if MEMP_OVERFLOW_CHECK
+ 325:./lwip-2.1.2/src/core/mem.c ****   {
+ 326:./lwip-2.1.2/src/core/mem.c ****     u16_t i;
+ 327:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
+ 328:./lwip-2.1.2/src/core/mem.c ****                 hmem->size <= memp_pools[hmem->poolnr]->size);
+ 329:./lwip-2.1.2/src/core/mem.c ****     /* check that unused memory remained untouched (diff between requested size and selected pool's
+ 330:./lwip-2.1.2/src/core/mem.c ****     for (i = hmem->size; i < memp_pools[hmem->poolnr]->size; i++) {
+ 331:./lwip-2.1.2/src/core/mem.c ****       u8_t data = *((u8_t *)rmem + i);
+ 332:./lwip-2.1.2/src/core/mem.c ****       LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
+ 333:./lwip-2.1.2/src/core/mem.c ****     }
+ 334:./lwip-2.1.2/src/core/mem.c ****   }
+ 335:./lwip-2.1.2/src/core/mem.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 336:./lwip-2.1.2/src/core/mem.c **** 
+ 337:./lwip-2.1.2/src/core/mem.c ****   /* and put it in the pool we saved earlier */
+ 338:./lwip-2.1.2/src/core/mem.c ****   memp_free(hmem->poolnr, hmem);
+ 339:./lwip-2.1.2/src/core/mem.c **** }
+ 340:./lwip-2.1.2/src/core/mem.c **** 
+ 341:./lwip-2.1.2/src/core/mem.c **** #else /* MEM_USE_POOLS */
+ 342:./lwip-2.1.2/src/core/mem.c **** /* lwIP replacement for your libc malloc() */
+ 343:./lwip-2.1.2/src/core/mem.c **** 
+ 344:./lwip-2.1.2/src/core/mem.c **** /**
+ 345:./lwip-2.1.2/src/core/mem.c ****  * The heap is made up as a list of structs of this type.
+ 346:./lwip-2.1.2/src/core/mem.c ****  * This does not have to be aligned since for getting its size,
+ 347:./lwip-2.1.2/src/core/mem.c ****  * we only use the macro SIZEOF_STRUCT_MEM, which automatically aligns.
+ 348:./lwip-2.1.2/src/core/mem.c ****  */
+ 349:./lwip-2.1.2/src/core/mem.c **** struct mem {
+ 350:./lwip-2.1.2/src/core/mem.c ****   /** index (-> ram[next]) of the next struct */
+ 351:./lwip-2.1.2/src/core/mem.c ****   mem_size_t next;
+ 352:./lwip-2.1.2/src/core/mem.c ****   /** index (-> ram[prev]) of the previous struct */
+ 353:./lwip-2.1.2/src/core/mem.c ****   mem_size_t prev;
+ 354:./lwip-2.1.2/src/core/mem.c ****   /** 1: this area is used; 0: this area is unused */
+ 355:./lwip-2.1.2/src/core/mem.c ****   u8_t used;
+ 356:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 357:./lwip-2.1.2/src/core/mem.c ****   /** this keeps track of the user allocation size for guard checks */
+ 358:./lwip-2.1.2/src/core/mem.c ****   mem_size_t user_size;
+ 359:./lwip-2.1.2/src/core/mem.c **** #endif
+ 360:./lwip-2.1.2/src/core/mem.c **** };
+ 361:./lwip-2.1.2/src/core/mem.c **** 
+ 362:./lwip-2.1.2/src/core/mem.c **** /** All allocated blocks will be MIN_SIZE bytes big, at least!
+ 363:./lwip-2.1.2/src/core/mem.c ****  * MIN_SIZE can be overridden to suit your needs. Smaller values save space,
+ 364:./lwip-2.1.2/src/core/mem.c ****  * larger values could prevent too small blocks to fragment the RAM too much. */
+ 365:./lwip-2.1.2/src/core/mem.c **** #ifndef MIN_SIZE
+ 366:./lwip-2.1.2/src/core/mem.c **** #define MIN_SIZE             12
+ 367:./lwip-2.1.2/src/core/mem.c **** #endif /* MIN_SIZE */
+ 368:./lwip-2.1.2/src/core/mem.c **** /* some alignment macros: we define them here for better source code layout */
+ 369:./lwip-2.1.2/src/core/mem.c **** #define MIN_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MIN_SIZE)
+ 370:./lwip-2.1.2/src/core/mem.c **** #define SIZEOF_STRUCT_MEM    LWIP_MEM_ALIGN_SIZE(sizeof(struct mem))
+ 371:./lwip-2.1.2/src/core/mem.c **** #define MEM_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEM_SIZE)
+ 372:./lwip-2.1.2/src/core/mem.c **** 
+ 373:./lwip-2.1.2/src/core/mem.c **** /** If you want to relocate the heap to external memory, simply define
+ 374:./lwip-2.1.2/src/core/mem.c ****  * LWIP_RAM_HEAP_POINTER as a void-pointer to that location.
+ 375:./lwip-2.1.2/src/core/mem.c ****  * If so, make sure the memory at that location is big enough (see below on
+ 376:./lwip-2.1.2/src/core/mem.c ****  * how that space is calculated). */
+ 377:./lwip-2.1.2/src/core/mem.c **** #ifndef LWIP_RAM_HEAP_POINTER
+ 378:./lwip-2.1.2/src/core/mem.c **** /** the heap. we need one struct mem at the end and some room for alignment */
+ 379:./lwip-2.1.2/src/core/mem.c **** LWIP_DECLARE_MEMORY_ALIGNED(ram_heap, MEM_SIZE_ALIGNED + (2U * SIZEOF_STRUCT_MEM));
+ 380:./lwip-2.1.2/src/core/mem.c **** #define LWIP_RAM_HEAP_POINTER ram_heap
+ 381:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_RAM_HEAP_POINTER */
+ 382:./lwip-2.1.2/src/core/mem.c **** 
+ 383:./lwip-2.1.2/src/core/mem.c **** /** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
+ 384:./lwip-2.1.2/src/core/mem.c **** static u8_t *ram;
+ 385:./lwip-2.1.2/src/core/mem.c **** /** the last entry, always unused! */
+ 386:./lwip-2.1.2/src/core/mem.c **** static struct mem *ram_end;
+ 387:./lwip-2.1.2/src/core/mem.c **** 
+ 388:./lwip-2.1.2/src/core/mem.c **** /** concurrent access protection */
+ 389:./lwip-2.1.2/src/core/mem.c **** #if !NO_SYS
+ 390:./lwip-2.1.2/src/core/mem.c **** static sys_mutex_t mem_mutex;
+ 391:./lwip-2.1.2/src/core/mem.c **** #endif
+ 392:./lwip-2.1.2/src/core/mem.c **** 
+ 393:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 394:./lwip-2.1.2/src/core/mem.c **** 
+ 395:./lwip-2.1.2/src/core/mem.c **** static volatile u8_t mem_free_count;
+ 396:./lwip-2.1.2/src/core/mem.c **** 
+ 397:./lwip-2.1.2/src/core/mem.c **** /* Allow mem_free from other (e.g. interrupt) context */
+ 398:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_DECL_PROTECT()  SYS_ARCH_DECL_PROTECT(lev_free)
+ 399:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_PROTECT()       SYS_ARCH_PROTECT(lev_free)
+ 400:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_UNPROTECT()     SYS_ARCH_UNPROTECT(lev_free)
+ 401:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_DECL_PROTECT() SYS_ARCH_DECL_PROTECT(lev_alloc)
+ 402:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_PROTECT()      SYS_ARCH_PROTECT(lev_alloc)
+ 403:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_UNPROTECT()    SYS_ARCH_UNPROTECT(lev_alloc)
+ 404:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_LFREE_VOLATILE       volatile
+ 405:./lwip-2.1.2/src/core/mem.c **** 
+ 406:./lwip-2.1.2/src/core/mem.c **** #else /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 407:./lwip-2.1.2/src/core/mem.c **** 
+ 408:./lwip-2.1.2/src/core/mem.c **** /* Protect the heap only by using a mutex */
+ 409:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_DECL_PROTECT()
+ 410:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_PROTECT()    sys_mutex_lock(&mem_mutex)
+ 411:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_FREE_UNPROTECT()  sys_mutex_unlock(&mem_mutex)
+ 412:./lwip-2.1.2/src/core/mem.c **** /* mem_malloc is protected using mutex AND LWIP_MEM_ALLOC_PROTECT */
+ 413:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_DECL_PROTECT()
+ 414:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_PROTECT()
+ 415:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_ALLOC_UNPROTECT()
+ 416:./lwip-2.1.2/src/core/mem.c **** #define LWIP_MEM_LFREE_VOLATILE
+ 417:./lwip-2.1.2/src/core/mem.c **** 
+ 418:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 419:./lwip-2.1.2/src/core/mem.c **** 
+ 420:./lwip-2.1.2/src/core/mem.c **** /** pointer to the lowest free block, this is used for faster search */
+ 421:./lwip-2.1.2/src/core/mem.c **** static struct mem * LWIP_MEM_LFREE_VOLATILE lfree;
+ 422:./lwip-2.1.2/src/core/mem.c **** 
+ 423:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_CHECK
+ 424:./lwip-2.1.2/src/core/mem.c **** static void mem_sanity(void);
+ 425:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY() mem_sanity()
+ 426:./lwip-2.1.2/src/core/mem.c **** #else
+ 427:./lwip-2.1.2/src/core/mem.c **** #define MEM_SANITY()
+ 428:./lwip-2.1.2/src/core/mem.c **** #endif
+ 429:./lwip-2.1.2/src/core/mem.c **** 
+ 430:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 431:./lwip-2.1.2/src/core/mem.c **** static void
+ 432:./lwip-2.1.2/src/core/mem.c **** mem_overflow_init_element(struct mem *mem, mem_size_t user_size)
+ 433:./lwip-2.1.2/src/core/mem.c **** {
+ 434:./lwip-2.1.2/src/core/mem.c ****   void *p = (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+ 435:./lwip-2.1.2/src/core/mem.c ****   mem->user_size = user_size;
+ 436:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_init_raw(p, user_size);
+ 437:./lwip-2.1.2/src/core/mem.c **** }
+ 438:./lwip-2.1.2/src/core/mem.c **** 
+ 439:./lwip-2.1.2/src/core/mem.c **** static void
+ 440:./lwip-2.1.2/src/core/mem.c **** mem_overflow_check_element(struct mem *mem)
+ 441:./lwip-2.1.2/src/core/mem.c **** {
+ 442:./lwip-2.1.2/src/core/mem.c ****   void *p = (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+ 443:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_raw(p, mem->user_size, "heap", "");
+ 444:./lwip-2.1.2/src/core/mem.c **** }
+ 445:./lwip-2.1.2/src/core/mem.c **** #else /* MEM_OVERFLOW_CHECK */
+ 446:./lwip-2.1.2/src/core/mem.c **** #define mem_overflow_init_element(mem, size)
+ 447:./lwip-2.1.2/src/core/mem.c **** #define mem_overflow_check_element(mem)
+ 448:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_OVERFLOW_CHECK */
+ 449:./lwip-2.1.2/src/core/mem.c **** 
+ 450:./lwip-2.1.2/src/core/mem.c **** static struct mem *
+ 451:./lwip-2.1.2/src/core/mem.c **** ptr_to_mem(mem_size_t ptr)
+ 452:./lwip-2.1.2/src/core/mem.c **** {
+  50              		.loc 1 452 1
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 8
+  53              		@ frame_needed = 1, uses_anonymous_args = 0
+  54              		@ link register save eliminated.
+  55 0000 80B4     		push	{r7}
+  56              	.LCFI0:
+  57              		.cfi_def_cfa_offset 4
+  58              		.cfi_offset 7, -4
+  59 0002 83B0     		sub	sp, sp, #12
+  60              	.LCFI1:
+  61              		.cfi_def_cfa_offset 16
+  62 0004 00AF     		add	r7, sp, #0
+  63              	.LCFI2:
+  64              		.cfi_def_cfa_register 7
+  65 0006 0346     		mov	r3, r0
+  66 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 453:./lwip-2.1.2/src/core/mem.c ****   return (struct mem *)(void *)&ram[ptr];
+  67              		.loc 1 453 32
+  68 000a 054B     		ldr	r3, .L3
+  69 000c 1A68     		ldr	r2, [r3]
+  70 000e FB88     		ldrh	r3, [r7, #6]
+  71              		.loc 1 453 10
+  72 0010 1344     		add	r3, r3, r2
+ 454:./lwip-2.1.2/src/core/mem.c **** }
+  73              		.loc 1 454 1
+  74 0012 1846     		mov	r0, r3
+  75 0014 0C37     		adds	r7, r7, #12
+  76              	.LCFI3:
+  77              		.cfi_def_cfa_offset 4
+  78 0016 BD46     		mov	sp, r7
+  79              	.LCFI4:
+  80              		.cfi_def_cfa_register 13
+  81              		@ sp needed
+  82 0018 5DF8047B 		ldr	r7, [sp], #4
+  83              	.LCFI5:
+  84              		.cfi_restore 7
+  85              		.cfi_def_cfa_offset 0
+  86 001c 7047     		bx	lr
+  87              	.L4:
+  88 001e 00BF     		.align	2
+  89              	.L3:
+  90 0020 14100000 		.word	ram
+  91              		.cfi_endproc
+  92              	.LFE169:
+  94              		.align	1
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  98              		.fpu fpv5-d16
+ 100              	mem_to_ptr:
+ 101              	.LFB170:
+ 455:./lwip-2.1.2/src/core/mem.c **** 
+ 456:./lwip-2.1.2/src/core/mem.c **** static mem_size_t
+ 457:./lwip-2.1.2/src/core/mem.c **** mem_to_ptr(void *mem)
+ 458:./lwip-2.1.2/src/core/mem.c **** {
+ 102              		.loc 1 458 1
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 8
+ 105              		@ frame_needed = 1, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+ 107 0024 80B4     		push	{r7}
+ 108              	.LCFI6:
+ 109              		.cfi_def_cfa_offset 4
+ 110              		.cfi_offset 7, -4
+ 111 0026 83B0     		sub	sp, sp, #12
+ 112              	.LCFI7:
+ 113              		.cfi_def_cfa_offset 16
+ 114 0028 00AF     		add	r7, sp, #0
+ 115              	.LCFI8:
+ 116              		.cfi_def_cfa_register 7
+ 117 002a 7860     		str	r0, [r7, #4]
+ 459:./lwip-2.1.2/src/core/mem.c ****   return (mem_size_t)((u8_t *)mem - ram);
+ 118              		.loc 1 459 35
+ 119 002c 054B     		ldr	r3, .L7
+ 120 002e 1B68     		ldr	r3, [r3]
+ 121 0030 7A68     		ldr	r2, [r7, #4]
+ 122 0032 D31A     		subs	r3, r2, r3
+ 123              		.loc 1 459 10
+ 124 0034 9BB2     		uxth	r3, r3
+ 460:./lwip-2.1.2/src/core/mem.c **** }
+ 125              		.loc 1 460 1
+ 126 0036 1846     		mov	r0, r3
+ 127 0038 0C37     		adds	r7, r7, #12
+ 128              	.LCFI9:
+ 129              		.cfi_def_cfa_offset 4
+ 130 003a BD46     		mov	sp, r7
+ 131              	.LCFI10:
+ 132              		.cfi_def_cfa_register 13
+ 133              		@ sp needed
+ 134 003c 5DF8047B 		ldr	r7, [sp], #4
+ 135              	.LCFI11:
+ 136              		.cfi_restore 7
+ 137              		.cfi_def_cfa_offset 0
+ 138 0040 7047     		bx	lr
+ 139              	.L8:
+ 140 0042 00BF     		.align	2
+ 141              	.L7:
+ 142 0044 14100000 		.word	ram
+ 143              		.cfi_endproc
+ 144              	.LFE170:
+ 146              		.align	1
+ 147              		.syntax unified
+ 148              		.thumb
+ 149              		.thumb_func
+ 150              		.fpu fpv5-d16
+ 152              	plug_holes:
+ 153              	.LFB171:
+ 461:./lwip-2.1.2/src/core/mem.c **** 
+ 462:./lwip-2.1.2/src/core/mem.c **** /**
+ 463:./lwip-2.1.2/src/core/mem.c ****  * "Plug holes" by combining adjacent empty struct mems.
+ 464:./lwip-2.1.2/src/core/mem.c ****  * After this function is through, there should not exist
+ 465:./lwip-2.1.2/src/core/mem.c ****  * one empty struct mem pointing to another empty struct mem.
+ 466:./lwip-2.1.2/src/core/mem.c ****  *
+ 467:./lwip-2.1.2/src/core/mem.c ****  * @param mem this points to a struct mem which just has been freed
+ 468:./lwip-2.1.2/src/core/mem.c ****  * @internal this function is only called by mem_free() and mem_trim()
+ 469:./lwip-2.1.2/src/core/mem.c ****  *
+ 470:./lwip-2.1.2/src/core/mem.c ****  * This assumes access to the heap is protected by the calling function
+ 471:./lwip-2.1.2/src/core/mem.c ****  * already.
+ 472:./lwip-2.1.2/src/core/mem.c ****  */
+ 473:./lwip-2.1.2/src/core/mem.c **** static void
+ 474:./lwip-2.1.2/src/core/mem.c **** plug_holes(struct mem *mem)
+ 475:./lwip-2.1.2/src/core/mem.c **** {
+ 154              		.loc 1 475 1
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 16
+ 157              		@ frame_needed = 1, uses_anonymous_args = 0
+ 158 0048 90B5     		push	{r4, r7, lr}
+ 159              	.LCFI12:
+ 160              		.cfi_def_cfa_offset 12
+ 161              		.cfi_offset 4, -12
+ 162              		.cfi_offset 7, -8
+ 163              		.cfi_offset 14, -4
+ 164 004a 85B0     		sub	sp, sp, #20
+ 165              	.LCFI13:
+ 166              		.cfi_def_cfa_offset 32
+ 167 004c 00AF     		add	r7, sp, #0
+ 168              	.LCFI14:
+ 169              		.cfi_def_cfa_register 7
+ 170 004e 7860     		str	r0, [r7, #4]
+ 476:./lwip-2.1.2/src/core/mem.c ****   struct mem *nmem;
+ 477:./lwip-2.1.2/src/core/mem.c ****   struct mem *pmem;
+ 478:./lwip-2.1.2/src/core/mem.c **** 
+ 479:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem >= ram", (u8_t *)mem >= ram);
+ 480:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem < ram_end", (u8_t *)mem < (u8_t *)ram_end);
+ 481:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem->used == 0", mem->used == 0);
+ 482:./lwip-2.1.2/src/core/mem.c **** 
+ 483:./lwip-2.1.2/src/core/mem.c ****   /* plug hole forward */
+ 484:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem->next <= MEM_SIZE_ALIGNED", mem->next <= MEM_SIZE_ALIGNED);
+ 485:./lwip-2.1.2/src/core/mem.c **** 
+ 486:./lwip-2.1.2/src/core/mem.c ****   nmem = ptr_to_mem(mem->next);
+ 171              		.loc 1 486 10
+ 172 0050 7B68     		ldr	r3, [r7, #4]
+ 173 0052 1B88     		ldrh	r3, [r3]
+ 174 0054 1846     		mov	r0, r3
+ 175 0056 FFF7D3FF 		bl	ptr_to_mem
+ 176 005a F860     		str	r0, [r7, #12]
+ 487:./lwip-2.1.2/src/core/mem.c ****   if (mem != nmem && nmem->used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
+ 177              		.loc 1 487 6
+ 178 005c 7A68     		ldr	r2, [r7, #4]
+ 179 005e FB68     		ldr	r3, [r7, #12]
+ 180 0060 9A42     		cmp	r2, r3
+ 181 0062 24D0     		beq	.L10
+ 182              		.loc 1 487 26 discriminator 1
+ 183 0064 FB68     		ldr	r3, [r7, #12]
+ 184 0066 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 185              		.loc 1 487 19 discriminator 1
+ 186 0068 002B     		cmp	r3, #0
+ 187 006a 20D1     		bne	.L10
+ 188              		.loc 1 487 57 discriminator 2
+ 189 006c 274B     		ldr	r3, .L15
+ 190 006e 1B68     		ldr	r3, [r3]
+ 191              		.loc 1 487 38 discriminator 2
+ 192 0070 FA68     		ldr	r2, [r7, #12]
+ 193 0072 9A42     		cmp	r2, r3
+ 194 0074 1BD0     		beq	.L10
+ 488:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
+ 489:./lwip-2.1.2/src/core/mem.c ****     if (lfree == nmem) {
+ 195              		.loc 1 489 15
+ 196 0076 264B     		ldr	r3, .L15+4
+ 197 0078 1B68     		ldr	r3, [r3]
+ 198              		.loc 1 489 8
+ 199 007a FA68     		ldr	r2, [r7, #12]
+ 200 007c 9A42     		cmp	r2, r3
+ 201 007e 02D1     		bne	.L11
+ 490:./lwip-2.1.2/src/core/mem.c ****       lfree = mem;
+ 202              		.loc 1 490 13
+ 203 0080 234A     		ldr	r2, .L15+4
+ 204 0082 7B68     		ldr	r3, [r7, #4]
+ 205 0084 1360     		str	r3, [r2]
+ 206              	.L11:
+ 491:./lwip-2.1.2/src/core/mem.c ****     }
+ 492:./lwip-2.1.2/src/core/mem.c ****     mem->next = nmem->next;
+ 207              		.loc 1 492 21
+ 208 0086 FB68     		ldr	r3, [r7, #12]
+ 209 0088 1A88     		ldrh	r2, [r3]
+ 210              		.loc 1 492 15
+ 211 008a 7B68     		ldr	r3, [r7, #4]
+ 212 008c 1A80     		strh	r2, [r3]	@ movhi
+ 493:./lwip-2.1.2/src/core/mem.c ****     if (nmem->next != MEM_SIZE_ALIGNED) {
+ 213              		.loc 1 493 13
+ 214 008e FB68     		ldr	r3, [r7, #12]
+ 215 0090 1B88     		ldrh	r3, [r3]
+ 216              		.loc 1 493 8
+ 217 0092 B3F5805F 		cmp	r3, #4096
+ 218 0096 0AD0     		beq	.L10
+ 494:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
+ 219              		.loc 1 494 7
+ 220 0098 FB68     		ldr	r3, [r7, #12]
+ 221 009a 1B88     		ldrh	r3, [r3]
+ 222 009c 1846     		mov	r0, r3
+ 223 009e FFF7AFFF 		bl	ptr_to_mem
+ 224 00a2 0446     		mov	r4, r0
+ 225              		.loc 1 494 38
+ 226 00a4 7868     		ldr	r0, [r7, #4]
+ 227 00a6 FFF7BDFF 		bl	mem_to_ptr
+ 228 00aa 0346     		mov	r3, r0
+ 229              		.loc 1 494 36
+ 230 00ac 6380     		strh	r3, [r4, #2]	@ movhi
+ 231              	.L10:
+ 495:./lwip-2.1.2/src/core/mem.c ****     }
+ 496:./lwip-2.1.2/src/core/mem.c ****   }
+ 497:./lwip-2.1.2/src/core/mem.c **** 
+ 498:./lwip-2.1.2/src/core/mem.c ****   /* plug hole backward */
+ 499:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
+ 232              		.loc 1 499 10
+ 233 00ae 7B68     		ldr	r3, [r7, #4]
+ 234 00b0 5B88     		ldrh	r3, [r3, #2]
+ 235 00b2 1846     		mov	r0, r3
+ 236 00b4 FFF7A4FF 		bl	ptr_to_mem
+ 237 00b8 B860     		str	r0, [r7, #8]
+ 500:./lwip-2.1.2/src/core/mem.c ****   if (pmem != mem && pmem->used == 0) {
+ 238              		.loc 1 500 6
+ 239 00ba BA68     		ldr	r2, [r7, #8]
+ 240 00bc 7B68     		ldr	r3, [r7, #4]
+ 241 00be 9A42     		cmp	r2, r3
+ 242 00c0 1FD0     		beq	.L14
+ 243              		.loc 1 500 26 discriminator 1
+ 244 00c2 BB68     		ldr	r3, [r7, #8]
+ 245 00c4 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 246              		.loc 1 500 19 discriminator 1
+ 247 00c6 002B     		cmp	r3, #0
+ 248 00c8 1BD1     		bne	.L14
+ 501:./lwip-2.1.2/src/core/mem.c ****     /* if mem->prev is unused, combine mem and mem->prev */
+ 502:./lwip-2.1.2/src/core/mem.c ****     if (lfree == mem) {
+ 249              		.loc 1 502 15
+ 250 00ca 114B     		ldr	r3, .L15+4
+ 251 00cc 1B68     		ldr	r3, [r3]
+ 252              		.loc 1 502 8
+ 253 00ce 7A68     		ldr	r2, [r7, #4]
+ 254 00d0 9A42     		cmp	r2, r3
+ 255 00d2 02D1     		bne	.L13
+ 503:./lwip-2.1.2/src/core/mem.c ****       lfree = pmem;
+ 256              		.loc 1 503 13
+ 257 00d4 0E4A     		ldr	r2, .L15+4
+ 258 00d6 BB68     		ldr	r3, [r7, #8]
+ 259 00d8 1360     		str	r3, [r2]
+ 260              	.L13:
+ 504:./lwip-2.1.2/src/core/mem.c ****     }
+ 505:./lwip-2.1.2/src/core/mem.c ****     pmem->next = mem->next;
+ 261              		.loc 1 505 21
+ 262 00da 7B68     		ldr	r3, [r7, #4]
+ 263 00dc 1A88     		ldrh	r2, [r3]
+ 264              		.loc 1 505 16
+ 265 00de BB68     		ldr	r3, [r7, #8]
+ 266 00e0 1A80     		strh	r2, [r3]	@ movhi
+ 506:./lwip-2.1.2/src/core/mem.c ****     if (mem->next != MEM_SIZE_ALIGNED) {
+ 267              		.loc 1 506 12
+ 268 00e2 7B68     		ldr	r3, [r7, #4]
+ 269 00e4 1B88     		ldrh	r3, [r3]
+ 270              		.loc 1 506 8
+ 271 00e6 B3F5805F 		cmp	r3, #4096
+ 272 00ea 0AD0     		beq	.L14
+ 507:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
+ 273              		.loc 1 507 7
+ 274 00ec 7B68     		ldr	r3, [r7, #4]
+ 275 00ee 1B88     		ldrh	r3, [r3]
+ 276 00f0 1846     		mov	r0, r3
+ 277 00f2 FFF785FF 		bl	ptr_to_mem
+ 278 00f6 0446     		mov	r4, r0
+ 279              		.loc 1 507 37
+ 280 00f8 B868     		ldr	r0, [r7, #8]
+ 281 00fa FFF793FF 		bl	mem_to_ptr
+ 282 00fe 0346     		mov	r3, r0
+ 283              		.loc 1 507 35
+ 284 0100 6380     		strh	r3, [r4, #2]	@ movhi
+ 285              	.L14:
+ 508:./lwip-2.1.2/src/core/mem.c ****     }
+ 509:./lwip-2.1.2/src/core/mem.c ****   }
+ 510:./lwip-2.1.2/src/core/mem.c **** }
+ 286              		.loc 1 510 1
+ 287 0102 00BF     		nop
+ 288 0104 1437     		adds	r7, r7, #20
+ 289              	.LCFI15:
+ 290              		.cfi_def_cfa_offset 12
+ 291 0106 BD46     		mov	sp, r7
+ 292              	.LCFI16:
+ 293              		.cfi_def_cfa_register 13
+ 294              		@ sp needed
+ 295 0108 90BD     		pop	{r4, r7, pc}
+ 296              	.L16:
+ 297 010a 00BF     		.align	2
+ 298              	.L15:
+ 299 010c 18100000 		.word	ram_end
+ 300 0110 20100000 		.word	lfree
+ 301              		.cfi_endproc
+ 302              	.LFE171:
+ 304              		.align	1
+ 305              		.global	mem_init
+ 306              		.syntax unified
+ 307              		.thumb
+ 308              		.thumb_func
+ 309              		.fpu fpv5-d16
+ 311              	mem_init:
+ 312              	.LFB172:
+ 511:./lwip-2.1.2/src/core/mem.c **** 
+ 512:./lwip-2.1.2/src/core/mem.c **** /**
+ 513:./lwip-2.1.2/src/core/mem.c ****  * Zero the heap and initialize start, end and lowest-free
+ 514:./lwip-2.1.2/src/core/mem.c ****  */
+ 515:./lwip-2.1.2/src/core/mem.c **** void
+ 516:./lwip-2.1.2/src/core/mem.c **** mem_init(void)
+ 517:./lwip-2.1.2/src/core/mem.c **** {
+ 313              		.loc 1 517 1
+ 314              		.cfi_startproc
+ 315              		@ args = 0, pretend = 0, frame = 8
+ 316              		@ frame_needed = 1, uses_anonymous_args = 0
+ 317 0114 80B5     		push	{r7, lr}
+ 318              	.LCFI17:
+ 319              		.cfi_def_cfa_offset 8
+ 320              		.cfi_offset 7, -8
+ 321              		.cfi_offset 14, -4
+ 322 0116 82B0     		sub	sp, sp, #8
+ 323              	.LCFI18:
+ 324              		.cfi_def_cfa_offset 16
+ 325 0118 00AF     		add	r7, sp, #0
+ 326              	.LCFI19:
+ 327              		.cfi_def_cfa_register 7
+ 518:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+ 519:./lwip-2.1.2/src/core/mem.c **** 
+ 520:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("Sanity check alignment",
+ 521:./lwip-2.1.2/src/core/mem.c ****               (SIZEOF_STRUCT_MEM & (MEM_ALIGNMENT - 1)) == 0);
+ 522:./lwip-2.1.2/src/core/mem.c **** 
+ 523:./lwip-2.1.2/src/core/mem.c ****   /* align the heap */
+ 524:./lwip-2.1.2/src/core/mem.c ****   ram = (u8_t *)LWIP_MEM_ALIGN(LWIP_RAM_HEAP_POINTER);
+ 328              		.loc 1 524 17
+ 329 011a 1A4B     		ldr	r3, .L18
+ 330 011c 0333     		adds	r3, r3, #3
+ 331 011e 23F00303 		bic	r3, r3, #3
+ 332              		.loc 1 524 9
+ 333 0122 1A46     		mov	r2, r3
+ 334              		.loc 1 524 7
+ 335 0124 184B     		ldr	r3, .L18+4
+ 336 0126 1A60     		str	r2, [r3]
+ 525:./lwip-2.1.2/src/core/mem.c ****   /* initialize the start of the heap */
+ 526:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)ram;
+ 337              		.loc 1 526 7
+ 338 0128 174B     		ldr	r3, .L18+4
+ 339 012a 1B68     		ldr	r3, [r3]
+ 340 012c 7B60     		str	r3, [r7, #4]
+ 527:./lwip-2.1.2/src/core/mem.c ****   mem->next = MEM_SIZE_ALIGNED;
+ 341              		.loc 1 527 13
+ 342 012e 7B68     		ldr	r3, [r7, #4]
+ 343 0130 4FF48052 		mov	r2, #4096
+ 344 0134 1A80     		strh	r2, [r3]	@ movhi
+ 528:./lwip-2.1.2/src/core/mem.c ****   mem->prev = 0;
+ 345              		.loc 1 528 13
+ 346 0136 7B68     		ldr	r3, [r7, #4]
+ 347 0138 0022     		movs	r2, #0
+ 348 013a 5A80     		strh	r2, [r3, #2]	@ movhi
+ 529:./lwip-2.1.2/src/core/mem.c ****   mem->used = 0;
+ 349              		.loc 1 529 13
+ 350 013c 7B68     		ldr	r3, [r7, #4]
+ 351 013e 0022     		movs	r2, #0
+ 352 0140 1A71     		strb	r2, [r3, #4]
+ 530:./lwip-2.1.2/src/core/mem.c ****   /* initialize the end of the heap */
+ 531:./lwip-2.1.2/src/core/mem.c ****   ram_end = ptr_to_mem(MEM_SIZE_ALIGNED);
+ 353              		.loc 1 531 13
+ 354 0142 4FF48050 		mov	r0, #4096
+ 355 0146 FFF75BFF 		bl	ptr_to_mem
+ 356 014a 0346     		mov	r3, r0
+ 357              		.loc 1 531 11
+ 358 014c 0F4A     		ldr	r2, .L18+8
+ 359 014e 1360     		str	r3, [r2]
+ 532:./lwip-2.1.2/src/core/mem.c ****   ram_end->used = 1;
+ 360              		.loc 1 532 10
+ 361 0150 0E4B     		ldr	r3, .L18+8
+ 362 0152 1B68     		ldr	r3, [r3]
+ 363              		.loc 1 532 17
+ 364 0154 0122     		movs	r2, #1
+ 365 0156 1A71     		strb	r2, [r3, #4]
+ 533:./lwip-2.1.2/src/core/mem.c ****   ram_end->next = MEM_SIZE_ALIGNED;
+ 366              		.loc 1 533 10
+ 367 0158 0C4B     		ldr	r3, .L18+8
+ 368 015a 1B68     		ldr	r3, [r3]
+ 369              		.loc 1 533 17
+ 370 015c 4FF48052 		mov	r2, #4096
+ 371 0160 1A80     		strh	r2, [r3]	@ movhi
+ 534:./lwip-2.1.2/src/core/mem.c ****   ram_end->prev = MEM_SIZE_ALIGNED;
+ 372              		.loc 1 534 10
+ 373 0162 0A4B     		ldr	r3, .L18+8
+ 374 0164 1B68     		ldr	r3, [r3]
+ 375              		.loc 1 534 17
+ 376 0166 4FF48052 		mov	r2, #4096
+ 377 016a 5A80     		strh	r2, [r3, #2]	@ movhi
+ 535:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+ 536:./lwip-2.1.2/src/core/mem.c **** 
+ 537:./lwip-2.1.2/src/core/mem.c ****   /* initialize the lowest-free pointer to the start of the heap */
+ 538:./lwip-2.1.2/src/core/mem.c ****   lfree = (struct mem *)(void *)ram;
+ 378              		.loc 1 538 9
+ 379 016c 064B     		ldr	r3, .L18+4
+ 380 016e 1B68     		ldr	r3, [r3]
+ 381 0170 074A     		ldr	r2, .L18+12
+ 382 0172 1360     		str	r3, [r2]
+ 539:./lwip-2.1.2/src/core/mem.c **** 
+ 540:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_AVAIL(avail, MEM_SIZE_ALIGNED);
+ 541:./lwip-2.1.2/src/core/mem.c **** 
+ 542:./lwip-2.1.2/src/core/mem.c ****   if (sys_mutex_new(&mem_mutex) != ERR_OK) {
+ 383              		.loc 1 542 7
+ 384 0174 0748     		ldr	r0, .L18+16
+ 385 0176 FFF7FEFF 		bl	sys_mutex_new
+ 543:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("failed to create mem_mutex", 0);
+ 544:./lwip-2.1.2/src/core/mem.c ****   }
+ 545:./lwip-2.1.2/src/core/mem.c **** }
+ 386              		.loc 1 545 1
+ 387 017a 00BF     		nop
+ 388 017c 0837     		adds	r7, r7, #8
+ 389              	.LCFI20:
+ 390              		.cfi_def_cfa_offset 8
+ 391 017e BD46     		mov	sp, r7
+ 392              	.LCFI21:
+ 393              		.cfi_def_cfa_register 13
+ 394              		@ sp needed
+ 395 0180 80BD     		pop	{r7, pc}
+ 396              	.L19:
+ 397 0182 00BF     		.align	2
+ 398              	.L18:
+ 399 0184 00000000 		.word	ram_heap
+ 400 0188 14100000 		.word	ram
+ 401 018c 18100000 		.word	ram_end
+ 402 0190 20100000 		.word	lfree
+ 403 0194 1C100000 		.word	mem_mutex
+ 404              		.cfi_endproc
+ 405              	.LFE172:
+ 407              		.align	1
+ 408              		.syntax unified
+ 409              		.thumb
+ 410              		.thumb_func
+ 411              		.fpu fpv5-d16
+ 413              	mem_link_valid:
+ 414              	.LFB173:
+ 546:./lwip-2.1.2/src/core/mem.c **** 
+ 547:./lwip-2.1.2/src/core/mem.c **** /* Check if a struct mem is correctly linked.
+ 548:./lwip-2.1.2/src/core/mem.c ****  * If not, double-free is a possible reason.
+ 549:./lwip-2.1.2/src/core/mem.c ****  */
+ 550:./lwip-2.1.2/src/core/mem.c **** static int
+ 551:./lwip-2.1.2/src/core/mem.c **** mem_link_valid(struct mem *mem)
+ 552:./lwip-2.1.2/src/core/mem.c **** {
+ 415              		.loc 1 552 1
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 24
+ 418              		@ frame_needed = 1, uses_anonymous_args = 0
+ 419 0198 80B5     		push	{r7, lr}
+ 420              	.LCFI22:
+ 421              		.cfi_def_cfa_offset 8
+ 422              		.cfi_offset 7, -8
+ 423              		.cfi_offset 14, -4
+ 424 019a 86B0     		sub	sp, sp, #24
+ 425              	.LCFI23:
+ 426              		.cfi_def_cfa_offset 32
+ 427 019c 00AF     		add	r7, sp, #0
+ 428              	.LCFI24:
+ 429              		.cfi_def_cfa_register 7
+ 430 019e 7860     		str	r0, [r7, #4]
+ 553:./lwip-2.1.2/src/core/mem.c ****   struct mem *nmem, *pmem;
+ 554:./lwip-2.1.2/src/core/mem.c ****   mem_size_t rmem_idx;
+ 555:./lwip-2.1.2/src/core/mem.c ****   rmem_idx = mem_to_ptr(mem);
+ 431              		.loc 1 555 14
+ 432 01a0 7868     		ldr	r0, [r7, #4]
+ 433 01a2 FFF73FFF 		bl	mem_to_ptr
+ 434 01a6 0346     		mov	r3, r0
+ 435 01a8 FB82     		strh	r3, [r7, #22]	@ movhi
+ 556:./lwip-2.1.2/src/core/mem.c ****   nmem = ptr_to_mem(mem->next);
+ 436              		.loc 1 556 10
+ 437 01aa 7B68     		ldr	r3, [r7, #4]
+ 438 01ac 1B88     		ldrh	r3, [r3]
+ 439 01ae 1846     		mov	r0, r3
+ 440 01b0 FFF726FF 		bl	ptr_to_mem
+ 441 01b4 3861     		str	r0, [r7, #16]
+ 557:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
+ 442              		.loc 1 557 10
+ 443 01b6 7B68     		ldr	r3, [r7, #4]
+ 444 01b8 5B88     		ldrh	r3, [r3, #2]
+ 445 01ba 1846     		mov	r0, r3
+ 446 01bc FFF720FF 		bl	ptr_to_mem
+ 447 01c0 F860     		str	r0, [r7, #12]
+ 558:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
+ 448              		.loc 1 558 11
+ 449 01c2 7B68     		ldr	r3, [r7, #4]
+ 450 01c4 1B88     		ldrh	r3, [r3]
+ 451              		.loc 1 558 6
+ 452 01c6 B3F5805F 		cmp	r3, #4096
+ 453 01ca 18D8     		bhi	.L21
+ 454              		.loc 1 558 45 discriminator 1
+ 455 01cc 7B68     		ldr	r3, [r7, #4]
+ 456 01ce 5B88     		ldrh	r3, [r3, #2]
+ 457              		.loc 1 558 38 discriminator 1
+ 458 01d0 B3F5805F 		cmp	r3, #4096
+ 459 01d4 13D8     		bhi	.L21
+ 559:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
+ 460              		.loc 1 559 12 discriminator 2
+ 461 01d6 7B68     		ldr	r3, [r7, #4]
+ 462 01d8 5B88     		ldrh	r3, [r3, #2]
+ 558:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
+ 463              		.loc 1 558 72 discriminator 2
+ 464 01da FA8A     		ldrh	r2, [r7, #22]
+ 465 01dc 9A42     		cmp	r2, r3
+ 466 01de 04D0     		beq	.L22
+ 467              		.loc 1 559 40
+ 468 01e0 FB68     		ldr	r3, [r7, #12]
+ 469 01e2 1B88     		ldrh	r3, [r3]
+ 470              		.loc 1 559 32
+ 471 01e4 FA8A     		ldrh	r2, [r7, #22]
+ 472 01e6 9A42     		cmp	r2, r3
+ 473 01e8 09D1     		bne	.L21
+ 474              	.L22:
+ 560:./lwip-2.1.2/src/core/mem.c ****       ((nmem != ram_end) && (nmem->prev != rmem_idx))) {
+ 475              		.loc 1 560 14 discriminator 1
+ 476 01ea 084B     		ldr	r3, .L25
+ 477 01ec 1B68     		ldr	r3, [r3]
+ 559:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
+ 478              		.loc 1 559 61 discriminator 1
+ 479 01ee 3A69     		ldr	r2, [r7, #16]
+ 480 01f0 9A42     		cmp	r2, r3
+ 481 01f2 06D0     		beq	.L23
+ 482              		.loc 1 560 34
+ 483 01f4 3B69     		ldr	r3, [r7, #16]
+ 484 01f6 5B88     		ldrh	r3, [r3, #2]
+ 485              		.loc 1 560 26
+ 486 01f8 FA8A     		ldrh	r2, [r7, #22]
+ 487 01fa 9A42     		cmp	r2, r3
+ 488 01fc 01D0     		beq	.L23
+ 489              	.L21:
+ 561:./lwip-2.1.2/src/core/mem.c ****     return 0;
+ 490              		.loc 1 561 12
+ 491 01fe 0023     		movs	r3, #0
+ 492 0200 00E0     		b	.L24
+ 493              	.L23:
+ 562:./lwip-2.1.2/src/core/mem.c ****   }
+ 563:./lwip-2.1.2/src/core/mem.c ****   return 1;
+ 494              		.loc 1 563 10
+ 495 0202 0123     		movs	r3, #1
+ 496              	.L24:
+ 564:./lwip-2.1.2/src/core/mem.c **** }
+ 497              		.loc 1 564 1
+ 498 0204 1846     		mov	r0, r3
+ 499 0206 1837     		adds	r7, r7, #24
+ 500              	.LCFI25:
+ 501              		.cfi_def_cfa_offset 8
+ 502 0208 BD46     		mov	sp, r7
+ 503              	.LCFI26:
+ 504              		.cfi_def_cfa_register 13
+ 505              		@ sp needed
+ 506 020a 80BD     		pop	{r7, pc}
+ 507              	.L26:
+ 508              		.align	2
+ 509              	.L25:
+ 510 020c 18100000 		.word	ram_end
+ 511              		.cfi_endproc
+ 512              	.LFE173:
+ 514              		.align	1
+ 515              		.global	mem_free
+ 516              		.syntax unified
+ 517              		.thumb
+ 518              		.thumb_func
+ 519              		.fpu fpv5-d16
+ 521              	mem_free:
+ 522              	.LFB174:
+ 565:./lwip-2.1.2/src/core/mem.c **** 
+ 566:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_CHECK
+ 567:./lwip-2.1.2/src/core/mem.c **** static void
+ 568:./lwip-2.1.2/src/core/mem.c **** mem_sanity(void)
+ 569:./lwip-2.1.2/src/core/mem.c **** {
+ 570:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+ 571:./lwip-2.1.2/src/core/mem.c ****   u8_t last_used;
+ 572:./lwip-2.1.2/src/core/mem.c **** 
+ 573:./lwip-2.1.2/src/core/mem.c ****   /* begin with first element here */
+ 574:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)ram;
+ 575:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element used valid", (mem->used == 0) || (mem->used == 1));
+ 576:./lwip-2.1.2/src/core/mem.c ****   last_used = mem->used;
+ 577:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element prev ptr valid", mem->prev == 0);
+ 578:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element next ptr valid", mem->next <= MEM_SIZE_ALIGNED);
+ 579:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->next) == ptr_to_mem(m
+ 580:./lwip-2.1.2/src/core/mem.c **** 
+ 581:./lwip-2.1.2/src/core/mem.c ****   /* check all elements before the end of the heap */
+ 582:./lwip-2.1.2/src/core/mem.c ****   for (mem = ptr_to_mem(mem->next);
+ 583:./lwip-2.1.2/src/core/mem.c ****        ((u8_t *)mem > ram) && (mem < ram_end);
+ 584:./lwip-2.1.2/src/core/mem.c ****        mem = ptr_to_mem(mem->next)) {
+ 585:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element aligned", LWIP_MEM_ALIGN(mem) == mem);
+ 586:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element prev ptr valid", mem->prev <= MEM_SIZE_ALIGNED);
+ 587:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element next ptr valid", mem->next <= MEM_SIZE_ALIGNED);
+ 588:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element prev ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->prev) == ptr_to_mem
+ 589:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->next) == ptr_to_mem
+ 590:./lwip-2.1.2/src/core/mem.c **** 
+ 591:./lwip-2.1.2/src/core/mem.c ****     if (last_used == 0) {
+ 592:./lwip-2.1.2/src/core/mem.c ****       /* 2 unused elements in a row? */
+ 593:./lwip-2.1.2/src/core/mem.c ****       LWIP_ASSERT("heap element unused?", mem->used == 1);
+ 594:./lwip-2.1.2/src/core/mem.c ****     } else {
+ 595:./lwip-2.1.2/src/core/mem.c ****       LWIP_ASSERT("heap element unused member", (mem->used == 0) || (mem->used == 1));
+ 596:./lwip-2.1.2/src/core/mem.c ****     }
+ 597:./lwip-2.1.2/src/core/mem.c **** 
+ 598:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("heap element link valid", mem_link_valid(mem));
+ 599:./lwip-2.1.2/src/core/mem.c **** 
+ 600:./lwip-2.1.2/src/core/mem.c ****     /* used/unused altering */
+ 601:./lwip-2.1.2/src/core/mem.c ****     last_used = mem->used;
+ 602:./lwip-2.1.2/src/core/mem.c ****   }
+ 603:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap end ptr sanity", mem == ptr_to_mem(MEM_SIZE_ALIGNED));
+ 604:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element used valid", mem->used == 1);
+ 605:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element prev ptr valid", mem->prev == MEM_SIZE_ALIGNED);
+ 606:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("heap element next ptr valid", mem->next == MEM_SIZE_ALIGNED);
+ 607:./lwip-2.1.2/src/core/mem.c **** }
+ 608:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_SANITY_CHECK */
+ 609:./lwip-2.1.2/src/core/mem.c **** 
+ 610:./lwip-2.1.2/src/core/mem.c **** /**
+ 611:./lwip-2.1.2/src/core/mem.c ****  * Put a struct mem back on the heap
+ 612:./lwip-2.1.2/src/core/mem.c ****  *
+ 613:./lwip-2.1.2/src/core/mem.c ****  * @param rmem is the data portion of a struct mem as returned by a previous
+ 614:./lwip-2.1.2/src/core/mem.c ****  *             call to mem_malloc()
+ 615:./lwip-2.1.2/src/core/mem.c ****  */
+ 616:./lwip-2.1.2/src/core/mem.c **** void
+ 617:./lwip-2.1.2/src/core/mem.c **** mem_free(void *rmem)
+ 618:./lwip-2.1.2/src/core/mem.c **** {
+ 523              		.loc 1 618 1
+ 524              		.cfi_startproc
+ 525              		@ args = 0, pretend = 0, frame = 48
+ 526              		@ frame_needed = 1, uses_anonymous_args = 0
+ 527 0210 80B5     		push	{r7, lr}
+ 528              	.LCFI27:
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 7, -8
+ 531              		.cfi_offset 14, -4
+ 532 0212 8CB0     		sub	sp, sp, #48
+ 533              	.LCFI28:
+ 534              		.cfi_def_cfa_offset 56
+ 535 0214 00AF     		add	r7, sp, #0
+ 536              	.LCFI29:
+ 537              		.cfi_def_cfa_register 7
+ 538 0216 7860     		str	r0, [r7, #4]
+ 619:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+ 620:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_DECL_PROTECT();
+ 621:./lwip-2.1.2/src/core/mem.c **** 
+ 622:./lwip-2.1.2/src/core/mem.c ****   if (rmem == NULL) {
+ 539              		.loc 1 622 6
+ 540 0218 7B68     		ldr	r3, [r7, #4]
+ 541 021a 002B     		cmp	r3, #0
+ 542 021c 00F08580 		beq	.L44
+ 623:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was call
+ 624:./lwip-2.1.2/src/core/mem.c ****     return;
+ 625:./lwip-2.1.2/src/core/mem.c ****   }
+ 626:./lwip-2.1.2/src/core/mem.c ****   if ((((mem_ptr_t)rmem) & (MEM_ALIGNMENT - 1)) != 0) {
+ 543              		.loc 1 626 9
+ 544 0220 7B68     		ldr	r3, [r7, #4]
+ 545              		.loc 1 626 26
+ 546 0222 03F00303 		and	r3, r3, #3
+ 547              		.loc 1 626 6
+ 548 0226 002B     		cmp	r3, #0
+ 549 0228 12D0     		beq	.L30
+ 550              	.LBB58:
+ 551              	.LBB59:
+ 552              	.LBB60:
+ 553              		.file 2 "./inc/cmsis_gcc.h"
+   1:./inc/cmsis_gcc.h **** /**************************************************************************//**
+   2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:./inc/cmsis_gcc.h ****  * @version  V5.2.0
+   5:./inc/cmsis_gcc.h ****  * @date     08. May 2019
+   6:./inc/cmsis_gcc.h ****  ******************************************************************************/
+   7:./inc/cmsis_gcc.h **** /*
+   8:./inc/cmsis_gcc.h ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+   9:./inc/cmsis_gcc.h ****  *
+  10:./inc/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:./inc/cmsis_gcc.h ****  *
+  12:./inc/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:./inc/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:./inc/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:./inc/cmsis_gcc.h ****  *
+  16:./inc/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:./inc/cmsis_gcc.h ****  *
+  18:./inc/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:./inc/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:./inc/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:./inc/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:./inc/cmsis_gcc.h ****  * limitations under the License.
+  23:./inc/cmsis_gcc.h ****  */
+  24:./inc/cmsis_gcc.h **** 
+  25:./inc/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:./inc/cmsis_gcc.h **** 
+  28:./inc/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:./inc/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:./inc/cmsis_gcc.h **** 
+  34:./inc/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:./inc/cmsis_gcc.h **** #ifndef __has_builtin
+  36:./inc/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:./inc/cmsis_gcc.h **** #endif
+  38:./inc/cmsis_gcc.h **** 
+  39:./inc/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:./inc/cmsis_gcc.h **** #ifndef   __ASM
+  41:./inc/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:./inc/cmsis_gcc.h **** #endif
+  43:./inc/cmsis_gcc.h **** #ifndef   __INLINE
+  44:./inc/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:./inc/cmsis_gcc.h **** #endif
+  46:./inc/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:./inc/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:./inc/cmsis_gcc.h **** #endif
+  49:./inc/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:./inc/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:./inc/cmsis_gcc.h **** #endif                                           
+  52:./inc/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:./inc/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:./inc/cmsis_gcc.h **** #endif
+  55:./inc/cmsis_gcc.h **** #ifndef   __USED
+  56:./inc/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:./inc/cmsis_gcc.h **** #endif
+  58:./inc/cmsis_gcc.h **** #ifndef   __WEAK
+  59:./inc/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:./inc/cmsis_gcc.h **** #endif
+  61:./inc/cmsis_gcc.h **** #ifndef   __PACKED
+  62:./inc/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:./inc/cmsis_gcc.h **** #endif
+  64:./inc/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:./inc/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:./inc/cmsis_gcc.h **** #endif
+  67:./inc/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:./inc/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:./inc/cmsis_gcc.h **** #endif
+  70:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:./inc/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:./inc/cmsis_gcc.h **** #endif
+  78:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:./inc/cmsis_gcc.h **** #endif
+  86:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:./inc/cmsis_gcc.h **** #endif
+  94:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:./inc/cmsis_gcc.h **** #endif
+ 102:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:./inc/cmsis_gcc.h **** #endif
+ 110:./inc/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:./inc/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:./inc/cmsis_gcc.h **** #endif
+ 113:./inc/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:./inc/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:./inc/cmsis_gcc.h **** #endif
+ 116:./inc/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:./inc/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:./inc/cmsis_gcc.h **** #endif
+ 119:./inc/cmsis_gcc.h **** 
+ 120:./inc/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:./inc/cmsis_gcc.h **** 
+ 122:./inc/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ 123:./inc/cmsis_gcc.h **** 
+ 124:./inc/cmsis_gcc.h **** /**
+ 125:./inc/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:./inc/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:./inc/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:./inc/cmsis_gcc.h ****            in the used linker script.
+ 129:./inc/cmsis_gcc.h ****   
+ 130:./inc/cmsis_gcc.h ****  */
+ 131:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:./inc/cmsis_gcc.h **** {
+ 133:./inc/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:./inc/cmsis_gcc.h ****   
+ 135:./inc/cmsis_gcc.h ****   typedef struct {
+ 136:./inc/cmsis_gcc.h ****     uint32_t const* src;
+ 137:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 138:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:./inc/cmsis_gcc.h ****   } __copy_table_t;
+ 140:./inc/cmsis_gcc.h ****   
+ 141:./inc/cmsis_gcc.h ****   typedef struct {
+ 142:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 143:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:./inc/cmsis_gcc.h ****   } __zero_table_t;
+ 145:./inc/cmsis_gcc.h ****   
+ 146:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:./inc/cmsis_gcc.h **** 
+ 151:./inc/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:./inc/cmsis_gcc.h ****     }
+ 155:./inc/cmsis_gcc.h ****   }
+ 156:./inc/cmsis_gcc.h ****  
+ 157:./inc/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:./inc/cmsis_gcc.h ****     }
+ 161:./inc/cmsis_gcc.h ****   }
+ 162:./inc/cmsis_gcc.h ****  
+ 163:./inc/cmsis_gcc.h ****   _start();
+ 164:./inc/cmsis_gcc.h **** }
+ 165:./inc/cmsis_gcc.h ****   
+ 166:./inc/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:./inc/cmsis_gcc.h **** #endif
+ 168:./inc/cmsis_gcc.h **** 
+ 169:./inc/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:./inc/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:./inc/cmsis_gcc.h **** #endif
+ 172:./inc/cmsis_gcc.h **** 
+ 173:./inc/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:./inc/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:./inc/cmsis_gcc.h **** #endif
+ 176:./inc/cmsis_gcc.h **** 
+ 177:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:./inc/cmsis_gcc.h **** #endif
+ 180:./inc/cmsis_gcc.h **** 
+ 181:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute((used, section(".vectors")))
+ 183:./inc/cmsis_gcc.h **** #endif
+ 184:./inc/cmsis_gcc.h **** 
+ 185:./inc/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 186:./inc/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 187:./inc/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 188:./inc/cmsis_gcc.h ****   @{
+ 189:./inc/cmsis_gcc.h ****  */
+ 190:./inc/cmsis_gcc.h **** 
+ 191:./inc/cmsis_gcc.h **** /**
+ 192:./inc/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 193:./inc/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 194:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 195:./inc/cmsis_gcc.h ****  */
+ 196:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 197:./inc/cmsis_gcc.h **** {
+ 198:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 199:./inc/cmsis_gcc.h **** }
+ 200:./inc/cmsis_gcc.h **** 
+ 201:./inc/cmsis_gcc.h **** 
+ 202:./inc/cmsis_gcc.h **** /**
+ 203:./inc/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 204:./inc/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 205:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 206:./inc/cmsis_gcc.h ****  */
+ 207:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 208:./inc/cmsis_gcc.h **** {
+ 209:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 210:./inc/cmsis_gcc.h **** }
+ 211:./inc/cmsis_gcc.h **** 
+ 212:./inc/cmsis_gcc.h **** 
+ 213:./inc/cmsis_gcc.h **** /**
+ 214:./inc/cmsis_gcc.h ****   \brief   Get Control Register
+ 215:./inc/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 216:./inc/cmsis_gcc.h ****   \return               Control Register value
+ 217:./inc/cmsis_gcc.h ****  */
+ 218:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 219:./inc/cmsis_gcc.h **** {
+ 220:./inc/cmsis_gcc.h ****   uint32_t result;
+ 221:./inc/cmsis_gcc.h **** 
+ 222:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 223:./inc/cmsis_gcc.h ****   return(result);
+ 224:./inc/cmsis_gcc.h **** }
+ 225:./inc/cmsis_gcc.h **** 
+ 226:./inc/cmsis_gcc.h **** 
+ 227:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 228:./inc/cmsis_gcc.h **** /**
+ 229:./inc/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 230:./inc/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 231:./inc/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 232:./inc/cmsis_gcc.h ****  */
+ 233:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 234:./inc/cmsis_gcc.h **** {
+ 235:./inc/cmsis_gcc.h ****   uint32_t result;
+ 236:./inc/cmsis_gcc.h **** 
+ 237:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 238:./inc/cmsis_gcc.h ****   return(result);
+ 239:./inc/cmsis_gcc.h **** }
+ 240:./inc/cmsis_gcc.h **** #endif
+ 241:./inc/cmsis_gcc.h **** 
+ 242:./inc/cmsis_gcc.h **** 
+ 243:./inc/cmsis_gcc.h **** /**
+ 244:./inc/cmsis_gcc.h ****   \brief   Set Control Register
+ 245:./inc/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 246:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 247:./inc/cmsis_gcc.h ****  */
+ 248:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 249:./inc/cmsis_gcc.h **** {
+ 250:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 251:./inc/cmsis_gcc.h **** }
+ 252:./inc/cmsis_gcc.h **** 
+ 253:./inc/cmsis_gcc.h **** 
+ 254:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 255:./inc/cmsis_gcc.h **** /**
+ 256:./inc/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 257:./inc/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 258:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 259:./inc/cmsis_gcc.h ****  */
+ 260:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 261:./inc/cmsis_gcc.h **** {
+ 262:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 263:./inc/cmsis_gcc.h **** }
+ 264:./inc/cmsis_gcc.h **** #endif
+ 265:./inc/cmsis_gcc.h **** 
+ 266:./inc/cmsis_gcc.h **** 
+ 267:./inc/cmsis_gcc.h **** /**
+ 268:./inc/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 269:./inc/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 270:./inc/cmsis_gcc.h ****   \return               IPSR Register value
+ 271:./inc/cmsis_gcc.h ****  */
+ 272:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 273:./inc/cmsis_gcc.h **** {
+ 274:./inc/cmsis_gcc.h ****   uint32_t result;
+ 275:./inc/cmsis_gcc.h **** 
+ 276:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 277:./inc/cmsis_gcc.h ****   return(result);
+ 278:./inc/cmsis_gcc.h **** }
+ 279:./inc/cmsis_gcc.h **** 
+ 280:./inc/cmsis_gcc.h **** 
+ 281:./inc/cmsis_gcc.h **** /**
+ 282:./inc/cmsis_gcc.h ****   \brief   Get APSR Register
+ 283:./inc/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 284:./inc/cmsis_gcc.h ****   \return               APSR Register value
+ 285:./inc/cmsis_gcc.h ****  */
+ 286:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 287:./inc/cmsis_gcc.h **** {
+ 288:./inc/cmsis_gcc.h ****   uint32_t result;
+ 289:./inc/cmsis_gcc.h **** 
+ 290:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 291:./inc/cmsis_gcc.h ****   return(result);
+ 292:./inc/cmsis_gcc.h **** }
+ 293:./inc/cmsis_gcc.h **** 
+ 294:./inc/cmsis_gcc.h **** 
+ 295:./inc/cmsis_gcc.h **** /**
+ 296:./inc/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 297:./inc/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 298:./inc/cmsis_gcc.h ****   \return               xPSR Register value
+ 299:./inc/cmsis_gcc.h ****  */
+ 300:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 301:./inc/cmsis_gcc.h **** {
+ 302:./inc/cmsis_gcc.h ****   uint32_t result;
+ 303:./inc/cmsis_gcc.h **** 
+ 304:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 305:./inc/cmsis_gcc.h ****   return(result);
+ 306:./inc/cmsis_gcc.h **** }
+ 307:./inc/cmsis_gcc.h **** 
+ 308:./inc/cmsis_gcc.h **** 
+ 309:./inc/cmsis_gcc.h **** /**
+ 310:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 311:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 312:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 313:./inc/cmsis_gcc.h ****  */
+ 314:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 315:./inc/cmsis_gcc.h **** {
+ 316:./inc/cmsis_gcc.h ****   uint32_t result;
+ 317:./inc/cmsis_gcc.h **** 
+ 318:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 319:./inc/cmsis_gcc.h ****   return(result);
+ 320:./inc/cmsis_gcc.h **** }
+ 321:./inc/cmsis_gcc.h **** 
+ 322:./inc/cmsis_gcc.h **** 
+ 323:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 324:./inc/cmsis_gcc.h **** /**
+ 325:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 326:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 327:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 328:./inc/cmsis_gcc.h ****  */
+ 329:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 330:./inc/cmsis_gcc.h **** {
+ 331:./inc/cmsis_gcc.h ****   uint32_t result;
+ 332:./inc/cmsis_gcc.h **** 
+ 333:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 334:./inc/cmsis_gcc.h ****   return(result);
+ 335:./inc/cmsis_gcc.h **** }
+ 336:./inc/cmsis_gcc.h **** #endif
+ 337:./inc/cmsis_gcc.h **** 
+ 338:./inc/cmsis_gcc.h **** 
+ 339:./inc/cmsis_gcc.h **** /**
+ 340:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 341:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 342:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 343:./inc/cmsis_gcc.h ****  */
+ 344:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 345:./inc/cmsis_gcc.h **** {
+ 346:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 347:./inc/cmsis_gcc.h **** }
+ 348:./inc/cmsis_gcc.h **** 
+ 349:./inc/cmsis_gcc.h **** 
+ 350:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:./inc/cmsis_gcc.h **** /**
+ 352:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 353:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 354:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 355:./inc/cmsis_gcc.h ****  */
+ 356:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 357:./inc/cmsis_gcc.h **** {
+ 358:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 359:./inc/cmsis_gcc.h **** }
+ 360:./inc/cmsis_gcc.h **** #endif
+ 361:./inc/cmsis_gcc.h **** 
+ 362:./inc/cmsis_gcc.h **** 
+ 363:./inc/cmsis_gcc.h **** /**
+ 364:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 365:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 366:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 367:./inc/cmsis_gcc.h ****  */
+ 368:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 369:./inc/cmsis_gcc.h **** {
+ 370:./inc/cmsis_gcc.h ****   uint32_t result;
+ 371:./inc/cmsis_gcc.h **** 
+ 372:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 373:./inc/cmsis_gcc.h ****   return(result);
+ 374:./inc/cmsis_gcc.h **** }
+ 375:./inc/cmsis_gcc.h **** 
+ 376:./inc/cmsis_gcc.h **** 
+ 377:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 378:./inc/cmsis_gcc.h **** /**
+ 379:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 380:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 381:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 382:./inc/cmsis_gcc.h ****  */
+ 383:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 384:./inc/cmsis_gcc.h **** {
+ 385:./inc/cmsis_gcc.h ****   uint32_t result;
+ 386:./inc/cmsis_gcc.h **** 
+ 387:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 388:./inc/cmsis_gcc.h ****   return(result);
+ 389:./inc/cmsis_gcc.h **** }
+ 390:./inc/cmsis_gcc.h **** #endif
+ 391:./inc/cmsis_gcc.h **** 
+ 392:./inc/cmsis_gcc.h **** 
+ 393:./inc/cmsis_gcc.h **** /**
+ 394:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 395:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 396:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 397:./inc/cmsis_gcc.h ****  */
+ 398:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 399:./inc/cmsis_gcc.h **** {
+ 400:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 401:./inc/cmsis_gcc.h **** }
+ 402:./inc/cmsis_gcc.h **** 
+ 403:./inc/cmsis_gcc.h **** 
+ 404:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 405:./inc/cmsis_gcc.h **** /**
+ 406:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 407:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 408:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 409:./inc/cmsis_gcc.h ****  */
+ 410:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 411:./inc/cmsis_gcc.h **** {
+ 412:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 413:./inc/cmsis_gcc.h **** }
+ 414:./inc/cmsis_gcc.h **** #endif
+ 415:./inc/cmsis_gcc.h **** 
+ 416:./inc/cmsis_gcc.h **** 
+ 417:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 418:./inc/cmsis_gcc.h **** /**
+ 419:./inc/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 420:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 421:./inc/cmsis_gcc.h ****   \return               SP Register value
+ 422:./inc/cmsis_gcc.h ****  */
+ 423:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 424:./inc/cmsis_gcc.h **** {
+ 425:./inc/cmsis_gcc.h ****   uint32_t result;
+ 426:./inc/cmsis_gcc.h **** 
+ 427:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 428:./inc/cmsis_gcc.h ****   return(result);
+ 429:./inc/cmsis_gcc.h **** }
+ 430:./inc/cmsis_gcc.h **** 
+ 431:./inc/cmsis_gcc.h **** 
+ 432:./inc/cmsis_gcc.h **** /**
+ 433:./inc/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 434:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 435:./inc/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 436:./inc/cmsis_gcc.h ****  */
+ 437:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 438:./inc/cmsis_gcc.h **** {
+ 439:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 440:./inc/cmsis_gcc.h **** }
+ 441:./inc/cmsis_gcc.h **** #endif
+ 442:./inc/cmsis_gcc.h **** 
+ 443:./inc/cmsis_gcc.h **** 
+ 444:./inc/cmsis_gcc.h **** /**
+ 445:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 446:./inc/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 447:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 448:./inc/cmsis_gcc.h ****  */
+ 449:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 450:./inc/cmsis_gcc.h **** {
+ 451:./inc/cmsis_gcc.h ****   uint32_t result;
+ 452:./inc/cmsis_gcc.h **** 
+ 453:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 554              		.loc 2 453 3
+ 555              		.syntax unified
+ 556              	@ 453 "./inc/cmsis_gcc.h" 1
+ 557 022a EFF31083 		MRS r3, primask
+ 558              	@ 0 "" 2
+ 559              		.thumb
+ 560              		.syntax unified
+ 561 022e BB61     		str	r3, [r7, #24]
+ 454:./inc/cmsis_gcc.h ****   return(result);
+ 562              		.loc 2 454 9
+ 563 0230 BB69     		ldr	r3, [r7, #24]
+ 564              	.LBE60:
+ 565              	.LBE59:
+ 627:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: sanity check alignment");
+ 628:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
+ 629:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 630:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 566              		.loc 1 630 5
+ 567 0232 FB61     		str	r3, [r7, #28]
+ 568              	.LBB61:
+ 569              	.LBB62:
+ 209:./inc/cmsis_gcc.h **** }
+ 570              		.loc 2 209 3
+ 571              		.syntax unified
+ 572              	@ 209 "./inc/cmsis_gcc.h" 1
+ 573 0234 72B6     		cpsid i
+ 574              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 575              		.loc 2 210 1
+ 576              		.thumb
+ 577              		.syntax unified
+ 578 0236 00BF     		nop
+ 579              	.LBE62:
+ 580              	.LBE61:
+ 581              	.LBB63:
+ 582              	.LBB64:
+ 455:./inc/cmsis_gcc.h **** }
+ 456:./inc/cmsis_gcc.h **** 
+ 457:./inc/cmsis_gcc.h **** 
+ 458:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 459:./inc/cmsis_gcc.h **** /**
+ 460:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 461:./inc/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 462:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 463:./inc/cmsis_gcc.h ****  */
+ 464:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 465:./inc/cmsis_gcc.h **** {
+ 466:./inc/cmsis_gcc.h ****   uint32_t result;
+ 467:./inc/cmsis_gcc.h **** 
+ 468:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 469:./inc/cmsis_gcc.h ****   return(result);
+ 470:./inc/cmsis_gcc.h **** }
+ 471:./inc/cmsis_gcc.h **** #endif
+ 472:./inc/cmsis_gcc.h **** 
+ 473:./inc/cmsis_gcc.h **** 
+ 474:./inc/cmsis_gcc.h **** /**
+ 475:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 476:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 477:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 478:./inc/cmsis_gcc.h ****  */
+ 479:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 480:./inc/cmsis_gcc.h **** {
+ 481:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 482:./inc/cmsis_gcc.h **** }
+ 483:./inc/cmsis_gcc.h **** 
+ 484:./inc/cmsis_gcc.h **** 
+ 485:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 486:./inc/cmsis_gcc.h **** /**
+ 487:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask (non-secure)
+ 488:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Priority Mask Register when in secure state.
+ 489:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 490:./inc/cmsis_gcc.h ****  */
+ 491:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
+ 492:./inc/cmsis_gcc.h **** {
+ 493:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask_ns, %0" : : "r" (priMask) : "memory");
+ 494:./inc/cmsis_gcc.h **** }
+ 495:./inc/cmsis_gcc.h **** #endif
+ 496:./inc/cmsis_gcc.h **** 
+ 497:./inc/cmsis_gcc.h **** 
+ 498:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 499:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 500:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
+ 501:./inc/cmsis_gcc.h **** /**
+ 502:./inc/cmsis_gcc.h ****   \brief   Enable FIQ
+ 503:./inc/cmsis_gcc.h ****   \details Enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 504:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 505:./inc/cmsis_gcc.h ****  */
+ 506:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_fault_irq(void)
+ 507:./inc/cmsis_gcc.h **** {
+ 508:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie f" : : : "memory");
+ 509:./inc/cmsis_gcc.h **** }
+ 510:./inc/cmsis_gcc.h **** 
+ 511:./inc/cmsis_gcc.h **** 
+ 512:./inc/cmsis_gcc.h **** /**
+ 513:./inc/cmsis_gcc.h ****   \brief   Disable FIQ
+ 514:./inc/cmsis_gcc.h ****   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
+ 515:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 516:./inc/cmsis_gcc.h ****  */
+ 517:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_fault_irq(void)
+ 518:./inc/cmsis_gcc.h **** {
+ 519:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
+ 520:./inc/cmsis_gcc.h **** }
+ 521:./inc/cmsis_gcc.h **** 
+ 522:./inc/cmsis_gcc.h **** 
+ 523:./inc/cmsis_gcc.h **** /**
+ 524:./inc/cmsis_gcc.h ****   \brief   Get Base Priority
+ 525:./inc/cmsis_gcc.h ****   \details Returns the current value of the Base Priority register.
+ 526:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 527:./inc/cmsis_gcc.h ****  */
+ 528:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
+ 529:./inc/cmsis_gcc.h **** {
+ 530:./inc/cmsis_gcc.h ****   uint32_t result;
+ 531:./inc/cmsis_gcc.h **** 
+ 532:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri" : "=r" (result) );
+ 533:./inc/cmsis_gcc.h ****   return(result);
+ 534:./inc/cmsis_gcc.h **** }
+ 535:./inc/cmsis_gcc.h **** 
+ 536:./inc/cmsis_gcc.h **** 
+ 537:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 538:./inc/cmsis_gcc.h **** /**
+ 539:./inc/cmsis_gcc.h ****   \brief   Get Base Priority (non-secure)
+ 540:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Base Priority register when in secure state.
+ 541:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 542:./inc/cmsis_gcc.h ****  */
+ 543:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
+ 544:./inc/cmsis_gcc.h **** {
+ 545:./inc/cmsis_gcc.h ****   uint32_t result;
+ 546:./inc/cmsis_gcc.h **** 
+ 547:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri_ns" : "=r" (result) );
+ 548:./inc/cmsis_gcc.h ****   return(result);
+ 549:./inc/cmsis_gcc.h **** }
+ 550:./inc/cmsis_gcc.h **** #endif
+ 551:./inc/cmsis_gcc.h **** 
+ 552:./inc/cmsis_gcc.h **** 
+ 553:./inc/cmsis_gcc.h **** /**
+ 554:./inc/cmsis_gcc.h ****   \brief   Set Base Priority
+ 555:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register.
+ 556:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 557:./inc/cmsis_gcc.h ****  */
+ 558:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
+ 559:./inc/cmsis_gcc.h **** {
+ 560:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri, %0" : : "r" (basePri) : "memory");
+ 561:./inc/cmsis_gcc.h **** }
+ 562:./inc/cmsis_gcc.h **** 
+ 563:./inc/cmsis_gcc.h **** 
+ 564:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 565:./inc/cmsis_gcc.h **** /**
+ 566:./inc/cmsis_gcc.h ****   \brief   Set Base Priority (non-secure)
+ 567:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Base Priority register when in secure state.
+ 568:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 569:./inc/cmsis_gcc.h ****  */
+ 570:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
+ 571:./inc/cmsis_gcc.h **** {
+ 572:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_ns, %0" : : "r" (basePri) : "memory");
+ 573:./inc/cmsis_gcc.h **** }
+ 574:./inc/cmsis_gcc.h **** #endif
+ 575:./inc/cmsis_gcc.h **** 
+ 576:./inc/cmsis_gcc.h **** 
+ 577:./inc/cmsis_gcc.h **** /**
+ 578:./inc/cmsis_gcc.h ****   \brief   Set Base Priority with condition
+ 579:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register only if BASEPRI masking is disable
+ 580:./inc/cmsis_gcc.h ****            or the new value increases the BASEPRI priority level.
+ 581:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 582:./inc/cmsis_gcc.h ****  */
+ 583:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
+ 584:./inc/cmsis_gcc.h **** {
+ 585:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_max, %0" : : "r" (basePri) : "memory");
+ 586:./inc/cmsis_gcc.h **** }
+ 587:./inc/cmsis_gcc.h **** 
+ 588:./inc/cmsis_gcc.h **** 
+ 589:./inc/cmsis_gcc.h **** /**
+ 590:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask
+ 591:./inc/cmsis_gcc.h ****   \details Returns the current value of the Fault Mask register.
+ 592:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 593:./inc/cmsis_gcc.h ****  */
+ 594:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
+ 595:./inc/cmsis_gcc.h **** {
+ 596:./inc/cmsis_gcc.h ****   uint32_t result;
+ 597:./inc/cmsis_gcc.h **** 
+ 598:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
+ 599:./inc/cmsis_gcc.h ****   return(result);
+ 600:./inc/cmsis_gcc.h **** }
+ 601:./inc/cmsis_gcc.h **** 
+ 602:./inc/cmsis_gcc.h **** 
+ 603:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 604:./inc/cmsis_gcc.h **** /**
+ 605:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask (non-secure)
+ 606:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Fault Mask register when in secure state.
+ 607:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 608:./inc/cmsis_gcc.h ****  */
+ 609:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
+ 610:./inc/cmsis_gcc.h **** {
+ 611:./inc/cmsis_gcc.h ****   uint32_t result;
+ 612:./inc/cmsis_gcc.h **** 
+ 613:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask_ns" : "=r" (result) );
+ 614:./inc/cmsis_gcc.h ****   return(result);
+ 615:./inc/cmsis_gcc.h **** }
+ 616:./inc/cmsis_gcc.h **** #endif
+ 617:./inc/cmsis_gcc.h **** 
+ 618:./inc/cmsis_gcc.h **** 
+ 619:./inc/cmsis_gcc.h **** /**
+ 620:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask
+ 621:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Fault Mask register.
+ 622:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 623:./inc/cmsis_gcc.h ****  */
+ 624:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
+ 625:./inc/cmsis_gcc.h **** {
+ 626:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) : "memory");
+ 627:./inc/cmsis_gcc.h **** }
+ 628:./inc/cmsis_gcc.h **** 
+ 629:./inc/cmsis_gcc.h **** 
+ 630:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 631:./inc/cmsis_gcc.h **** /**
+ 632:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask (non-secure)
+ 633:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Fault Mask register when in secure state.
+ 634:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 635:./inc/cmsis_gcc.h ****  */
+ 636:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
+ 637:./inc/cmsis_gcc.h **** {
+ 638:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask_ns, %0" : : "r" (faultMask) : "memory");
+ 639:./inc/cmsis_gcc.h **** }
+ 640:./inc/cmsis_gcc.h **** #endif
+ 641:./inc/cmsis_gcc.h **** 
+ 642:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 643:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 644:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
+ 645:./inc/cmsis_gcc.h **** 
+ 646:./inc/cmsis_gcc.h **** 
+ 647:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 648:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
+ 649:./inc/cmsis_gcc.h **** 
+ 650:./inc/cmsis_gcc.h **** /**
+ 651:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit
+ 652:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 653:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 654:./inc/cmsis_gcc.h ****   mode.
+ 655:./inc/cmsis_gcc.h ****   
+ 656:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer Limit (PSPLIM).
+ 657:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 658:./inc/cmsis_gcc.h ****  */
+ 659:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSPLIM(void)
+ 660:./inc/cmsis_gcc.h **** {
+ 661:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 662:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 663:./inc/cmsis_gcc.h ****     // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 664:./inc/cmsis_gcc.h ****   return 0U;
+ 665:./inc/cmsis_gcc.h **** #else
+ 666:./inc/cmsis_gcc.h ****   uint32_t result;
+ 667:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim"  : "=r" (result) );
+ 668:./inc/cmsis_gcc.h ****   return result;
+ 669:./inc/cmsis_gcc.h **** #endif
+ 670:./inc/cmsis_gcc.h **** }
+ 671:./inc/cmsis_gcc.h **** 
+ 672:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3))
+ 673:./inc/cmsis_gcc.h **** /**
+ 674:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit (non-secure)
+ 675:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 676:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 677:./inc/cmsis_gcc.h **** 
+ 678:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer Limit (PSPLIM) when in
+ 679:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 680:./inc/cmsis_gcc.h ****  */
+ 681:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
+ 682:./inc/cmsis_gcc.h **** {
+ 683:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 684:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 685:./inc/cmsis_gcc.h ****   return 0U;
+ 686:./inc/cmsis_gcc.h **** #else
+ 687:./inc/cmsis_gcc.h ****   uint32_t result;
+ 688:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
+ 689:./inc/cmsis_gcc.h ****   return result;
+ 690:./inc/cmsis_gcc.h **** #endif
+ 691:./inc/cmsis_gcc.h **** }
+ 692:./inc/cmsis_gcc.h **** #endif
+ 693:./inc/cmsis_gcc.h **** 
+ 694:./inc/cmsis_gcc.h **** 
+ 695:./inc/cmsis_gcc.h **** /**
+ 696:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer Limit
+ 697:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 698:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 699:./inc/cmsis_gcc.h ****   mode.
+ 700:./inc/cmsis_gcc.h ****   
+ 701:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer Limit (PSPLIM).
+ 702:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 703:./inc/cmsis_gcc.h ****  */
+ 704:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
+ 705:./inc/cmsis_gcc.h **** {
+ 706:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 707:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 708:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 709:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 710:./inc/cmsis_gcc.h **** #else
+ 711:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim, %0" : : "r" (ProcStackPtrLimit));
+ 712:./inc/cmsis_gcc.h **** #endif
+ 713:./inc/cmsis_gcc.h **** }
+ 714:./inc/cmsis_gcc.h **** 
+ 715:./inc/cmsis_gcc.h **** 
+ 716:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 717:./inc/cmsis_gcc.h **** /**
+ 718:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 719:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 720:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 721:./inc/cmsis_gcc.h **** 
+ 722:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer Limit (PSPLIM) when in s
+ 723:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 724:./inc/cmsis_gcc.h ****  */
+ 725:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
+ 726:./inc/cmsis_gcc.h **** {
+ 727:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 728:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 729:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 730:./inc/cmsis_gcc.h **** #else
+ 731:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim_ns, %0\n" : : "r" (ProcStackPtrLimit));
+ 732:./inc/cmsis_gcc.h **** #endif
+ 733:./inc/cmsis_gcc.h **** }
+ 734:./inc/cmsis_gcc.h **** #endif
+ 735:./inc/cmsis_gcc.h **** 
+ 736:./inc/cmsis_gcc.h **** 
+ 737:./inc/cmsis_gcc.h **** /**
+ 738:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit
+ 739:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 740:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 741:./inc/cmsis_gcc.h ****   mode.
+ 742:./inc/cmsis_gcc.h **** 
+ 743:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer Limit (MSPLIM).
+ 744:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 745:./inc/cmsis_gcc.h ****  */
+ 746:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
+ 747:./inc/cmsis_gcc.h **** {
+ 748:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 749:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 750:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 751:./inc/cmsis_gcc.h ****   return 0U;
+ 752:./inc/cmsis_gcc.h **** #else
+ 753:./inc/cmsis_gcc.h ****   uint32_t result;
+ 754:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim" : "=r" (result) );
+ 755:./inc/cmsis_gcc.h ****   return result;
+ 756:./inc/cmsis_gcc.h **** #endif
+ 757:./inc/cmsis_gcc.h **** }
+ 758:./inc/cmsis_gcc.h **** 
+ 759:./inc/cmsis_gcc.h **** 
+ 760:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 761:./inc/cmsis_gcc.h **** /**
+ 762:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit (non-secure)
+ 763:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 764:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 765:./inc/cmsis_gcc.h **** 
+ 766:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer Limit(MSPLIM) when in sec
+ 767:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 768:./inc/cmsis_gcc.h ****  */
+ 769:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
+ 770:./inc/cmsis_gcc.h **** {
+ 771:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 772:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 773:./inc/cmsis_gcc.h ****   return 0U;
+ 774:./inc/cmsis_gcc.h **** #else
+ 775:./inc/cmsis_gcc.h ****   uint32_t result;
+ 776:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim_ns" : "=r" (result) );
+ 777:./inc/cmsis_gcc.h ****   return result;
+ 778:./inc/cmsis_gcc.h **** #endif
+ 779:./inc/cmsis_gcc.h **** }
+ 780:./inc/cmsis_gcc.h **** #endif
+ 781:./inc/cmsis_gcc.h **** 
+ 782:./inc/cmsis_gcc.h **** 
+ 783:./inc/cmsis_gcc.h **** /**
+ 784:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit
+ 785:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 786:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 787:./inc/cmsis_gcc.h ****   mode.
+ 788:./inc/cmsis_gcc.h **** 
+ 789:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer Limit (MSPLIM).
+ 790:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer Limit value to set
+ 791:./inc/cmsis_gcc.h ****  */
+ 792:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
+ 793:./inc/cmsis_gcc.h **** {
+ 794:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 795:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 796:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 797:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 798:./inc/cmsis_gcc.h **** #else
+ 799:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim, %0" : : "r" (MainStackPtrLimit));
+ 800:./inc/cmsis_gcc.h **** #endif
+ 801:./inc/cmsis_gcc.h **** }
+ 802:./inc/cmsis_gcc.h **** 
+ 803:./inc/cmsis_gcc.h **** 
+ 804:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 805:./inc/cmsis_gcc.h **** /**
+ 806:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit (non-secure)
+ 807:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 808:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 809:./inc/cmsis_gcc.h **** 
+ 810:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer Limit (MSPLIM) when in secu
+ 811:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer value to set
+ 812:./inc/cmsis_gcc.h ****  */
+ 813:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
+ 814:./inc/cmsis_gcc.h **** {
+ 815:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 816:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 817:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 818:./inc/cmsis_gcc.h **** #else
+ 819:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim_ns, %0" : : "r" (MainStackPtrLimit));
+ 820:./inc/cmsis_gcc.h **** #endif
+ 821:./inc/cmsis_gcc.h **** }
+ 822:./inc/cmsis_gcc.h **** #endif
+ 823:./inc/cmsis_gcc.h **** 
+ 824:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 825:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
+ 826:./inc/cmsis_gcc.h **** 
+ 827:./inc/cmsis_gcc.h **** 
+ 828:./inc/cmsis_gcc.h **** /**
+ 829:./inc/cmsis_gcc.h ****   \brief   Get FPSCR
+ 830:./inc/cmsis_gcc.h ****   \details Returns the current value of the Floating Point Status/Control register.
+ 831:./inc/cmsis_gcc.h ****   \return               Floating Point Status/Control register value
+ 832:./inc/cmsis_gcc.h ****  */
+ 833:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
+ 834:./inc/cmsis_gcc.h **** {
+ 835:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 836:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 837:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_get_fpscr) 
+ 838:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 839:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 840:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 841:./inc/cmsis_gcc.h ****   return __builtin_arm_get_fpscr();
+ 842:./inc/cmsis_gcc.h **** #else
+ 843:./inc/cmsis_gcc.h ****   uint32_t result;
+ 844:./inc/cmsis_gcc.h **** 
+ 845:./inc/cmsis_gcc.h ****   __ASM volatile ("VMRS %0, fpscr" : "=r" (result) );
+ 846:./inc/cmsis_gcc.h ****   return(result);
+ 847:./inc/cmsis_gcc.h **** #endif
+ 848:./inc/cmsis_gcc.h **** #else
+ 849:./inc/cmsis_gcc.h ****   return(0U);
+ 850:./inc/cmsis_gcc.h **** #endif
+ 851:./inc/cmsis_gcc.h **** }
+ 852:./inc/cmsis_gcc.h **** 
+ 853:./inc/cmsis_gcc.h **** 
+ 854:./inc/cmsis_gcc.h **** /**
+ 855:./inc/cmsis_gcc.h ****   \brief   Set FPSCR
+ 856:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Floating Point Status/Control register.
+ 857:./inc/cmsis_gcc.h ****   \param [in]    fpscr  Floating Point Status/Control value to set
+ 858:./inc/cmsis_gcc.h ****  */
+ 859:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
+ 860:./inc/cmsis_gcc.h **** {
+ 861:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 862:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 863:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_set_fpscr)
+ 864:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 865:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 866:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 867:./inc/cmsis_gcc.h ****   __builtin_arm_set_fpscr(fpscr);
+ 868:./inc/cmsis_gcc.h **** #else
+ 869:./inc/cmsis_gcc.h ****   __ASM volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc", "memory");
+ 870:./inc/cmsis_gcc.h **** #endif
+ 871:./inc/cmsis_gcc.h **** #else
+ 872:./inc/cmsis_gcc.h ****   (void)fpscr;
+ 873:./inc/cmsis_gcc.h **** #endif
+ 874:./inc/cmsis_gcc.h **** }
+ 875:./inc/cmsis_gcc.h **** 
+ 876:./inc/cmsis_gcc.h **** 
+ 877:./inc/cmsis_gcc.h **** /*@} end of CMSIS_Core_RegAccFunctions */
+ 878:./inc/cmsis_gcc.h **** 
+ 879:./inc/cmsis_gcc.h **** 
+ 880:./inc/cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 881:./inc/cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 882:./inc/cmsis_gcc.h ****   Access to dedicated instructions
+ 883:./inc/cmsis_gcc.h ****   @{
+ 884:./inc/cmsis_gcc.h **** */
+ 885:./inc/cmsis_gcc.h **** 
+ 886:./inc/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 887:./inc/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 888:./inc/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 889:./inc/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 890:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 891:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
+ 892:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 893:./inc/cmsis_gcc.h **** #else
+ 894:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 895:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+r" (r)
+ 896:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 897:./inc/cmsis_gcc.h **** #endif
+ 898:./inc/cmsis_gcc.h **** 
+ 899:./inc/cmsis_gcc.h **** /**
+ 900:./inc/cmsis_gcc.h ****   \brief   No Operation
+ 901:./inc/cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 902:./inc/cmsis_gcc.h ****  */
+ 903:./inc/cmsis_gcc.h **** #define __NOP()                             __ASM volatile ("nop")
+ 904:./inc/cmsis_gcc.h **** 
+ 905:./inc/cmsis_gcc.h **** /**
+ 906:./inc/cmsis_gcc.h ****   \brief   Wait For Interrupt
+ 907:./inc/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
+ 908:./inc/cmsis_gcc.h ****  */
+ 909:./inc/cmsis_gcc.h **** #define __WFI()                             __ASM volatile ("wfi")
+ 910:./inc/cmsis_gcc.h **** 
+ 911:./inc/cmsis_gcc.h **** 
+ 912:./inc/cmsis_gcc.h **** /**
+ 913:./inc/cmsis_gcc.h ****   \brief   Wait For Event
+ 914:./inc/cmsis_gcc.h ****   \details Wait For Event is a hint instruction that permits the processor to enter
+ 915:./inc/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
+ 916:./inc/cmsis_gcc.h ****  */
+ 917:./inc/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe")
+ 918:./inc/cmsis_gcc.h **** 
+ 919:./inc/cmsis_gcc.h **** 
+ 920:./inc/cmsis_gcc.h **** /**
+ 921:./inc/cmsis_gcc.h ****   \brief   Send Event
+ 922:./inc/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 923:./inc/cmsis_gcc.h ****  */
+ 924:./inc/cmsis_gcc.h **** #define __SEV()                             __ASM volatile ("sev")
+ 925:./inc/cmsis_gcc.h **** 
+ 926:./inc/cmsis_gcc.h **** 
+ 927:./inc/cmsis_gcc.h **** /**
+ 928:./inc/cmsis_gcc.h ****   \brief   Instruction Synchronization Barrier
+ 929:./inc/cmsis_gcc.h ****   \details Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 930:./inc/cmsis_gcc.h ****            so that all instructions following the ISB are fetched from cache or memory,
+ 931:./inc/cmsis_gcc.h ****            after the instruction has been completed.
+ 932:./inc/cmsis_gcc.h ****  */
+ 933:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __ISB(void)
+ 934:./inc/cmsis_gcc.h **** {
+ 935:./inc/cmsis_gcc.h ****   __ASM volatile ("isb 0xF":::"memory");
+ 936:./inc/cmsis_gcc.h **** }
+ 937:./inc/cmsis_gcc.h **** 
+ 938:./inc/cmsis_gcc.h **** 
+ 939:./inc/cmsis_gcc.h **** /**
+ 940:./inc/cmsis_gcc.h ****   \brief   Data Synchronization Barrier
+ 941:./inc/cmsis_gcc.h ****   \details Acts as a special kind of Data Memory Barrier.
+ 942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
+ 943:./inc/cmsis_gcc.h ****  */
+ 944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 945:./inc/cmsis_gcc.h **** {
+ 946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
+ 583              		.loc 2 946 3
+ 584              		.syntax unified
+ 585              	@ 946 "./inc/cmsis_gcc.h" 1
+ 586 0238 BFF34F8F 		dsb 0xF
+ 587              	@ 0 "" 2
+ 947:./inc/cmsis_gcc.h **** }
+ 588              		.loc 2 947 1
+ 589              		.thumb
+ 590              		.syntax unified
+ 591 023c 00BF     		nop
+ 592              	.LBE64:
+ 593              	.LBE63:
+ 594              	.LBB65:
+ 595              	.LBB66:
+ 935:./inc/cmsis_gcc.h **** }
+ 596              		.loc 2 935 3
+ 597              		.syntax unified
+ 598              	@ 935 "./inc/cmsis_gcc.h" 1
+ 599 023e BFF36F8F 		isb 0xF
+ 600              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 601              		.loc 2 936 1
+ 602              		.thumb
+ 603              		.syntax unified
+ 604 0242 00BF     		nop
+ 605              	.LBE66:
+ 606              	.LBE65:
+ 607              		.loc 1 630 5
+ 608 0244 FB69     		ldr	r3, [r7, #28]
+ 609 0246 002B     		cmp	r3, #0
+ 610 0248 71D1     		bne	.L45
+ 611              	.LBB67:
+ 612              	.LBB68:
+ 198:./inc/cmsis_gcc.h **** }
+ 613              		.loc 2 198 3
+ 614              		.syntax unified
+ 615              	@ 198 "./inc/cmsis_gcc.h" 1
+ 616 024a 62B6     		cpsie i
+ 617              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 618              		.loc 2 199 1
+ 619              		.thumb
+ 620              		.syntax unified
+ 621 024c 00BF     		nop
+ 622              	.LBE68:
+ 623              	.LBE67:
+ 624              	.LBE58:
+ 631:./lwip-2.1.2/src/core/mem.c ****     return;
+ 625              		.loc 1 631 5
+ 626 024e 6EE0     		b	.L45
+ 627              	.L30:
+ 632:./lwip-2.1.2/src/core/mem.c ****   }
+ 633:./lwip-2.1.2/src/core/mem.c **** 
+ 634:./lwip-2.1.2/src/core/mem.c ****   /* Get the corresponding struct mem: */
+ 635:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
+ 636:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
+ 628              		.loc 1 636 7
+ 629 0250 7B68     		ldr	r3, [r7, #4]
+ 630 0252 083B     		subs	r3, r3, #8
+ 631 0254 FB62     		str	r3, [r7, #44]
+ 637:./lwip-2.1.2/src/core/mem.c **** 
+ 638:./lwip-2.1.2/src/core/mem.c ****   if ((u8_t *)mem < ram || (u8_t *)rmem + MIN_SIZE_ALIGNED > (u8_t *)ram_end) {
+ 632              		.loc 1 638 19
+ 633 0256 3B4B     		ldr	r3, .L49
+ 634 0258 1B68     		ldr	r3, [r3]
+ 635              		.loc 1 638 6
+ 636 025a FA6A     		ldr	r2, [r7, #44]
+ 637 025c 9A42     		cmp	r2, r3
+ 638 025e 06D3     		bcc	.L33
+ 639              		.loc 1 638 41 discriminator 1
+ 640 0260 7B68     		ldr	r3, [r7, #4]
+ 641 0262 03F10C02 		add	r2, r3, #12
+ 642              		.loc 1 638 62 discriminator 1
+ 643 0266 384B     		ldr	r3, .L49+4
+ 644 0268 1B68     		ldr	r3, [r3]
+ 645              		.loc 1 638 25 discriminator 1
+ 646 026a 9A42     		cmp	r2, r3
+ 647 026c 12D9     		bls	.L34
+ 648              	.L33:
+ 649              	.LBB69:
+ 650              	.LBB70:
+ 651              	.LBB71:
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 652              		.loc 2 453 3
+ 653              		.syntax unified
+ 654              	@ 453 "./inc/cmsis_gcc.h" 1
+ 655 026e EFF31083 		MRS r3, primask
+ 656              	@ 0 "" 2
+ 657              		.thumb
+ 658              		.syntax unified
+ 659 0272 7B61     		str	r3, [r7, #20]
+ 454:./inc/cmsis_gcc.h **** }
+ 660              		.loc 2 454 9
+ 661 0274 7B69     		ldr	r3, [r7, #20]
+ 662              	.LBE71:
+ 663              	.LBE70:
+ 639:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory");
+ 640:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory\n"));
+ 641:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 642:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 664              		.loc 1 642 5
+ 665 0276 3B62     		str	r3, [r7, #32]
+ 666              	.LBB72:
+ 667              	.LBB73:
+ 209:./inc/cmsis_gcc.h **** }
+ 668              		.loc 2 209 3
+ 669              		.syntax unified
+ 670              	@ 209 "./inc/cmsis_gcc.h" 1
+ 671 0278 72B6     		cpsid i
+ 672              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 673              		.loc 2 210 1
+ 674              		.thumb
+ 675              		.syntax unified
+ 676 027a 00BF     		nop
+ 677              	.LBE73:
+ 678              	.LBE72:
+ 679              	.LBB74:
+ 680              	.LBB75:
+ 946:./inc/cmsis_gcc.h **** }
+ 681              		.loc 2 946 3
+ 682              		.syntax unified
+ 683              	@ 946 "./inc/cmsis_gcc.h" 1
+ 684 027c BFF34F8F 		dsb 0xF
+ 685              	@ 0 "" 2
+ 686              		.loc 2 947 1
+ 687              		.thumb
+ 688              		.syntax unified
+ 689 0280 00BF     		nop
+ 690              	.LBE75:
+ 691              	.LBE74:
+ 692              	.LBB76:
+ 693              	.LBB77:
+ 935:./inc/cmsis_gcc.h **** }
+ 694              		.loc 2 935 3
+ 695              		.syntax unified
+ 696              	@ 935 "./inc/cmsis_gcc.h" 1
+ 697 0282 BFF36F8F 		isb 0xF
+ 698              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 699              		.loc 2 936 1
+ 700              		.thumb
+ 701              		.syntax unified
+ 702 0286 00BF     		nop
+ 703              	.LBE77:
+ 704              	.LBE76:
+ 705              		.loc 1 642 5
+ 706 0288 3B6A     		ldr	r3, [r7, #32]
+ 707 028a 002B     		cmp	r3, #0
+ 708 028c 51D1     		bne	.L46
+ 709              	.LBB78:
+ 710              	.LBB79:
+ 198:./inc/cmsis_gcc.h **** }
+ 711              		.loc 2 198 3
+ 712              		.syntax unified
+ 713              	@ 198 "./inc/cmsis_gcc.h" 1
+ 714 028e 62B6     		cpsie i
+ 715              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 716              		.loc 2 199 1
+ 717              		.thumb
+ 718              		.syntax unified
+ 719 0290 00BF     		nop
+ 720              	.LBE79:
+ 721              	.LBE78:
+ 722              	.LBE69:
+ 643:./lwip-2.1.2/src/core/mem.c ****     return;
+ 723              		.loc 1 643 5
+ 724 0292 4EE0     		b	.L46
+ 725              	.L34:
+ 644:./lwip-2.1.2/src/core/mem.c ****   }
+ 645:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 646:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_element(mem);
+ 647:./lwip-2.1.2/src/core/mem.c **** #endif
+ 648:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
+ 649:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_PROTECT();
+ 726              		.loc 1 649 3
+ 727 0294 2D48     		ldr	r0, .L49+8
+ 728 0296 FFF7FEFF 		bl	sys_mutex_lock
+ 650:./lwip-2.1.2/src/core/mem.c ****   /* mem has to be in a used state */
+ 651:./lwip-2.1.2/src/core/mem.c ****   if (!mem->used) {
+ 729              		.loc 1 651 11
+ 730 029a FB6A     		ldr	r3, [r7, #44]
+ 731 029c 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 732              		.loc 1 651 6
+ 733 029e 002B     		cmp	r3, #0
+ 734 02a0 15D1     		bne	.L37
+ 652:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
+ 653:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 735              		.loc 1 653 5
+ 736 02a2 2A48     		ldr	r0, .L49+8
+ 737 02a4 FFF7FEFF 		bl	sys_mutex_unlock
+ 738              	.LBB80:
+ 739              	.LBB81:
+ 740              	.LBB82:
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 741              		.loc 2 453 3
+ 742              		.syntax unified
+ 743              	@ 453 "./inc/cmsis_gcc.h" 1
+ 744 02a8 EFF31083 		MRS r3, primask
+ 745              	@ 0 "" 2
+ 746              		.thumb
+ 747              		.syntax unified
+ 748 02ac 3B61     		str	r3, [r7, #16]
+ 454:./inc/cmsis_gcc.h **** }
+ 749              		.loc 2 454 9
+ 750 02ae 3B69     		ldr	r3, [r7, #16]
+ 751              	.LBE82:
+ 752              	.LBE81:
+ 654:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
+ 655:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 656:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 753              		.loc 1 656 5
+ 754 02b0 7B62     		str	r3, [r7, #36]
+ 755              	.LBB83:
+ 756              	.LBB84:
+ 209:./inc/cmsis_gcc.h **** }
+ 757              		.loc 2 209 3
+ 758              		.syntax unified
+ 759              	@ 209 "./inc/cmsis_gcc.h" 1
+ 760 02b2 72B6     		cpsid i
+ 761              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 762              		.loc 2 210 1
+ 763              		.thumb
+ 764              		.syntax unified
+ 765 02b4 00BF     		nop
+ 766              	.LBE84:
+ 767              	.LBE83:
+ 768              	.LBB85:
+ 769              	.LBB86:
+ 946:./inc/cmsis_gcc.h **** }
+ 770              		.loc 2 946 3
+ 771              		.syntax unified
+ 772              	@ 946 "./inc/cmsis_gcc.h" 1
+ 773 02b6 BFF34F8F 		dsb 0xF
+ 774              	@ 0 "" 2
+ 775              		.loc 2 947 1
+ 776              		.thumb
+ 777              		.syntax unified
+ 778 02ba 00BF     		nop
+ 779              	.LBE86:
+ 780              	.LBE85:
+ 781              	.LBB87:
+ 782              	.LBB88:
+ 935:./inc/cmsis_gcc.h **** }
+ 783              		.loc 2 935 3
+ 784              		.syntax unified
+ 785              	@ 935 "./inc/cmsis_gcc.h" 1
+ 786 02bc BFF36F8F 		isb 0xF
+ 787              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 788              		.loc 2 936 1
+ 789              		.thumb
+ 790              		.syntax unified
+ 791 02c0 00BF     		nop
+ 792              	.LBE88:
+ 793              	.LBE87:
+ 794              		.loc 1 656 5
+ 795 02c2 7B6A     		ldr	r3, [r7, #36]
+ 796 02c4 002B     		cmp	r3, #0
+ 797 02c6 36D1     		bne	.L47
+ 798              	.LBB89:
+ 799              	.LBB90:
+ 198:./inc/cmsis_gcc.h **** }
+ 800              		.loc 2 198 3
+ 801              		.syntax unified
+ 802              	@ 198 "./inc/cmsis_gcc.h" 1
+ 803 02c8 62B6     		cpsie i
+ 804              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 805              		.loc 2 199 1
+ 806              		.thumb
+ 807              		.syntax unified
+ 808 02ca 00BF     		nop
+ 809              	.LBE90:
+ 810              	.LBE89:
+ 811              	.LBE80:
+ 657:./lwip-2.1.2/src/core/mem.c ****     return;
+ 812              		.loc 1 657 5
+ 813 02cc 33E0     		b	.L47
+ 814              	.L37:
+ 658:./lwip-2.1.2/src/core/mem.c ****   }
+ 659:./lwip-2.1.2/src/core/mem.c **** 
+ 660:./lwip-2.1.2/src/core/mem.c ****   if (!mem_link_valid(mem)) {
+ 815              		.loc 1 660 8
+ 816 02ce F86A     		ldr	r0, [r7, #44]
+ 817 02d0 FFF762FF 		bl	mem_link_valid
+ 818 02d4 0346     		mov	r3, r0
+ 819              		.loc 1 660 6
+ 820 02d6 002B     		cmp	r3, #0
+ 821 02d8 15D1     		bne	.L40
+ 661:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: non-linked: double free");
+ 662:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 822              		.loc 1 662 5
+ 823 02da 1C48     		ldr	r0, .L49+8
+ 824 02dc FFF7FEFF 		bl	sys_mutex_unlock
+ 825              	.LBB91:
+ 826              	.LBB92:
+ 827              	.LBB93:
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 828              		.loc 2 453 3
+ 829              		.syntax unified
+ 830              	@ 453 "./inc/cmsis_gcc.h" 1
+ 831 02e0 EFF31083 		MRS r3, primask
+ 832              	@ 0 "" 2
+ 833              		.thumb
+ 834              		.syntax unified
+ 835 02e4 FB60     		str	r3, [r7, #12]
+ 454:./inc/cmsis_gcc.h **** }
+ 836              		.loc 2 454 9
+ 837 02e6 FB68     		ldr	r3, [r7, #12]
+ 838              	.LBE93:
+ 839              	.LBE92:
+ 663:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double f
+ 664:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 665:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 840              		.loc 1 665 5
+ 841 02e8 BB62     		str	r3, [r7, #40]
+ 842              	.LBB94:
+ 843              	.LBB95:
+ 209:./inc/cmsis_gcc.h **** }
+ 844              		.loc 2 209 3
+ 845              		.syntax unified
+ 846              	@ 209 "./inc/cmsis_gcc.h" 1
+ 847 02ea 72B6     		cpsid i
+ 848              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 849              		.loc 2 210 1
+ 850              		.thumb
+ 851              		.syntax unified
+ 852 02ec 00BF     		nop
+ 853              	.LBE95:
+ 854              	.LBE94:
+ 855              	.LBB96:
+ 856              	.LBB97:
+ 946:./inc/cmsis_gcc.h **** }
+ 857              		.loc 2 946 3
+ 858              		.syntax unified
+ 859              	@ 946 "./inc/cmsis_gcc.h" 1
+ 860 02ee BFF34F8F 		dsb 0xF
+ 861              	@ 0 "" 2
+ 862              		.loc 2 947 1
+ 863              		.thumb
+ 864              		.syntax unified
+ 865 02f2 00BF     		nop
+ 866              	.LBE97:
+ 867              	.LBE96:
+ 868              	.LBB98:
+ 869              	.LBB99:
+ 935:./inc/cmsis_gcc.h **** }
+ 870              		.loc 2 935 3
+ 871              		.syntax unified
+ 872              	@ 935 "./inc/cmsis_gcc.h" 1
+ 873 02f4 BFF36F8F 		isb 0xF
+ 874              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 875              		.loc 2 936 1
+ 876              		.thumb
+ 877              		.syntax unified
+ 878 02f8 00BF     		nop
+ 879              	.LBE99:
+ 880              	.LBE98:
+ 881              		.loc 1 665 5
+ 882 02fa BB6A     		ldr	r3, [r7, #40]
+ 883 02fc 002B     		cmp	r3, #0
+ 884 02fe 1CD1     		bne	.L48
+ 885              	.LBB100:
+ 886              	.LBB101:
+ 198:./inc/cmsis_gcc.h **** }
+ 887              		.loc 2 198 3
+ 888              		.syntax unified
+ 889              	@ 198 "./inc/cmsis_gcc.h" 1
+ 890 0300 62B6     		cpsie i
+ 891              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 892              		.loc 2 199 1
+ 893              		.thumb
+ 894              		.syntax unified
+ 895 0302 00BF     		nop
+ 896              	.LBE101:
+ 897              	.LBE100:
+ 898              	.LBE91:
+ 666:./lwip-2.1.2/src/core/mem.c ****     return;
+ 899              		.loc 1 666 5
+ 900 0304 19E0     		b	.L48
+ 901              	.L40:
+ 667:./lwip-2.1.2/src/core/mem.c ****   }
+ 668:./lwip-2.1.2/src/core/mem.c **** 
+ 669:./lwip-2.1.2/src/core/mem.c ****   /* mem is now unused. */
+ 670:./lwip-2.1.2/src/core/mem.c ****   mem->used = 0;
+ 902              		.loc 1 670 13
+ 903 0306 FB6A     		ldr	r3, [r7, #44]
+ 904 0308 0022     		movs	r2, #0
+ 905 030a 1A71     		strb	r2, [r3, #4]
+ 671:./lwip-2.1.2/src/core/mem.c **** 
+ 672:./lwip-2.1.2/src/core/mem.c ****   if (mem < lfree) {
+ 906              		.loc 1 672 11
+ 907 030c 104B     		ldr	r3, .L49+12
+ 908 030e 1B68     		ldr	r3, [r3]
+ 909              		.loc 1 672 6
+ 910 0310 FA6A     		ldr	r2, [r7, #44]
+ 911 0312 9A42     		cmp	r2, r3
+ 912 0314 02D2     		bcs	.L43
+ 673:./lwip-2.1.2/src/core/mem.c ****     /* the newly freed struct is now the lowest */
+ 674:./lwip-2.1.2/src/core/mem.c ****     lfree = mem;
+ 913              		.loc 1 674 11
+ 914 0316 0E4A     		ldr	r2, .L49+12
+ 915 0318 FB6A     		ldr	r3, [r7, #44]
+ 916 031a 1360     		str	r3, [r2]
+ 917              	.L43:
+ 675:./lwip-2.1.2/src/core/mem.c ****   }
+ 676:./lwip-2.1.2/src/core/mem.c **** 
+ 677:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_DEC_USED(used, mem->next - (mem_size_t)(((u8_t *)mem - ram)));
+ 678:./lwip-2.1.2/src/core/mem.c **** 
+ 679:./lwip-2.1.2/src/core/mem.c ****   /* finally, see if prev or next are free also */
+ 680:./lwip-2.1.2/src/core/mem.c ****   plug_holes(mem);
+ 918              		.loc 1 680 3
+ 919 031c F86A     		ldr	r0, [r7, #44]
+ 920 031e FFF793FE 		bl	plug_holes
+ 681:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+ 682:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 683:./lwip-2.1.2/src/core/mem.c ****   mem_free_count = 1;
+ 684:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 685:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_UNPROTECT();
+ 921              		.loc 1 685 3
+ 922 0322 0A48     		ldr	r0, .L49+8
+ 923 0324 FFF7FEFF 		bl	sys_mutex_unlock
+ 924 0328 08E0     		b	.L27
+ 925              	.L44:
+ 624:./lwip-2.1.2/src/core/mem.c ****   }
+ 926              		.loc 1 624 5
+ 927 032a 00BF     		nop
+ 928 032c 06E0     		b	.L27
+ 929              	.L45:
+ 631:./lwip-2.1.2/src/core/mem.c ****   }
+ 930              		.loc 1 631 5
+ 931 032e 00BF     		nop
+ 932 0330 04E0     		b	.L27
+ 933              	.L46:
+ 643:./lwip-2.1.2/src/core/mem.c ****   }
+ 934              		.loc 1 643 5
+ 935 0332 00BF     		nop
+ 936 0334 02E0     		b	.L27
+ 937              	.L47:
+ 657:./lwip-2.1.2/src/core/mem.c ****   }
+ 938              		.loc 1 657 5
+ 939 0336 00BF     		nop
+ 940 0338 00E0     		b	.L27
+ 941              	.L48:
+ 666:./lwip-2.1.2/src/core/mem.c ****   }
+ 942              		.loc 1 666 5
+ 943 033a 00BF     		nop
+ 944              	.L27:
+ 686:./lwip-2.1.2/src/core/mem.c **** }
+ 945              		.loc 1 686 1
+ 946 033c 3037     		adds	r7, r7, #48
+ 947              	.LCFI30:
+ 948              		.cfi_def_cfa_offset 8
+ 949 033e BD46     		mov	sp, r7
+ 950              	.LCFI31:
+ 951              		.cfi_def_cfa_register 13
+ 952              		@ sp needed
+ 953 0340 80BD     		pop	{r7, pc}
+ 954              	.L50:
+ 955 0342 00BF     		.align	2
+ 956              	.L49:
+ 957 0344 14100000 		.word	ram
+ 958 0348 18100000 		.word	ram_end
+ 959 034c 1C100000 		.word	mem_mutex
+ 960 0350 20100000 		.word	lfree
+ 961              		.cfi_endproc
+ 962              	.LFE174:
+ 964              		.align	1
+ 965              		.global	mem_trim
+ 966              		.syntax unified
+ 967              		.thumb
+ 968              		.thumb_func
+ 969              		.fpu fpv5-d16
+ 971              	mem_trim:
+ 972              	.LFB175:
+ 687:./lwip-2.1.2/src/core/mem.c **** 
+ 688:./lwip-2.1.2/src/core/mem.c **** /**
+ 689:./lwip-2.1.2/src/core/mem.c ****  * Shrink memory returned by mem_malloc().
+ 690:./lwip-2.1.2/src/core/mem.c ****  *
+ 691:./lwip-2.1.2/src/core/mem.c ****  * @param rmem pointer to memory allocated by mem_malloc the is to be shrinked
+ 692:./lwip-2.1.2/src/core/mem.c ****  * @param new_size required size after shrinking (needs to be smaller than or
+ 693:./lwip-2.1.2/src/core/mem.c ****  *                equal to the previous size)
+ 694:./lwip-2.1.2/src/core/mem.c ****  * @return for compatibility reasons: is always == rmem, at the moment
+ 695:./lwip-2.1.2/src/core/mem.c ****  *         or NULL if newsize is > old size, in which case rmem is NOT touched
+ 696:./lwip-2.1.2/src/core/mem.c ****  *         or freed!
+ 697:./lwip-2.1.2/src/core/mem.c ****  */
+ 698:./lwip-2.1.2/src/core/mem.c **** void *
+ 699:./lwip-2.1.2/src/core/mem.c **** mem_trim(void *rmem, mem_size_t new_size)
+ 700:./lwip-2.1.2/src/core/mem.c **** {
+ 973              		.loc 1 700 1
+ 974              		.cfi_startproc
+ 975              		@ args = 0, pretend = 0, frame = 40
+ 976              		@ frame_needed = 1, uses_anonymous_args = 0
+ 977 0354 80B5     		push	{r7, lr}
+ 978              	.LCFI32:
+ 979              		.cfi_def_cfa_offset 8
+ 980              		.cfi_offset 7, -8
+ 981              		.cfi_offset 14, -4
+ 982 0356 8AB0     		sub	sp, sp, #40
+ 983              	.LCFI33:
+ 984              		.cfi_def_cfa_offset 48
+ 985 0358 00AF     		add	r7, sp, #0
+ 986              	.LCFI34:
+ 987              		.cfi_def_cfa_register 7
+ 988 035a 7860     		str	r0, [r7, #4]
+ 989 035c 0B46     		mov	r3, r1
+ 990 035e 7B80     		strh	r3, [r7, #2]	@ movhi
+ 701:./lwip-2.1.2/src/core/mem.c ****   mem_size_t size, newsize;
+ 702:./lwip-2.1.2/src/core/mem.c ****   mem_size_t ptr, ptr2;
+ 703:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem, *mem2;
+ 704:./lwip-2.1.2/src/core/mem.c ****   /* use the FREE_PROTECT here: it protects with sem OR SYS_ARCH_PROTECT */
+ 705:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_DECL_PROTECT();
+ 706:./lwip-2.1.2/src/core/mem.c **** 
+ 707:./lwip-2.1.2/src/core/mem.c ****   /* Expand the size of the allocated memory region so that we can
+ 708:./lwip-2.1.2/src/core/mem.c ****      adjust for alignment. */
+ 709:./lwip-2.1.2/src/core/mem.c ****   newsize = (mem_size_t)LWIP_MEM_ALIGN_SIZE(new_size);
+ 991              		.loc 1 709 25
+ 992 0360 7B88     		ldrh	r3, [r7, #2]	@ movhi
+ 993 0362 0333     		adds	r3, r3, #3
+ 994 0364 9BB2     		uxth	r3, r3
+ 995              		.loc 1 709 11
+ 996 0366 23F00303 		bic	r3, r3, #3
+ 997 036a FB84     		strh	r3, [r7, #38]	@ movhi
+ 710:./lwip-2.1.2/src/core/mem.c ****   if (newsize < MIN_SIZE_ALIGNED) {
+ 998              		.loc 1 710 6
+ 999 036c FB8C     		ldrh	r3, [r7, #38]
+ 1000 036e 0B2B     		cmp	r3, #11
+ 1001 0370 01D8     		bhi	.L52
+ 711:./lwip-2.1.2/src/core/mem.c ****     /* every data block must be at least MIN_SIZE_ALIGNED long */
+ 712:./lwip-2.1.2/src/core/mem.c ****     newsize = MIN_SIZE_ALIGNED;
+ 1002              		.loc 1 712 13
+ 1003 0372 0C23     		movs	r3, #12
+ 1004 0374 FB84     		strh	r3, [r7, #38]	@ movhi
+ 1005              	.L52:
+ 713:./lwip-2.1.2/src/core/mem.c ****   }
+ 714:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 715:./lwip-2.1.2/src/core/mem.c ****   newsize += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
+ 716:./lwip-2.1.2/src/core/mem.c **** #endif
+ 717:./lwip-2.1.2/src/core/mem.c ****   if ((newsize > MEM_SIZE_ALIGNED) || (newsize < new_size)) {
+ 1006              		.loc 1 717 6
+ 1007 0376 FB8C     		ldrh	r3, [r7, #38]
+ 1008 0378 B3F5805F 		cmp	r3, #4096
+ 1009 037c 03D8     		bhi	.L53
+ 1010              		.loc 1 717 36 discriminator 1
+ 1011 037e FA8C     		ldrh	r2, [r7, #38]
+ 1012 0380 7B88     		ldrh	r3, [r7, #2]
+ 1013 0382 9A42     		cmp	r2, r3
+ 1014 0384 01D2     		bcs	.L54
+ 1015              	.L53:
+ 718:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 1016              		.loc 1 718 12
+ 1017 0386 0023     		movs	r3, #0
+ 1018 0388 B0E0     		b	.L55
+ 1019              	.L54:
+ 719:./lwip-2.1.2/src/core/mem.c ****   }
+ 720:./lwip-2.1.2/src/core/mem.c **** 
+ 721:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("mem_trim: legal memory", (u8_t *)rmem >= (u8_t *)ram &&
+ 722:./lwip-2.1.2/src/core/mem.c ****               (u8_t *)rmem < (u8_t *)ram_end);
+ 723:./lwip-2.1.2/src/core/mem.c **** 
+ 724:./lwip-2.1.2/src/core/mem.c ****   if ((u8_t *)rmem < (u8_t *)ram || (u8_t *)rmem >= (u8_t *)ram_end) {
+ 1020              		.loc 1 724 20
+ 1021 038a 5A4B     		ldr	r3, .L66
+ 1022 038c 1B68     		ldr	r3, [r3]
+ 1023              		.loc 1 724 6
+ 1024 038e 7A68     		ldr	r2, [r7, #4]
+ 1025 0390 9A42     		cmp	r2, r3
+ 1026 0392 04D3     		bcc	.L56
+ 1027              		.loc 1 724 53 discriminator 1
+ 1028 0394 584B     		ldr	r3, .L66+4
+ 1029 0396 1B68     		ldr	r3, [r3]
+ 1030              		.loc 1 724 34 discriminator 1
+ 1031 0398 7A68     		ldr	r2, [r7, #4]
+ 1032 039a 9A42     		cmp	r2, r3
+ 1033 039c 13D3     		bcc	.L57
+ 1034              	.L56:
+ 1035              	.LBB102:
+ 1036              	.LBB103:
+ 1037              	.LBB104:
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 1038              		.loc 2 453 3
+ 1039              		.syntax unified
+ 1040              	@ 453 "./inc/cmsis_gcc.h" 1
+ 1041 039e EFF31083 		MRS r3, primask
+ 1042              	@ 0 "" 2
+ 1043              		.thumb
+ 1044              		.syntax unified
+ 1045 03a2 FB60     		str	r3, [r7, #12]
+ 454:./inc/cmsis_gcc.h **** }
+ 1046              		.loc 2 454 9
+ 1047 03a4 FB68     		ldr	r3, [r7, #12]
+ 1048              	.LBE104:
+ 1049              	.LBE103:
+ 725:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_trim: illegal memory\n"));
+ 726:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 727:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 1050              		.loc 1 727 5
+ 1051 03a6 3B61     		str	r3, [r7, #16]
+ 1052              	.LBB105:
+ 1053              	.LBB106:
+ 209:./inc/cmsis_gcc.h **** }
+ 1054              		.loc 2 209 3
+ 1055              		.syntax unified
+ 1056              	@ 209 "./inc/cmsis_gcc.h" 1
+ 1057 03a8 72B6     		cpsid i
+ 1058              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 1059              		.loc 2 210 1
+ 1060              		.thumb
+ 1061              		.syntax unified
+ 1062 03aa 00BF     		nop
+ 1063              	.LBE106:
+ 1064              	.LBE105:
+ 1065              	.LBB107:
+ 1066              	.LBB108:
+ 946:./inc/cmsis_gcc.h **** }
+ 1067              		.loc 2 946 3
+ 1068              		.syntax unified
+ 1069              	@ 946 "./inc/cmsis_gcc.h" 1
+ 1070 03ac BFF34F8F 		dsb 0xF
+ 1071              	@ 0 "" 2
+ 1072              		.loc 2 947 1
+ 1073              		.thumb
+ 1074              		.syntax unified
+ 1075 03b0 00BF     		nop
+ 1076              	.LBE108:
+ 1077              	.LBE107:
+ 1078              	.LBB109:
+ 1079              	.LBB110:
+ 935:./inc/cmsis_gcc.h **** }
+ 1080              		.loc 2 935 3
+ 1081              		.syntax unified
+ 1082              	@ 935 "./inc/cmsis_gcc.h" 1
+ 1083 03b2 BFF36F8F 		isb 0xF
+ 1084              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 1085              		.loc 2 936 1
+ 1086              		.thumb
+ 1087              		.syntax unified
+ 1088 03b6 00BF     		nop
+ 1089              	.LBE110:
+ 1090              	.LBE109:
+ 1091              		.loc 1 727 5
+ 1092 03b8 3B69     		ldr	r3, [r7, #16]
+ 1093 03ba 002B     		cmp	r3, #0
+ 1094 03bc 01D1     		bne	.L59
+ 1095              	.LBB111:
+ 1096              	.LBB112:
+ 198:./inc/cmsis_gcc.h **** }
+ 1097              		.loc 2 198 3
+ 1098              		.syntax unified
+ 1099              	@ 198 "./inc/cmsis_gcc.h" 1
+ 1100 03be 62B6     		cpsie i
+ 1101              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 1102              		.loc 2 199 1
+ 1103              		.thumb
+ 1104              		.syntax unified
+ 1105 03c0 00BF     		nop
+ 1106              	.L59:
+ 1107              	.LBE112:
+ 1108              	.LBE111:
+ 1109              	.LBE102:
+ 728:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 1110              		.loc 1 728 12
+ 1111 03c2 7B68     		ldr	r3, [r7, #4]
+ 1112 03c4 92E0     		b	.L55
+ 1113              	.L57:
+ 729:./lwip-2.1.2/src/core/mem.c ****   }
+ 730:./lwip-2.1.2/src/core/mem.c ****   /* Get the corresponding struct mem ... */
+ 731:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
+ 732:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
+ 1114              		.loc 1 732 7
+ 1115 03c6 7B68     		ldr	r3, [r7, #4]
+ 1116 03c8 083B     		subs	r3, r3, #8
+ 1117 03ca 3B62     		str	r3, [r7, #32]
+ 733:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 734:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_element(mem);
+ 735:./lwip-2.1.2/src/core/mem.c **** #endif
+ 736:./lwip-2.1.2/src/core/mem.c ****   /* ... and its offset pointer */
+ 737:./lwip-2.1.2/src/core/mem.c ****   ptr = mem_to_ptr(mem);
+ 1118              		.loc 1 737 9
+ 1119 03cc 386A     		ldr	r0, [r7, #32]
+ 1120 03ce FFF729FE 		bl	mem_to_ptr
+ 1121 03d2 0346     		mov	r3, r0
+ 1122 03d4 FB83     		strh	r3, [r7, #30]	@ movhi
+ 738:./lwip-2.1.2/src/core/mem.c **** 
+ 739:./lwip-2.1.2/src/core/mem.c ****   size = (mem_size_t)((mem_size_t)(mem->next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
+ 1123              		.loc 1 739 39
+ 1124 03d6 3B6A     		ldr	r3, [r7, #32]
+ 1125 03d8 1A88     		ldrh	r2, [r3]
+ 1126              		.loc 1 739 23
+ 1127 03da FB8B     		ldrh	r3, [r7, #30]	@ movhi
+ 1128 03dc D31A     		subs	r3, r2, r3
+ 1129 03de 9BB2     		uxth	r3, r3
+ 1130              		.loc 1 739 8
+ 1131 03e0 083B     		subs	r3, r3, #8
+ 1132 03e2 BB83     		strh	r3, [r7, #28]	@ movhi
+ 740:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
+ 741:./lwip-2.1.2/src/core/mem.c ****   if (newsize > size) {
+ 1133              		.loc 1 741 6
+ 1134 03e4 FA8C     		ldrh	r2, [r7, #38]
+ 1135 03e6 BB8B     		ldrh	r3, [r7, #28]
+ 1136 03e8 9A42     		cmp	r2, r3
+ 1137 03ea 01D9     		bls	.L60
+ 742:./lwip-2.1.2/src/core/mem.c ****     /* not supported */
+ 743:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 1138              		.loc 1 743 12
+ 1139 03ec 0023     		movs	r3, #0
+ 1140 03ee 7DE0     		b	.L55
+ 1141              	.L60:
+ 744:./lwip-2.1.2/src/core/mem.c ****   }
+ 745:./lwip-2.1.2/src/core/mem.c ****   if (newsize == size) {
+ 1142              		.loc 1 745 6
+ 1143 03f0 FA8C     		ldrh	r2, [r7, #38]
+ 1144 03f2 BB8B     		ldrh	r3, [r7, #28]
+ 1145 03f4 9A42     		cmp	r2, r3
+ 1146 03f6 01D1     		bne	.L61
+ 746:./lwip-2.1.2/src/core/mem.c ****     /* No change in size, simply return */
+ 747:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 1147              		.loc 1 747 12
+ 1148 03f8 7B68     		ldr	r3, [r7, #4]
+ 1149 03fa 77E0     		b	.L55
+ 1150              	.L61:
+ 748:./lwip-2.1.2/src/core/mem.c ****   }
+ 749:./lwip-2.1.2/src/core/mem.c **** 
+ 750:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
+ 751:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_PROTECT();
+ 1151              		.loc 1 751 3
+ 1152 03fc 3F48     		ldr	r0, .L66+8
+ 1153 03fe FFF7FEFF 		bl	sys_mutex_lock
+ 752:./lwip-2.1.2/src/core/mem.c **** 
+ 753:./lwip-2.1.2/src/core/mem.c ****   mem2 = ptr_to_mem(mem->next);
+ 1154              		.loc 1 753 10
+ 1155 0402 3B6A     		ldr	r3, [r7, #32]
+ 1156 0404 1B88     		ldrh	r3, [r3]
+ 1157 0406 1846     		mov	r0, r3
+ 1158 0408 FFF7FAFD 		bl	ptr_to_mem
+ 1159 040c B861     		str	r0, [r7, #24]
+ 754:./lwip-2.1.2/src/core/mem.c ****   if (mem2->used == 0) {
+ 1160              		.loc 1 754 11
+ 1161 040e BB69     		ldr	r3, [r7, #24]
+ 1162 0410 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1163              		.loc 1 754 6
+ 1164 0412 002B     		cmp	r3, #0
+ 1165 0414 33D1     		bne	.L62
+ 1166              	.LBB113:
+ 755:./lwip-2.1.2/src/core/mem.c ****     /* The next struct is unused, we can simply move it at little */
+ 756:./lwip-2.1.2/src/core/mem.c ****     mem_size_t next;
+ 757:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 758:./lwip-2.1.2/src/core/mem.c ****     /* remember the old next pointer */
+ 759:./lwip-2.1.2/src/core/mem.c ****     next = mem2->next;
+ 1167              		.loc 1 759 10
+ 1168 0416 BB69     		ldr	r3, [r7, #24]
+ 1169 0418 1B88     		ldrh	r3, [r3]	@ movhi
+ 1170 041a BB82     		strh	r3, [r7, #20]	@ movhi
+ 760:./lwip-2.1.2/src/core/mem.c ****     /* create new struct mem which is moved directly after the shrinked mem */
+ 761:./lwip-2.1.2/src/core/mem.c ****     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
+ 1171              		.loc 1 761 49
+ 1172 041c FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1173 041e FB8C     		ldrh	r3, [r7, #38]	@ movhi
+ 1174 0420 1344     		add	r3, r3, r2
+ 1175 0422 9BB2     		uxth	r3, r3
+ 1176              		.loc 1 761 10
+ 1177 0424 0833     		adds	r3, r3, #8
+ 1178 0426 FB82     		strh	r3, [r7, #22]	@ movhi
+ 762:./lwip-2.1.2/src/core/mem.c ****     if (lfree == mem2) {
+ 1179              		.loc 1 762 15
+ 1180 0428 354B     		ldr	r3, .L66+12
+ 1181 042a 1B68     		ldr	r3, [r3]
+ 1182              		.loc 1 762 8
+ 1183 042c BA69     		ldr	r2, [r7, #24]
+ 1184 042e 9A42     		cmp	r2, r3
+ 1185 0430 06D1     		bne	.L63
+ 763:./lwip-2.1.2/src/core/mem.c ****       lfree = ptr_to_mem(ptr2);
+ 1186              		.loc 1 763 15
+ 1187 0432 FB8A     		ldrh	r3, [r7, #22]
+ 1188 0434 1846     		mov	r0, r3
+ 1189 0436 FFF7E3FD 		bl	ptr_to_mem
+ 1190 043a 0346     		mov	r3, r0
+ 1191              		.loc 1 763 13
+ 1192 043c 304A     		ldr	r2, .L66+12
+ 1193 043e 1360     		str	r3, [r2]
+ 1194              	.L63:
+ 764:./lwip-2.1.2/src/core/mem.c ****     }
+ 765:./lwip-2.1.2/src/core/mem.c ****     mem2 = ptr_to_mem(ptr2);
+ 1195              		.loc 1 765 12
+ 1196 0440 FB8A     		ldrh	r3, [r7, #22]
+ 1197 0442 1846     		mov	r0, r3
+ 1198 0444 FFF7DCFD 		bl	ptr_to_mem
+ 1199 0448 B861     		str	r0, [r7, #24]
+ 766:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
+ 1200              		.loc 1 766 16
+ 1201 044a BB69     		ldr	r3, [r7, #24]
+ 1202 044c 0022     		movs	r2, #0
+ 1203 044e 1A71     		strb	r2, [r3, #4]
+ 767:./lwip-2.1.2/src/core/mem.c ****     /* restore the next pointer */
+ 768:./lwip-2.1.2/src/core/mem.c ****     mem2->next = next;
+ 1204              		.loc 1 768 16
+ 1205 0450 BB69     		ldr	r3, [r7, #24]
+ 1206 0452 BA8A     		ldrh	r2, [r7, #20]	@ movhi
+ 1207 0454 1A80     		strh	r2, [r3]	@ movhi
+ 769:./lwip-2.1.2/src/core/mem.c ****     /* link it back to mem */
+ 770:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
+ 1208              		.loc 1 770 16
+ 1209 0456 BB69     		ldr	r3, [r7, #24]
+ 1210 0458 FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1211 045a 5A80     		strh	r2, [r3, #2]	@ movhi
+ 771:./lwip-2.1.2/src/core/mem.c ****     /* link mem to it */
+ 772:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
+ 1212              		.loc 1 772 15
+ 1213 045c 3B6A     		ldr	r3, [r7, #32]
+ 1214 045e FA8A     		ldrh	r2, [r7, #22]	@ movhi
+ 1215 0460 1A80     		strh	r2, [r3]	@ movhi
+ 773:./lwip-2.1.2/src/core/mem.c ****     /* last thing to restore linked list: as we have moved mem2,
+ 774:./lwip-2.1.2/src/core/mem.c ****      * let 'mem2->next->prev' point to mem2 again. but only if mem2->next is not
+ 775:./lwip-2.1.2/src/core/mem.c ****      * the end of the heap */
+ 776:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
+ 1216              		.loc 1 776 13
+ 1217 0462 BB69     		ldr	r3, [r7, #24]
+ 1218 0464 1B88     		ldrh	r3, [r3]
+ 1219              		.loc 1 776 8
+ 1220 0466 B3F5805F 		cmp	r3, #4096
+ 1221 046a 3BD0     		beq	.L64
+ 777:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 1222              		.loc 1 777 7
+ 1223 046c BB69     		ldr	r3, [r7, #24]
+ 1224 046e 1B88     		ldrh	r3, [r3]
+ 1225 0470 1846     		mov	r0, r3
+ 1226 0472 FFF7C5FD 		bl	ptr_to_mem
+ 1227 0476 0246     		mov	r2, r0
+ 1228              		.loc 1 777 36
+ 1229 0478 FB8A     		ldrh	r3, [r7, #22]	@ movhi
+ 1230 047a 5380     		strh	r3, [r2, #2]	@ movhi
+ 1231 047c 32E0     		b	.L64
+ 1232              	.L62:
+ 1233              	.LBE113:
+ 778:./lwip-2.1.2/src/core/mem.c ****     }
+ 779:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_DEC_USED(used, (size - newsize));
+ 780:./lwip-2.1.2/src/core/mem.c ****     /* no need to plug holes, we've already done that */
+ 781:./lwip-2.1.2/src/core/mem.c ****   } else if (newsize + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED <= size) {
+ 1234              		.loc 1 781 42
+ 1235 047e FB8C     		ldrh	r3, [r7, #38]
+ 1236 0480 03F11402 		add	r2, r3, #20
+ 1237              		.loc 1 781 61
+ 1238 0484 BB8B     		ldrh	r3, [r7, #28]
+ 1239              		.loc 1 781 13
+ 1240 0486 9A42     		cmp	r2, r3
+ 1241 0488 2CD8     		bhi	.L64
+ 782:./lwip-2.1.2/src/core/mem.c ****     /* Next struct is used but there's room for another struct mem with
+ 783:./lwip-2.1.2/src/core/mem.c ****      * at least MIN_SIZE_ALIGNED of data.
+ 784:./lwip-2.1.2/src/core/mem.c ****      * Old size ('size') must be big enough to contain at least 'newsize' plus a struct mem
+ 785:./lwip-2.1.2/src/core/mem.c ****      * ('SIZEOF_STRUCT_MEM') with some data ('MIN_SIZE_ALIGNED').
+ 786:./lwip-2.1.2/src/core/mem.c ****      * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
+ 787:./lwip-2.1.2/src/core/mem.c ****      *       region that couldn't hold data, but when mem->next gets freed,
+ 788:./lwip-2.1.2/src/core/mem.c ****      *       the 2 regions would be combined, resulting in more free memory */
+ 789:./lwip-2.1.2/src/core/mem.c ****     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
+ 1242              		.loc 1 789 49
+ 1243 048a FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1244 048c FB8C     		ldrh	r3, [r7, #38]	@ movhi
+ 1245 048e 1344     		add	r3, r3, r2
+ 1246 0490 9BB2     		uxth	r3, r3
+ 1247              		.loc 1 789 10
+ 1248 0492 0833     		adds	r3, r3, #8
+ 1249 0494 FB82     		strh	r3, [r7, #22]	@ movhi
+ 790:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 791:./lwip-2.1.2/src/core/mem.c ****     mem2 = ptr_to_mem(ptr2);
+ 1250              		.loc 1 791 12
+ 1251 0496 FB8A     		ldrh	r3, [r7, #22]
+ 1252 0498 1846     		mov	r0, r3
+ 1253 049a FFF7B1FD 		bl	ptr_to_mem
+ 1254 049e B861     		str	r0, [r7, #24]
+ 792:./lwip-2.1.2/src/core/mem.c ****     if (mem2 < lfree) {
+ 1255              		.loc 1 792 14
+ 1256 04a0 174B     		ldr	r3, .L66+12
+ 1257 04a2 1B68     		ldr	r3, [r3]
+ 1258              		.loc 1 792 8
+ 1259 04a4 BA69     		ldr	r2, [r7, #24]
+ 1260 04a6 9A42     		cmp	r2, r3
+ 1261 04a8 02D2     		bcs	.L65
+ 793:./lwip-2.1.2/src/core/mem.c ****       lfree = mem2;
+ 1262              		.loc 1 793 13
+ 1263 04aa 154A     		ldr	r2, .L66+12
+ 1264 04ac BB69     		ldr	r3, [r7, #24]
+ 1265 04ae 1360     		str	r3, [r2]
+ 1266              	.L65:
+ 794:./lwip-2.1.2/src/core/mem.c ****     }
+ 795:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
+ 1267              		.loc 1 795 16
+ 1268 04b0 BB69     		ldr	r3, [r7, #24]
+ 1269 04b2 0022     		movs	r2, #0
+ 1270 04b4 1A71     		strb	r2, [r3, #4]
+ 796:./lwip-2.1.2/src/core/mem.c ****     mem2->next = mem->next;
+ 1271              		.loc 1 796 21
+ 1272 04b6 3B6A     		ldr	r3, [r7, #32]
+ 1273 04b8 1A88     		ldrh	r2, [r3]
+ 1274              		.loc 1 796 16
+ 1275 04ba BB69     		ldr	r3, [r7, #24]
+ 1276 04bc 1A80     		strh	r2, [r3]	@ movhi
+ 797:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
+ 1277              		.loc 1 797 16
+ 1278 04be BB69     		ldr	r3, [r7, #24]
+ 1279 04c0 FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1280 04c2 5A80     		strh	r2, [r3, #2]	@ movhi
+ 798:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
+ 1281              		.loc 1 798 15
+ 1282 04c4 3B6A     		ldr	r3, [r7, #32]
+ 1283 04c6 FA8A     		ldrh	r2, [r7, #22]	@ movhi
+ 1284 04c8 1A80     		strh	r2, [r3]	@ movhi
+ 799:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
+ 1285              		.loc 1 799 13
+ 1286 04ca BB69     		ldr	r3, [r7, #24]
+ 1287 04cc 1B88     		ldrh	r3, [r3]
+ 1288              		.loc 1 799 8
+ 1289 04ce B3F5805F 		cmp	r3, #4096
+ 1290 04d2 07D0     		beq	.L64
+ 800:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 1291              		.loc 1 800 7
+ 1292 04d4 BB69     		ldr	r3, [r7, #24]
+ 1293 04d6 1B88     		ldrh	r3, [r3]
+ 1294 04d8 1846     		mov	r0, r3
+ 1295 04da FFF791FD 		bl	ptr_to_mem
+ 1296 04de 0246     		mov	r2, r0
+ 1297              		.loc 1 800 36
+ 1298 04e0 FB8A     		ldrh	r3, [r7, #22]	@ movhi
+ 1299 04e2 5380     		strh	r3, [r2, #2]	@ movhi
+ 1300              	.L64:
+ 801:./lwip-2.1.2/src/core/mem.c ****     }
+ 802:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_DEC_USED(used, (size - newsize));
+ 803:./lwip-2.1.2/src/core/mem.c ****     /* the original mem->next is used, so no need to plug holes! */
+ 804:./lwip-2.1.2/src/core/mem.c ****   }
+ 805:./lwip-2.1.2/src/core/mem.c ****   /* else {
+ 806:./lwip-2.1.2/src/core/mem.c ****     next struct mem is used but size between mem and mem2 is not big enough
+ 807:./lwip-2.1.2/src/core/mem.c ****     to create another struct mem
+ 808:./lwip-2.1.2/src/core/mem.c ****     -> don't do anyhting.
+ 809:./lwip-2.1.2/src/core/mem.c ****     -> the remaining space stays unused since it is too small
+ 810:./lwip-2.1.2/src/core/mem.c ****   } */
+ 811:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 812:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_init_element(mem, new_size);
+ 813:./lwip-2.1.2/src/core/mem.c **** #endif
+ 814:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+ 815:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 816:./lwip-2.1.2/src/core/mem.c ****   mem_free_count = 1;
+ 817:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 818:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_UNPROTECT();
+ 1301              		.loc 1 818 3
+ 1302 04e4 0548     		ldr	r0, .L66+8
+ 1303 04e6 FFF7FEFF 		bl	sys_mutex_unlock
+ 819:./lwip-2.1.2/src/core/mem.c ****   return rmem;
+ 1304              		.loc 1 819 10
+ 1305 04ea 7B68     		ldr	r3, [r7, #4]
+ 1306              	.L55:
+ 820:./lwip-2.1.2/src/core/mem.c **** }
+ 1307              		.loc 1 820 1
+ 1308 04ec 1846     		mov	r0, r3
+ 1309 04ee 2837     		adds	r7, r7, #40
+ 1310              	.LCFI35:
+ 1311              		.cfi_def_cfa_offset 8
+ 1312 04f0 BD46     		mov	sp, r7
+ 1313              	.LCFI36:
+ 1314              		.cfi_def_cfa_register 13
+ 1315              		@ sp needed
+ 1316 04f2 80BD     		pop	{r7, pc}
+ 1317              	.L67:
+ 1318              		.align	2
+ 1319              	.L66:
+ 1320 04f4 14100000 		.word	ram
+ 1321 04f8 18100000 		.word	ram_end
+ 1322 04fc 1C100000 		.word	mem_mutex
+ 1323 0500 20100000 		.word	lfree
+ 1324              		.cfi_endproc
+ 1325              	.LFE175:
+ 1327              		.align	1
+ 1328              		.global	mem_malloc
+ 1329              		.syntax unified
+ 1330              		.thumb
+ 1331              		.thumb_func
+ 1332              		.fpu fpv5-d16
+ 1334              	mem_malloc:
+ 1335              	.LFB176:
+ 821:./lwip-2.1.2/src/core/mem.c **** 
+ 822:./lwip-2.1.2/src/core/mem.c **** /**
+ 823:./lwip-2.1.2/src/core/mem.c ****  * Allocate a block of memory with a minimum of 'size' bytes.
+ 824:./lwip-2.1.2/src/core/mem.c ****  *
+ 825:./lwip-2.1.2/src/core/mem.c ****  * @param size_in is the minimum size of the requested block in bytes.
+ 826:./lwip-2.1.2/src/core/mem.c ****  * @return pointer to allocated memory or NULL if no free memory was found.
+ 827:./lwip-2.1.2/src/core/mem.c ****  *
+ 828:./lwip-2.1.2/src/core/mem.c ****  * Note that the returned value will always be aligned (as defined by MEM_ALIGNMENT).
+ 829:./lwip-2.1.2/src/core/mem.c ****  */
+ 830:./lwip-2.1.2/src/core/mem.c **** void *
+ 831:./lwip-2.1.2/src/core/mem.c **** mem_malloc(mem_size_t size_in)
+ 832:./lwip-2.1.2/src/core/mem.c **** {
+ 1336              		.loc 1 832 1
+ 1337              		.cfi_startproc
+ 1338              		@ args = 0, pretend = 0, frame = 32
+ 1339              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1340 0504 80B5     		push	{r7, lr}
+ 1341              	.LCFI37:
+ 1342              		.cfi_def_cfa_offset 8
+ 1343              		.cfi_offset 7, -8
+ 1344              		.cfi_offset 14, -4
+ 1345 0506 88B0     		sub	sp, sp, #32
+ 1346              	.LCFI38:
+ 1347              		.cfi_def_cfa_offset 40
+ 1348 0508 00AF     		add	r7, sp, #0
+ 1349              	.LCFI39:
+ 1350              		.cfi_def_cfa_register 7
+ 1351 050a 0346     		mov	r3, r0
+ 1352 050c FB80     		strh	r3, [r7, #6]	@ movhi
+ 833:./lwip-2.1.2/src/core/mem.c ****   mem_size_t ptr, ptr2, size;
+ 834:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem, *mem2;
+ 835:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 836:./lwip-2.1.2/src/core/mem.c ****   u8_t local_mem_free_count = 0;
+ 837:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 838:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_DECL_PROTECT();
+ 839:./lwip-2.1.2/src/core/mem.c **** 
+ 840:./lwip-2.1.2/src/core/mem.c ****   if (size_in == 0) {
+ 1353              		.loc 1 840 6
+ 1354 050e FB88     		ldrh	r3, [r7, #6]
+ 1355 0510 002B     		cmp	r3, #0
+ 1356 0512 01D1     		bne	.L69
+ 841:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 1357              		.loc 1 841 12
+ 1358 0514 0023     		movs	r3, #0
+ 1359 0516 9BE0     		b	.L70
+ 1360              	.L69:
+ 842:./lwip-2.1.2/src/core/mem.c ****   }
+ 843:./lwip-2.1.2/src/core/mem.c **** 
+ 844:./lwip-2.1.2/src/core/mem.c ****   /* Expand the size of the allocated memory region so that we can
+ 845:./lwip-2.1.2/src/core/mem.c ****      adjust for alignment. */
+ 846:./lwip-2.1.2/src/core/mem.c ****   size = (mem_size_t)LWIP_MEM_ALIGN_SIZE(size_in);
+ 1361              		.loc 1 846 22
+ 1362 0518 FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 1363 051a 0333     		adds	r3, r3, #3
+ 1364 051c 9BB2     		uxth	r3, r3
+ 1365              		.loc 1 846 8
+ 1366 051e 23F00303 		bic	r3, r3, #3
+ 1367 0522 BB83     		strh	r3, [r7, #28]	@ movhi
+ 847:./lwip-2.1.2/src/core/mem.c ****   if (size < MIN_SIZE_ALIGNED) {
+ 1368              		.loc 1 847 6
+ 1369 0524 BB8B     		ldrh	r3, [r7, #28]
+ 1370 0526 0B2B     		cmp	r3, #11
+ 1371 0528 01D8     		bhi	.L71
+ 848:./lwip-2.1.2/src/core/mem.c ****     /* every data block must be at least MIN_SIZE_ALIGNED long */
+ 849:./lwip-2.1.2/src/core/mem.c ****     size = MIN_SIZE_ALIGNED;
+ 1372              		.loc 1 849 10
+ 1373 052a 0C23     		movs	r3, #12
+ 1374 052c BB83     		strh	r3, [r7, #28]	@ movhi
+ 1375              	.L71:
+ 850:./lwip-2.1.2/src/core/mem.c ****   }
+ 851:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 852:./lwip-2.1.2/src/core/mem.c ****   size += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
+ 853:./lwip-2.1.2/src/core/mem.c **** #endif
+ 854:./lwip-2.1.2/src/core/mem.c ****   if ((size > MEM_SIZE_ALIGNED) || (size < size_in)) {
+ 1376              		.loc 1 854 6
+ 1377 052e BB8B     		ldrh	r3, [r7, #28]
+ 1378 0530 B3F5805F 		cmp	r3, #4096
+ 1379 0534 03D8     		bhi	.L72
+ 1380              		.loc 1 854 33 discriminator 1
+ 1381 0536 BA8B     		ldrh	r2, [r7, #28]
+ 1382 0538 FB88     		ldrh	r3, [r7, #6]
+ 1383 053a 9A42     		cmp	r2, r3
+ 1384 053c 01D2     		bcs	.L73
+ 1385              	.L72:
+ 855:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 1386              		.loc 1 855 12
+ 1387 053e 0023     		movs	r3, #0
+ 1388 0540 86E0     		b	.L70
+ 1389              	.L73:
+ 856:./lwip-2.1.2/src/core/mem.c ****   }
+ 857:./lwip-2.1.2/src/core/mem.c **** 
+ 858:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
+ 859:./lwip-2.1.2/src/core/mem.c ****   sys_mutex_lock(&mem_mutex);
+ 1390              		.loc 1 859 3
+ 1391 0542 4548     		ldr	r0, .L83
+ 1392 0544 FFF7FEFF 		bl	sys_mutex_lock
+ 860:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_PROTECT();
+ 861:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 862:./lwip-2.1.2/src/core/mem.c ****   /* run as long as a mem_free disturbed mem_malloc or mem_trim */
+ 863:./lwip-2.1.2/src/core/mem.c ****   do {
+ 864:./lwip-2.1.2/src/core/mem.c ****     local_mem_free_count = 0;
+ 865:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 866:./lwip-2.1.2/src/core/mem.c **** 
+ 867:./lwip-2.1.2/src/core/mem.c ****     /* Scan through the heap searching for a free block that is big enough,
+ 868:./lwip-2.1.2/src/core/mem.c ****      * beginning with the lowest free block.
+ 869:./lwip-2.1.2/src/core/mem.c ****      */
+ 870:./lwip-2.1.2/src/core/mem.c ****     for (ptr = mem_to_ptr(lfree); ptr < MEM_SIZE_ALIGNED - size;
+ 1393              		.loc 1 870 16
+ 1394 0548 444B     		ldr	r3, .L83+4
+ 1395 054a 1B68     		ldr	r3, [r3]
+ 1396 054c 1846     		mov	r0, r3
+ 1397 054e FFF769FD 		bl	mem_to_ptr
+ 1398 0552 0346     		mov	r3, r0
+ 1399 0554 FB83     		strh	r3, [r7, #30]	@ movhi
+ 1400              		.loc 1 870 5
+ 1401 0556 71E0     		b	.L74
+ 1402              	.L82:
+ 871:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 872:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
+ 1403              		.loc 1 872 13
+ 1404 0558 FB8B     		ldrh	r3, [r7, #30]
+ 1405 055a 1846     		mov	r0, r3
+ 1406 055c FFF750FD 		bl	ptr_to_mem
+ 1407 0560 7861     		str	r0, [r7, #20]
+ 873:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 874:./lwip-2.1.2/src/core/mem.c ****       mem_free_count = 0;
+ 875:./lwip-2.1.2/src/core/mem.c ****       LWIP_MEM_ALLOC_UNPROTECT();
+ 876:./lwip-2.1.2/src/core/mem.c ****       /* allow mem_free or mem_trim to run */
+ 877:./lwip-2.1.2/src/core/mem.c ****       LWIP_MEM_ALLOC_PROTECT();
+ 878:./lwip-2.1.2/src/core/mem.c ****       if (mem_free_count != 0) {
+ 879:./lwip-2.1.2/src/core/mem.c ****         /* If mem_free or mem_trim have run, we have to restart since they
+ 880:./lwip-2.1.2/src/core/mem.c ****            could have altered our current struct mem. */
+ 881:./lwip-2.1.2/src/core/mem.c ****         local_mem_free_count = 1;
+ 882:./lwip-2.1.2/src/core/mem.c ****         break;
+ 883:./lwip-2.1.2/src/core/mem.c ****       }
+ 884:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 885:./lwip-2.1.2/src/core/mem.c **** 
+ 886:./lwip-2.1.2/src/core/mem.c ****       if ((!mem->used) &&
+ 1408              		.loc 1 886 16
+ 1409 0562 7B69     		ldr	r3, [r7, #20]
+ 1410 0564 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 1411              		.loc 1 886 10
+ 1412 0566 002B     		cmp	r3, #0
+ 1413 0568 61D1     		bne	.L75
+ 887:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
+ 1414              		.loc 1 887 15 discriminator 1
+ 1415 056a 7B69     		ldr	r3, [r7, #20]
+ 1416 056c 1B88     		ldrh	r3, [r3]
+ 1417 056e 1A46     		mov	r2, r3
+ 1418              		.loc 1 887 22 discriminator 1
+ 1419 0570 FB8B     		ldrh	r3, [r7, #30]
+ 1420 0572 D31A     		subs	r3, r2, r3
+ 1421 0574 A3F10802 		sub	r2, r3, #8
+ 1422              		.loc 1 887 51 discriminator 1
+ 1423 0578 BB8B     		ldrh	r3, [r7, #28]
+ 886:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
+ 1424              		.loc 1 886 24 discriminator 1
+ 1425 057a 9A42     		cmp	r2, r3
+ 1426 057c 57D3     		bcc	.L75
+ 888:./lwip-2.1.2/src/core/mem.c ****         /* mem is not used and at least perfect fit is possible:
+ 889:./lwip-2.1.2/src/core/mem.c ****          * mem->next - (ptr + SIZEOF_STRUCT_MEM) gives us the 'user data size' of mem */
+ 890:./lwip-2.1.2/src/core/mem.c **** 
+ 891:./lwip-2.1.2/src/core/mem.c ****         if (mem->next - (ptr + SIZEOF_STRUCT_MEM) >= (size + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED))
+ 1427              		.loc 1 891 16
+ 1428 057e 7B69     		ldr	r3, [r7, #20]
+ 1429 0580 1B88     		ldrh	r3, [r3]
+ 1430 0582 1A46     		mov	r2, r3
+ 1431              		.loc 1 891 23
+ 1432 0584 FB8B     		ldrh	r3, [r7, #30]
+ 1433 0586 D31A     		subs	r3, r2, r3
+ 1434 0588 A3F10802 		sub	r2, r3, #8
+ 1435              		.loc 1 891 80
+ 1436 058c BB8B     		ldrh	r3, [r7, #28]
+ 1437 058e 1433     		adds	r3, r3, #20
+ 1438              		.loc 1 891 12
+ 1439 0590 9A42     		cmp	r2, r3
+ 1440 0592 28D3     		bcc	.L76
+ 892:./lwip-2.1.2/src/core/mem.c ****           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containin
+ 893:./lwip-2.1.2/src/core/mem.c ****            * at least MIN_SIZE_ALIGNED of data also fits in the 'user data space' of 'mem')
+ 894:./lwip-2.1.2/src/core/mem.c ****            * -> split large block, create empty remainder,
+ 895:./lwip-2.1.2/src/core/mem.c ****            * remainder must be large enough to contain MIN_SIZE_ALIGNED data: if
+ 896:./lwip-2.1.2/src/core/mem.c ****            * mem->next - (ptr + (2*SIZEOF_STRUCT_MEM)) == size,
+ 897:./lwip-2.1.2/src/core/mem.c ****            * struct mem would fit in but no data between mem2 and mem2->next
+ 898:./lwip-2.1.2/src/core/mem.c ****            * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
+ 899:./lwip-2.1.2/src/core/mem.c ****            *       region that couldn't hold data, but when mem->next gets freed,
+ 900:./lwip-2.1.2/src/core/mem.c ****            *       the 2 regions would be combined, resulting in more free memory
+ 901:./lwip-2.1.2/src/core/mem.c ****            */
+ 902:./lwip-2.1.2/src/core/mem.c ****           ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + size);
+ 1441              		.loc 1 902 55
+ 1442 0594 FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1443 0596 BB8B     		ldrh	r3, [r7, #28]	@ movhi
+ 1444 0598 1344     		add	r3, r3, r2
+ 1445 059a 9BB2     		uxth	r3, r3
+ 1446              		.loc 1 902 16
+ 1447 059c 0833     		adds	r3, r3, #8
+ 1448 059e 7B82     		strh	r3, [r7, #18]	@ movhi
+ 903:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
+ 904:./lwip-2.1.2/src/core/mem.c ****           /* create mem2 struct */
+ 905:./lwip-2.1.2/src/core/mem.c ****           mem2 = ptr_to_mem(ptr2);
+ 1449              		.loc 1 905 18
+ 1450 05a0 7B8A     		ldrh	r3, [r7, #18]
+ 1451 05a2 1846     		mov	r0, r3
+ 1452 05a4 FFF72CFD 		bl	ptr_to_mem
+ 1453 05a8 F860     		str	r0, [r7, #12]
+ 906:./lwip-2.1.2/src/core/mem.c ****           mem2->used = 0;
+ 1454              		.loc 1 906 22
+ 1455 05aa FB68     		ldr	r3, [r7, #12]
+ 1456 05ac 0022     		movs	r2, #0
+ 1457 05ae 1A71     		strb	r2, [r3, #4]
+ 907:./lwip-2.1.2/src/core/mem.c ****           mem2->next = mem->next;
+ 1458              		.loc 1 907 27
+ 1459 05b0 7B69     		ldr	r3, [r7, #20]
+ 1460 05b2 1A88     		ldrh	r2, [r3]
+ 1461              		.loc 1 907 22
+ 1462 05b4 FB68     		ldr	r3, [r7, #12]
+ 1463 05b6 1A80     		strh	r2, [r3]	@ movhi
+ 908:./lwip-2.1.2/src/core/mem.c ****           mem2->prev = ptr;
+ 1464              		.loc 1 908 22
+ 1465 05b8 FB68     		ldr	r3, [r7, #12]
+ 1466 05ba FA8B     		ldrh	r2, [r7, #30]	@ movhi
+ 1467 05bc 5A80     		strh	r2, [r3, #2]	@ movhi
+ 909:./lwip-2.1.2/src/core/mem.c ****           /* and insert it between mem and mem->next */
+ 910:./lwip-2.1.2/src/core/mem.c ****           mem->next = ptr2;
+ 1468              		.loc 1 910 21
+ 1469 05be 7B69     		ldr	r3, [r7, #20]
+ 1470 05c0 7A8A     		ldrh	r2, [r7, #18]	@ movhi
+ 1471 05c2 1A80     		strh	r2, [r3]	@ movhi
+ 911:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
+ 1472              		.loc 1 911 21
+ 1473 05c4 7B69     		ldr	r3, [r7, #20]
+ 1474 05c6 0122     		movs	r2, #1
+ 1475 05c8 1A71     		strb	r2, [r3, #4]
+ 912:./lwip-2.1.2/src/core/mem.c **** 
+ 913:./lwip-2.1.2/src/core/mem.c ****           if (mem2->next != MEM_SIZE_ALIGNED) {
+ 1476              		.loc 1 913 19
+ 1477 05ca FB68     		ldr	r3, [r7, #12]
+ 1478 05cc 1B88     		ldrh	r3, [r3]
+ 1479              		.loc 1 913 14
+ 1480 05ce B3F5805F 		cmp	r3, #4096
+ 1481 05d2 0BD0     		beq	.L77
+ 914:./lwip-2.1.2/src/core/mem.c ****             ptr_to_mem(mem2->next)->prev = ptr2;
+ 1482              		.loc 1 914 13
+ 1483 05d4 FB68     		ldr	r3, [r7, #12]
+ 1484 05d6 1B88     		ldrh	r3, [r3]
+ 1485 05d8 1846     		mov	r0, r3
+ 1486 05da FFF711FD 		bl	ptr_to_mem
+ 1487 05de 0246     		mov	r2, r0
+ 1488              		.loc 1 914 42
+ 1489 05e0 7B8A     		ldrh	r3, [r7, #18]	@ movhi
+ 1490 05e2 5380     		strh	r3, [r2, #2]	@ movhi
+ 1491 05e4 02E0     		b	.L77
+ 1492              	.L76:
+ 915:./lwip-2.1.2/src/core/mem.c ****           }
+ 916:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, (size + SIZEOF_STRUCT_MEM));
+ 917:./lwip-2.1.2/src/core/mem.c ****         } else {
+ 918:./lwip-2.1.2/src/core/mem.c ****           /* (a mem2 struct does no fit into the user data space of mem and mem->next will always
+ 919:./lwip-2.1.2/src/core/mem.c ****            * be used at this point: if not we have 2 unused structs in a row, plug_holes should hav
+ 920:./lwip-2.1.2/src/core/mem.c ****            * take care of this).
+ 921:./lwip-2.1.2/src/core/mem.c ****            * -> near fit or exact fit: do not split, no mem2 creation
+ 922:./lwip-2.1.2/src/core/mem.c ****            * also can't move mem->next directly behind mem, since mem->next
+ 923:./lwip-2.1.2/src/core/mem.c ****            * will always be used at this point!
+ 924:./lwip-2.1.2/src/core/mem.c ****            */
+ 925:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
+ 1493              		.loc 1 925 21
+ 1494 05e6 7B69     		ldr	r3, [r7, #20]
+ 1495 05e8 0122     		movs	r2, #1
+ 1496 05ea 1A71     		strb	r2, [r3, #4]
+ 1497              	.L77:
+ 926:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, mem->next - mem_to_ptr(mem));
+ 927:./lwip-2.1.2/src/core/mem.c ****         }
+ 928:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 929:./lwip-2.1.2/src/core/mem.c **** mem_malloc_adjust_lfree:
+ 930:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 931:./lwip-2.1.2/src/core/mem.c ****         if (mem == lfree) {
+ 1498              		.loc 1 931 17
+ 1499 05ec 1B4B     		ldr	r3, .L83+4
+ 1500 05ee 1B68     		ldr	r3, [r3]
+ 1501              		.loc 1 931 12
+ 1502 05f0 7A69     		ldr	r2, [r7, #20]
+ 1503 05f2 9A42     		cmp	r2, r3
+ 1504 05f4 15D1     		bne	.L78
+ 1505              	.LBB114:
+ 932:./lwip-2.1.2/src/core/mem.c ****           struct mem *cur = lfree;
+ 1506              		.loc 1 932 23
+ 1507 05f6 194B     		ldr	r3, .L83+4
+ 1508 05f8 1B68     		ldr	r3, [r3]
+ 1509 05fa BB61     		str	r3, [r7, #24]
+ 933:./lwip-2.1.2/src/core/mem.c ****           /* Find next free block after mem and update lowest free pointer */
+ 934:./lwip-2.1.2/src/core/mem.c ****           while (cur->used && cur != ram_end) {
+ 1510              		.loc 1 934 17
+ 1511 05fc 05E0     		b	.L79
+ 1512              	.L81:
+ 935:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 936:./lwip-2.1.2/src/core/mem.c ****             mem_free_count = 0;
+ 937:./lwip-2.1.2/src/core/mem.c ****             LWIP_MEM_ALLOC_UNPROTECT();
+ 938:./lwip-2.1.2/src/core/mem.c ****             /* prevent high interrupt latency... */
+ 939:./lwip-2.1.2/src/core/mem.c ****             LWIP_MEM_ALLOC_PROTECT();
+ 940:./lwip-2.1.2/src/core/mem.c ****             if (mem_free_count != 0) {
+ 941:./lwip-2.1.2/src/core/mem.c ****               /* If mem_free or mem_trim have run, we have to restart since they
+ 942:./lwip-2.1.2/src/core/mem.c ****                  could have altered our current struct mem or lfree. */
+ 943:./lwip-2.1.2/src/core/mem.c ****               goto mem_malloc_adjust_lfree;
+ 944:./lwip-2.1.2/src/core/mem.c ****             }
+ 945:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 946:./lwip-2.1.2/src/core/mem.c ****             cur = ptr_to_mem(cur->next);
+ 1513              		.loc 1 946 19
+ 1514 05fe BB69     		ldr	r3, [r7, #24]
+ 1515 0600 1B88     		ldrh	r3, [r3]
+ 1516 0602 1846     		mov	r0, r3
+ 1517 0604 FFF7FCFC 		bl	ptr_to_mem
+ 1518 0608 B861     		str	r0, [r7, #24]
+ 1519              	.L79:
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1520              		.loc 1 934 21
+ 1521 060a BB69     		ldr	r3, [r7, #24]
+ 1522 060c 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1523              		.loc 1 934 17
+ 1524 060e 002B     		cmp	r3, #0
+ 1525 0610 04D0     		beq	.L80
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1526              		.loc 1 934 35 discriminator 1
+ 1527 0612 134B     		ldr	r3, .L83+8
+ 1528 0614 1B68     		ldr	r3, [r3]
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1529              		.loc 1 934 28 discriminator 1
+ 1530 0616 BA69     		ldr	r2, [r7, #24]
+ 1531 0618 9A42     		cmp	r2, r3
+ 1532 061a F0D1     		bne	.L81
+ 1533              	.L80:
+ 947:./lwip-2.1.2/src/core/mem.c ****           }
+ 948:./lwip-2.1.2/src/core/mem.c ****           lfree = cur;
+ 1534              		.loc 1 948 17
+ 1535 061c 0F4A     		ldr	r2, .L83+4
+ 1536 061e BB69     		ldr	r3, [r7, #24]
+ 1537 0620 1360     		str	r3, [r2]
+ 1538              	.L78:
+ 1539              	.LBE114:
+ 949:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("mem_malloc: !lfree->used", ((lfree == ram_end) || (!lfree->used)));
+ 950:./lwip-2.1.2/src/core/mem.c ****         }
+ 951:./lwip-2.1.2/src/core/mem.c ****         LWIP_MEM_ALLOC_UNPROTECT();
+ 952:./lwip-2.1.2/src/core/mem.c ****         sys_mutex_unlock(&mem_mutex);
+ 1540              		.loc 1 952 9
+ 1541 0622 0D48     		ldr	r0, .L83
+ 1542 0624 FFF7FEFF 		bl	sys_mutex_unlock
+ 953:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
+ 954:./lwip-2.1.2/src/core/mem.c ****                     (mem_ptr_t)mem + SIZEOF_STRUCT_MEM + size <= (mem_ptr_t)ram_end);
+ 955:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
+ 956:./lwip-2.1.2/src/core/mem.c ****                     ((mem_ptr_t)mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
+ 957:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: sanity check alignment",
+ 958:./lwip-2.1.2/src/core/mem.c ****                     (((mem_ptr_t)mem) & (MEM_ALIGNMENT - 1)) == 0);
+ 959:./lwip-2.1.2/src/core/mem.c **** 
+ 960:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 961:./lwip-2.1.2/src/core/mem.c ****         mem_overflow_init_element(mem, size_in);
+ 962:./lwip-2.1.2/src/core/mem.c **** #endif
+ 963:./lwip-2.1.2/src/core/mem.c ****         MEM_SANITY();
+ 964:./lwip-2.1.2/src/core/mem.c ****         return (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+ 1543              		.loc 1 964 48
+ 1544 0628 7B69     		ldr	r3, [r7, #20]
+ 1545 062a 0833     		adds	r3, r3, #8
+ 1546 062c 10E0     		b	.L70
+ 1547              	.L75:
+ 871:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
+ 1548              		.loc 1 871 16
+ 1549 062e FB8B     		ldrh	r3, [r7, #30]
+ 1550 0630 1846     		mov	r0, r3
+ 1551 0632 FFF7E5FC 		bl	ptr_to_mem
+ 1552 0636 0346     		mov	r3, r0
+ 871:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
+ 1553              		.loc 1 871 14
+ 1554 0638 1B88     		ldrh	r3, [r3]	@ movhi
+ 1555 063a FB83     		strh	r3, [r7, #30]	@ movhi
+ 1556              	.L74:
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1557              		.loc 1 870 39 discriminator 1
+ 1558 063c FA8B     		ldrh	r2, [r7, #30]
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1559              		.loc 1 870 58 discriminator 1
+ 1560 063e BB8B     		ldrh	r3, [r7, #28]
+ 1561 0640 C3F58053 		rsb	r3, r3, #4096
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1562              		.loc 1 870 5 discriminator 1
+ 1563 0644 9A42     		cmp	r2, r3
+ 1564 0646 87D3     		bcc	.L82
+ 965:./lwip-2.1.2/src/core/mem.c ****       }
+ 966:./lwip-2.1.2/src/core/mem.c ****     }
+ 967:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 968:./lwip-2.1.2/src/core/mem.c ****     /* if we got interrupted by a mem_free, try again */
+ 969:./lwip-2.1.2/src/core/mem.c ****   } while (local_mem_free_count != 0);
+ 970:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+ 971:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_INC(err);
+ 972:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_UNPROTECT();
+ 973:./lwip-2.1.2/src/core/mem.c ****   sys_mutex_unlock(&mem_mutex);
+ 1565              		.loc 1 973 3
+ 1566 0648 0348     		ldr	r0, .L83
+ 1567 064a FFF7FEFF 		bl	sys_mutex_unlock
+ 974:./lwip-2.1.2/src/core/mem.c ****   LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_malloc: could not allocate %"S16_F" bytes\n
+ 975:./lwip-2.1.2/src/core/mem.c ****   return NULL;
+ 1568              		.loc 1 975 10
+ 1569 064e 0023     		movs	r3, #0
+ 1570              	.L70:
+ 976:./lwip-2.1.2/src/core/mem.c **** }
+ 1571              		.loc 1 976 1
+ 1572 0650 1846     		mov	r0, r3
+ 1573 0652 2037     		adds	r7, r7, #32
+ 1574              	.LCFI40:
+ 1575              		.cfi_def_cfa_offset 8
+ 1576 0654 BD46     		mov	sp, r7
+ 1577              	.LCFI41:
+ 1578              		.cfi_def_cfa_register 13
+ 1579              		@ sp needed
+ 1580 0656 80BD     		pop	{r7, pc}
+ 1581              	.L84:
+ 1582              		.align	2
+ 1583              	.L83:
+ 1584 0658 1C100000 		.word	mem_mutex
+ 1585 065c 20100000 		.word	lfree
+ 1586 0660 18100000 		.word	ram_end
+ 1587              		.cfi_endproc
+ 1588              	.LFE176:
+ 1590              		.align	1
+ 1591              		.global	mem_calloc
+ 1592              		.syntax unified
+ 1593              		.thumb
+ 1594              		.thumb_func
+ 1595              		.fpu fpv5-d16
+ 1597              	mem_calloc:
+ 1598              	.LFB177:
+ 977:./lwip-2.1.2/src/core/mem.c **** 
+ 978:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_USE_POOLS */
+ 979:./lwip-2.1.2/src/core/mem.c **** 
+ 980:./lwip-2.1.2/src/core/mem.c **** #if MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS)
+ 981:./lwip-2.1.2/src/core/mem.c **** void *
+ 982:./lwip-2.1.2/src/core/mem.c **** mem_calloc(mem_size_t count, mem_size_t size)
+ 983:./lwip-2.1.2/src/core/mem.c **** {
+ 984:./lwip-2.1.2/src/core/mem.c ****   return mem_clib_calloc(count, size);
+ 985:./lwip-2.1.2/src/core/mem.c **** }
+ 986:./lwip-2.1.2/src/core/mem.c **** 
+ 987:./lwip-2.1.2/src/core/mem.c **** #else /* MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS) */
+ 988:./lwip-2.1.2/src/core/mem.c **** /**
+ 989:./lwip-2.1.2/src/core/mem.c ****  * Contiguously allocates enough space for count objects that are size bytes
+ 990:./lwip-2.1.2/src/core/mem.c ****  * of memory each and returns a pointer to the allocated memory.
+ 991:./lwip-2.1.2/src/core/mem.c ****  *
+ 992:./lwip-2.1.2/src/core/mem.c ****  * The allocated memory is filled with bytes of value zero.
+ 993:./lwip-2.1.2/src/core/mem.c ****  *
+ 994:./lwip-2.1.2/src/core/mem.c ****  * @param count number of objects to allocate
+ 995:./lwip-2.1.2/src/core/mem.c ****  * @param size size of the objects to allocate
+ 996:./lwip-2.1.2/src/core/mem.c ****  * @return pointer to allocated memory / NULL pointer if there is an error
+ 997:./lwip-2.1.2/src/core/mem.c ****  */
+ 998:./lwip-2.1.2/src/core/mem.c **** void *
+ 999:./lwip-2.1.2/src/core/mem.c **** mem_calloc(mem_size_t count, mem_size_t size)
+1000:./lwip-2.1.2/src/core/mem.c **** {
+ 1599              		.loc 1 1000 1
+ 1600              		.cfi_startproc
+ 1601              		@ args = 0, pretend = 0, frame = 16
+ 1602              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1603 0664 80B5     		push	{r7, lr}
+ 1604              	.LCFI42:
+ 1605              		.cfi_def_cfa_offset 8
+ 1606              		.cfi_offset 7, -8
+ 1607              		.cfi_offset 14, -4
+ 1608 0666 84B0     		sub	sp, sp, #16
+ 1609              	.LCFI43:
+ 1610              		.cfi_def_cfa_offset 24
+ 1611 0668 00AF     		add	r7, sp, #0
+ 1612              	.LCFI44:
+ 1613              		.cfi_def_cfa_register 7
+ 1614 066a 0346     		mov	r3, r0
+ 1615 066c 0A46     		mov	r2, r1
+ 1616 066e FB80     		strh	r3, [r7, #6]	@ movhi
+ 1617 0670 1346     		mov	r3, r2	@ movhi
+ 1618 0672 BB80     		strh	r3, [r7, #4]	@ movhi
+1001:./lwip-2.1.2/src/core/mem.c ****   void *p;
+1002:./lwip-2.1.2/src/core/mem.c ****   size_t alloc_size = (size_t)count * (size_t)size;
+ 1619              		.loc 1 1002 23
+ 1620 0674 FB88     		ldrh	r3, [r7, #6]
+ 1621              		.loc 1 1002 39
+ 1622 0676 BA88     		ldrh	r2, [r7, #4]
+ 1623              		.loc 1 1002 10
+ 1624 0678 02FB03F3 		mul	r3, r2, r3
+ 1625 067c FB60     		str	r3, [r7, #12]
+1003:./lwip-2.1.2/src/core/mem.c **** 
+1004:./lwip-2.1.2/src/core/mem.c ****   if ((size_t)(mem_size_t)alloc_size != alloc_size) {
+ 1626              		.loc 1 1004 15
+ 1627 067e FB68     		ldr	r3, [r7, #12]
+ 1628 0680 9BB2     		uxth	r3, r3
+ 1629              		.loc 1 1004 7
+ 1630 0682 1A46     		mov	r2, r3
+ 1631              		.loc 1 1004 6
+ 1632 0684 FB68     		ldr	r3, [r7, #12]
+ 1633 0686 9342     		cmp	r3, r2
+ 1634 0688 01D0     		beq	.L86
+1005:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes
+1006:./lwip-2.1.2/src/core/mem.c ****     return NULL;
+ 1635              		.loc 1 1006 12
+ 1636 068a 0023     		movs	r3, #0
+ 1637 068c 0EE0     		b	.L87
+ 1638              	.L86:
+1007:./lwip-2.1.2/src/core/mem.c ****   }
+1008:./lwip-2.1.2/src/core/mem.c **** 
+1009:./lwip-2.1.2/src/core/mem.c ****   /* allocate 'count' objects of size 'size' */
+1010:./lwip-2.1.2/src/core/mem.c ****   p = mem_malloc((mem_size_t)alloc_size);
+ 1639              		.loc 1 1010 7
+ 1640 068e FB68     		ldr	r3, [r7, #12]
+ 1641 0690 9BB2     		uxth	r3, r3
+ 1642 0692 1846     		mov	r0, r3
+ 1643 0694 FFF7FEFF 		bl	mem_malloc
+ 1644 0698 B860     		str	r0, [r7, #8]
+1011:./lwip-2.1.2/src/core/mem.c ****   if (p) {
+ 1645              		.loc 1 1011 6
+ 1646 069a BB68     		ldr	r3, [r7, #8]
+ 1647 069c 002B     		cmp	r3, #0
+ 1648 069e 04D0     		beq	.L88
+1012:./lwip-2.1.2/src/core/mem.c ****     /* zero the memory */
+1013:./lwip-2.1.2/src/core/mem.c ****     memset(p, 0, alloc_size);
+ 1649              		.loc 1 1013 5
+ 1650 06a0 FA68     		ldr	r2, [r7, #12]
+ 1651 06a2 0021     		movs	r1, #0
+ 1652 06a4 B868     		ldr	r0, [r7, #8]
+ 1653 06a6 FFF7FEFF 		bl	memset
+ 1654              	.L88:
+1014:./lwip-2.1.2/src/core/mem.c ****   }
+1015:./lwip-2.1.2/src/core/mem.c ****   return p;
+ 1655              		.loc 1 1015 10
+ 1656 06aa BB68     		ldr	r3, [r7, #8]
+ 1657              	.L87:
+1016:./lwip-2.1.2/src/core/mem.c **** }
+ 1658              		.loc 1 1016 1
+ 1659 06ac 1846     		mov	r0, r3
+ 1660 06ae 1037     		adds	r7, r7, #16
+ 1661              	.LCFI45:
+ 1662              		.cfi_def_cfa_offset 8
+ 1663 06b0 BD46     		mov	sp, r7
+ 1664              	.LCFI46:
+ 1665              		.cfi_def_cfa_register 13
+ 1666              		@ sp needed
+ 1667 06b2 80BD     		pop	{r7, pc}
+ 1668              		.cfi_endproc
+ 1669              	.LFE177:
+ 1671              	.Letext0:
+ 1672              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\lib\\gcc\\arm-
+ 1673              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1674              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1675              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1676              		.file 7 "./lwip-2.1.2/src/include/lwip/mem.h"
+ 1677              		.file 8 "./inc/cmsis_os2.h"
+ 1678              		.file 9 "./inc/arch/sys_arch.h"
+ 1679              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1680              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 mem.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:21     .bss:00000000 ram_heap
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:18     .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:24     .bss:00001014 ram
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:28     .bss:00001018 ram_end
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:32     .bss:0000101c mem_mutex
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:36     .bss:00001020 lfree
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:40     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:47     .text:00000000 ptr_to_mem
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:90     .text:00000020 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:94     .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:100    .text:00000024 mem_to_ptr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:142    .text:00000044 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:146    .text:00000048 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:152    .text:00000048 plug_holes
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:299    .text:0000010c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:304    .text:00000114 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:311    .text:00000114 mem_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:399    .text:00000184 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:407    .text:00000198 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:413    .text:00000198 mem_link_valid
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:510    .text:0000020c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:514    .text:00000210 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:521    .text:00000210 mem_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:957    .text:00000344 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:964    .text:00000354 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:971    .text:00000354 mem_trim
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1320   .text:000004f4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1327   .text:00000504 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1334   .text:00000504 mem_malloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1584   .text:00000658 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1590   .text:00000664 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1597   .text:00000664 mem_calloc
+
+UNDEFINED SYMBOLS
+sys_mutex_new
+sys_mutex_lock
+sys_mutex_unlock
+memset

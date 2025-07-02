@@ -1,0 +1,32 @@
+ {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit:  
+    // https://github.com/Marus/cortex-debug/blob/master/debug_attributes.md
+    
+    "version": "0.2.0",
+    "configurations": [
+    {
+    "type": "cortex-debug",
+    // There are two possible options for request: 
+    // - attach: attach to running system, or 
+    // - launch: flash hardware and hold at main()
+    "request": "launch",
+    "runToEntryPoint": "main",
+    "name": "Debug OpenOCD",
+    "cwd": "${workspaceFolder}",
+    // The config file is needed for OpenOCD to connect to the used debug probe and target MCU (e.g. PCAN-GPS.cfg)
+    // In this file it's possible to add additional commands for OpenOCD if needed 
+    "configFiles": ["C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Debug/Config_Files/PCAN-Router_Pro_FD.cfg"],
+    // The execuatable is the file you want to debug. Cortex-Debug needs to know it's name and where the file is located
+    "executable": "${workspaceFolder}/out/example_webserver.elf",	
+    // The serverpath needs to point to the OpenOCD.exe file an your computer	
+    "serverpath": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Debug/OpenOCD/bin/openOCD.exe",
+    "servertype": "openocd",
+    // device stores the name of the used MCU  	
+    "device": "STM32F765NIH6",
+    // the svdfile needs to point at the location of the MCU specific hardware file (e.g. LPC54618.svd)
+    "svdFile": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Debug/SVD_Files/STM32F765.svd"
+    }
+       ]
+ }

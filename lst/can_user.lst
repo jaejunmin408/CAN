@@ -1,0 +1,652 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"can_user.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	CAN_UserRead
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	CAN_UserRead:
+  26              	.LVL0:
+  27              	.LFB0:
+  28              		.file 1 "./src/can_user.c"
+   1:./src/can_user.c **** 
+   2:./src/can_user.c **** #include <stdint.h>
+   3:./src/can_user.c **** #include <stdlib.h>
+   4:./src/can_user.c **** #include "can.h"
+   5:./src/can_user.c **** #include "can_user.h"
+   6:./src/can_user.c **** #include "hardware.h"
+   7:./src/can_user.c **** 
+   8:./src/can_user.c **** 
+   9:./src/can_user.c **** 
+  10:./src/can_user.c **** // timings for CAN1 to CAN6
+  11:./src/can_user.c **** static const CANTiming_t  Timing_CANx[6] = {
+  12:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN1
+  13:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN2
+  14:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN3
+  15:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN4
+  16:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN5
+  17:./src/can_user.c **** _40M_500K_80____4M_80_ISO	  // CAN6
+  18:./src/can_user.c **** };
+  19:./src/can_user.c **** 
+  20:./src/can_user.c **** 
+  21:./src/can_user.c **** 
+  22:./src/can_user.c **** 
+  23:./src/can_user.c **** 
+  24:./src/can_user.c **** //! @brief      Wrapper used to pre-process some incoming data.
+  25:./src/can_user.c **** //!             PCAN-Router Pro FD will use a central receive cache with a
+  26:./src/can_user.c **** //!             single read interface for all CANs so we can not read from
+  27:./src/can_user.c **** //!             a specific CAN.
+  28:./src/can_user.c **** //! @param[in]  hBus  not used here (use CAN_BUSX)
+  29:./src/can_user.c **** //! @param[out] buff  buffer to read record into
+  30:./src/can_user.c **** //! @return     see CAN_ERR_...
+  31:./src/can_user.c **** CANResult_t  CAN_UserRead ( CANHandle_t  hBus, void  *buff)
+  32:./src/can_user.c **** {
+  29              		.loc 1 32 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33:./src/can_user.c **** 	CANResult_t  ret;
+  33              		.loc 1 33 2 view .LVU1
+  34:./src/can_user.c **** 	CANBuffer_t  *rx_buff;
+  34              		.loc 1 34 2 view .LVU2
+  35:./src/can_user.c **** 	
+  36:./src/can_user.c **** 	
+  37:./src/can_user.c **** 	ret = CAN_ERR_RX_EMPTY;
+  35              		.loc 1 37 2 view .LVU3
+  38:./src/can_user.c **** 	rx_buff = buff;
+  36              		.loc 1 38 2 view .LVU4
+  32:./src/can_user.c **** 	CANResult_t  ret;
+  37              		.loc 1 32 1 is_stmt 0 view .LVU5
+  38 0000 10B5     		push	{r4, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 4, -8
+  42              		.cfi_offset 14, -4
+  32:./src/can_user.c **** 	CANResult_t  ret;
+  43              		.loc 1 32 1 view .LVU6
+  44 0002 0C46     		mov	r4, r1
+  45              	.LVL1:
+  39:./src/can_user.c **** 	
+  40:./src/can_user.c **** 	if ( CAN_Read ( hBus, rx_buff) == CAN_ERR_OK)
+  46              		.loc 1 40 2 is_stmt 1 view .LVU7
+  47              		.loc 1 40 7 is_stmt 0 view .LVU8
+  48 0004 FFF7FEFF 		bl	CAN_Read
+  49              	.LVL2:
+  50              		.loc 1 40 5 view .LVU9
+  51 0008 50B9     		cbnz	r0, .L5
+  41:./src/can_user.c **** 	{
+  42:./src/can_user.c **** 		// CAN bus is returned from data buffer due to central rx-cache
+  43:./src/can_user.c **** 		hBus = rx_buff->hBus;
+  52              		.loc 1 43 3 is_stmt 1 view .LVU10
+  53              	.LVL3:
+  44:./src/can_user.c **** 		
+  45:./src/can_user.c **** 		// buffer read from CANx. Check type of buffer.
+  46:./src/can_user.c **** 		switch ( rx_buff->bufftype)
+  54              		.loc 1 46 3 view .LVU11
+  55              		.loc 1 46 19 is_stmt 0 view .LVU12
+  56 000a 6388     		ldrh	r3, [r4, #2]
+  57 000c C3F30B03 		ubfx	r3, r3, #0, #12
+  58              		.loc 1 46 3 view .LVU13
+  59 0010 012B     		cmp	r3, #1
+  60 0012 06D0     		beq	.L1
+  61 0014 032B     		cmp	r3, #3
+  62 0016 03D1     		bne	.L5
+  47:./src/can_user.c **** 		{
+  48:./src/can_user.c **** 			case CAN_BUFFER_STATUS:
+  49:./src/can_user.c **** 				// the buffer is a status notification from the CAN controller.
+  50:./src/can_user.c **** 				if ( rx_buff->status.bus_status)
+  63              		.loc 1 50 5 is_stmt 1 view .LVU14
+  64              		.loc 1 50 8 is_stmt 0 view .LVU15
+  65 0018 94F90C30 		ldrsb	r3, [r4, #12]
+  66 001c 002B     		cmp	r3, #0
+  67 001e 01DB     		blt	.L11
+  68              	.LVL4:
+  69              	.L5:
+  37:./src/can_user.c **** 	rx_buff = buff;
+  70              		.loc 1 37 6 view .LVU16
+  71 0020 0120     		movs	r0, #1
+  51:./src/can_user.c **** 				{
+  52:./src/can_user.c **** 					// CAN controller not involved into bus activities
+  53:./src/can_user.c **** 					
+  54:./src/can_user.c **** 					// uninitialize (this includes a TX-path flush)
+  55:./src/can_user.c **** 					CAN_UnInitialize ( hBus);
+  56:./src/can_user.c **** 					
+  57:./src/can_user.c **** 					// initialize CAN controller
+  58:./src/can_user.c **** 					CAN_Initialize ( hBus, &Timing_CANx[hBus]);
+  59:./src/can_user.c **** 				}
+  60:./src/can_user.c **** 				break;
+  61:./src/can_user.c **** 				
+  62:./src/can_user.c **** 				
+  63:./src/can_user.c **** 			case CAN_BUFFER_RX_MSG:
+  64:./src/can_user.c **** 				// the buffer is a receive message. Forward to application.
+  65:./src/can_user.c **** 				ret = CAN_ERR_OK;
+  66:./src/can_user.c **** 				break;
+  67:./src/can_user.c **** 				
+  68:./src/can_user.c **** 				
+  69:./src/can_user.c **** 			case CAN_BUFFER_CRITICAL:
+  70:./src/can_user.c **** 				// receive queue level was critical. Data might be lost.
+  71:./src/can_user.c **** 				break;
+  72:./src/can_user.c **** 		}
+  73:./src/can_user.c **** 	}
+  74:./src/can_user.c **** 	
+  75:./src/can_user.c **** 	return ret;
+  72              		.loc 1 75 2 is_stmt 1 view .LVU17
+  73              	.L1:
+  76:./src/can_user.c **** }
+  74              		.loc 1 76 1 is_stmt 0 view .LVU18
+  75 0022 10BD     		pop	{r4, pc}
+  76              	.LVL5:
+  77              	.L11:
+  43:./src/can_user.c **** 		
+  78              		.loc 1 43 17 view .LVU19
+  79 0024 E478     		ldrb	r4, [r4, #3]	@ zero_extendqisi2
+  80              	.LVL6:
+  43:./src/can_user.c **** 		
+  81              		.loc 1 43 17 view .LVU20
+  82 0026 2409     		lsrs	r4, r4, #4
+  55:./src/can_user.c **** 					
+  83              		.loc 1 55 6 is_stmt 1 view .LVU21
+  84 0028 2046     		mov	r0, r4
+  85 002a FFF7FEFF 		bl	CAN_UnInitialize
+  86              	.LVL7:
+  58:./src/can_user.c **** 				}
+  87              		.loc 1 58 6 view .LVU22
+  88 002e 054B     		ldr	r3, .L12
+  89 0030 04EB8401 		add	r1, r4, r4, lsl #2
+  90 0034 2046     		mov	r0, r4
+  91 0036 03EB8101 		add	r1, r3, r1, lsl #2
+  92 003a FFF7FEFF 		bl	CAN_Initialize
+  93              	.LVL8:
+  37:./src/can_user.c **** 	rx_buff = buff;
+  94              		.loc 1 37 6 is_stmt 0 view .LVU23
+  95 003e 0120     		movs	r0, #1
+  96              		.loc 1 76 1 view .LVU24
+  97 0040 10BD     		pop	{r4, pc}
+  98              	.L13:
+  99 0042 00BF     		.align	2
+ 100              	.L12:
+ 101 0044 00000000 		.word	.LANCHOR0
+ 102              		.cfi_endproc
+ 103              	.LFE0:
+ 105              		.align	1
+ 106              		.p2align 2,,3
+ 107              		.global	CAN_UserInvokeBootloader
+ 108              		.syntax unified
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.fpu fpv5-d16
+ 113              	CAN_UserInvokeBootloader:
+ 114              	.LVL9:
+ 115              	.LFB1:
+  77:./src/can_user.c **** 
+  78:./src/can_user.c **** 
+  79:./src/can_user.c **** 
+  80:./src/can_user.c **** //! @brief      invoke CAN bootloader
+  81:./src/can_user.c **** //! @param[in]  settings  select set of bitrates for CAN buses (see code below)
+  82:./src/can_user.c **** void  CAN_UserInvokeBootloader ( uint8_t  settings)
+  83:./src/can_user.c **** {
+ 116              		.loc 1 83 1 is_stmt 1 view -0
+ 117              		.cfi_startproc
+ 118              		@ args = 0, pretend = 0, frame = 0
+ 119              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120              		@ link register save eliminated.
+  84:./src/can_user.c **** 	if ( settings == 1)
+ 121              		.loc 1 84 2 view .LVU26
+ 122              		.loc 1 84 5 is_stmt 0 view .LVU27
+ 123 0048 0128     		cmp	r0, #1
+ 124 004a 04D0     		beq	.L18
+  85:./src/can_user.c **** 	{
+  86:./src/can_user.c **** 		// with this path the bootloader will use it's default timing
+  87:./src/can_user.c **** 		HW_JumpToBootloader ( NULL);
+  88:./src/can_user.c **** 	}
+  89:./src/can_user.c **** 
+  90:./src/can_user.c **** 	else if ( settings == 2)
+ 125              		.loc 1 90 7 is_stmt 1 view .LVU28
+ 126              		.loc 1 90 10 is_stmt 0 view .LVU29
+ 127 004c 0228     		cmp	r0, #2
+ 128 004e 05D0     		beq	.L19
+  91:./src/can_user.c **** 	{
+  92:./src/can_user.c **** 		// with this path the bootloader will use the timings from the
+  93:./src/can_user.c **** 		// list below.
+  94:./src/can_user.c **** 		static const CANTiming_t  TimingForBootloader[6] = {
+  95:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN1
+  96:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN2
+  97:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN3
+  98:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN4
+  99:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN5
+ 100:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO     // CAN6
+ 101:./src/can_user.c **** 		};
+ 102:./src/can_user.c **** 
+ 103:./src/can_user.c **** 		HW_JumpToBootloader ( &TimingForBootloader[0]);
+ 104:./src/can_user.c **** 	}
+ 105:./src/can_user.c **** 
+ 106:./src/can_user.c **** 	else if ( settings == 3)
+ 129              		.loc 1 106 7 is_stmt 1 view .LVU30
+ 130              		.loc 1 106 10 is_stmt 0 view .LVU31
+ 131 0050 0328     		cmp	r0, #3
+ 132 0052 06D0     		beq	.L20
+ 107:./src/can_user.c **** 	{
+ 108:./src/can_user.c **** 		// with this path the bootloader will use the timings from application.
+ 109:./src/can_user.c **** 		HW_JumpToBootloader ( &Timing_CANx[0]);
+ 110:./src/can_user.c **** 	}
+ 111:./src/can_user.c **** 
+ 112:./src/can_user.c **** }
+ 133              		.loc 1 112 1 view .LVU32
+ 134 0054 7047     		bx	lr
+ 135              	.L18:
+  87:./src/can_user.c **** 	}
+ 136              		.loc 1 87 3 is_stmt 1 view .LVU33
+ 137 0056 0020     		movs	r0, #0
+ 138              	.LVL10:
+  87:./src/can_user.c **** 	}
+ 139              		.loc 1 87 3 is_stmt 0 view .LVU34
+ 140 0058 FFF7FEBF 		b	HW_JumpToBootloader
+ 141              	.LVL11:
+ 142              	.L19:
+ 143              	.LBB2:
+  94:./src/can_user.c **** 			_80M_125K_80____2M_80_ISO,    // CAN1
+ 144              		.loc 1 94 3 is_stmt 1 view .LVU35
+ 103:./src/can_user.c **** 	}
+ 145              		.loc 1 103 3 view .LVU36
+ 146 005c 0248     		ldr	r0, .L21
+ 147              	.LVL12:
+ 103:./src/can_user.c **** 	}
+ 148              		.loc 1 103 3 is_stmt 0 view .LVU37
+ 149 005e FFF7FEBF 		b	HW_JumpToBootloader
+ 150              	.LVL13:
+ 151              	.L20:
+ 103:./src/can_user.c **** 	}
+ 152              		.loc 1 103 3 view .LVU38
+ 153              	.LBE2:
+ 109:./src/can_user.c **** 	}
+ 154              		.loc 1 109 3 is_stmt 1 view .LVU39
+ 155 0062 0248     		ldr	r0, .L21+4
+ 156              	.LVL14:
+ 109:./src/can_user.c **** 	}
+ 157              		.loc 1 109 3 is_stmt 0 view .LVU40
+ 158 0064 FFF7FEBF 		b	HW_JumpToBootloader
+ 159              	.LVL15:
+ 160              	.L22:
+ 161              		.align	2
+ 162              	.L21:
+ 163 0068 78000000 		.word	.LANCHOR0+120
+ 164 006c 00000000 		.word	.LANCHOR0
+ 165              		.cfi_endproc
+ 166              	.LFE1:
+ 168              		.align	1
+ 169              		.p2align 2,,3
+ 170              		.global	CAN_UserInit
+ 171              		.syntax unified
+ 172              		.thumb
+ 173              		.thumb_func
+ 174              		.fpu fpv5-d16
+ 176              	CAN_UserInit:
+ 177              	.LFB2:
+ 113:./src/can_user.c **** 
+ 114:./src/can_user.c **** 
+ 115:./src/can_user.c **** 
+ 116:./src/can_user.c **** //! @brief      init CAN1 to CAN6.
+ 117:./src/can_user.c **** //!             extended IDs can not be filtered (always received all)
+ 118:./src/can_user.c **** void  CAN_UserInit ( void)
+ 119:./src/can_user.c **** {
+ 178              		.loc 1 119 1 is_stmt 1 view -0
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 0
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120:./src/can_user.c **** 	// init CAN1
+ 121:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS1, &Timing_CANx[CAN_BUS1]);
+ 182              		.loc 1 121 2 view .LVU42
+ 119:./src/can_user.c **** 	// init CAN1
+ 183              		.loc 1 119 1 is_stmt 0 view .LVU43
+ 184 0070 10B5     		push	{r4, lr}
+ 185              	.LCFI1:
+ 186              		.cfi_def_cfa_offset 8
+ 187              		.cfi_offset 4, -8
+ 188              		.cfi_offset 14, -4
+ 189              		.loc 1 121 2 view .LVU44
+ 190 0072 254C     		ldr	r4, .L25
+ 191 0074 0020     		movs	r0, #0
+ 192 0076 2146     		mov	r1, r4
+ 193 0078 FFF7FEFF 		bl	CAN_Initialize
+ 194              	.LVL16:
+ 122:./src/can_user.c **** 	
+ 123:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 124:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS1, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 195              		.loc 1 124 2 is_stmt 1 view .LVU45
+ 196 007c 0022     		movs	r2, #0
+ 197 007e 40F2FF73 		movw	r3, #2047
+ 198 0082 1146     		mov	r1, r2
+ 199 0084 1046     		mov	r0, r2
+ 200 0086 FFF7FEFF 		bl	CAN_FilterAdd
+ 201              	.LVL17:
+ 125:./src/can_user.c **** 	
+ 126:./src/can_user.c **** 	
+ 127:./src/can_user.c **** 	
+ 128:./src/can_user.c **** 	// init CAN2
+ 129:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS2, &Timing_CANx[CAN_BUS2]);
+ 202              		.loc 1 129 2 view .LVU46
+ 203 008a 04F11401 		add	r1, r4, #20
+ 204 008e 0120     		movs	r0, #1
+ 205 0090 FFF7FEFF 		bl	CAN_Initialize
+ 206              	.LVL18:
+ 130:./src/can_user.c **** 	
+ 131:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 132:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS2, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 207              		.loc 1 132 2 view .LVU47
+ 208 0094 0022     		movs	r2, #0
+ 209 0096 40F2FF73 		movw	r3, #2047
+ 210 009a 0120     		movs	r0, #1
+ 211 009c 1146     		mov	r1, r2
+ 212 009e FFF7FEFF 		bl	CAN_FilterAdd
+ 213              	.LVL19:
+ 133:./src/can_user.c **** 	
+ 134:./src/can_user.c **** 	
+ 135:./src/can_user.c **** 	
+ 136:./src/can_user.c **** 	// init CAN3
+ 137:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS3, &Timing_CANx[CAN_BUS3]);
+ 214              		.loc 1 137 2 view .LVU48
+ 215 00a2 04F12801 		add	r1, r4, #40
+ 216 00a6 0220     		movs	r0, #2
+ 217 00a8 FFF7FEFF 		bl	CAN_Initialize
+ 218              	.LVL20:
+ 138:./src/can_user.c **** 	
+ 139:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 140:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS3, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 219              		.loc 1 140 2 view .LVU49
+ 220 00ac 0022     		movs	r2, #0
+ 221 00ae 40F2FF73 		movw	r3, #2047
+ 222 00b2 0220     		movs	r0, #2
+ 223 00b4 1146     		mov	r1, r2
+ 224 00b6 FFF7FEFF 		bl	CAN_FilterAdd
+ 225              	.LVL21:
+ 141:./src/can_user.c **** 	
+ 142:./src/can_user.c **** 	
+ 143:./src/can_user.c **** 	
+ 144:./src/can_user.c **** 	// init CAN4
+ 145:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS4, &Timing_CANx[CAN_BUS4]);
+ 226              		.loc 1 145 2 view .LVU50
+ 227 00ba 04F13C01 		add	r1, r4, #60
+ 228 00be 0320     		movs	r0, #3
+ 229 00c0 FFF7FEFF 		bl	CAN_Initialize
+ 230              	.LVL22:
+ 146:./src/can_user.c **** 	
+ 147:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 148:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 231              		.loc 1 148 2 view .LVU51
+ 232 00c4 0022     		movs	r2, #0
+ 233 00c6 40F2FF73 		movw	r3, #2047
+ 234 00ca 0320     		movs	r0, #3
+ 235 00cc 1146     		mov	r1, r2
+ 236 00ce FFF7FEFF 		bl	CAN_FilterAdd
+ 237              	.LVL23:
+ 149:./src/can_user.c **** 	
+ 150:./src/can_user.c **** 	
+ 151:./src/can_user.c **** 	
+ 152:./src/can_user.c **** 	// init CAN5
+ 153:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS5, &Timing_CANx[CAN_BUS5]);
+ 238              		.loc 1 153 2 view .LVU52
+ 239 00d2 04F15001 		add	r1, r4, #80
+ 240 00d6 0420     		movs	r0, #4
+ 241 00d8 FFF7FEFF 		bl	CAN_Initialize
+ 242              	.LVL24:
+ 154:./src/can_user.c **** 	
+ 155:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 156:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS5, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 243              		.loc 1 156 2 view .LVU53
+ 244 00dc 0022     		movs	r2, #0
+ 245 00de 40F2FF73 		movw	r3, #2047
+ 246 00e2 0420     		movs	r0, #4
+ 247 00e4 1146     		mov	r1, r2
+ 248 00e6 FFF7FEFF 		bl	CAN_FilterAdd
+ 249              	.LVL25:
+ 157:./src/can_user.c **** 	
+ 158:./src/can_user.c **** 	
+ 159:./src/can_user.c **** 	
+ 160:./src/can_user.c **** 	// init CAN6
+ 161:./src/can_user.c **** 	CAN_Initialize ( CAN_BUS6, &Timing_CANx[CAN_BUS6]);
+ 250              		.loc 1 161 2 view .LVU54
+ 251 00ea 04F16401 		add	r1, r4, #100
+ 252 00ee 0520     		movs	r0, #5
+ 253 00f0 FFF7FEFF 		bl	CAN_Initialize
+ 254              	.LVL26:
+ 162:./src/can_user.c **** 	
+ 163:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
+ 164:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS6, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 255              		.loc 1 164 2 view .LVU55
+ 256 00f4 0022     		movs	r2, #0
+ 257 00f6 40F2FF73 		movw	r3, #2047
+ 258 00fa 0520     		movs	r0, #5
+ 259 00fc 1146     		mov	r1, r2
+ 165:./src/can_user.c **** }
+ 260              		.loc 1 165 1 is_stmt 0 view .LVU56
+ 261 00fe BDE81040 		pop	{r4, lr}
+ 262              	.LCFI2:
+ 263              		.cfi_restore 14
+ 264              		.cfi_restore 4
+ 265              		.cfi_def_cfa_offset 0
+ 164:./src/can_user.c **** }
+ 266              		.loc 1 164 2 view .LVU57
+ 267 0102 FFF7FEBF 		b	CAN_FilterAdd
+ 268              	.LVL27:
+ 269              	.L26:
+ 270 0106 00BF     		.align	2
+ 271              	.L25:
+ 272 0108 00000000 		.word	.LANCHOR0
+ 273              		.cfi_endproc
+ 274              	.LFE2:
+ 276              		.section	.rodata
+ 277              		.align	2
+ 278              		.set	.LANCHOR0,. + 0
+ 281              	Timing_CANx:
+ 282 0000 005A6202 		.word	40000000
+ 283 0004 0100     		.short	1
+ 284 0006 3F00     		.short	63
+ 285 0008 10       		.byte	16
+ 286 0009 10       		.byte	16
+ 287 000a 60       		.byte	96
+ 288 000b 00       		.byte	0
+ 289 000c 01       		.byte	1
+ 290 000d 00       		.space	1
+ 291 000e 0100     		.short	1
+ 292 0010 07       		.byte	7
+ 293 0011 02       		.byte	2
+ 294 0012 02       		.byte	2
+ 295 0013 00       		.space	1
+ 296 0014 005A6202 		.word	40000000
+ 297 0018 0100     		.short	1
+ 298 001a 3F00     		.short	63
+ 299 001c 10       		.byte	16
+ 300 001d 10       		.byte	16
+ 301 001e 60       		.byte	96
+ 302 001f 00       		.byte	0
+ 303 0020 01       		.byte	1
+ 304 0021 00       		.space	1
+ 305 0022 0100     		.short	1
+ 306 0024 07       		.byte	7
+ 307 0025 02       		.byte	2
+ 308 0026 02       		.byte	2
+ 309 0027 00       		.space	1
+ 310 0028 005A6202 		.word	40000000
+ 311 002c 0100     		.short	1
+ 312 002e 3F00     		.short	63
+ 313 0030 10       		.byte	16
+ 314 0031 10       		.byte	16
+ 315 0032 60       		.byte	96
+ 316 0033 00       		.byte	0
+ 317 0034 01       		.byte	1
+ 318 0035 00       		.space	1
+ 319 0036 0100     		.short	1
+ 320 0038 07       		.byte	7
+ 321 0039 02       		.byte	2
+ 322 003a 02       		.byte	2
+ 323 003b 00       		.space	1
+ 324 003c 005A6202 		.word	40000000
+ 325 0040 0100     		.short	1
+ 326 0042 3F00     		.short	63
+ 327 0044 10       		.byte	16
+ 328 0045 10       		.byte	16
+ 329 0046 60       		.byte	96
+ 330 0047 00       		.byte	0
+ 331 0048 01       		.byte	1
+ 332 0049 00       		.space	1
+ 333 004a 0100     		.short	1
+ 334 004c 07       		.byte	7
+ 335 004d 02       		.byte	2
+ 336 004e 02       		.byte	2
+ 337 004f 00       		.space	1
+ 338 0050 005A6202 		.word	40000000
+ 339 0054 0100     		.short	1
+ 340 0056 3F00     		.short	63
+ 341 0058 10       		.byte	16
+ 342 0059 10       		.byte	16
+ 343 005a 60       		.byte	96
+ 344 005b 00       		.byte	0
+ 345 005c 01       		.byte	1
+ 346 005d 00       		.space	1
+ 347 005e 0100     		.short	1
+ 348 0060 07       		.byte	7
+ 349 0061 02       		.byte	2
+ 350 0062 02       		.byte	2
+ 351 0063 00       		.space	1
+ 352 0064 005A6202 		.word	40000000
+ 353 0068 0100     		.short	1
+ 354 006a 3F00     		.short	63
+ 355 006c 10       		.byte	16
+ 356 006d 10       		.byte	16
+ 357 006e 60       		.byte	96
+ 358 006f 00       		.byte	0
+ 359 0070 01       		.byte	1
+ 360 0071 00       		.space	1
+ 361 0072 0100     		.short	1
+ 362 0074 07       		.byte	7
+ 363 0075 02       		.byte	2
+ 364 0076 02       		.byte	2
+ 365 0077 00       		.space	1
+ 368              	TimingForBootloader.0:
+ 369 0078 00B4C404 		.word	80000000
+ 370 007c 0400     		.short	4
+ 371 007e 7F00     		.short	127
+ 372 0080 20       		.byte	32
+ 373 0081 20       		.byte	32
+ 374 0082 60       		.byte	96
+ 375 0083 00       		.byte	0
+ 376 0084 01       		.byte	1
+ 377 0085 00       		.space	1
+ 378 0086 0400     		.short	4
+ 379 0088 07       		.byte	7
+ 380 0089 02       		.byte	2
+ 381 008a 02       		.byte	2
+ 382 008b 00       		.space	1
+ 383 008c 00B4C404 		.word	80000000
+ 384 0090 0400     		.short	4
+ 385 0092 7F00     		.short	127
+ 386 0094 20       		.byte	32
+ 387 0095 20       		.byte	32
+ 388 0096 60       		.byte	96
+ 389 0097 00       		.byte	0
+ 390 0098 01       		.byte	1
+ 391 0099 00       		.space	1
+ 392 009a 0400     		.short	4
+ 393 009c 07       		.byte	7
+ 394 009d 02       		.byte	2
+ 395 009e 02       		.byte	2
+ 396 009f 00       		.space	1
+ 397 00a0 00B4C404 		.word	80000000
+ 398 00a4 0400     		.short	4
+ 399 00a6 7F00     		.short	127
+ 400 00a8 20       		.byte	32
+ 401 00a9 20       		.byte	32
+ 402 00aa 60       		.byte	96
+ 403 00ab 00       		.byte	0
+ 404 00ac 01       		.byte	1
+ 405 00ad 00       		.space	1
+ 406 00ae 0400     		.short	4
+ 407 00b0 07       		.byte	7
+ 408 00b1 02       		.byte	2
+ 409 00b2 02       		.byte	2
+ 410 00b3 00       		.space	1
+ 411 00b4 00B4C404 		.word	80000000
+ 412 00b8 0400     		.short	4
+ 413 00ba 7F00     		.short	127
+ 414 00bc 20       		.byte	32
+ 415 00bd 20       		.byte	32
+ 416 00be 60       		.byte	96
+ 417 00bf 00       		.byte	0
+ 418 00c0 01       		.byte	1
+ 419 00c1 00       		.space	1
+ 420 00c2 0400     		.short	4
+ 421 00c4 07       		.byte	7
+ 422 00c5 02       		.byte	2
+ 423 00c6 02       		.byte	2
+ 424 00c7 00       		.space	1
+ 425 00c8 00B4C404 		.word	80000000
+ 426 00cc 0400     		.short	4
+ 427 00ce 7F00     		.short	127
+ 428 00d0 20       		.byte	32
+ 429 00d1 20       		.byte	32
+ 430 00d2 60       		.byte	96
+ 431 00d3 00       		.byte	0
+ 432 00d4 01       		.byte	1
+ 433 00d5 00       		.space	1
+ 434 00d6 0400     		.short	4
+ 435 00d8 07       		.byte	7
+ 436 00d9 02       		.byte	2
+ 437 00da 02       		.byte	2
+ 438 00db 00       		.space	1
+ 439 00dc 00B4C404 		.word	80000000
+ 440 00e0 0400     		.short	4
+ 441 00e2 7F00     		.short	127
+ 442 00e4 20       		.byte	32
+ 443 00e5 20       		.byte	32
+ 444 00e6 60       		.byte	96
+ 445 00e7 00       		.byte	0
+ 446 00e8 01       		.byte	1
+ 447 00e9 00       		.space	1
+ 448 00ea 0400     		.short	4
+ 449 00ec 07       		.byte	7
+ 450 00ed 02       		.byte	2
+ 451 00ee 02       		.byte	2
+ 452 00ef 00       		.space	1
+ 453              		.text
+ 454              	.Letext0:
+ 455              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 456              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 457              		.file 4 "./inc/can.h"
+ 458              		.file 5 "./inc/hardware.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 can_user.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:25     .text:00000000 CAN_UserRead
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:101    .text:00000044 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:105    .text:00000048 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:113    .text:00000048 CAN_UserInvokeBootloader
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:163    .text:00000068 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:168    .text:00000070 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:176    .text:00000070 CAN_UserInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:272    .text:00000108 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:277    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:281    .rodata:00000000 Timing_CANx
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccL5h19A.s:368    .rodata:00000078 TimingForBootloader.0
+
+UNDEFINED SYMBOLS
+CAN_Read
+CAN_UnInitialize
+CAN_Initialize
+HW_JumpToBootloader
+CAN_FilterAdd

@@ -1,0 +1,708 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ethernet.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.global	ethbroadcast
+  17              		.section	.rodata
+  18              		.align	2
+  21              	ethbroadcast:
+  22 0000 FFFFFFFF 		.ascii	"\377\377\377\377\377\377"
+  22      FFFF
+  23              		.global	ethzero
+  24 0006 0000     		.align	2
+  27              	ethzero:
+  28 0008 00000000 		.space	6
+  28      0000
+  29              		.text
+  30              		.align	1
+  31              		.global	ethernet_input
+  32              		.arch armv7e-m
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  36              		.fpu fpv5-d16
+  38              	ethernet_input:
+  39              	.LFB25:
+  40              		.file 1 "./lwip-2.1.2/src/netif/ethernet.c"
+   1:./lwip-2.1.2/src/netif/ethernet.c **** /**
+   2:./lwip-2.1.2/src/netif/ethernet.c ****  * @file
+   3:./lwip-2.1.2/src/netif/ethernet.c ****  * Ethernet common functions
+   4:./lwip-2.1.2/src/netif/ethernet.c ****  *
+   5:./lwip-2.1.2/src/netif/ethernet.c ****  * @defgroup ethernet Ethernet
+   6:./lwip-2.1.2/src/netif/ethernet.c ****  * @ingroup callbackstyle_api
+   7:./lwip-2.1.2/src/netif/ethernet.c ****  */
+   8:./lwip-2.1.2/src/netif/ethernet.c **** 
+   9:./lwip-2.1.2/src/netif/ethernet.c **** /*
+  10:./lwip-2.1.2/src/netif/ethernet.c ****  * Copyright (c) 2001-2003 Swedish Institute of Computer Science.
+  11:./lwip-2.1.2/src/netif/ethernet.c ****  * Copyright (c) 2003-2004 Leon Woestenberg <leon.woestenberg@axon.tv>
+  12:./lwip-2.1.2/src/netif/ethernet.c ****  * Copyright (c) 2003-2004 Axon Digital Design B.V., The Netherlands.
+  13:./lwip-2.1.2/src/netif/ethernet.c ****  * All rights reserved.
+  14:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  15:./lwip-2.1.2/src/netif/ethernet.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  16:./lwip-2.1.2/src/netif/ethernet.c ****  * are permitted provided that the following conditions are met:
+  17:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  18:./lwip-2.1.2/src/netif/ethernet.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  19:./lwip-2.1.2/src/netif/ethernet.c ****  *    this list of conditions and the following disclaimer.
+  20:./lwip-2.1.2/src/netif/ethernet.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  21:./lwip-2.1.2/src/netif/ethernet.c ****  *    this list of conditions and the following disclaimer in the documentation
+  22:./lwip-2.1.2/src/netif/ethernet.c ****  *    and/or other materials provided with the distribution.
+  23:./lwip-2.1.2/src/netif/ethernet.c ****  * 3. The name of the author may not be used to endorse or promote products
+  24:./lwip-2.1.2/src/netif/ethernet.c ****  *    derived from this software without specific prior written permission.
+  25:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  26:./lwip-2.1.2/src/netif/ethernet.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  27:./lwip-2.1.2/src/netif/ethernet.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  28:./lwip-2.1.2/src/netif/ethernet.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  29:./lwip-2.1.2/src/netif/ethernet.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  30:./lwip-2.1.2/src/netif/ethernet.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  31:./lwip-2.1.2/src/netif/ethernet.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  32:./lwip-2.1.2/src/netif/ethernet.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  33:./lwip-2.1.2/src/netif/ethernet.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  34:./lwip-2.1.2/src/netif/ethernet.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  35:./lwip-2.1.2/src/netif/ethernet.c ****  * OF SUCH DAMAGE.
+  36:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  37:./lwip-2.1.2/src/netif/ethernet.c ****  * This file is part of the lwIP TCP/IP stack.
+  38:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  39:./lwip-2.1.2/src/netif/ethernet.c ****  */
+  40:./lwip-2.1.2/src/netif/ethernet.c **** 
+  41:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/opt.h"
+  42:./lwip-2.1.2/src/netif/ethernet.c **** 
+  43:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_ARP || LWIP_ETHERNET
+  44:./lwip-2.1.2/src/netif/ethernet.c **** 
+  45:./lwip-2.1.2/src/netif/ethernet.c **** #include "netif/ethernet.h"
+  46:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/def.h"
+  47:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/stats.h"
+  48:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/etharp.h"
+  49:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/ip.h"
+  50:./lwip-2.1.2/src/netif/ethernet.c **** #include "lwip/snmp.h"
+  51:./lwip-2.1.2/src/netif/ethernet.c **** 
+  52:./lwip-2.1.2/src/netif/ethernet.c **** #include <string.h>
+  53:./lwip-2.1.2/src/netif/ethernet.c **** 
+  54:./lwip-2.1.2/src/netif/ethernet.c **** #include "netif/ppp/ppp_opts.h"
+  55:./lwip-2.1.2/src/netif/ethernet.c **** #if PPPOE_SUPPORT
+  56:./lwip-2.1.2/src/netif/ethernet.c **** #include "netif/ppp/pppoe.h"
+  57:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* PPPOE_SUPPORT */
+  58:./lwip-2.1.2/src/netif/ethernet.c **** 
+  59:./lwip-2.1.2/src/netif/ethernet.c **** #ifdef LWIP_HOOK_FILENAME
+  60:./lwip-2.1.2/src/netif/ethernet.c **** #include LWIP_HOOK_FILENAME
+  61:./lwip-2.1.2/src/netif/ethernet.c **** #endif
+  62:./lwip-2.1.2/src/netif/ethernet.c **** 
+  63:./lwip-2.1.2/src/netif/ethernet.c **** const struct eth_addr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
+  64:./lwip-2.1.2/src/netif/ethernet.c **** const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
+  65:./lwip-2.1.2/src/netif/ethernet.c **** 
+  66:./lwip-2.1.2/src/netif/ethernet.c **** /**
+  67:./lwip-2.1.2/src/netif/ethernet.c ****  * @ingroup lwip_nosys
+  68:./lwip-2.1.2/src/netif/ethernet.c ****  * Process received ethernet frames. Using this function instead of directly
+  69:./lwip-2.1.2/src/netif/ethernet.c ****  * calling ip_input and passing ARP frames through etharp in ethernetif_input,
+  70:./lwip-2.1.2/src/netif/ethernet.c ****  * the ARP cache is protected from concurrent access.\n
+  71:./lwip-2.1.2/src/netif/ethernet.c ****  * Don't call directly, pass to netif_add() and call netif->input().
+  72:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  73:./lwip-2.1.2/src/netif/ethernet.c ****  * @param p the received packet, p->payload pointing to the ethernet header
+  74:./lwip-2.1.2/src/netif/ethernet.c ****  * @param netif the network interface on which the packet was received
+  75:./lwip-2.1.2/src/netif/ethernet.c ****  *
+  76:./lwip-2.1.2/src/netif/ethernet.c ****  * @see LWIP_HOOK_UNKNOWN_ETH_PROTOCOL
+  77:./lwip-2.1.2/src/netif/ethernet.c ****  * @see ETHARP_SUPPORT_VLAN
+  78:./lwip-2.1.2/src/netif/ethernet.c ****  * @see LWIP_HOOK_VLAN_CHECK
+  79:./lwip-2.1.2/src/netif/ethernet.c ****  */
+  80:./lwip-2.1.2/src/netif/ethernet.c **** err_t
+  81:./lwip-2.1.2/src/netif/ethernet.c **** ethernet_input(struct pbuf *p, struct netif *netif)
+  82:./lwip-2.1.2/src/netif/ethernet.c **** {
+  41              		.loc 1 82 1
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 24
+  44              		@ frame_needed = 1, uses_anonymous_args = 0
+  45 0000 80B5     		push	{r7, lr}
+  46              	.LCFI0:
+  47              		.cfi_def_cfa_offset 8
+  48              		.cfi_offset 7, -8
+  49              		.cfi_offset 14, -4
+  50 0002 86B0     		sub	sp, sp, #24
+  51              	.LCFI1:
+  52              		.cfi_def_cfa_offset 32
+  53 0004 00AF     		add	r7, sp, #0
+  54              	.LCFI2:
+  55              		.cfi_def_cfa_register 7
+  56 0006 7860     		str	r0, [r7, #4]
+  57 0008 3960     		str	r1, [r7]
+  83:./lwip-2.1.2/src/netif/ethernet.c ****   struct eth_hdr *ethhdr;
+  84:./lwip-2.1.2/src/netif/ethernet.c ****   u16_t type;
+  85:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_ARP || ETHARP_SUPPORT_VLAN || LWIP_IPV6
+  86:./lwip-2.1.2/src/netif/ethernet.c ****   u16_t next_hdr_offset = SIZEOF_ETH_HDR;
+  58              		.loc 1 86 9
+  59 000a 0E23     		movs	r3, #14
+  60 000c FB82     		strh	r3, [r7, #22]	@ movhi
+  87:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_ARP || ETHARP_SUPPORT_VLAN */
+  88:./lwip-2.1.2/src/netif/ethernet.c **** 
+  89:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_ASSERT_CORE_LOCKED();
+  90:./lwip-2.1.2/src/netif/ethernet.c **** 
+  91:./lwip-2.1.2/src/netif/ethernet.c ****   if (p->len <= SIZEOF_ETH_HDR) {
+  61              		.loc 1 91 8
+  62 000e 7B68     		ldr	r3, [r7, #4]
+  63 0010 5B89     		ldrh	r3, [r3, #10]
+  64              		.loc 1 91 6
+  65 0012 0E2B     		cmp	r3, #14
+  66 0014 6ED9     		bls	.L16
+  92:./lwip-2.1.2/src/netif/ethernet.c ****     /* a packet with only an ethernet header (or less) is not valid for us */
+  93:./lwip-2.1.2/src/netif/ethernet.c ****     ETHARP_STATS_INC(etharp.proterr);
+  94:./lwip-2.1.2/src/netif/ethernet.c ****     ETHARP_STATS_INC(etharp.drop);
+  95:./lwip-2.1.2/src/netif/ethernet.c ****     MIB2_STATS_NETIF_INC(netif, ifinerrors);
+  96:./lwip-2.1.2/src/netif/ethernet.c ****     goto free_and_return;
+  97:./lwip-2.1.2/src/netif/ethernet.c ****   }
+  98:./lwip-2.1.2/src/netif/ethernet.c **** 
+  99:./lwip-2.1.2/src/netif/ethernet.c ****   if (p->if_idx == NETIF_NO_INDEX) {
+  67              		.loc 1 99 8
+  68 0016 7B68     		ldr	r3, [r7, #4]
+  69 0018 DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+  70              		.loc 1 99 6
+  71 001a 002B     		cmp	r3, #0
+  72 001c 06D1     		bne	.L4
+ 100:./lwip-2.1.2/src/netif/ethernet.c ****     p->if_idx = netif_get_index(netif);
+  73              		.loc 1 100 17
+  74 001e 3B68     		ldr	r3, [r7]
+  75 0020 93F83030 		ldrb	r3, [r3, #48]	@ zero_extendqisi2
+  76 0024 0133     		adds	r3, r3, #1
+  77 0026 DAB2     		uxtb	r2, r3
+  78              		.loc 1 100 15
+  79 0028 7B68     		ldr	r3, [r7, #4]
+  80 002a DA73     		strb	r2, [r3, #15]
+  81              	.L4:
+ 101:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 102:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 103:./lwip-2.1.2/src/netif/ethernet.c ****   /* points to packet payload, which starts with an Ethernet header */
+ 104:./lwip-2.1.2/src/netif/ethernet.c ****   ethhdr = (struct eth_hdr *)p->payload;
+  82              		.loc 1 104 10
+  83 002c 7B68     		ldr	r3, [r7, #4]
+  84 002e 5B68     		ldr	r3, [r3, #4]
+  85 0030 3B61     		str	r3, [r7, #16]
+ 105:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
+ 106:./lwip-2.1.2/src/netif/ethernet.c ****               ("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%
+ 107:./lwip-2.1.2/src/netif/ethernet.c ****                (unsigned char)ethhdr->dest.addr[0], (unsigned char)ethhdr->dest.addr[1], (unsigned 
+ 108:./lwip-2.1.2/src/netif/ethernet.c ****                (unsigned char)ethhdr->dest.addr[3], (unsigned char)ethhdr->dest.addr[4], (unsigned 
+ 109:./lwip-2.1.2/src/netif/ethernet.c ****                (unsigned char)ethhdr->src.addr[0],  (unsigned char)ethhdr->src.addr[1],  (unsigned 
+ 110:./lwip-2.1.2/src/netif/ethernet.c ****                (unsigned char)ethhdr->src.addr[3],  (unsigned char)ethhdr->src.addr[4],  (unsigned 
+ 111:./lwip-2.1.2/src/netif/ethernet.c ****                lwip_htons(ethhdr->type)));
+ 112:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 113:./lwip-2.1.2/src/netif/ethernet.c ****   type = ethhdr->type;
+  86              		.loc 1 113 8
+  87 0032 3B69     		ldr	r3, [r7, #16]
+  88 0034 1A7B     		ldrb	r2, [r3, #12]	@ zero_extendqisi2
+  89 0036 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+  90 0038 1B02     		lsls	r3, r3, #8
+  91 003a 1343     		orrs	r3, r3, r2
+  92 003c FB81     		strh	r3, [r7, #14]	@ movhi
+ 114:./lwip-2.1.2/src/netif/ethernet.c **** #if ETHARP_SUPPORT_VLAN
+ 115:./lwip-2.1.2/src/netif/ethernet.c ****   if (type == PP_HTONS(ETHTYPE_VLAN)) {
+ 116:./lwip-2.1.2/src/netif/ethernet.c ****     struct eth_vlan_hdr *vlan = (struct eth_vlan_hdr *)(((char *)ethhdr) + SIZEOF_ETH_HDR);
+ 117:./lwip-2.1.2/src/netif/ethernet.c ****     next_hdr_offset = SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR;
+ 118:./lwip-2.1.2/src/netif/ethernet.c ****     if (p->len <= SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) {
+ 119:./lwip-2.1.2/src/netif/ethernet.c ****       /* a packet with only an ethernet/vlan header (or less) is not valid for us */
+ 120:./lwip-2.1.2/src/netif/ethernet.c ****       ETHARP_STATS_INC(etharp.proterr);
+ 121:./lwip-2.1.2/src/netif/ethernet.c ****       ETHARP_STATS_INC(etharp.drop);
+ 122:./lwip-2.1.2/src/netif/ethernet.c ****       MIB2_STATS_NETIF_INC(netif, ifinerrors);
+ 123:./lwip-2.1.2/src/netif/ethernet.c ****       goto free_and_return;
+ 124:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 125:./lwip-2.1.2/src/netif/ethernet.c **** #if defined(LWIP_HOOK_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK_FN) /*
+ 126:./lwip-2.1.2/src/netif/ethernet.c **** #ifdef LWIP_HOOK_VLAN_CHECK
+ 127:./lwip-2.1.2/src/netif/ethernet.c ****     if (!LWIP_HOOK_VLAN_CHECK(netif, ethhdr, vlan)) {
+ 128:./lwip-2.1.2/src/netif/ethernet.c **** #elif defined(ETHARP_VLAN_CHECK_FN)
+ 129:./lwip-2.1.2/src/netif/ethernet.c ****     if (!ETHARP_VLAN_CHECK_FN(ethhdr, vlan)) {
+ 130:./lwip-2.1.2/src/netif/ethernet.c **** #elif defined(ETHARP_VLAN_CHECK)
+ 131:./lwip-2.1.2/src/netif/ethernet.c ****     if (VLAN_ID(vlan) != ETHARP_VLAN_CHECK) {
+ 132:./lwip-2.1.2/src/netif/ethernet.c **** #endif
+ 133:./lwip-2.1.2/src/netif/ethernet.c ****       /* silently ignore this packet: not for our VLAN */
+ 134:./lwip-2.1.2/src/netif/ethernet.c ****       pbuf_free(p);
+ 135:./lwip-2.1.2/src/netif/ethernet.c ****       return ERR_OK;
+ 136:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 137:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* defined(LWIP_HOOK_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK) || defined(ETHARP_VLAN_CHECK_
+ 138:./lwip-2.1.2/src/netif/ethernet.c ****     type = vlan->tpid;
+ 139:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 140:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* ETHARP_SUPPORT_VLAN */
+ 141:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 142:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_ARP_FILTER_NETIF
+ 143:./lwip-2.1.2/src/netif/ethernet.c ****   netif = LWIP_ARP_FILTER_NETIF_FN(p, netif, lwip_htons(type));
+ 144:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_ARP_FILTER_NETIF*/
+ 145:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 146:./lwip-2.1.2/src/netif/ethernet.c ****   if (ethhdr->dest.addr[0] & 1) {
+  93              		.loc 1 146 24
+  94 003e 3B69     		ldr	r3, [r7, #16]
+  95 0040 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  96              		.loc 1 146 28
+  97 0042 03F00103 		and	r3, r3, #1
+  98              		.loc 1 146 6
+  99 0046 002B     		cmp	r3, #0
+ 100 0048 23D0     		beq	.L5
+ 147:./lwip-2.1.2/src/netif/ethernet.c ****     /* this might be a multicast or broadcast packet */
+ 148:./lwip-2.1.2/src/netif/ethernet.c ****     if (ethhdr->dest.addr[0] == LL_IP4_MULTICAST_ADDR_0) {
+ 101              		.loc 1 148 26
+ 102 004a 3B69     		ldr	r3, [r7, #16]
+ 103 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 104              		.loc 1 148 8
+ 105 004e 012B     		cmp	r3, #1
+ 106 0050 0FD1     		bne	.L6
+ 149:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_IPV4
+ 150:./lwip-2.1.2/src/netif/ethernet.c ****       if ((ethhdr->dest.addr[1] == LL_IP4_MULTICAST_ADDR_1) &&
+ 107              		.loc 1 150 29
+ 108 0052 3B69     		ldr	r3, [r7, #16]
+ 109 0054 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 110              		.loc 1 150 10
+ 111 0056 002B     		cmp	r3, #0
+ 112 0058 1BD1     		bne	.L5
+ 151:./lwip-2.1.2/src/netif/ethernet.c ****           (ethhdr->dest.addr[2] == LL_IP4_MULTICAST_ADDR_2)) {
+ 113              		.loc 1 151 29 discriminator 1
+ 114 005a 3B69     		ldr	r3, [r7, #16]
+ 115 005c 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 150:./lwip-2.1.2/src/netif/ethernet.c ****           (ethhdr->dest.addr[2] == LL_IP4_MULTICAST_ADDR_2)) {
+ 116              		.loc 1 150 61 discriminator 1
+ 117 005e 5E2B     		cmp	r3, #94
+ 118 0060 17D1     		bne	.L5
+ 152:./lwip-2.1.2/src/netif/ethernet.c ****         /* mark the pbuf as link-layer multicast */
+ 153:./lwip-2.1.2/src/netif/ethernet.c ****         p->flags |= PBUF_FLAG_LLMCAST;
+ 119              		.loc 1 153 18
+ 120 0062 7B68     		ldr	r3, [r7, #4]
+ 121 0064 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 122 0066 43F01003 		orr	r3, r3, #16
+ 123 006a DAB2     		uxtb	r2, r3
+ 124 006c 7B68     		ldr	r3, [r7, #4]
+ 125 006e 5A73     		strb	r2, [r3, #13]
+ 126 0070 0FE0     		b	.L5
+ 127              	.L6:
+ 154:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 155:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_IPV4 */
+ 156:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 157:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_IPV6
+ 158:./lwip-2.1.2/src/netif/ethernet.c ****     else if ((ethhdr->dest.addr[0] == LL_IP6_MULTICAST_ADDR_0) &&
+ 159:./lwip-2.1.2/src/netif/ethernet.c ****              (ethhdr->dest.addr[1] == LL_IP6_MULTICAST_ADDR_1)) {
+ 160:./lwip-2.1.2/src/netif/ethernet.c ****       /* mark the pbuf as link-layer multicast */
+ 161:./lwip-2.1.2/src/netif/ethernet.c ****       p->flags |= PBUF_FLAG_LLMCAST;
+ 162:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 163:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_IPV6 */
+ 164:./lwip-2.1.2/src/netif/ethernet.c ****     else if (eth_addr_cmp(&ethhdr->dest, &ethbroadcast)) {
+ 128              		.loc 1 164 14
+ 129 0072 3B69     		ldr	r3, [r7, #16]
+ 130 0074 0622     		movs	r2, #6
+ 131 0076 2849     		ldr	r1, .L21
+ 132 0078 1846     		mov	r0, r3
+ 133 007a FFF7FEFF 		bl	memcmp
+ 134 007e 0346     		mov	r3, r0
+ 135              		.loc 1 164 13
+ 136 0080 002B     		cmp	r3, #0
+ 137 0082 06D1     		bne	.L5
+ 165:./lwip-2.1.2/src/netif/ethernet.c ****       /* mark the pbuf as link-layer broadcast */
+ 166:./lwip-2.1.2/src/netif/ethernet.c ****       p->flags |= PBUF_FLAG_LLBCAST;
+ 138              		.loc 1 166 16
+ 139 0084 7B68     		ldr	r3, [r7, #4]
+ 140 0086 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 141 0088 43F00803 		orr	r3, r3, #8
+ 142 008c DAB2     		uxtb	r2, r3
+ 143 008e 7B68     		ldr	r3, [r7, #4]
+ 144 0090 5A73     		strb	r2, [r3, #13]
+ 145              	.L5:
+ 167:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 168:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 169:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 170:./lwip-2.1.2/src/netif/ethernet.c ****   switch (type) {
+ 146              		.loc 1 170 3
+ 147 0092 FB89     		ldrh	r3, [r7, #14]
+ 148 0094 082B     		cmp	r3, #8
+ 149 0096 03D0     		beq	.L7
+ 150 0098 B3F5C16F 		cmp	r3, #1544
+ 151 009c 14D0     		beq	.L8
+ 171:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_IPV4 && LWIP_ARP
+ 172:./lwip-2.1.2/src/netif/ethernet.c ****     /* IP packet? */
+ 173:./lwip-2.1.2/src/netif/ethernet.c ****     case PP_HTONS(ETHTYPE_IP):
+ 174:./lwip-2.1.2/src/netif/ethernet.c ****       if (!(netif->flags & NETIF_FLAG_ETHARP)) {
+ 175:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 176:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 177:./lwip-2.1.2/src/netif/ethernet.c ****       /* skip Ethernet header (min. size checked above) */
+ 178:./lwip-2.1.2/src/netif/ethernet.c ****       if (pbuf_remove_header(p, next_hdr_offset)) {
+ 179:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 180:./lwip-2.1.2/src/netif/ethernet.c ****                     ("ethernet_input: IPv4 packet dropped, too short (%"U16_F"/%"U16_F")\n",
+ 181:./lwip-2.1.2/src/netif/ethernet.c ****                      p->tot_len, next_hdr_offset));
+ 182:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
+ 183:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 184:./lwip-2.1.2/src/netif/ethernet.c ****       } else {
+ 185:./lwip-2.1.2/src/netif/ethernet.c ****         /* pass to IP layer */
+ 186:./lwip-2.1.2/src/netif/ethernet.c ****         ip4_input(p, netif);
+ 187:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 188:./lwip-2.1.2/src/netif/ethernet.c ****       break;
+ 189:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 190:./lwip-2.1.2/src/netif/ethernet.c ****     case PP_HTONS(ETHTYPE_ARP):
+ 191:./lwip-2.1.2/src/netif/ethernet.c ****       if (!(netif->flags & NETIF_FLAG_ETHARP)) {
+ 192:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 193:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 194:./lwip-2.1.2/src/netif/ethernet.c ****       /* skip Ethernet header (min. size checked above) */
+ 195:./lwip-2.1.2/src/netif/ethernet.c ****       if (pbuf_remove_header(p, next_hdr_offset)) {
+ 196:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 197:./lwip-2.1.2/src/netif/ethernet.c ****                     ("ethernet_input: ARP response packet dropped, too short (%"U16_F"/%"U16_F")\n"
+ 198:./lwip-2.1.2/src/netif/ethernet.c ****                      p->tot_len, next_hdr_offset));
+ 199:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
+ 200:./lwip-2.1.2/src/netif/ethernet.c ****         ETHARP_STATS_INC(etharp.lenerr);
+ 201:./lwip-2.1.2/src/netif/ethernet.c ****         ETHARP_STATS_INC(etharp.drop);
+ 202:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 203:./lwip-2.1.2/src/netif/ethernet.c ****       } else {
+ 204:./lwip-2.1.2/src/netif/ethernet.c ****         /* pass p to ARP module */
+ 205:./lwip-2.1.2/src/netif/ethernet.c ****         etharp_input(p, netif);
+ 206:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 207:./lwip-2.1.2/src/netif/ethernet.c ****       break;
+ 208:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_IPV4 && LWIP_ARP */
+ 209:./lwip-2.1.2/src/netif/ethernet.c **** #if PPPOE_SUPPORT
+ 210:./lwip-2.1.2/src/netif/ethernet.c ****     case PP_HTONS(ETHTYPE_PPPOEDISC): /* PPP Over Ethernet Discovery Stage */
+ 211:./lwip-2.1.2/src/netif/ethernet.c ****       pppoe_disc_input(netif, p);
+ 212:./lwip-2.1.2/src/netif/ethernet.c ****       break;
+ 213:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 214:./lwip-2.1.2/src/netif/ethernet.c ****     case PP_HTONS(ETHTYPE_PPPOE): /* PPP Over Ethernet Session Stage */
+ 215:./lwip-2.1.2/src/netif/ethernet.c ****       pppoe_data_input(netif, p);
+ 216:./lwip-2.1.2/src/netif/ethernet.c ****       break;
+ 217:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* PPPOE_SUPPORT */
+ 218:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 219:./lwip-2.1.2/src/netif/ethernet.c **** #if LWIP_IPV6
+ 220:./lwip-2.1.2/src/netif/ethernet.c ****     case PP_HTONS(ETHTYPE_IPV6): /* IPv6 */
+ 221:./lwip-2.1.2/src/netif/ethernet.c ****       /* skip Ethernet header */
+ 222:./lwip-2.1.2/src/netif/ethernet.c ****       if ((p->len < next_hdr_offset) || pbuf_remove_header(p, next_hdr_offset)) {
+ 223:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 224:./lwip-2.1.2/src/netif/ethernet.c ****                     ("ethernet_input: IPv6 packet dropped, too short (%"U16_F"/%"U16_F")\n",
+ 225:./lwip-2.1.2/src/netif/ethernet.c ****                      p->tot_len, next_hdr_offset));
+ 226:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 227:./lwip-2.1.2/src/netif/ethernet.c ****       } else {
+ 228:./lwip-2.1.2/src/netif/ethernet.c ****         /* pass to IPv6 layer */
+ 229:./lwip-2.1.2/src/netif/ethernet.c ****         ip6_input(p, netif);
+ 230:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 231:./lwip-2.1.2/src/netif/ethernet.c ****       break;
+ 232:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_IPV6 */
+ 233:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 234:./lwip-2.1.2/src/netif/ethernet.c ****     default:
+ 235:./lwip-2.1.2/src/netif/ethernet.c **** #ifdef LWIP_HOOK_UNKNOWN_ETH_PROTOCOL
+ 236:./lwip-2.1.2/src/netif/ethernet.c ****       if (LWIP_HOOK_UNKNOWN_ETH_PROTOCOL(p, netif) == ERR_OK) {
+ 237:./lwip-2.1.2/src/netif/ethernet.c ****         break;
+ 238:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 239:./lwip-2.1.2/src/netif/ethernet.c **** #endif
+ 240:./lwip-2.1.2/src/netif/ethernet.c ****       ETHARP_STATS_INC(etharp.proterr);
+ 241:./lwip-2.1.2/src/netif/ethernet.c ****       ETHARP_STATS_INC(etharp.drop);
+ 242:./lwip-2.1.2/src/netif/ethernet.c ****       MIB2_STATS_NETIF_INC(netif, ifinunknownprotos);
+ 243:./lwip-2.1.2/src/netif/ethernet.c ****       goto free_and_return;
+ 152              		.loc 1 243 7
+ 153 009e 32E0     		b	.L3
+ 154              	.L7:
+ 174:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 155              		.loc 1 174 18
+ 156 00a0 3B68     		ldr	r3, [r7]
+ 157 00a2 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 174:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 158              		.loc 1 174 26
+ 159 00a6 03F00803 		and	r3, r3, #8
+ 174:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 160              		.loc 1 174 10
+ 161 00aa 002B     		cmp	r3, #0
+ 162 00ac 24D0     		beq	.L17
+ 178:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 163              		.loc 1 178 11
+ 164 00ae FB8A     		ldrh	r3, [r7, #22]
+ 165 00b0 1946     		mov	r1, r3
+ 166 00b2 7868     		ldr	r0, [r7, #4]
+ 167 00b4 FFF7FEFF 		bl	pbuf_remove_header
+ 168 00b8 0346     		mov	r3, r0
+ 178:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 169              		.loc 1 178 10
+ 170 00ba 002B     		cmp	r3, #0
+ 171 00bc 1ED1     		bne	.L18
+ 186:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 172              		.loc 1 186 9
+ 173 00be 3968     		ldr	r1, [r7]
+ 174 00c0 7868     		ldr	r0, [r7, #4]
+ 175 00c2 FFF7FEFF 		bl	ip4_input
+ 188:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 176              		.loc 1 188 7
+ 177 00c6 13E0     		b	.L12
+ 178              	.L8:
+ 191:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 179              		.loc 1 191 18
+ 180 00c8 3B68     		ldr	r3, [r7]
+ 181 00ca 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 191:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 182              		.loc 1 191 26
+ 183 00ce 03F00803 		and	r3, r3, #8
+ 191:./lwip-2.1.2/src/netif/ethernet.c ****         goto free_and_return;
+ 184              		.loc 1 191 10
+ 185 00d2 002B     		cmp	r3, #0
+ 186 00d4 14D0     		beq	.L19
+ 195:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 187              		.loc 1 195 11
+ 188 00d6 FB8A     		ldrh	r3, [r7, #22]
+ 189 00d8 1946     		mov	r1, r3
+ 190 00da 7868     		ldr	r0, [r7, #4]
+ 191 00dc FFF7FEFF 		bl	pbuf_remove_header
+ 192 00e0 0346     		mov	r3, r0
+ 195:./lwip-2.1.2/src/netif/ethernet.c ****         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
+ 193              		.loc 1 195 10
+ 194 00e2 002B     		cmp	r3, #0
+ 195 00e4 0ED1     		bne	.L20
+ 205:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 196              		.loc 1 205 9
+ 197 00e6 3968     		ldr	r1, [r7]
+ 198 00e8 7868     		ldr	r0, [r7, #4]
+ 199 00ea FFF7FEFF 		bl	etharp_input
+ 207:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* LWIP_IPV4 && LWIP_ARP */
+ 200              		.loc 1 207 7
+ 201 00ee 00BF     		nop
+ 202              	.L12:
+ 244:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 245:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 246:./lwip-2.1.2/src/netif/ethernet.c ****   /* This means the pbuf is freed or consumed,
+ 247:./lwip-2.1.2/src/netif/ethernet.c ****      so the caller doesn't have to free it again */
+ 248:./lwip-2.1.2/src/netif/ethernet.c ****   return ERR_OK;
+ 203              		.loc 1 248 10
+ 204 00f0 0023     		movs	r3, #0
+ 205 00f2 0CE0     		b	.L15
+ 206              	.L16:
+  96:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 207              		.loc 1 96 5
+ 208 00f4 00BF     		nop
+ 209 00f6 06E0     		b	.L3
+ 210              	.L17:
+ 175:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 211              		.loc 1 175 9
+ 212 00f8 00BF     		nop
+ 213 00fa 04E0     		b	.L3
+ 214              	.L18:
+ 183:./lwip-2.1.2/src/netif/ethernet.c ****       } else {
+ 215              		.loc 1 183 9
+ 216 00fc 00BF     		nop
+ 217 00fe 02E0     		b	.L3
+ 218              	.L19:
+ 192:./lwip-2.1.2/src/netif/ethernet.c ****       }
+ 219              		.loc 1 192 9
+ 220 0100 00BF     		nop
+ 221 0102 00E0     		b	.L3
+ 222              	.L20:
+ 202:./lwip-2.1.2/src/netif/ethernet.c ****       } else {
+ 223              		.loc 1 202 9
+ 224 0104 00BF     		nop
+ 225              	.L3:
+ 249:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 250:./lwip-2.1.2/src/netif/ethernet.c **** free_and_return:
+ 251:./lwip-2.1.2/src/netif/ethernet.c ****   pbuf_free(p);
+ 226              		.loc 1 251 3
+ 227 0106 7868     		ldr	r0, [r7, #4]
+ 228 0108 FFF7FEFF 		bl	pbuf_free
+ 252:./lwip-2.1.2/src/netif/ethernet.c ****   return ERR_OK;
+ 229              		.loc 1 252 10
+ 230 010c 0023     		movs	r3, #0
+ 231              	.L15:
+ 253:./lwip-2.1.2/src/netif/ethernet.c **** }
+ 232              		.loc 1 253 1
+ 233 010e 1846     		mov	r0, r3
+ 234 0110 1837     		adds	r7, r7, #24
+ 235              	.LCFI3:
+ 236              		.cfi_def_cfa_offset 8
+ 237 0112 BD46     		mov	sp, r7
+ 238              	.LCFI4:
+ 239              		.cfi_def_cfa_register 13
+ 240              		@ sp needed
+ 241 0114 80BD     		pop	{r7, pc}
+ 242              	.L22:
+ 243 0116 00BF     		.align	2
+ 244              	.L21:
+ 245 0118 00000000 		.word	ethbroadcast
+ 246              		.cfi_endproc
+ 247              	.LFE25:
+ 249              		.align	1
+ 250              		.global	ethernet_output
+ 251              		.syntax unified
+ 252              		.thumb
+ 253              		.thumb_func
+ 254              		.fpu fpv5-d16
+ 256              	ethernet_output:
+ 257              	.LFB26:
+ 254:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 255:./lwip-2.1.2/src/netif/ethernet.c **** /**
+ 256:./lwip-2.1.2/src/netif/ethernet.c ****  * @ingroup ethernet
+ 257:./lwip-2.1.2/src/netif/ethernet.c ****  * Send an ethernet packet on the network using netif->linkoutput().
+ 258:./lwip-2.1.2/src/netif/ethernet.c ****  * The ethernet header is filled in before sending.
+ 259:./lwip-2.1.2/src/netif/ethernet.c ****  *
+ 260:./lwip-2.1.2/src/netif/ethernet.c ****  * @see LWIP_HOOK_VLAN_SET
+ 261:./lwip-2.1.2/src/netif/ethernet.c ****  *
+ 262:./lwip-2.1.2/src/netif/ethernet.c ****  * @param netif the lwIP network interface on which to send the packet
+ 263:./lwip-2.1.2/src/netif/ethernet.c ****  * @param p the packet to send. pbuf layer must be @ref PBUF_LINK.
+ 264:./lwip-2.1.2/src/netif/ethernet.c ****  * @param src the source MAC address to be copied into the ethernet header
+ 265:./lwip-2.1.2/src/netif/ethernet.c ****  * @param dst the destination MAC address to be copied into the ethernet header
+ 266:./lwip-2.1.2/src/netif/ethernet.c ****  * @param eth_type ethernet type (@ref lwip_ieee_eth_type)
+ 267:./lwip-2.1.2/src/netif/ethernet.c ****  * @return ERR_OK if the packet was sent, any other err_t on failure
+ 268:./lwip-2.1.2/src/netif/ethernet.c ****  */
+ 269:./lwip-2.1.2/src/netif/ethernet.c **** err_t
+ 270:./lwip-2.1.2/src/netif/ethernet.c **** ethernet_output(struct netif * netif, struct pbuf * p,
+ 271:./lwip-2.1.2/src/netif/ethernet.c ****                 const struct eth_addr * src, const struct eth_addr * dst,
+ 272:./lwip-2.1.2/src/netif/ethernet.c ****                 u16_t eth_type) {
+ 258              		.loc 1 272 33
+ 259              		.cfi_startproc
+ 260              		@ args = 4, pretend = 0, frame = 24
+ 261              		@ frame_needed = 1, uses_anonymous_args = 0
+ 262 011c 80B5     		push	{r7, lr}
+ 263              	.LCFI5:
+ 264              		.cfi_def_cfa_offset 8
+ 265              		.cfi_offset 7, -8
+ 266              		.cfi_offset 14, -4
+ 267 011e 86B0     		sub	sp, sp, #24
+ 268              	.LCFI6:
+ 269              		.cfi_def_cfa_offset 32
+ 270 0120 00AF     		add	r7, sp, #0
+ 271              	.LCFI7:
+ 272              		.cfi_def_cfa_register 7
+ 273 0122 F860     		str	r0, [r7, #12]
+ 274 0124 B960     		str	r1, [r7, #8]
+ 275 0126 7A60     		str	r2, [r7, #4]
+ 276 0128 3B60     		str	r3, [r7]
+ 273:./lwip-2.1.2/src/netif/ethernet.c ****   struct eth_hdr *ethhdr;
+ 274:./lwip-2.1.2/src/netif/ethernet.c ****   u16_t eth_type_be = lwip_htons(eth_type);
+ 277              		.loc 1 274 23
+ 278 012a 3B8C     		ldrh	r3, [r7, #32]
+ 279 012c 1846     		mov	r0, r3
+ 280 012e FFF7FEFF 		bl	lwip_htons
+ 281 0132 0346     		mov	r3, r0
+ 282 0134 FB82     		strh	r3, [r7, #22]	@ movhi
+ 275:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 276:./lwip-2.1.2/src/netif/ethernet.c **** #if ETHARP_SUPPORT_VLAN && defined(LWIP_HOOK_VLAN_SET)
+ 277:./lwip-2.1.2/src/netif/ethernet.c ****   s32_t vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
+ 278:./lwip-2.1.2/src/netif/ethernet.c ****   if (vlan_prio_vid >= 0) {
+ 279:./lwip-2.1.2/src/netif/ethernet.c ****     struct eth_vlan_hdr *vlanhdr;
+ 280:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 281:./lwip-2.1.2/src/netif/ethernet.c ****     LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
+ 282:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 283:./lwip-2.1.2/src/netif/ethernet.c ****     if (pbuf_add_header(p, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0) {
+ 284:./lwip-2.1.2/src/netif/ethernet.c ****       goto pbuf_header_failed;
+ 285:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 286:./lwip-2.1.2/src/netif/ethernet.c ****     vlanhdr = (struct eth_vlan_hdr *)(((u8_t *)p->payload) + SIZEOF_ETH_HDR);
+ 287:./lwip-2.1.2/src/netif/ethernet.c ****     vlanhdr->tpid     = eth_type_be;
+ 288:./lwip-2.1.2/src/netif/ethernet.c ****     vlanhdr->prio_vid = lwip_htons((u16_t)vlan_prio_vid);
+ 289:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 290:./lwip-2.1.2/src/netif/ethernet.c ****     eth_type_be = PP_HTONS(ETHTYPE_VLAN);
+ 291:./lwip-2.1.2/src/netif/ethernet.c ****   } else
+ 292:./lwip-2.1.2/src/netif/ethernet.c **** #endif /* ETHARP_SUPPORT_VLAN && defined(LWIP_HOOK_VLAN_SET) */
+ 293:./lwip-2.1.2/src/netif/ethernet.c ****   {
+ 294:./lwip-2.1.2/src/netif/ethernet.c ****     if (pbuf_add_header(p, SIZEOF_ETH_HDR) != 0) {
+ 283              		.loc 1 294 9
+ 284 0136 0E21     		movs	r1, #14
+ 285 0138 B868     		ldr	r0, [r7, #8]
+ 286 013a FFF7FEFF 		bl	pbuf_add_header
+ 287 013e 0346     		mov	r3, r0
+ 288              		.loc 1 294 8
+ 289 0140 002B     		cmp	r3, #0
+ 290 0142 19D1     		bne	.L28
+ 295:./lwip-2.1.2/src/netif/ethernet.c ****       goto pbuf_header_failed;
+ 296:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 297:./lwip-2.1.2/src/netif/ethernet.c ****   }
+ 298:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 299:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 300:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 301:./lwip-2.1.2/src/netif/ethernet.c ****   ethhdr = (struct eth_hdr *)p->payload;
+ 291              		.loc 1 301 10
+ 292 0144 BB68     		ldr	r3, [r7, #8]
+ 293 0146 5B68     		ldr	r3, [r3, #4]
+ 294 0148 3B61     		str	r3, [r7, #16]
+ 302:./lwip-2.1.2/src/netif/ethernet.c ****   ethhdr->type = eth_type_be;
+ 295              		.loc 1 302 16
+ 296 014a 3B69     		ldr	r3, [r7, #16]
+ 297 014c FA8A     		ldrh	r2, [r7, #22]	@ movhi
+ 298 014e 9A81     		strh	r2, [r3, #12]	@ unaligned
+ 303:./lwip-2.1.2/src/netif/ethernet.c ****   SMEMCPY(&ethhdr->dest, dst, ETH_HWADDR_LEN);
+ 299              		.loc 1 303 3
+ 300 0150 3B69     		ldr	r3, [r7, #16]
+ 301 0152 0622     		movs	r2, #6
+ 302 0154 3968     		ldr	r1, [r7]
+ 303 0156 1846     		mov	r0, r3
+ 304 0158 FFF7FEFF 		bl	memcpy
+ 304:./lwip-2.1.2/src/netif/ethernet.c ****   SMEMCPY(&ethhdr->src,  src, ETH_HWADDR_LEN);
+ 305              		.loc 1 304 3
+ 306 015c 3B69     		ldr	r3, [r7, #16]
+ 307 015e 0633     		adds	r3, r3, #6
+ 308 0160 0622     		movs	r2, #6
+ 309 0162 7968     		ldr	r1, [r7, #4]
+ 310 0164 1846     		mov	r0, r3
+ 311 0166 FFF7FEFF 		bl	memcpy
+ 305:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 306:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_ASSERT("netif->hwaddr_len must be 6 for ethernet_output!",
+ 307:./lwip-2.1.2/src/netif/ethernet.c ****               (netif->hwaddr_len == ETH_HWADDR_LEN));
+ 308:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,
+ 309:./lwip-2.1.2/src/netif/ethernet.c ****               ("ethernet_output: sending packet %p\n", (void *)p));
+ 310:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 311:./lwip-2.1.2/src/netif/ethernet.c ****   /* send the packet */
+ 312:./lwip-2.1.2/src/netif/ethernet.c ****   return netif->linkoutput(netif, p);
+ 312              		.loc 1 312 15
+ 313 016a FB68     		ldr	r3, [r7, #12]
+ 314 016c 9B69     		ldr	r3, [r3, #24]
+ 315              		.loc 1 312 10
+ 316 016e B968     		ldr	r1, [r7, #8]
+ 317 0170 F868     		ldr	r0, [r7, #12]
+ 318 0172 9847     		blx	r3
+ 319              	.LVL0:
+ 320 0174 0346     		mov	r3, r0
+ 321 0176 02E0     		b	.L26
+ 322              	.L28:
+ 295:./lwip-2.1.2/src/netif/ethernet.c ****     }
+ 323              		.loc 1 295 7
+ 324 0178 00BF     		nop
+ 325              	.L25:
+ 313:./lwip-2.1.2/src/netif/ethernet.c **** 
+ 314:./lwip-2.1.2/src/netif/ethernet.c **** pbuf_header_failed:
+ 315:./lwip-2.1.2/src/netif/ethernet.c ****   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
+ 316:./lwip-2.1.2/src/netif/ethernet.c ****               ("ethernet_output: could not allocate room for header.\n"));
+ 317:./lwip-2.1.2/src/netif/ethernet.c ****   LINK_STATS_INC(link.lenerr);
+ 318:./lwip-2.1.2/src/netif/ethernet.c ****   return ERR_BUF;
+ 326              		.loc 1 318 10
+ 327 017a 6FF00103 		mvn	r3, #1
+ 328              	.L26:
+ 319:./lwip-2.1.2/src/netif/ethernet.c **** }
+ 329              		.loc 1 319 1
+ 330 017e 1846     		mov	r0, r3
+ 331 0180 1837     		adds	r7, r7, #24
+ 332              	.LCFI8:
+ 333              		.cfi_def_cfa_offset 8
+ 334 0182 BD46     		mov	sp, r7
+ 335              	.LCFI9:
+ 336              		.cfi_def_cfa_register 13
+ 337              		@ sp needed
+ 338 0184 80BD     		pop	{r7, pc}
+ 339              		.cfi_endproc
+ 340              	.LFE26:
+ 342              	.Letext0:
+ 343              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 344              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 345              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 346              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
+ 347              		.file 6 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 348              		.file 7 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 349              		.file 8 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 350              		.file 9 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 351              		.file 10 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 352              		.file 11 "./lwip-2.1.2/src/include/lwip/prot/ieee.h"
+ 353              		.file 12 "./lwip-2.1.2/src/include/lwip/prot/ethernet.h"
+ 354              		.file 13 "./lwip-2.1.2/src/include/netif/ethernet.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ethernet.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:21     .rodata:00000000 ethbroadcast
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:18     .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:27     .rodata:00000008 ethzero
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:30     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:38     .text:00000000 ethernet_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:245    .text:00000118 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:249    .text:0000011c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccs8x7HC.s:256    .text:0000011c ethernet_output
+
+UNDEFINED SYMBOLS
+memcmp
+pbuf_remove_header
+ip4_input
+etharp_input
+pbuf_free
+lwip_htons
+pbuf_add_header
+memcpy

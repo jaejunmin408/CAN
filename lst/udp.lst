@@ -1,0 +1,3416 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"udp.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.data
+  17              		.align	1
+  20              	udp_port:
+  21 0000 00C0     		.short	-16384
+  22              		.global	udp_pcbs
+  23              		.bss
+  24              		.align	2
+  27              	udp_pcbs:
+  28 0000 00000000 		.space	4
+  29              		.text
+  30              		.align	1
+  31              		.global	udp_init
+  32              		.arch armv7e-m
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  36              		.fpu fpv5-d16
+  38              	udp_init:
+  39              	.LFB25:
+  40              		.file 1 "./lwip-2.1.2/src/core/udp.c"
+   1:./lwip-2.1.2/src/core/udp.c **** /**
+   2:./lwip-2.1.2/src/core/udp.c ****  * @file
+   3:./lwip-2.1.2/src/core/udp.c ****  * User Datagram Protocol module\n
+   4:./lwip-2.1.2/src/core/udp.c ****  * The code for the User Datagram Protocol UDP & UDPLite (RFC 3828).\n
+   5:./lwip-2.1.2/src/core/udp.c ****  * See also @ref udp_raw
+   6:./lwip-2.1.2/src/core/udp.c ****  *
+   7:./lwip-2.1.2/src/core/udp.c ****  * @defgroup udp_raw UDP
+   8:./lwip-2.1.2/src/core/udp.c ****  * @ingroup callbackstyle_api
+   9:./lwip-2.1.2/src/core/udp.c ****  * User Datagram Protocol module\n
+  10:./lwip-2.1.2/src/core/udp.c ****  * @see @ref api
+  11:./lwip-2.1.2/src/core/udp.c ****  */
+  12:./lwip-2.1.2/src/core/udp.c **** 
+  13:./lwip-2.1.2/src/core/udp.c **** /*
+  14:./lwip-2.1.2/src/core/udp.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+  15:./lwip-2.1.2/src/core/udp.c ****  * All rights reserved.
+  16:./lwip-2.1.2/src/core/udp.c ****  *
+  17:./lwip-2.1.2/src/core/udp.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  18:./lwip-2.1.2/src/core/udp.c ****  * are permitted provided that the following conditions are met:
+  19:./lwip-2.1.2/src/core/udp.c ****  *
+  20:./lwip-2.1.2/src/core/udp.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  21:./lwip-2.1.2/src/core/udp.c ****  *    this list of conditions and the following disclaimer.
+  22:./lwip-2.1.2/src/core/udp.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  23:./lwip-2.1.2/src/core/udp.c ****  *    this list of conditions and the following disclaimer in the documentation
+  24:./lwip-2.1.2/src/core/udp.c ****  *    and/or other materials provided with the distribution.
+  25:./lwip-2.1.2/src/core/udp.c ****  * 3. The name of the author may not be used to endorse or promote products
+  26:./lwip-2.1.2/src/core/udp.c ****  *    derived from this software without specific prior written permission.
+  27:./lwip-2.1.2/src/core/udp.c ****  *
+  28:./lwip-2.1.2/src/core/udp.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  29:./lwip-2.1.2/src/core/udp.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  30:./lwip-2.1.2/src/core/udp.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  31:./lwip-2.1.2/src/core/udp.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  32:./lwip-2.1.2/src/core/udp.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  33:./lwip-2.1.2/src/core/udp.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  34:./lwip-2.1.2/src/core/udp.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  35:./lwip-2.1.2/src/core/udp.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  36:./lwip-2.1.2/src/core/udp.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  37:./lwip-2.1.2/src/core/udp.c ****  * OF SUCH DAMAGE.
+  38:./lwip-2.1.2/src/core/udp.c ****  *
+  39:./lwip-2.1.2/src/core/udp.c ****  * This file is part of the lwIP TCP/IP stack.
+  40:./lwip-2.1.2/src/core/udp.c ****  *
+  41:./lwip-2.1.2/src/core/udp.c ****  * Author: Adam Dunkels <adam@sics.se>
+  42:./lwip-2.1.2/src/core/udp.c ****  *
+  43:./lwip-2.1.2/src/core/udp.c ****  */
+  44:./lwip-2.1.2/src/core/udp.c **** 
+  45:./lwip-2.1.2/src/core/udp.c **** /* @todo Check the use of '(struct udp_pcb).chksum_len_rx'!
+  46:./lwip-2.1.2/src/core/udp.c ****  */
+  47:./lwip-2.1.2/src/core/udp.c **** 
+  48:./lwip-2.1.2/src/core/udp.c **** #include "lwip/opt.h"
+  49:./lwip-2.1.2/src/core/udp.c **** 
+  50:./lwip-2.1.2/src/core/udp.c **** #if LWIP_UDP /* don't build if not configured for use in lwipopts.h */
+  51:./lwip-2.1.2/src/core/udp.c **** 
+  52:./lwip-2.1.2/src/core/udp.c **** #include "lwip/udp.h"
+  53:./lwip-2.1.2/src/core/udp.c **** #include "lwip/def.h"
+  54:./lwip-2.1.2/src/core/udp.c **** #include "lwip/memp.h"
+  55:./lwip-2.1.2/src/core/udp.c **** #include "lwip/inet_chksum.h"
+  56:./lwip-2.1.2/src/core/udp.c **** #include "lwip/ip_addr.h"
+  57:./lwip-2.1.2/src/core/udp.c **** #include "lwip/ip6.h"
+  58:./lwip-2.1.2/src/core/udp.c **** #include "lwip/ip6_addr.h"
+  59:./lwip-2.1.2/src/core/udp.c **** #include "lwip/netif.h"
+  60:./lwip-2.1.2/src/core/udp.c **** #include "lwip/icmp.h"
+  61:./lwip-2.1.2/src/core/udp.c **** #include "lwip/icmp6.h"
+  62:./lwip-2.1.2/src/core/udp.c **** #include "lwip/stats.h"
+  63:./lwip-2.1.2/src/core/udp.c **** #include "lwip/snmp.h"
+  64:./lwip-2.1.2/src/core/udp.c **** #include "lwip/dhcp.h"
+  65:./lwip-2.1.2/src/core/udp.c **** 
+  66:./lwip-2.1.2/src/core/udp.c **** #include <string.h>
+  67:./lwip-2.1.2/src/core/udp.c **** 
+  68:./lwip-2.1.2/src/core/udp.c **** #ifndef UDP_LOCAL_PORT_RANGE_START
+  69:./lwip-2.1.2/src/core/udp.c **** /* From http://www.iana.org/assignments/port-numbers:
+  70:./lwip-2.1.2/src/core/udp.c ****    "The Dynamic and/or Private Ports are those from 49152 through 65535" */
+  71:./lwip-2.1.2/src/core/udp.c **** #define UDP_LOCAL_PORT_RANGE_START  0xc000
+  72:./lwip-2.1.2/src/core/udp.c **** #define UDP_LOCAL_PORT_RANGE_END    0xffff
+  73:./lwip-2.1.2/src/core/udp.c **** #define UDP_ENSURE_LOCAL_PORT_RANGE(port) ((u16_t)(((port) & (u16_t)~UDP_LOCAL_PORT_RANGE_START) + 
+  74:./lwip-2.1.2/src/core/udp.c **** #endif
+  75:./lwip-2.1.2/src/core/udp.c **** 
+  76:./lwip-2.1.2/src/core/udp.c **** /* last local UDP port */
+  77:./lwip-2.1.2/src/core/udp.c **** static u16_t udp_port = UDP_LOCAL_PORT_RANGE_START;
+  78:./lwip-2.1.2/src/core/udp.c **** 
+  79:./lwip-2.1.2/src/core/udp.c **** /* The list of UDP PCBs */
+  80:./lwip-2.1.2/src/core/udp.c **** /* exported in udp.h (was static) */
+  81:./lwip-2.1.2/src/core/udp.c **** struct udp_pcb *udp_pcbs;
+  82:./lwip-2.1.2/src/core/udp.c **** 
+  83:./lwip-2.1.2/src/core/udp.c **** /**
+  84:./lwip-2.1.2/src/core/udp.c ****  * Initialize this module.
+  85:./lwip-2.1.2/src/core/udp.c ****  */
+  86:./lwip-2.1.2/src/core/udp.c **** void
+  87:./lwip-2.1.2/src/core/udp.c **** udp_init(void)
+  88:./lwip-2.1.2/src/core/udp.c **** {
+  41              		.loc 1 88 1
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 0
+  44              		@ frame_needed = 1, uses_anonymous_args = 0
+  45 0000 80B5     		push	{r7, lr}
+  46              	.LCFI0:
+  47              		.cfi_def_cfa_offset 8
+  48              		.cfi_offset 7, -8
+  49              		.cfi_offset 14, -4
+  50 0002 00AF     		add	r7, sp, #0
+  51              	.LCFI1:
+  52              		.cfi_def_cfa_register 7
+  89:./lwip-2.1.2/src/core/udp.c **** #ifdef LWIP_RAND
+  90:./lwip-2.1.2/src/core/udp.c ****   udp_port = UDP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());
+  53              		.loc 1 90 14
+  54 0004 FFF7FEFF 		bl	rand
+  55 0008 0346     		mov	r3, r0
+  56 000a 9BB2     		uxth	r3, r3
+  57 000c C3F30D03 		ubfx	r3, r3, #0, #14
+  58 0010 9BB2     		uxth	r3, r3
+  59 0012 A3F58043 		sub	r3, r3, #16384
+  60 0016 9AB2     		uxth	r2, r3
+  61              		.loc 1 90 12
+  62 0018 014B     		ldr	r3, .L2
+  63 001a 1A80     		strh	r2, [r3]	@ movhi
+  91:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_RAND */
+  92:./lwip-2.1.2/src/core/udp.c **** }
+  64              		.loc 1 92 1
+  65 001c 00BF     		nop
+  66 001e 80BD     		pop	{r7, pc}
+  67              	.L3:
+  68              		.align	2
+  69              	.L2:
+  70 0020 00000000 		.word	udp_port
+  71              		.cfi_endproc
+  72              	.LFE25:
+  74              		.align	1
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  78              		.fpu fpv5-d16
+  80              	udp_new_port:
+  81              	.LFB26:
+  93:./lwip-2.1.2/src/core/udp.c **** 
+  94:./lwip-2.1.2/src/core/udp.c **** /**
+  95:./lwip-2.1.2/src/core/udp.c ****  * Allocate a new local UDP port.
+  96:./lwip-2.1.2/src/core/udp.c ****  *
+  97:./lwip-2.1.2/src/core/udp.c ****  * @return a new (free) local UDP port number
+  98:./lwip-2.1.2/src/core/udp.c ****  */
+  99:./lwip-2.1.2/src/core/udp.c **** static u16_t
+ 100:./lwip-2.1.2/src/core/udp.c **** udp_new_port(void)
+ 101:./lwip-2.1.2/src/core/udp.c **** {
+  82              		.loc 1 101 1
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 8
+  85              		@ frame_needed = 1, uses_anonymous_args = 0
+  86              		@ link register save eliminated.
+  87 0024 80B4     		push	{r7}
+  88              	.LCFI2:
+  89              		.cfi_def_cfa_offset 4
+  90              		.cfi_offset 7, -4
+  91 0026 83B0     		sub	sp, sp, #12
+  92              	.LCFI3:
+  93              		.cfi_def_cfa_offset 16
+  94 0028 00AF     		add	r7, sp, #0
+  95              	.LCFI4:
+  96              		.cfi_def_cfa_register 7
+ 102:./lwip-2.1.2/src/core/udp.c ****   u16_t n = 0;
+  97              		.loc 1 102 9
+  98 002a 0023     		movs	r3, #0
+  99 002c FB80     		strh	r3, [r7, #6]	@ movhi
+ 100              	.L5:
+ 103:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *pcb;
+ 104:./lwip-2.1.2/src/core/udp.c **** 
+ 105:./lwip-2.1.2/src/core/udp.c **** again:
+ 106:./lwip-2.1.2/src/core/udp.c ****   if (udp_port++ == UDP_LOCAL_PORT_RANGE_END) {
+ 101              		.loc 1 106 15
+ 102 002e 174B     		ldr	r3, .L12
+ 103 0030 1B88     		ldrh	r3, [r3]
+ 104 0032 5A1C     		adds	r2, r3, #1
+ 105 0034 91B2     		uxth	r1, r2
+ 106 0036 154A     		ldr	r2, .L12
+ 107 0038 1180     		strh	r1, [r2]	@ movhi
+ 108              		.loc 1 106 6
+ 109 003a 4FF6FF72 		movw	r2, #65535
+ 110 003e 9342     		cmp	r3, r2
+ 111 0040 03D1     		bne	.L6
+ 107:./lwip-2.1.2/src/core/udp.c ****     udp_port = UDP_LOCAL_PORT_RANGE_START;
+ 112              		.loc 1 107 14
+ 113 0042 124B     		ldr	r3, .L12
+ 114 0044 4FF44042 		mov	r2, #49152
+ 115 0048 1A80     		strh	r2, [r3]	@ movhi
+ 116              	.L6:
+ 108:./lwip-2.1.2/src/core/udp.c ****   }
+ 109:./lwip-2.1.2/src/core/udp.c ****   /* Check all PCBs. */
+ 110:./lwip-2.1.2/src/core/udp.c ****   for (pcb = udp_pcbs; pcb != NULL; pcb = pcb->next) {
+ 117              		.loc 1 110 12
+ 118 004a 114B     		ldr	r3, .L12+4
+ 119 004c 1B68     		ldr	r3, [r3]
+ 120 004e 3B60     		str	r3, [r7]
+ 121              		.loc 1 110 3
+ 122 0050 11E0     		b	.L7
+ 123              	.L11:
+ 111:./lwip-2.1.2/src/core/udp.c ****     if (pcb->local_port == udp_port) {
+ 124              		.loc 1 111 12
+ 125 0052 3B68     		ldr	r3, [r7]
+ 126 0054 5A8A     		ldrh	r2, [r3, #18]
+ 127              		.loc 1 111 25
+ 128 0056 0D4B     		ldr	r3, .L12
+ 129 0058 1B88     		ldrh	r3, [r3]
+ 130              		.loc 1 111 8
+ 131 005a 9A42     		cmp	r2, r3
+ 132 005c 08D1     		bne	.L8
+ 112:./lwip-2.1.2/src/core/udp.c ****       if (++n > (UDP_LOCAL_PORT_RANGE_END - UDP_LOCAL_PORT_RANGE_START)) {
+ 133              		.loc 1 112 10
+ 134 005e FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 135 0060 0133     		adds	r3, r3, #1
+ 136 0062 FB80     		strh	r3, [r7, #6]	@ movhi
+ 137 0064 FB88     		ldrh	r3, [r7, #6]
+ 138 0066 B3F5804F 		cmp	r3, #16384
+ 139 006a E0D3     		bcc	.L5
+ 113:./lwip-2.1.2/src/core/udp.c ****         return 0;
+ 140              		.loc 1 113 16
+ 141 006c 0023     		movs	r3, #0
+ 142 006e 07E0     		b	.L10
+ 143              	.L8:
+ 110:./lwip-2.1.2/src/core/udp.c ****     if (pcb->local_port == udp_port) {
+ 144              		.loc 1 110 41 discriminator 2
+ 145 0070 3B68     		ldr	r3, [r7]
+ 146 0072 DB68     		ldr	r3, [r3, #12]
+ 147 0074 3B60     		str	r3, [r7]
+ 148              	.L7:
+ 110:./lwip-2.1.2/src/core/udp.c ****     if (pcb->local_port == udp_port) {
+ 149              		.loc 1 110 3 discriminator 1
+ 150 0076 3B68     		ldr	r3, [r7]
+ 151 0078 002B     		cmp	r3, #0
+ 152 007a EAD1     		bne	.L11
+ 114:./lwip-2.1.2/src/core/udp.c ****       }
+ 115:./lwip-2.1.2/src/core/udp.c ****       goto again;
+ 116:./lwip-2.1.2/src/core/udp.c ****     }
+ 117:./lwip-2.1.2/src/core/udp.c ****   }
+ 118:./lwip-2.1.2/src/core/udp.c ****   return udp_port;
+ 153              		.loc 1 118 10
+ 154 007c 034B     		ldr	r3, .L12
+ 155 007e 1B88     		ldrh	r3, [r3]
+ 156              	.L10:
+ 119:./lwip-2.1.2/src/core/udp.c **** }
+ 157              		.loc 1 119 1
+ 158 0080 1846     		mov	r0, r3
+ 159 0082 0C37     		adds	r7, r7, #12
+ 160              	.LCFI5:
+ 161              		.cfi_def_cfa_offset 4
+ 162 0084 BD46     		mov	sp, r7
+ 163              	.LCFI6:
+ 164              		.cfi_def_cfa_register 13
+ 165              		@ sp needed
+ 166 0086 5DF8047B 		ldr	r7, [sp], #4
+ 167              	.LCFI7:
+ 168              		.cfi_restore 7
+ 169              		.cfi_def_cfa_offset 0
+ 170 008a 7047     		bx	lr
+ 171              	.L13:
+ 172              		.align	2
+ 173              	.L12:
+ 174 008c 00000000 		.word	udp_port
+ 175 0090 00000000 		.word	udp_pcbs
+ 176              		.cfi_endproc
+ 177              	.LFE26:
+ 179              		.align	1
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 183              		.fpu fpv5-d16
+ 185              	udp_input_local_match:
+ 186              	.LFB27:
+ 120:./lwip-2.1.2/src/core/udp.c **** 
+ 121:./lwip-2.1.2/src/core/udp.c **** /** Common code to see if the current input packet matches the pcb
+ 122:./lwip-2.1.2/src/core/udp.c ****  * (current input packet is accessed via ip(4/6)_current_* macros)
+ 123:./lwip-2.1.2/src/core/udp.c ****  *
+ 124:./lwip-2.1.2/src/core/udp.c ****  * @param pcb pcb to check
+ 125:./lwip-2.1.2/src/core/udp.c ****  * @param inp network interface on which the datagram was received (only used for IPv4)
+ 126:./lwip-2.1.2/src/core/udp.c ****  * @param broadcast 1 if his is an IPv4 broadcast (global or subnet-only), 0 otherwise (only used f
+ 127:./lwip-2.1.2/src/core/udp.c ****  * @return 1 on match, 0 otherwise
+ 128:./lwip-2.1.2/src/core/udp.c ****  */
+ 129:./lwip-2.1.2/src/core/udp.c **** static u8_t
+ 130:./lwip-2.1.2/src/core/udp.c **** udp_input_local_match(struct udp_pcb *pcb, struct netif *inp, u8_t broadcast)
+ 131:./lwip-2.1.2/src/core/udp.c **** {
+ 187              		.loc 1 131 1
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 16
+ 190              		@ frame_needed = 1, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+ 192 0094 80B4     		push	{r7}
+ 193              	.LCFI8:
+ 194              		.cfi_def_cfa_offset 4
+ 195              		.cfi_offset 7, -4
+ 196 0096 85B0     		sub	sp, sp, #20
+ 197              	.LCFI9:
+ 198              		.cfi_def_cfa_offset 24
+ 199 0098 00AF     		add	r7, sp, #0
+ 200              	.LCFI10:
+ 201              		.cfi_def_cfa_register 7
+ 202 009a F860     		str	r0, [r7, #12]
+ 203 009c B960     		str	r1, [r7, #8]
+ 204 009e 1346     		mov	r3, r2
+ 205 00a0 FB71     		strb	r3, [r7, #7]
+ 132:./lwip-2.1.2/src/core/udp.c ****   LWIP_UNUSED_ARG(inp);       /* in IPv6 only case */
+ 133:./lwip-2.1.2/src/core/udp.c ****   LWIP_UNUSED_ARG(broadcast); /* in IPv6 only case */
+ 134:./lwip-2.1.2/src/core/udp.c **** 
+ 135:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT("udp_input_local_match: invalid pcb", pcb != NULL);
+ 136:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT("udp_input_local_match: invalid netif", inp != NULL);
+ 137:./lwip-2.1.2/src/core/udp.c **** 
+ 138:./lwip-2.1.2/src/core/udp.c ****   /* check if PCB is bound to specific netif */
+ 139:./lwip-2.1.2/src/core/udp.c ****   if ((pcb->netif_idx != NETIF_NO_INDEX) &&
+ 206              		.loc 1 139 11
+ 207 00a2 FB68     		ldr	r3, [r7, #12]
+ 208 00a4 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 209              		.loc 1 139 6
+ 210 00a6 002B     		cmp	r3, #0
+ 211 00a8 0BD0     		beq	.L15
+ 140:./lwip-2.1.2/src/core/udp.c ****       (pcb->netif_idx != netif_get_index(ip_data.current_input_netif))) {
+ 212              		.loc 1 140 11 discriminator 1
+ 213 00aa FB68     		ldr	r3, [r7, #12]
+ 214 00ac 1A7A     		ldrb	r2, [r3, #8]	@ zero_extendqisi2
+ 215              		.loc 1 140 26 discriminator 1
+ 216 00ae 1E4B     		ldr	r3, .L21
+ 217 00b0 5B68     		ldr	r3, [r3, #4]
+ 218 00b2 93F83030 		ldrb	r3, [r3, #48]	@ zero_extendqisi2
+ 219 00b6 0133     		adds	r3, r3, #1
+ 220 00b8 DBB2     		uxtb	r3, r3
+ 139:./lwip-2.1.2/src/core/udp.c ****       (pcb->netif_idx != netif_get_index(ip_data.current_input_netif))) {
+ 221              		.loc 1 139 42 discriminator 1
+ 222 00ba 9A42     		cmp	r2, r3
+ 223 00bc 01D0     		beq	.L15
+ 141:./lwip-2.1.2/src/core/udp.c ****     return 0;
+ 224              		.loc 1 141 12
+ 225 00be 0023     		movs	r3, #0
+ 226 00c0 2BE0     		b	.L16
+ 227              	.L15:
+ 142:./lwip-2.1.2/src/core/udp.c ****   }
+ 143:./lwip-2.1.2/src/core/udp.c **** 
+ 144:./lwip-2.1.2/src/core/udp.c ****   /* Dual-stack: PCBs listening to any IP type also listen to any IP address */
+ 145:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_ANY_TYPE_VAL(pcb->local_ip)) {
+ 146:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && IP_SOF_BROADCAST_RECV
+ 147:./lwip-2.1.2/src/core/udp.c ****     if ((broadcast != 0) && !ip_get_option(pcb, SOF_BROADCAST)) {
+ 148:./lwip-2.1.2/src/core/udp.c ****       return 0;
+ 149:./lwip-2.1.2/src/core/udp.c ****     }
+ 150:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 && IP_SOF_BROADCAST_RECV */
+ 151:./lwip-2.1.2/src/core/udp.c ****     return 1;
+ 152:./lwip-2.1.2/src/core/udp.c ****   }
+ 153:./lwip-2.1.2/src/core/udp.c **** 
+ 154:./lwip-2.1.2/src/core/udp.c ****   /* Only need to check PCB if incoming IP version matches PCB IP version */
+ 155:./lwip-2.1.2/src/core/udp.c ****   if (IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ip_current_dest_addr())) {
+ 156:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 157:./lwip-2.1.2/src/core/udp.c ****     /* Special case: IPv4 broadcast: all or broadcasts in my subnet
+ 158:./lwip-2.1.2/src/core/udp.c ****      * Note: broadcast variable can only be 1 if it is an IPv4 broadcast */
+ 159:./lwip-2.1.2/src/core/udp.c ****     if (broadcast != 0) {
+ 228              		.loc 1 159 8
+ 229 00c2 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 230 00c4 002B     		cmp	r3, #0
+ 231 00c6 18D0     		beq	.L17
+ 160:./lwip-2.1.2/src/core/udp.c **** #if IP_SOF_BROADCAST_RECV
+ 161:./lwip-2.1.2/src/core/udp.c ****       if (ip_get_option(pcb, SOF_BROADCAST))
+ 162:./lwip-2.1.2/src/core/udp.c **** #endif /* IP_SOF_BROADCAST_RECV */
+ 163:./lwip-2.1.2/src/core/udp.c ****       {
+ 164:./lwip-2.1.2/src/core/udp.c ****         if (ip4_addr_isany(ip_2_ip4(&pcb->local_ip)) ||
+ 232              		.loc 1 164 13
+ 233 00c8 FB68     		ldr	r3, [r7, #12]
+ 234              		.loc 1 164 12
+ 235 00ca 002B     		cmp	r3, #0
+ 236 00cc 13D0     		beq	.L18
+ 237              		.loc 1 164 13 discriminator 1
+ 238 00ce FB68     		ldr	r3, [r7, #12]
+ 239 00d0 1B68     		ldr	r3, [r3]
+ 240 00d2 002B     		cmp	r3, #0
+ 241 00d4 0FD0     		beq	.L18
+ 165:./lwip-2.1.2/src/core/udp.c ****             ((ip4_current_dest_addr()->addr == IPADDR_BROADCAST)) ||
+ 242              		.loc 1 165 38 discriminator 2
+ 243 00d6 144B     		ldr	r3, .L21
+ 244 00d8 5B69     		ldr	r3, [r3, #20]
+ 164:./lwip-2.1.2/src/core/udp.c ****             ((ip4_current_dest_addr()->addr == IPADDR_BROADCAST)) ||
+ 245              		.loc 1 164 54 discriminator 2
+ 246 00da B3F1FF3F 		cmp	r3, #-1
+ 247 00de 0AD0     		beq	.L18
+ 166:./lwip-2.1.2/src/core/udp.c ****             ip4_addr_netcmp(ip_2_ip4(&pcb->local_ip), ip4_current_dest_addr(), netif_ip4_netmask(in
+ 248              		.loc 1 166 13
+ 249 00e0 FB68     		ldr	r3, [r7, #12]
+ 250 00e2 1A68     		ldr	r2, [r3]
+ 251 00e4 104B     		ldr	r3, .L21
+ 252 00e6 5B69     		ldr	r3, [r3, #20]
+ 253 00e8 5A40     		eors	r2, r2, r3
+ 254 00ea BB68     		ldr	r3, [r7, #8]
+ 255 00ec 0833     		adds	r3, r3, #8
+ 256 00ee 1B68     		ldr	r3, [r3]
+ 257 00f0 1340     		ands	r3, r3, r2
+ 165:./lwip-2.1.2/src/core/udp.c ****             ((ip4_current_dest_addr()->addr == IPADDR_BROADCAST)) ||
+ 258              		.loc 1 165 67
+ 259 00f2 002B     		cmp	r3, #0
+ 260 00f4 10D1     		bne	.L19
+ 261              	.L18:
+ 167:./lwip-2.1.2/src/core/udp.c ****           return 1;
+ 262              		.loc 1 167 18
+ 263 00f6 0123     		movs	r3, #1
+ 264 00f8 0FE0     		b	.L16
+ 265              	.L17:
+ 168:./lwip-2.1.2/src/core/udp.c ****         }
+ 169:./lwip-2.1.2/src/core/udp.c ****       }
+ 170:./lwip-2.1.2/src/core/udp.c ****     } else
+ 171:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 172:./lwip-2.1.2/src/core/udp.c ****       /* Handle IPv4 and IPv6: all or exact match */
+ 173:./lwip-2.1.2/src/core/udp.c ****       if (ip_addr_isany(&pcb->local_ip) || ip_addr_cmp(&pcb->local_ip, ip_current_dest_addr())) {
+ 266              		.loc 1 173 11
+ 267 00fa FB68     		ldr	r3, [r7, #12]
+ 268              		.loc 1 173 10
+ 269 00fc 002B     		cmp	r3, #0
+ 270 00fe 09D0     		beq	.L20
+ 271              		.loc 1 173 11 discriminator 1
+ 272 0100 FB68     		ldr	r3, [r7, #12]
+ 273 0102 1B68     		ldr	r3, [r3]
+ 274 0104 002B     		cmp	r3, #0
+ 275 0106 05D0     		beq	.L20
+ 276              		.loc 1 173 44 discriminator 2
+ 277 0108 FB68     		ldr	r3, [r7, #12]
+ 278 010a 1A68     		ldr	r2, [r3]
+ 279 010c 064B     		ldr	r3, .L21
+ 280 010e 5B69     		ldr	r3, [r3, #20]
+ 281              		.loc 1 173 41 discriminator 2
+ 282 0110 9A42     		cmp	r2, r3
+ 283 0112 01D1     		bne	.L19
+ 284              	.L20:
+ 174:./lwip-2.1.2/src/core/udp.c ****         return 1;
+ 285              		.loc 1 174 16
+ 286 0114 0123     		movs	r3, #1
+ 287 0116 00E0     		b	.L16
+ 288              	.L19:
+ 175:./lwip-2.1.2/src/core/udp.c ****       }
+ 176:./lwip-2.1.2/src/core/udp.c ****   }
+ 177:./lwip-2.1.2/src/core/udp.c **** 
+ 178:./lwip-2.1.2/src/core/udp.c ****   return 0;
+ 289              		.loc 1 178 10
+ 290 0118 0023     		movs	r3, #0
+ 291              	.L16:
+ 179:./lwip-2.1.2/src/core/udp.c **** }
+ 292              		.loc 1 179 1
+ 293 011a 1846     		mov	r0, r3
+ 294 011c 1437     		adds	r7, r7, #20
+ 295              	.LCFI11:
+ 296              		.cfi_def_cfa_offset 4
+ 297 011e BD46     		mov	sp, r7
+ 298              	.LCFI12:
+ 299              		.cfi_def_cfa_register 13
+ 300              		@ sp needed
+ 301 0120 5DF8047B 		ldr	r7, [sp], #4
+ 302              	.LCFI13:
+ 303              		.cfi_restore 7
+ 304              		.cfi_def_cfa_offset 0
+ 305 0124 7047     		bx	lr
+ 306              	.L22:
+ 307 0126 00BF     		.align	2
+ 308              	.L21:
+ 309 0128 00000000 		.word	ip_data
+ 310              		.cfi_endproc
+ 311              	.LFE27:
+ 313              		.align	1
+ 314              		.global	udp_input
+ 315              		.syntax unified
+ 316              		.thumb
+ 317              		.thumb_func
+ 318              		.fpu fpv5-d16
+ 320              	udp_input:
+ 321              	.LFB28:
+ 180:./lwip-2.1.2/src/core/udp.c **** 
+ 181:./lwip-2.1.2/src/core/udp.c **** /**
+ 182:./lwip-2.1.2/src/core/udp.c ****  * Process an incoming UDP datagram.
+ 183:./lwip-2.1.2/src/core/udp.c ****  *
+ 184:./lwip-2.1.2/src/core/udp.c ****  * Given an incoming UDP datagram (as a chain of pbufs) this function
+ 185:./lwip-2.1.2/src/core/udp.c ****  * finds a corresponding UDP PCB and hands over the pbuf to the pcbs
+ 186:./lwip-2.1.2/src/core/udp.c ****  * recv function. If no pcb is found or the datagram is incorrect, the
+ 187:./lwip-2.1.2/src/core/udp.c ****  * pbuf is freed.
+ 188:./lwip-2.1.2/src/core/udp.c ****  *
+ 189:./lwip-2.1.2/src/core/udp.c ****  * @param p pbuf to be demultiplexed to a UDP PCB (p->payload pointing to the UDP header)
+ 190:./lwip-2.1.2/src/core/udp.c ****  * @param inp network interface on which the datagram was received.
+ 191:./lwip-2.1.2/src/core/udp.c ****  *
+ 192:./lwip-2.1.2/src/core/udp.c ****  */
+ 193:./lwip-2.1.2/src/core/udp.c **** void
+ 194:./lwip-2.1.2/src/core/udp.c **** udp_input(struct pbuf *p, struct netif *inp)
+ 195:./lwip-2.1.2/src/core/udp.c **** {
+ 322              		.loc 1 195 1
+ 323              		.cfi_startproc
+ 324              		@ args = 0, pretend = 0, frame = 40
+ 325              		@ frame_needed = 1, uses_anonymous_args = 0
+ 326 012c 90B5     		push	{r4, r7, lr}
+ 327              	.LCFI14:
+ 328              		.cfi_def_cfa_offset 12
+ 329              		.cfi_offset 4, -12
+ 330              		.cfi_offset 7, -8
+ 331              		.cfi_offset 14, -4
+ 332 012e 8DB0     		sub	sp, sp, #52
+ 333              	.LCFI15:
+ 334              		.cfi_def_cfa_offset 64
+ 335 0130 02AF     		add	r7, sp, #8
+ 336              	.LCFI16:
+ 337              		.cfi_def_cfa 7, 56
+ 338 0132 7860     		str	r0, [r7, #4]
+ 339 0134 3960     		str	r1, [r7]
+ 196:./lwip-2.1.2/src/core/udp.c ****   struct udp_hdr *udphdr;
+ 197:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *pcb, *prev;
+ 198:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *uncon_pcb;
+ 199:./lwip-2.1.2/src/core/udp.c ****   u16_t src, dest;
+ 200:./lwip-2.1.2/src/core/udp.c ****   u8_t broadcast;
+ 201:./lwip-2.1.2/src/core/udp.c ****   u8_t for_us = 0;
+ 340              		.loc 1 201 8
+ 341 0136 0023     		movs	r3, #0
+ 342 0138 FB76     		strb	r3, [r7, #27]
+ 202:./lwip-2.1.2/src/core/udp.c **** 
+ 203:./lwip-2.1.2/src/core/udp.c ****   LWIP_UNUSED_ARG(inp);
+ 204:./lwip-2.1.2/src/core/udp.c **** 
+ 205:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 206:./lwip-2.1.2/src/core/udp.c **** 
+ 207:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT("udp_input: invalid pbuf", p != NULL);
+ 208:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT("udp_input: invalid netif", inp != NULL);
+ 209:./lwip-2.1.2/src/core/udp.c **** 
+ 210:./lwip-2.1.2/src/core/udp.c ****   PERF_START;
+ 211:./lwip-2.1.2/src/core/udp.c **** 
+ 212:./lwip-2.1.2/src/core/udp.c ****   UDP_STATS_INC(udp.recv);
+ 213:./lwip-2.1.2/src/core/udp.c **** 
+ 214:./lwip-2.1.2/src/core/udp.c ****   /* Check minimum length (UDP header) */
+ 215:./lwip-2.1.2/src/core/udp.c ****   if (p->len < UDP_HLEN) {
+ 343              		.loc 1 215 8
+ 344 013a 7B68     		ldr	r3, [r7, #4]
+ 345 013c 5B89     		ldrh	r3, [r3, #10]
+ 346              		.loc 1 215 6
+ 347 013e 072B     		cmp	r3, #7
+ 348 0140 03D8     		bhi	.L24
+ 216:./lwip-2.1.2/src/core/udp.c ****     /* drop short packets */
+ 217:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG,
+ 218:./lwip-2.1.2/src/core/udp.c ****                 ("udp_input: short UDP datagram (%"U16_F" bytes) discarded\n", p->tot_len));
+ 219:./lwip-2.1.2/src/core/udp.c ****     UDP_STATS_INC(udp.lenerr);
+ 220:./lwip-2.1.2/src/core/udp.c ****     UDP_STATS_INC(udp.drop);
+ 221:./lwip-2.1.2/src/core/udp.c ****     MIB2_STATS_INC(mib2.udpinerrors);
+ 222:./lwip-2.1.2/src/core/udp.c ****     pbuf_free(p);
+ 349              		.loc 1 222 5
+ 350 0142 7868     		ldr	r0, [r7, #4]
+ 351 0144 FFF7FEFF 		bl	pbuf_free
+ 223:./lwip-2.1.2/src/core/udp.c ****     goto end;
+ 352              		.loc 1 223 5
+ 353 0148 D7E0     		b	.L25
+ 354              	.L24:
+ 224:./lwip-2.1.2/src/core/udp.c ****   }
+ 225:./lwip-2.1.2/src/core/udp.c **** 
+ 226:./lwip-2.1.2/src/core/udp.c ****   udphdr = (struct udp_hdr *)p->payload;
+ 355              		.loc 1 226 10
+ 356 014a 7B68     		ldr	r3, [r7, #4]
+ 357 014c 5B68     		ldr	r3, [r3, #4]
+ 358 014e 7B61     		str	r3, [r7, #20]
+ 227:./lwip-2.1.2/src/core/udp.c **** 
+ 228:./lwip-2.1.2/src/core/udp.c ****   /* is broadcast packet ? */
+ 229:./lwip-2.1.2/src/core/udp.c ****   broadcast = ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif());
+ 359              		.loc 1 229 15
+ 360 0150 6C4B     		ldr	r3, .L44
+ 361 0152 5B69     		ldr	r3, [r3, #20]
+ 362 0154 6B4A     		ldr	r2, .L44
+ 363 0156 1268     		ldr	r2, [r2]
+ 364 0158 1146     		mov	r1, r2
+ 365 015a 1846     		mov	r0, r3
+ 366 015c FFF7FEFF 		bl	ip4_addr_isbroadcast_u32
+ 367 0160 0346     		mov	r3, r0
+ 368 0162 FB74     		strb	r3, [r7, #19]
+ 230:./lwip-2.1.2/src/core/udp.c **** 
+ 231:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, ("udp_input: received datagram of length %"U16_F"\n", p->tot_len));
+ 232:./lwip-2.1.2/src/core/udp.c **** 
+ 233:./lwip-2.1.2/src/core/udp.c ****   /* convert src and dest ports to host byte order */
+ 234:./lwip-2.1.2/src/core/udp.c ****   src = lwip_ntohs(udphdr->src);
+ 369              		.loc 1 234 9
+ 370 0164 7B69     		ldr	r3, [r7, #20]
+ 371 0166 1B88     		ldrh	r3, [r3]	@ unaligned
+ 372 0168 9BB2     		uxth	r3, r3
+ 373 016a 1846     		mov	r0, r3
+ 374 016c FFF7FEFF 		bl	lwip_htons
+ 375 0170 0346     		mov	r3, r0
+ 376 0172 3B82     		strh	r3, [r7, #16]	@ movhi
+ 235:./lwip-2.1.2/src/core/udp.c ****   dest = lwip_ntohs(udphdr->dest);
+ 377              		.loc 1 235 10
+ 378 0174 7B69     		ldr	r3, [r7, #20]
+ 379 0176 5B88     		ldrh	r3, [r3, #2]	@ unaligned
+ 380 0178 9BB2     		uxth	r3, r3
+ 381 017a 1846     		mov	r0, r3
+ 382 017c FFF7FEFF 		bl	lwip_htons
+ 383 0180 0346     		mov	r3, r0
+ 384 0182 FB81     		strh	r3, [r7, #14]	@ movhi
+ 236:./lwip-2.1.2/src/core/udp.c **** 
+ 237:./lwip-2.1.2/src/core/udp.c ****   udp_debug_print(udphdr);
+ 238:./lwip-2.1.2/src/core/udp.c **** 
+ 239:./lwip-2.1.2/src/core/udp.c ****   /* print the UDP source and destination */
+ 240:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, ("udp ("));
+ 241:./lwip-2.1.2/src/core/udp.c ****   ip_addr_debug_print_val(UDP_DEBUG, *ip_current_dest_addr());
+ 242:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F") <-- (", lwip_ntohs(udphdr->dest)));
+ 243:./lwip-2.1.2/src/core/udp.c ****   ip_addr_debug_print_val(UDP_DEBUG, *ip_current_src_addr());
+ 244:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F")\n", lwip_ntohs(udphdr->src)));
+ 245:./lwip-2.1.2/src/core/udp.c **** 
+ 246:./lwip-2.1.2/src/core/udp.c ****   pcb = NULL;
+ 385              		.loc 1 246 7
+ 386 0184 0023     		movs	r3, #0
+ 387 0186 7B62     		str	r3, [r7, #36]
+ 247:./lwip-2.1.2/src/core/udp.c ****   prev = NULL;
+ 388              		.loc 1 247 8
+ 389 0188 0023     		movs	r3, #0
+ 390 018a 3B62     		str	r3, [r7, #32]
+ 248:./lwip-2.1.2/src/core/udp.c ****   uncon_pcb = NULL;
+ 391              		.loc 1 248 13
+ 392 018c 0023     		movs	r3, #0
+ 393 018e FB61     		str	r3, [r7, #28]
+ 249:./lwip-2.1.2/src/core/udp.c ****   /* Iterate through the UDP pcb list for a matching pcb.
+ 250:./lwip-2.1.2/src/core/udp.c ****    * 'Perfect match' pcbs (connected to the remote port & ip address) are
+ 251:./lwip-2.1.2/src/core/udp.c ****    * preferred. If no perfect match is found, the first unconnected pcb that
+ 252:./lwip-2.1.2/src/core/udp.c ****    * matches the local port and ip address gets the datagram. */
+ 253:./lwip-2.1.2/src/core/udp.c ****   for (pcb = udp_pcbs; pcb != NULL; pcb = pcb->next) {
+ 394              		.loc 1 253 12
+ 395 0190 5D4B     		ldr	r3, .L44+4
+ 396 0192 1B68     		ldr	r3, [r3]
+ 397 0194 7B62     		str	r3, [r7, #36]
+ 398              		.loc 1 253 3
+ 399 0196 54E0     		b	.L26
+ 400              	.L33:
+ 254:./lwip-2.1.2/src/core/udp.c ****     /* print the PCB local and remote address */
+ 255:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, ("pcb ("));
+ 256:./lwip-2.1.2/src/core/udp.c ****     ip_addr_debug_print_val(UDP_DEBUG, pcb->local_ip);
+ 257:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F") <-- (", pcb->local_port));
+ 258:./lwip-2.1.2/src/core/udp.c ****     ip_addr_debug_print_val(UDP_DEBUG, pcb->remote_ip);
+ 259:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, (", %"U16_F")\n", pcb->remote_port));
+ 260:./lwip-2.1.2/src/core/udp.c **** 
+ 261:./lwip-2.1.2/src/core/udp.c ****     /* compare PCB local addr+port to UDP destination addr+port */
+ 262:./lwip-2.1.2/src/core/udp.c ****     if ((pcb->local_port == dest) &&
+ 401              		.loc 1 262 13
+ 402 0198 7B6A     		ldr	r3, [r7, #36]
+ 403 019a 5B8A     		ldrh	r3, [r3, #18]
+ 404              		.loc 1 262 8
+ 405 019c FA89     		ldrh	r2, [r7, #14]
+ 406 019e 9A42     		cmp	r2, r3
+ 407 01a0 4AD1     		bne	.L27
+ 263:./lwip-2.1.2/src/core/udp.c ****         (udp_input_local_match(pcb, inp, broadcast) != 0)) {
+ 408              		.loc 1 263 10 discriminator 1
+ 409 01a2 FB7C     		ldrb	r3, [r7, #19]	@ zero_extendqisi2
+ 410 01a4 1A46     		mov	r2, r3
+ 411 01a6 3968     		ldr	r1, [r7]
+ 412 01a8 786A     		ldr	r0, [r7, #36]
+ 413 01aa FFF773FF 		bl	udp_input_local_match
+ 414 01ae 0346     		mov	r3, r0
+ 262:./lwip-2.1.2/src/core/udp.c ****         (udp_input_local_match(pcb, inp, broadcast) != 0)) {
+ 415              		.loc 1 262 35 discriminator 1
+ 416 01b0 002B     		cmp	r3, #0
+ 417 01b2 41D0     		beq	.L27
+ 264:./lwip-2.1.2/src/core/udp.c ****       if ((pcb->flags & UDP_FLAGS_CONNECTED) == 0) {
+ 418              		.loc 1 264 15
+ 419 01b4 7B6A     		ldr	r3, [r7, #36]
+ 420 01b6 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 421              		.loc 1 264 23
+ 422 01b8 03F00403 		and	r3, r3, #4
+ 423              		.loc 1 264 10
+ 424 01bc 002B     		cmp	r3, #0
+ 425 01be 1DD1     		bne	.L28
+ 265:./lwip-2.1.2/src/core/udp.c ****         if (uncon_pcb == NULL) {
+ 426              		.loc 1 265 12
+ 427 01c0 FB69     		ldr	r3, [r7, #28]
+ 428 01c2 002B     		cmp	r3, #0
+ 429 01c4 02D1     		bne	.L29
+ 266:./lwip-2.1.2/src/core/udp.c ****           /* the first unconnected matching PCB */
+ 267:./lwip-2.1.2/src/core/udp.c ****           uncon_pcb = pcb;
+ 430              		.loc 1 267 21
+ 431 01c6 7B6A     		ldr	r3, [r7, #36]
+ 432 01c8 FB61     		str	r3, [r7, #28]
+ 433 01ca 17E0     		b	.L28
+ 434              	.L29:
+ 268:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 269:./lwip-2.1.2/src/core/udp.c ****         } else if (broadcast && ip4_current_dest_addr()->addr == IPADDR_BROADCAST) {
+ 435              		.loc 1 269 19
+ 436 01cc FB7C     		ldrb	r3, [r7, #19]	@ zero_extendqisi2
+ 437 01ce 002B     		cmp	r3, #0
+ 438 01d0 14D0     		beq	.L28
+ 439              		.loc 1 269 56 discriminator 1
+ 440 01d2 4C4B     		ldr	r3, .L44
+ 441 01d4 5B69     		ldr	r3, [r3, #20]
+ 442              		.loc 1 269 30 discriminator 1
+ 443 01d6 B3F1FF3F 		cmp	r3, #-1
+ 444 01da 0FD1     		bne	.L28
+ 270:./lwip-2.1.2/src/core/udp.c ****           /* global broadcast address (only valid for IPv4; match was checked before) */
+ 271:./lwip-2.1.2/src/core/udp.c ****           if (!IP_IS_V4_VAL(uncon_pcb->local_ip) || !ip4_addr_cmp(ip_2_ip4(&uncon_pcb->local_ip), n
+ 445              		.loc 1 271 54
+ 446 01dc FB69     		ldr	r3, [r7, #28]
+ 447 01de 1A68     		ldr	r2, [r3]
+ 448 01e0 3B68     		ldr	r3, [r7]
+ 449 01e2 0433     		adds	r3, r3, #4
+ 450 01e4 1B68     		ldr	r3, [r3]
+ 451              		.loc 1 271 14
+ 452 01e6 9A42     		cmp	r2, r3
+ 453 01e8 08D0     		beq	.L28
+ 272:./lwip-2.1.2/src/core/udp.c ****             /* uncon_pcb does not match the input netif, check this pcb */
+ 273:./lwip-2.1.2/src/core/udp.c ****             if (IP_IS_V4_VAL(pcb->local_ip) && ip4_addr_cmp(ip_2_ip4(&pcb->local_ip), netif_ip4_add
+ 454              		.loc 1 273 48
+ 455 01ea 7B6A     		ldr	r3, [r7, #36]
+ 456 01ec 1A68     		ldr	r2, [r3]
+ 457 01ee 3B68     		ldr	r3, [r7]
+ 458 01f0 0433     		adds	r3, r3, #4
+ 459 01f2 1B68     		ldr	r3, [r3]
+ 460              		.loc 1 273 16
+ 461 01f4 9A42     		cmp	r2, r3
+ 462 01f6 01D1     		bne	.L28
+ 274:./lwip-2.1.2/src/core/udp.c ****               /* better match */
+ 275:./lwip-2.1.2/src/core/udp.c ****               uncon_pcb = pcb;
+ 463              		.loc 1 275 25
+ 464 01f8 7B6A     		ldr	r3, [r7, #36]
+ 465 01fa FB61     		str	r3, [r7, #28]
+ 466              	.L28:
+ 276:./lwip-2.1.2/src/core/udp.c ****             }
+ 277:./lwip-2.1.2/src/core/udp.c ****           }
+ 278:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 279:./lwip-2.1.2/src/core/udp.c ****         }
+ 280:./lwip-2.1.2/src/core/udp.c **** #if SO_REUSE
+ 281:./lwip-2.1.2/src/core/udp.c ****         else if (!ip_addr_isany(&pcb->local_ip)) {
+ 282:./lwip-2.1.2/src/core/udp.c ****           /* prefer specific IPs over catch-all */
+ 283:./lwip-2.1.2/src/core/udp.c ****           uncon_pcb = pcb;
+ 284:./lwip-2.1.2/src/core/udp.c ****         }
+ 285:./lwip-2.1.2/src/core/udp.c **** #endif /* SO_REUSE */
+ 286:./lwip-2.1.2/src/core/udp.c ****       }
+ 287:./lwip-2.1.2/src/core/udp.c **** 
+ 288:./lwip-2.1.2/src/core/udp.c ****       /* compare PCB remote addr+port to UDP source addr+port */
+ 289:./lwip-2.1.2/src/core/udp.c ****       if ((pcb->remote_port == src) &&
+ 467              		.loc 1 289 15
+ 468 01fc 7B6A     		ldr	r3, [r7, #36]
+ 469 01fe 9B8A     		ldrh	r3, [r3, #20]
+ 470              		.loc 1 289 10
+ 471 0200 3A8A     		ldrh	r2, [r7, #16]
+ 472 0202 9A42     		cmp	r2, r3
+ 473 0204 18D1     		bne	.L27
+ 290:./lwip-2.1.2/src/core/udp.c ****           (ip_addr_isany_val(pcb->remote_ip) ||
+ 474              		.loc 1 290 12 discriminator 1
+ 475 0206 7B6A     		ldr	r3, [r7, #36]
+ 476 0208 5B68     		ldr	r3, [r3, #4]
+ 289:./lwip-2.1.2/src/core/udp.c ****           (ip_addr_isany_val(pcb->remote_ip) ||
+ 477              		.loc 1 289 37 discriminator 1
+ 478 020a 002B     		cmp	r3, #0
+ 479 020c 05D0     		beq	.L30
+ 291:./lwip-2.1.2/src/core/udp.c ****            ip_addr_cmp(&pcb->remote_ip, ip_current_src_addr()))) {
+ 480              		.loc 1 291 12
+ 481 020e 7B6A     		ldr	r3, [r7, #36]
+ 482 0210 5A68     		ldr	r2, [r3, #4]
+ 483 0212 3C4B     		ldr	r3, .L44
+ 484 0214 1B69     		ldr	r3, [r3, #16]
+ 290:./lwip-2.1.2/src/core/udp.c ****           (ip_addr_isany_val(pcb->remote_ip) ||
+ 485              		.loc 1 290 46
+ 486 0216 9A42     		cmp	r2, r3
+ 487 0218 0ED1     		bne	.L27
+ 488              	.L30:
+ 292:./lwip-2.1.2/src/core/udp.c ****         /* the first fully matching PCB */
+ 293:./lwip-2.1.2/src/core/udp.c ****         if (prev != NULL) {
+ 489              		.loc 1 293 12
+ 490 021a 3B6A     		ldr	r3, [r7, #32]
+ 491 021c 002B     		cmp	r3, #0
+ 492 021e 14D0     		beq	.L43
+ 294:./lwip-2.1.2/src/core/udp.c ****           /* move the pcb to the front of udp_pcbs so that is
+ 295:./lwip-2.1.2/src/core/udp.c ****              found faster next time */
+ 296:./lwip-2.1.2/src/core/udp.c ****           prev->next = pcb->next;
+ 493              		.loc 1 296 27
+ 494 0220 7B6A     		ldr	r3, [r7, #36]
+ 495 0222 DA68     		ldr	r2, [r3, #12]
+ 496              		.loc 1 296 22
+ 497 0224 3B6A     		ldr	r3, [r7, #32]
+ 498 0226 DA60     		str	r2, [r3, #12]
+ 297:./lwip-2.1.2/src/core/udp.c ****           pcb->next = udp_pcbs;
+ 499              		.loc 1 297 21
+ 500 0228 374B     		ldr	r3, .L44+4
+ 501 022a 1A68     		ldr	r2, [r3]
+ 502 022c 7B6A     		ldr	r3, [r7, #36]
+ 503 022e DA60     		str	r2, [r3, #12]
+ 298:./lwip-2.1.2/src/core/udp.c ****           udp_pcbs = pcb;
+ 504              		.loc 1 298 20
+ 505 0230 354A     		ldr	r2, .L44+4
+ 506 0232 7B6A     		ldr	r3, [r7, #36]
+ 507 0234 1360     		str	r3, [r2]
+ 299:./lwip-2.1.2/src/core/udp.c ****         } else {
+ 300:./lwip-2.1.2/src/core/udp.c ****           UDP_STATS_INC(udp.cachehit);
+ 301:./lwip-2.1.2/src/core/udp.c ****         }
+ 302:./lwip-2.1.2/src/core/udp.c ****         break;
+ 508              		.loc 1 302 9
+ 509 0236 08E0     		b	.L43
+ 510              	.L27:
+ 303:./lwip-2.1.2/src/core/udp.c ****       }
+ 304:./lwip-2.1.2/src/core/udp.c ****     }
+ 305:./lwip-2.1.2/src/core/udp.c **** 
+ 306:./lwip-2.1.2/src/core/udp.c ****     prev = pcb;
+ 511              		.loc 1 306 10 discriminator 2
+ 512 0238 7B6A     		ldr	r3, [r7, #36]
+ 513 023a 3B62     		str	r3, [r7, #32]
+ 253:./lwip-2.1.2/src/core/udp.c ****     /* print the PCB local and remote address */
+ 514              		.loc 1 253 41 discriminator 2
+ 515 023c 7B6A     		ldr	r3, [r7, #36]
+ 516 023e DB68     		ldr	r3, [r3, #12]
+ 517 0240 7B62     		str	r3, [r7, #36]
+ 518              	.L26:
+ 253:./lwip-2.1.2/src/core/udp.c ****     /* print the PCB local and remote address */
+ 519              		.loc 1 253 3 discriminator 1
+ 520 0242 7B6A     		ldr	r3, [r7, #36]
+ 521 0244 002B     		cmp	r3, #0
+ 522 0246 A7D1     		bne	.L33
+ 523 0248 00E0     		b	.L32
+ 524              	.L43:
+ 302:./lwip-2.1.2/src/core/udp.c ****       }
+ 525              		.loc 1 302 9
+ 526 024a 00BF     		nop
+ 527              	.L32:
+ 307:./lwip-2.1.2/src/core/udp.c ****   }
+ 308:./lwip-2.1.2/src/core/udp.c ****   /* no fully matching pcb found? then look for an unconnected pcb */
+ 309:./lwip-2.1.2/src/core/udp.c ****   if (pcb == NULL) {
+ 528              		.loc 1 309 6
+ 529 024c 7B6A     		ldr	r3, [r7, #36]
+ 530 024e 002B     		cmp	r3, #0
+ 531 0250 01D1     		bne	.L34
+ 310:./lwip-2.1.2/src/core/udp.c ****     pcb = uncon_pcb;
+ 532              		.loc 1 310 9
+ 533 0252 FB69     		ldr	r3, [r7, #28]
+ 534 0254 7B62     		str	r3, [r7, #36]
+ 535              	.L34:
+ 311:./lwip-2.1.2/src/core/udp.c ****   }
+ 312:./lwip-2.1.2/src/core/udp.c **** 
+ 313:./lwip-2.1.2/src/core/udp.c ****   /* Check checksum if this is a match or if it was directed at us. */
+ 314:./lwip-2.1.2/src/core/udp.c ****   if (pcb != NULL) {
+ 536              		.loc 1 314 6
+ 537 0256 7B6A     		ldr	r3, [r7, #36]
+ 538 0258 002B     		cmp	r3, #0
+ 539 025a 02D0     		beq	.L35
+ 315:./lwip-2.1.2/src/core/udp.c ****     for_us = 1;
+ 540              		.loc 1 315 12
+ 541 025c 0123     		movs	r3, #1
+ 542 025e FB76     		strb	r3, [r7, #27]
+ 543 0260 0AE0     		b	.L36
+ 544              	.L35:
+ 316:./lwip-2.1.2/src/core/udp.c ****   } else {
+ 317:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6
+ 318:./lwip-2.1.2/src/core/udp.c ****     if (ip_current_is_v6()) {
+ 319:./lwip-2.1.2/src/core/udp.c ****       for_us = netif_get_ip6_addr_match(inp, ip6_current_dest_addr()) >= 0;
+ 320:./lwip-2.1.2/src/core/udp.c ****     }
+ 321:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 */
+ 322:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 323:./lwip-2.1.2/src/core/udp.c ****     if (!ip_current_is_v6()) {
+ 324:./lwip-2.1.2/src/core/udp.c ****       for_us = ip4_addr_cmp(netif_ip4_addr(inp), ip4_current_dest_addr());
+ 545              		.loc 1 324 16
+ 546 0262 3B68     		ldr	r3, [r7]
+ 547 0264 0433     		adds	r3, r3, #4
+ 548 0266 1A68     		ldr	r2, [r3]
+ 549 0268 264B     		ldr	r3, .L44
+ 550 026a 5B69     		ldr	r3, [r3, #20]
+ 551 026c 9A42     		cmp	r2, r3
+ 552 026e 0CBF     		ite	eq
+ 553 0270 0123     		moveq	r3, #1
+ 554 0272 0023     		movne	r3, #0
+ 555 0274 DBB2     		uxtb	r3, r3
+ 556              		.loc 1 324 14
+ 557 0276 FB76     		strb	r3, [r7, #27]
+ 558              	.L36:
+ 325:./lwip-2.1.2/src/core/udp.c ****     }
+ 326:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 327:./lwip-2.1.2/src/core/udp.c ****   }
+ 328:./lwip-2.1.2/src/core/udp.c **** 
+ 329:./lwip-2.1.2/src/core/udp.c ****   if (for_us) {
+ 559              		.loc 1 329 6
+ 560 0278 FB7E     		ldrb	r3, [r7, #27]	@ zero_extendqisi2
+ 561 027a 002B     		cmp	r3, #0
+ 562 027c 3AD0     		beq	.L37
+ 330:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_input: calculating checksum\n"));
+ 331:./lwip-2.1.2/src/core/udp.c **** #if CHECKSUM_CHECK_UDP
+ 332:./lwip-2.1.2/src/core/udp.c ****     IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_UDP) {
+ 333:./lwip-2.1.2/src/core/udp.c **** #if LWIP_UDPLITE
+ 334:./lwip-2.1.2/src/core/udp.c ****       if (ip_current_header_proto() == IP_PROTO_UDPLITE) {
+ 335:./lwip-2.1.2/src/core/udp.c ****         /* Do the UDP Lite checksum */
+ 336:./lwip-2.1.2/src/core/udp.c ****         u16_t chklen = lwip_ntohs(udphdr->len);
+ 337:./lwip-2.1.2/src/core/udp.c ****         if (chklen < sizeof(struct udp_hdr)) {
+ 338:./lwip-2.1.2/src/core/udp.c ****           if (chklen == 0) {
+ 339:./lwip-2.1.2/src/core/udp.c ****             /* For UDP-Lite, checksum length of 0 means checksum
+ 340:./lwip-2.1.2/src/core/udp.c ****                over the complete packet (See RFC 3828 chap. 3.1) */
+ 341:./lwip-2.1.2/src/core/udp.c ****             chklen = p->tot_len;
+ 342:./lwip-2.1.2/src/core/udp.c ****           } else {
+ 343:./lwip-2.1.2/src/core/udp.c ****             /* At least the UDP-Lite header must be covered by the
+ 344:./lwip-2.1.2/src/core/udp.c ****                checksum! (Again, see RFC 3828 chap. 3.1) */
+ 345:./lwip-2.1.2/src/core/udp.c ****             goto chkerr;
+ 346:./lwip-2.1.2/src/core/udp.c ****           }
+ 347:./lwip-2.1.2/src/core/udp.c ****         }
+ 348:./lwip-2.1.2/src/core/udp.c ****         if (ip_chksum_pseudo_partial(p, IP_PROTO_UDPLITE,
+ 349:./lwip-2.1.2/src/core/udp.c ****                                      p->tot_len, chklen,
+ 350:./lwip-2.1.2/src/core/udp.c ****                                      ip_current_src_addr(), ip_current_dest_addr()) != 0) {
+ 351:./lwip-2.1.2/src/core/udp.c ****           goto chkerr;
+ 352:./lwip-2.1.2/src/core/udp.c ****         }
+ 353:./lwip-2.1.2/src/core/udp.c ****       } else
+ 354:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_UDPLITE */
+ 355:./lwip-2.1.2/src/core/udp.c ****       {
+ 356:./lwip-2.1.2/src/core/udp.c ****         if (udphdr->chksum != 0) {
+ 357:./lwip-2.1.2/src/core/udp.c ****           if (ip_chksum_pseudo(p, IP_PROTO_UDP, p->tot_len,
+ 358:./lwip-2.1.2/src/core/udp.c ****                                ip_current_src_addr(),
+ 359:./lwip-2.1.2/src/core/udp.c ****                                ip_current_dest_addr()) != 0) {
+ 360:./lwip-2.1.2/src/core/udp.c ****             goto chkerr;
+ 361:./lwip-2.1.2/src/core/udp.c ****           }
+ 362:./lwip-2.1.2/src/core/udp.c ****         }
+ 363:./lwip-2.1.2/src/core/udp.c ****       }
+ 364:./lwip-2.1.2/src/core/udp.c ****     }
+ 365:./lwip-2.1.2/src/core/udp.c **** #endif /* CHECKSUM_CHECK_UDP */
+ 366:./lwip-2.1.2/src/core/udp.c ****     if (pbuf_remove_header(p, UDP_HLEN)) {
+ 563              		.loc 1 366 9
+ 564 027e 0821     		movs	r1, #8
+ 565 0280 7868     		ldr	r0, [r7, #4]
+ 566 0282 FFF7FEFF 		bl	pbuf_remove_header
+ 567 0286 0346     		mov	r3, r0
+ 568              		.loc 1 366 8
+ 569 0288 002B     		cmp	r3, #0
+ 570 028a 03D0     		beq	.L38
+ 367:./lwip-2.1.2/src/core/udp.c ****       /* Can we cope with this failing? Just assert for now */
+ 368:./lwip-2.1.2/src/core/udp.c ****       LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+ 369:./lwip-2.1.2/src/core/udp.c ****       UDP_STATS_INC(udp.drop);
+ 370:./lwip-2.1.2/src/core/udp.c ****       MIB2_STATS_INC(mib2.udpinerrors);
+ 371:./lwip-2.1.2/src/core/udp.c ****       pbuf_free(p);
+ 571              		.loc 1 371 7
+ 572 028c 7868     		ldr	r0, [r7, #4]
+ 573 028e FFF7FEFF 		bl	pbuf_free
+ 372:./lwip-2.1.2/src/core/udp.c ****       goto end;
+ 574              		.loc 1 372 7
+ 575 0292 32E0     		b	.L25
+ 576              	.L38:
+ 373:./lwip-2.1.2/src/core/udp.c ****     }
+ 374:./lwip-2.1.2/src/core/udp.c **** 
+ 375:./lwip-2.1.2/src/core/udp.c ****     if (pcb != NULL) {
+ 577              		.loc 1 375 8
+ 578 0294 7B6A     		ldr	r3, [r7, #36]
+ 579 0296 002B     		cmp	r3, #0
+ 580 0298 12D0     		beq	.L39
+ 376:./lwip-2.1.2/src/core/udp.c ****       MIB2_STATS_INC(mib2.udpindatagrams);
+ 377:./lwip-2.1.2/src/core/udp.c **** #if SO_REUSE && SO_REUSE_RXTOALL
+ 378:./lwip-2.1.2/src/core/udp.c ****       if (ip_get_option(pcb, SOF_REUSEADDR) &&
+ 379:./lwip-2.1.2/src/core/udp.c ****           (broadcast || ip_addr_ismulticast(ip_current_dest_addr()))) {
+ 380:./lwip-2.1.2/src/core/udp.c ****         /* pass broadcast- or multicast packets to all multicast pcbs
+ 381:./lwip-2.1.2/src/core/udp.c ****            if SOF_REUSEADDR is set on the first match */
+ 382:./lwip-2.1.2/src/core/udp.c ****         struct udp_pcb *mpcb;
+ 383:./lwip-2.1.2/src/core/udp.c ****         for (mpcb = udp_pcbs; mpcb != NULL; mpcb = mpcb->next) {
+ 384:./lwip-2.1.2/src/core/udp.c ****           if (mpcb != pcb) {
+ 385:./lwip-2.1.2/src/core/udp.c ****             /* compare PCB local addr+port to UDP destination addr+port */
+ 386:./lwip-2.1.2/src/core/udp.c ****             if ((mpcb->local_port == dest) &&
+ 387:./lwip-2.1.2/src/core/udp.c ****                 (udp_input_local_match(mpcb, inp, broadcast) != 0)) {
+ 388:./lwip-2.1.2/src/core/udp.c ****               /* pass a copy of the packet to all local matches */
+ 389:./lwip-2.1.2/src/core/udp.c ****               if (mpcb->recv != NULL) {
+ 390:./lwip-2.1.2/src/core/udp.c ****                 struct pbuf *q;
+ 391:./lwip-2.1.2/src/core/udp.c ****                 q = pbuf_clone(PBUF_RAW, PBUF_POOL, p);
+ 392:./lwip-2.1.2/src/core/udp.c ****                 if (q != NULL) {
+ 393:./lwip-2.1.2/src/core/udp.c ****                   mpcb->recv(mpcb->recv_arg, mpcb, q, ip_current_src_addr(), src);
+ 394:./lwip-2.1.2/src/core/udp.c ****                 }
+ 395:./lwip-2.1.2/src/core/udp.c ****               }
+ 396:./lwip-2.1.2/src/core/udp.c ****             }
+ 397:./lwip-2.1.2/src/core/udp.c ****           }
+ 398:./lwip-2.1.2/src/core/udp.c ****         }
+ 399:./lwip-2.1.2/src/core/udp.c ****       }
+ 400:./lwip-2.1.2/src/core/udp.c **** #endif /* SO_REUSE && SO_REUSE_RXTOALL */
+ 401:./lwip-2.1.2/src/core/udp.c ****       /* callback */
+ 402:./lwip-2.1.2/src/core/udp.c ****       if (pcb->recv != NULL) {
+ 581              		.loc 1 402 14
+ 582 029a 7B6A     		ldr	r3, [r7, #36]
+ 583 029c 9B69     		ldr	r3, [r3, #24]
+ 584              		.loc 1 402 10
+ 585 029e 002B     		cmp	r3, #0
+ 586 02a0 0AD0     		beq	.L40
+ 403:./lwip-2.1.2/src/core/udp.c ****         /* now the recv function is responsible for freeing p */
+ 404:./lwip-2.1.2/src/core/udp.c ****         pcb->recv(pcb->recv_arg, pcb, p, ip_current_src_addr(), src);
+ 587              		.loc 1 404 12
+ 588 02a2 7B6A     		ldr	r3, [r7, #36]
+ 589 02a4 9C69     		ldr	r4, [r3, #24]
+ 590              		.loc 1 404 9
+ 591 02a6 7B6A     		ldr	r3, [r7, #36]
+ 592 02a8 D869     		ldr	r0, [r3, #28]
+ 593 02aa 3B8A     		ldrh	r3, [r7, #16]
+ 594 02ac 0093     		str	r3, [sp]
+ 595 02ae 174B     		ldr	r3, .L44+8
+ 596 02b0 7A68     		ldr	r2, [r7, #4]
+ 597 02b2 796A     		ldr	r1, [r7, #36]
+ 598 02b4 A047     		blx	r4
+ 599              	.LVL0:
+ 405:./lwip-2.1.2/src/core/udp.c ****       } else {
+ 406:./lwip-2.1.2/src/core/udp.c ****         /* no recv function registered? then we have to free the pbuf! */
+ 407:./lwip-2.1.2/src/core/udp.c ****         pbuf_free(p);
+ 408:./lwip-2.1.2/src/core/udp.c ****         goto end;
+ 409:./lwip-2.1.2/src/core/udp.c ****       }
+ 410:./lwip-2.1.2/src/core/udp.c ****     } else {
+ 411:./lwip-2.1.2/src/core/udp.c ****       LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_input: not for us.\n"));
+ 412:./lwip-2.1.2/src/core/udp.c **** 
+ 413:./lwip-2.1.2/src/core/udp.c **** #if LWIP_ICMP || LWIP_ICMP6
+ 414:./lwip-2.1.2/src/core/udp.c ****       /* No match was found, send ICMP destination port unreachable unless
+ 415:./lwip-2.1.2/src/core/udp.c ****          destination address was broadcast/multicast. */
+ 416:./lwip-2.1.2/src/core/udp.c ****       if (!broadcast && !ip_addr_ismulticast(ip_current_dest_addr())) {
+ 417:./lwip-2.1.2/src/core/udp.c ****         /* move payload pointer back to ip header */
+ 418:./lwip-2.1.2/src/core/udp.c ****         pbuf_header_force(p, (s16_t)(ip_current_header_tot_len() + UDP_HLEN));
+ 419:./lwip-2.1.2/src/core/udp.c ****         icmp_port_unreach(ip_current_is_v6(), p);
+ 420:./lwip-2.1.2/src/core/udp.c ****       }
+ 421:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_ICMP || LWIP_ICMP6 */
+ 422:./lwip-2.1.2/src/core/udp.c ****       UDP_STATS_INC(udp.proterr);
+ 423:./lwip-2.1.2/src/core/udp.c ****       UDP_STATS_INC(udp.drop);
+ 424:./lwip-2.1.2/src/core/udp.c ****       MIB2_STATS_INC(mib2.udpnoports);
+ 425:./lwip-2.1.2/src/core/udp.c ****       pbuf_free(p);
+ 426:./lwip-2.1.2/src/core/udp.c ****     }
+ 427:./lwip-2.1.2/src/core/udp.c ****   } else {
+ 428:./lwip-2.1.2/src/core/udp.c ****     pbuf_free(p);
+ 429:./lwip-2.1.2/src/core/udp.c ****   }
+ 430:./lwip-2.1.2/src/core/udp.c **** end:
+ 431:./lwip-2.1.2/src/core/udp.c ****   PERF_STOP("udp_input");
+ 432:./lwip-2.1.2/src/core/udp.c ****   return;
+ 600              		.loc 1 432 3
+ 601 02b6 21E0     		b	.L23
+ 602              	.L40:
+ 407:./lwip-2.1.2/src/core/udp.c ****         goto end;
+ 603              		.loc 1 407 9
+ 604 02b8 7868     		ldr	r0, [r7, #4]
+ 605 02ba FFF7FEFF 		bl	pbuf_free
+ 408:./lwip-2.1.2/src/core/udp.c ****       }
+ 606              		.loc 1 408 9
+ 607 02be 1CE0     		b	.L25
+ 608              	.L39:
+ 416:./lwip-2.1.2/src/core/udp.c ****         /* move payload pointer back to ip header */
+ 609              		.loc 1 416 10
+ 610 02c0 FB7C     		ldrb	r3, [r7, #19]	@ zero_extendqisi2
+ 611 02c2 002B     		cmp	r3, #0
+ 612 02c4 12D1     		bne	.L41
+ 416:./lwip-2.1.2/src/core/udp.c ****         /* move payload pointer back to ip header */
+ 613              		.loc 1 416 26 discriminator 1
+ 614 02c6 0F4B     		ldr	r3, .L44
+ 615 02c8 5B69     		ldr	r3, [r3, #20]
+ 616 02ca 03F0F003 		and	r3, r3, #240
+ 416:./lwip-2.1.2/src/core/udp.c ****         /* move payload pointer back to ip header */
+ 617              		.loc 1 416 22 discriminator 1
+ 618 02ce E02B     		cmp	r3, #224
+ 619 02d0 0CD0     		beq	.L41
+ 418:./lwip-2.1.2/src/core/udp.c ****         icmp_port_unreach(ip_current_is_v6(), p);
+ 620              		.loc 1 418 38
+ 621 02d2 0C4B     		ldr	r3, .L44
+ 622 02d4 9B89     		ldrh	r3, [r3, #12]
+ 418:./lwip-2.1.2/src/core/udp.c ****         icmp_port_unreach(ip_current_is_v6(), p);
+ 623              		.loc 1 418 66
+ 624 02d6 0833     		adds	r3, r3, #8
+ 625 02d8 9BB2     		uxth	r3, r3
+ 418:./lwip-2.1.2/src/core/udp.c ****         icmp_port_unreach(ip_current_is_v6(), p);
+ 626              		.loc 1 418 9
+ 627 02da 1BB2     		sxth	r3, r3
+ 628 02dc 1946     		mov	r1, r3
+ 629 02de 7868     		ldr	r0, [r7, #4]
+ 630 02e0 FFF7FEFF 		bl	pbuf_header_force
+ 419:./lwip-2.1.2/src/core/udp.c ****       }
+ 631              		.loc 1 419 9
+ 632 02e4 0321     		movs	r1, #3
+ 633 02e6 7868     		ldr	r0, [r7, #4]
+ 634 02e8 FFF7FEFF 		bl	icmp_dest_unreach
+ 635              	.L41:
+ 425:./lwip-2.1.2/src/core/udp.c ****     }
+ 636              		.loc 1 425 7
+ 637 02ec 7868     		ldr	r0, [r7, #4]
+ 638 02ee FFF7FEFF 		bl	pbuf_free
+ 639              		.loc 1 432 3
+ 640 02f2 03E0     		b	.L23
+ 641              	.L37:
+ 428:./lwip-2.1.2/src/core/udp.c ****   }
+ 642              		.loc 1 428 5
+ 643 02f4 7868     		ldr	r0, [r7, #4]
+ 644 02f6 FFF7FEFF 		bl	pbuf_free
+ 645              	.L25:
+ 646              		.loc 1 432 3
+ 647 02fa 00BF     		nop
+ 648              	.L23:
+ 433:./lwip-2.1.2/src/core/udp.c **** #if CHECKSUM_CHECK_UDP
+ 434:./lwip-2.1.2/src/core/udp.c **** chkerr:
+ 435:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 436:./lwip-2.1.2/src/core/udp.c ****               ("udp_input: UDP (or UDP Lite) datagram discarded due to failing checksum\n"));
+ 437:./lwip-2.1.2/src/core/udp.c ****   UDP_STATS_INC(udp.chkerr);
+ 438:./lwip-2.1.2/src/core/udp.c ****   UDP_STATS_INC(udp.drop);
+ 439:./lwip-2.1.2/src/core/udp.c ****   MIB2_STATS_INC(mib2.udpinerrors);
+ 440:./lwip-2.1.2/src/core/udp.c ****   pbuf_free(p);
+ 441:./lwip-2.1.2/src/core/udp.c ****   PERF_STOP("udp_input");
+ 442:./lwip-2.1.2/src/core/udp.c **** #endif /* CHECKSUM_CHECK_UDP */
+ 443:./lwip-2.1.2/src/core/udp.c **** }
+ 649              		.loc 1 443 1
+ 650 02fc 2C37     		adds	r7, r7, #44
+ 651              	.LCFI17:
+ 652              		.cfi_def_cfa_offset 12
+ 653 02fe BD46     		mov	sp, r7
+ 654              	.LCFI18:
+ 655              		.cfi_def_cfa_register 13
+ 656              		@ sp needed
+ 657 0300 90BD     		pop	{r4, r7, pc}
+ 658              	.L45:
+ 659 0302 00BF     		.align	2
+ 660              	.L44:
+ 661 0304 00000000 		.word	ip_data
+ 662 0308 00000000 		.word	udp_pcbs
+ 663 030c 10000000 		.word	ip_data+16
+ 664              		.cfi_endproc
+ 665              	.LFE28:
+ 667              		.align	1
+ 668              		.global	udp_send
+ 669              		.syntax unified
+ 670              		.thumb
+ 671              		.thumb_func
+ 672              		.fpu fpv5-d16
+ 674              	udp_send:
+ 675              	.LFB29:
+ 444:./lwip-2.1.2/src/core/udp.c **** 
+ 445:./lwip-2.1.2/src/core/udp.c **** /**
+ 446:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+ 447:./lwip-2.1.2/src/core/udp.c ****  * Sends the pbuf p using UDP. The pbuf is not deallocated.
+ 448:./lwip-2.1.2/src/core/udp.c ****  *
+ 449:./lwip-2.1.2/src/core/udp.c ****  *
+ 450:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB used to send the data.
+ 451:./lwip-2.1.2/src/core/udp.c ****  * @param p chain of pbuf's to be sent.
+ 452:./lwip-2.1.2/src/core/udp.c ****  *
+ 453:./lwip-2.1.2/src/core/udp.c ****  * The datagram will be sent to the current remote_ip & remote_port
+ 454:./lwip-2.1.2/src/core/udp.c ****  * stored in pcb. If the pcb is not bound to a port, it will
+ 455:./lwip-2.1.2/src/core/udp.c ****  * automatically be bound to a random port.
+ 456:./lwip-2.1.2/src/core/udp.c ****  *
+ 457:./lwip-2.1.2/src/core/udp.c ****  * @return lwIP error code.
+ 458:./lwip-2.1.2/src/core/udp.c ****  * - ERR_OK. Successful. No error occurred.
+ 459:./lwip-2.1.2/src/core/udp.c ****  * - ERR_MEM. Out of memory.
+ 460:./lwip-2.1.2/src/core/udp.c ****  * - ERR_RTE. Could not find route to destination address.
+ 461:./lwip-2.1.2/src/core/udp.c ****  * - ERR_VAL. No PCB or PCB is dual-stack
+ 462:./lwip-2.1.2/src/core/udp.c ****  * - More errors could be returned by lower protocol layers.
+ 463:./lwip-2.1.2/src/core/udp.c ****  *
+ 464:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect() udp_sendto()
+ 465:./lwip-2.1.2/src/core/udp.c ****  */
+ 466:./lwip-2.1.2/src/core/udp.c **** err_t
+ 467:./lwip-2.1.2/src/core/udp.c **** udp_send(struct udp_pcb *pcb, struct pbuf *p)
+ 468:./lwip-2.1.2/src/core/udp.c **** {
+ 676              		.loc 1 468 1
+ 677              		.cfi_startproc
+ 678              		@ args = 0, pretend = 0, frame = 8
+ 679              		@ frame_needed = 1, uses_anonymous_args = 0
+ 680 0310 80B5     		push	{r7, lr}
+ 681              	.LCFI19:
+ 682              		.cfi_def_cfa_offset 8
+ 683              		.cfi_offset 7, -8
+ 684              		.cfi_offset 14, -4
+ 685 0312 82B0     		sub	sp, sp, #8
+ 686              	.LCFI20:
+ 687              		.cfi_def_cfa_offset 16
+ 688 0314 00AF     		add	r7, sp, #0
+ 689              	.LCFI21:
+ 690              		.cfi_def_cfa_register 7
+ 691 0316 7860     		str	r0, [r7, #4]
+ 692 0318 3960     		str	r1, [r7]
+ 469:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_send: invalid pcb", pcb != NULL, return ERR_ARG);
+ 693              		.loc 1 469 3
+ 694 031a 7B68     		ldr	r3, [r7, #4]
+ 695 031c 002B     		cmp	r3, #0
+ 696 031e 02D1     		bne	.L47
+ 697              		.loc 1 469 3 is_stmt 0 discriminator 1
+ 698 0320 6FF00F03 		mvn	r3, #15
+ 699 0324 0EE0     		b	.L48
+ 700              	.L47:
+ 470:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_send: invalid pbuf", p != NULL, return ERR_ARG);
+ 701              		.loc 1 470 3 is_stmt 1
+ 702 0326 3B68     		ldr	r3, [r7]
+ 703 0328 002B     		cmp	r3, #0
+ 704 032a 02D1     		bne	.L49
+ 705              		.loc 1 470 3 is_stmt 0 discriminator 1
+ 706 032c 6FF00F03 		mvn	r3, #15
+ 707 0330 08E0     		b	.L48
+ 708              	.L49:
+ 471:./lwip-2.1.2/src/core/udp.c **** 
+ 472:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_ANY_TYPE_VAL(pcb->remote_ip)) {
+ 473:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 474:./lwip-2.1.2/src/core/udp.c ****   }
+ 475:./lwip-2.1.2/src/core/udp.c **** 
+ 476:./lwip-2.1.2/src/core/udp.c ****   /* send to the packet using remote ip and port stored in the pcb */
+ 477:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto(pcb, p, &pcb->remote_ip, pcb->remote_port);
+ 709              		.loc 1 477 29 is_stmt 1
+ 710 0332 7B68     		ldr	r3, [r7, #4]
+ 711 0334 1A1D     		adds	r2, r3, #4
+ 712              		.loc 1 477 10
+ 713 0336 7B68     		ldr	r3, [r7, #4]
+ 714 0338 9B8A     		ldrh	r3, [r3, #20]
+ 715 033a 3968     		ldr	r1, [r7]
+ 716 033c 7868     		ldr	r0, [r7, #4]
+ 717 033e FFF7FEFF 		bl	udp_sendto
+ 718 0342 0346     		mov	r3, r0
+ 719              	.L48:
+ 478:./lwip-2.1.2/src/core/udp.c **** }
+ 720              		.loc 1 478 1
+ 721 0344 1846     		mov	r0, r3
+ 722 0346 0837     		adds	r7, r7, #8
+ 723              	.LCFI22:
+ 724              		.cfi_def_cfa_offset 8
+ 725 0348 BD46     		mov	sp, r7
+ 726              	.LCFI23:
+ 727              		.cfi_def_cfa_register 13
+ 728              		@ sp needed
+ 729 034a 80BD     		pop	{r7, pc}
+ 730              		.cfi_endproc
+ 731              	.LFE29:
+ 733              		.align	1
+ 734              		.global	udp_sendto
+ 735              		.syntax unified
+ 736              		.thumb
+ 737              		.thumb_func
+ 738              		.fpu fpv5-d16
+ 740              	udp_sendto:
+ 741              	.LFB30:
+ 479:./lwip-2.1.2/src/core/udp.c **** 
+ 480:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 481:./lwip-2.1.2/src/core/udp.c **** /** @ingroup udp_raw
+ 482:./lwip-2.1.2/src/core/udp.c ****  * Same as udp_send() but with checksum
+ 483:./lwip-2.1.2/src/core/udp.c ****  */
+ 484:./lwip-2.1.2/src/core/udp.c **** err_t
+ 485:./lwip-2.1.2/src/core/udp.c **** udp_send_chksum(struct udp_pcb *pcb, struct pbuf *p,
+ 486:./lwip-2.1.2/src/core/udp.c ****                 u8_t have_chksum, u16_t chksum)
+ 487:./lwip-2.1.2/src/core/udp.c **** {
+ 488:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_send_chksum: invalid pcb", pcb != NULL, return ERR_ARG);
+ 489:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_send_chksum: invalid pbuf", p != NULL, return ERR_ARG);
+ 490:./lwip-2.1.2/src/core/udp.c **** 
+ 491:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_ANY_TYPE_VAL(pcb->remote_ip)) {
+ 492:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 493:./lwip-2.1.2/src/core/udp.c ****   }
+ 494:./lwip-2.1.2/src/core/udp.c **** 
+ 495:./lwip-2.1.2/src/core/udp.c ****   /* send to the packet using remote ip and port stored in the pcb */
+ 496:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_chksum(pcb, p, &pcb->remote_ip, pcb->remote_port,
+ 497:./lwip-2.1.2/src/core/udp.c ****                            have_chksum, chksum);
+ 498:./lwip-2.1.2/src/core/udp.c **** }
+ 499:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 500:./lwip-2.1.2/src/core/udp.c **** 
+ 501:./lwip-2.1.2/src/core/udp.c **** /**
+ 502:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+ 503:./lwip-2.1.2/src/core/udp.c ****  * Send data to a specified address using UDP.
+ 504:./lwip-2.1.2/src/core/udp.c ****  *
+ 505:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB used to send the data.
+ 506:./lwip-2.1.2/src/core/udp.c ****  * @param p chain of pbuf's to be sent.
+ 507:./lwip-2.1.2/src/core/udp.c ****  * @param dst_ip Destination IP address.
+ 508:./lwip-2.1.2/src/core/udp.c ****  * @param dst_port Destination UDP port.
+ 509:./lwip-2.1.2/src/core/udp.c ****  *
+ 510:./lwip-2.1.2/src/core/udp.c ****  * dst_ip & dst_port are expected to be in the same byte order as in the pcb.
+ 511:./lwip-2.1.2/src/core/udp.c ****  *
+ 512:./lwip-2.1.2/src/core/udp.c ****  * If the PCB already has a remote address association, it will
+ 513:./lwip-2.1.2/src/core/udp.c ****  * be restored after the data is sent.
+ 514:./lwip-2.1.2/src/core/udp.c ****  *
+ 515:./lwip-2.1.2/src/core/udp.c ****  * @return lwIP error code (@see udp_send for possible error codes)
+ 516:./lwip-2.1.2/src/core/udp.c ****  *
+ 517:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect() udp_send()
+ 518:./lwip-2.1.2/src/core/udp.c ****  */
+ 519:./lwip-2.1.2/src/core/udp.c **** err_t
+ 520:./lwip-2.1.2/src/core/udp.c **** udp_sendto(struct udp_pcb *pcb, struct pbuf *p,
+ 521:./lwip-2.1.2/src/core/udp.c ****            const ip_addr_t *dst_ip, u16_t dst_port)
+ 522:./lwip-2.1.2/src/core/udp.c **** {
+ 742              		.loc 1 522 1
+ 743              		.cfi_startproc
+ 744              		@ args = 0, pretend = 0, frame = 24
+ 745              		@ frame_needed = 1, uses_anonymous_args = 0
+ 746 034c 80B5     		push	{r7, lr}
+ 747              	.LCFI24:
+ 748              		.cfi_def_cfa_offset 8
+ 749              		.cfi_offset 7, -8
+ 750              		.cfi_offset 14, -4
+ 751 034e 88B0     		sub	sp, sp, #32
+ 752              	.LCFI25:
+ 753              		.cfi_def_cfa_offset 40
+ 754 0350 02AF     		add	r7, sp, #8
+ 755              	.LCFI26:
+ 756              		.cfi_def_cfa 7, 32
+ 757 0352 F860     		str	r0, [r7, #12]
+ 758 0354 B960     		str	r1, [r7, #8]
+ 759 0356 7A60     		str	r2, [r7, #4]
+ 760 0358 7B80     		strh	r3, [r7, #2]	@ movhi
+ 523:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 524:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_chksum(pcb, p, dst_ip, dst_port, 0, 0);
+ 525:./lwip-2.1.2/src/core/udp.c **** }
+ 526:./lwip-2.1.2/src/core/udp.c **** 
+ 527:./lwip-2.1.2/src/core/udp.c **** /** @ingroup udp_raw
+ 528:./lwip-2.1.2/src/core/udp.c ****  * Same as udp_sendto(), but with checksum */
+ 529:./lwip-2.1.2/src/core/udp.c **** err_t
+ 530:./lwip-2.1.2/src/core/udp.c **** udp_sendto_chksum(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *dst_ip,
+ 531:./lwip-2.1.2/src/core/udp.c ****                   u16_t dst_port, u8_t have_chksum, u16_t chksum)
+ 532:./lwip-2.1.2/src/core/udp.c **** {
+ 533:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 534:./lwip-2.1.2/src/core/udp.c ****   struct netif *netif;
+ 535:./lwip-2.1.2/src/core/udp.c **** 
+ 536:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto: invalid pcb", pcb != NULL, return ERR_ARG);
+ 761              		.loc 1 536 3
+ 762 035a FB68     		ldr	r3, [r7, #12]
+ 763 035c 002B     		cmp	r3, #0
+ 764 035e 02D1     		bne	.L51
+ 765              		.loc 1 536 3 is_stmt 0 discriminator 1
+ 766 0360 6FF00F03 		mvn	r3, #15
+ 767 0364 2AE0     		b	.L52
+ 768              	.L51:
+ 537:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto: invalid pbuf", p != NULL, return ERR_ARG);
+ 769              		.loc 1 537 3 is_stmt 1
+ 770 0366 BB68     		ldr	r3, [r7, #8]
+ 771 0368 002B     		cmp	r3, #0
+ 772 036a 02D1     		bne	.L53
+ 773              		.loc 1 537 3 is_stmt 0 discriminator 1
+ 774 036c 6FF00F03 		mvn	r3, #15
+ 775 0370 24E0     		b	.L52
+ 776              	.L53:
+ 538:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto: invalid dst_ip", dst_ip != NULL, return ERR_ARG);
+ 777              		.loc 1 538 3 is_stmt 1
+ 778 0372 7B68     		ldr	r3, [r7, #4]
+ 779 0374 002B     		cmp	r3, #0
+ 780 0376 02D1     		bne	.L54
+ 781              		.loc 1 538 3 is_stmt 0 discriminator 1
+ 782 0378 6FF00F03 		mvn	r3, #15
+ 783 037c 1EE0     		b	.L52
+ 784              	.L54:
+ 539:./lwip-2.1.2/src/core/udp.c **** 
+ 540:./lwip-2.1.2/src/core/udp.c ****   if (!IP_ADDR_PCB_VERSION_MATCH(pcb, dst_ip)) {
+ 541:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 542:./lwip-2.1.2/src/core/udp.c ****   }
+ 543:./lwip-2.1.2/src/core/udp.c **** 
+ 544:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_send\n"));
+ 545:./lwip-2.1.2/src/core/udp.c **** 
+ 546:./lwip-2.1.2/src/core/udp.c ****   if (pcb->netif_idx != NETIF_NO_INDEX) {
+ 785              		.loc 1 546 10 is_stmt 1
+ 786 037e FB68     		ldr	r3, [r7, #12]
+ 787 0380 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 788              		.loc 1 546 6
+ 789 0382 002B     		cmp	r3, #0
+ 790 0384 06D0     		beq	.L55
+ 547:./lwip-2.1.2/src/core/udp.c ****     netif = netif_get_by_index(pcb->netif_idx);
+ 791              		.loc 1 547 13
+ 792 0386 FB68     		ldr	r3, [r7, #12]
+ 793 0388 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 794 038a 1846     		mov	r0, r3
+ 795 038c FFF7FEFF 		bl	netif_get_by_index
+ 796 0390 7861     		str	r0, [r7, #20]
+ 797 0392 03E0     		b	.L56
+ 798              	.L55:
+ 548:./lwip-2.1.2/src/core/udp.c ****   } else {
+ 549:./lwip-2.1.2/src/core/udp.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 550:./lwip-2.1.2/src/core/udp.c ****     netif = NULL;
+ 551:./lwip-2.1.2/src/core/udp.c ****     if (ip_addr_ismulticast(dst_ip)) {
+ 552:./lwip-2.1.2/src/core/udp.c ****       /* For IPv6, the interface to use for packets with a multicast destination
+ 553:./lwip-2.1.2/src/core/udp.c ****        * is specified using an interface index. The same approach may be used for
+ 554:./lwip-2.1.2/src/core/udp.c ****        * IPv4 as well, in which case it overrides the IPv4 multicast override
+ 555:./lwip-2.1.2/src/core/udp.c ****        * address below. Here we have to look up the netif by going through the
+ 556:./lwip-2.1.2/src/core/udp.c ****        * list, but by doing so we skip a route lookup. If the interface index has
+ 557:./lwip-2.1.2/src/core/udp.c ****        * gone stale, we fall through and do the regular route lookup after all. */
+ 558:./lwip-2.1.2/src/core/udp.c ****       if (pcb->mcast_ifindex != NETIF_NO_INDEX) {
+ 559:./lwip-2.1.2/src/core/udp.c ****         netif = netif_get_by_index(pcb->mcast_ifindex);
+ 560:./lwip-2.1.2/src/core/udp.c ****       }
+ 561:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 562:./lwip-2.1.2/src/core/udp.c ****       else
+ 563:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6
+ 564:./lwip-2.1.2/src/core/udp.c ****         if (IP_IS_V4(dst_ip))
+ 565:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 */
+ 566:./lwip-2.1.2/src/core/udp.c ****         {
+ 567:./lwip-2.1.2/src/core/udp.c ****           /* IPv4 does not use source-based routing by default, so we use an
+ 568:./lwip-2.1.2/src/core/udp.c ****              administratively selected interface for multicast by default.
+ 569:./lwip-2.1.2/src/core/udp.c ****              However, this can be overridden by setting an interface address
+ 570:./lwip-2.1.2/src/core/udp.c ****              in pcb->mcast_ip4 that is used for routing. If this routing lookup
+ 571:./lwip-2.1.2/src/core/udp.c ****              fails, we try regular routing as though no override was set. */
+ 572:./lwip-2.1.2/src/core/udp.c ****           if (!ip4_addr_isany_val(pcb->mcast_ip4) &&
+ 573:./lwip-2.1.2/src/core/udp.c ****               !ip4_addr_cmp(&pcb->mcast_ip4, IP4_ADDR_BROADCAST)) {
+ 574:./lwip-2.1.2/src/core/udp.c ****             netif = ip4_route_src(ip_2_ip4(&pcb->local_ip), &pcb->mcast_ip4);
+ 575:./lwip-2.1.2/src/core/udp.c ****           }
+ 576:./lwip-2.1.2/src/core/udp.c ****         }
+ 577:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 578:./lwip-2.1.2/src/core/udp.c ****     }
+ 579:./lwip-2.1.2/src/core/udp.c **** 
+ 580:./lwip-2.1.2/src/core/udp.c ****     if (netif == NULL)
+ 581:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 582:./lwip-2.1.2/src/core/udp.c ****     {
+ 583:./lwip-2.1.2/src/core/udp.c ****       /* find the outgoing network interface for this packet */
+ 584:./lwip-2.1.2/src/core/udp.c ****       netif = ip_route(&pcb->local_ip, dst_ip);
+ 799              		.loc 1 584 15
+ 800 0394 7868     		ldr	r0, [r7, #4]
+ 801 0396 FFF7FEFF 		bl	ip4_route
+ 802 039a 7861     		str	r0, [r7, #20]
+ 803              	.L56:
+ 585:./lwip-2.1.2/src/core/udp.c ****     }
+ 586:./lwip-2.1.2/src/core/udp.c ****   }
+ 587:./lwip-2.1.2/src/core/udp.c **** 
+ 588:./lwip-2.1.2/src/core/udp.c ****   /* no outgoing network interface could be found? */
+ 589:./lwip-2.1.2/src/core/udp.c ****   if (netif == NULL) {
+ 804              		.loc 1 589 6
+ 805 039c 7B69     		ldr	r3, [r7, #20]
+ 806 039e 002B     		cmp	r3, #0
+ 807 03a0 02D1     		bne	.L57
+ 590:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("udp_send: No route to "));
+ 591:./lwip-2.1.2/src/core/udp.c ****     ip_addr_debug_print(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, dst_ip);
+ 592:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, ("\n"));
+ 593:./lwip-2.1.2/src/core/udp.c ****     UDP_STATS_INC(udp.rterr);
+ 594:./lwip-2.1.2/src/core/udp.c ****     return ERR_RTE;
+ 808              		.loc 1 594 12
+ 809 03a2 6FF00303 		mvn	r3, #3
+ 810 03a6 09E0     		b	.L52
+ 811              	.L57:
+ 595:./lwip-2.1.2/src/core/udp.c ****   }
+ 596:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 597:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, have_chksum, chksum);
+ 598:./lwip-2.1.2/src/core/udp.c **** #else /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 599:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if(pcb, p, dst_ip, dst_port, netif);
+ 812              		.loc 1 599 10
+ 813 03a8 7A88     		ldrh	r2, [r7, #2]
+ 814 03aa 7B69     		ldr	r3, [r7, #20]
+ 815 03ac 0093     		str	r3, [sp]
+ 816 03ae 1346     		mov	r3, r2
+ 817 03b0 7A68     		ldr	r2, [r7, #4]
+ 818 03b2 B968     		ldr	r1, [r7, #8]
+ 819 03b4 F868     		ldr	r0, [r7, #12]
+ 820 03b6 FFF7FEFF 		bl	udp_sendto_if
+ 821 03ba 0346     		mov	r3, r0
+ 822              	.L52:
+ 600:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 601:./lwip-2.1.2/src/core/udp.c **** }
+ 823              		.loc 1 601 1
+ 824 03bc 1846     		mov	r0, r3
+ 825 03be 1837     		adds	r7, r7, #24
+ 826              	.LCFI27:
+ 827              		.cfi_def_cfa_offset 8
+ 828 03c0 BD46     		mov	sp, r7
+ 829              	.LCFI28:
+ 830              		.cfi_def_cfa_register 13
+ 831              		@ sp needed
+ 832 03c2 80BD     		pop	{r7, pc}
+ 833              		.cfi_endproc
+ 834              	.LFE30:
+ 836              		.align	1
+ 837              		.global	udp_sendto_if
+ 838              		.syntax unified
+ 839              		.thumb
+ 840              		.thumb_func
+ 841              		.fpu fpv5-d16
+ 843              	udp_sendto_if:
+ 844              	.LFB31:
+ 602:./lwip-2.1.2/src/core/udp.c **** 
+ 603:./lwip-2.1.2/src/core/udp.c **** /**
+ 604:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+ 605:./lwip-2.1.2/src/core/udp.c ****  * Send data to a specified address using UDP.
+ 606:./lwip-2.1.2/src/core/udp.c ****  * The netif used for sending can be specified.
+ 607:./lwip-2.1.2/src/core/udp.c ****  *
+ 608:./lwip-2.1.2/src/core/udp.c ****  * This function exists mainly for DHCP, to be able to send UDP packets
+ 609:./lwip-2.1.2/src/core/udp.c ****  * on a netif that is still down.
+ 610:./lwip-2.1.2/src/core/udp.c ****  *
+ 611:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB used to send the data.
+ 612:./lwip-2.1.2/src/core/udp.c ****  * @param p chain of pbuf's to be sent.
+ 613:./lwip-2.1.2/src/core/udp.c ****  * @param dst_ip Destination IP address.
+ 614:./lwip-2.1.2/src/core/udp.c ****  * @param dst_port Destination UDP port.
+ 615:./lwip-2.1.2/src/core/udp.c ****  * @param netif the netif used for sending.
+ 616:./lwip-2.1.2/src/core/udp.c ****  *
+ 617:./lwip-2.1.2/src/core/udp.c ****  * dst_ip & dst_port are expected to be in the same byte order as in the pcb.
+ 618:./lwip-2.1.2/src/core/udp.c ****  *
+ 619:./lwip-2.1.2/src/core/udp.c ****  * @return lwIP error code (@see udp_send for possible error codes)
+ 620:./lwip-2.1.2/src/core/udp.c ****  *
+ 621:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect() udp_send()
+ 622:./lwip-2.1.2/src/core/udp.c ****  */
+ 623:./lwip-2.1.2/src/core/udp.c **** err_t
+ 624:./lwip-2.1.2/src/core/udp.c **** udp_sendto_if(struct udp_pcb *pcb, struct pbuf *p,
+ 625:./lwip-2.1.2/src/core/udp.c ****               const ip_addr_t *dst_ip, u16_t dst_port, struct netif *netif)
+ 626:./lwip-2.1.2/src/core/udp.c **** {
+ 845              		.loc 1 626 1
+ 846              		.cfi_startproc
+ 847              		@ args = 4, pretend = 0, frame = 24
+ 848              		@ frame_needed = 1, uses_anonymous_args = 0
+ 849 03c4 80B5     		push	{r7, lr}
+ 850              	.LCFI29:
+ 851              		.cfi_def_cfa_offset 8
+ 852              		.cfi_offset 7, -8
+ 853              		.cfi_offset 14, -4
+ 854 03c6 88B0     		sub	sp, sp, #32
+ 855              	.LCFI30:
+ 856              		.cfi_def_cfa_offset 40
+ 857 03c8 02AF     		add	r7, sp, #8
+ 858              	.LCFI31:
+ 859              		.cfi_def_cfa 7, 32
+ 860 03ca F860     		str	r0, [r7, #12]
+ 861 03cc B960     		str	r1, [r7, #8]
+ 862 03ce 7A60     		str	r2, [r7, #4]
+ 863 03d0 7B80     		strh	r3, [r7, #2]	@ movhi
+ 627:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 628:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0);
+ 629:./lwip-2.1.2/src/core/udp.c **** }
+ 630:./lwip-2.1.2/src/core/udp.c **** 
+ 631:./lwip-2.1.2/src/core/udp.c **** /** Same as udp_sendto_if(), but with checksum */
+ 632:./lwip-2.1.2/src/core/udp.c **** err_t
+ 633:./lwip-2.1.2/src/core/udp.c **** udp_sendto_if_chksum(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *dst_ip,
+ 634:./lwip-2.1.2/src/core/udp.c ****                      u16_t dst_port, struct netif *netif, u8_t have_chksum,
+ 635:./lwip-2.1.2/src/core/udp.c ****                      u16_t chksum)
+ 636:./lwip-2.1.2/src/core/udp.c **** {
+ 637:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 638:./lwip-2.1.2/src/core/udp.c ****   const ip_addr_t *src_ip;
+ 639:./lwip-2.1.2/src/core/udp.c **** 
+ 640:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if: invalid pcb", pcb != NULL, return ERR_ARG);
+ 864              		.loc 1 640 3
+ 865 03d2 FB68     		ldr	r3, [r7, #12]
+ 866 03d4 002B     		cmp	r3, #0
+ 867 03d6 02D1     		bne	.L59
+ 868              		.loc 1 640 3 is_stmt 0 discriminator 1
+ 869 03d8 6FF00F03 		mvn	r3, #15
+ 870 03dc 3AE0     		b	.L60
+ 871              	.L59:
+ 641:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if: invalid pbuf", p != NULL, return ERR_ARG);
+ 872              		.loc 1 641 3 is_stmt 1
+ 873 03de BB68     		ldr	r3, [r7, #8]
+ 874 03e0 002B     		cmp	r3, #0
+ 875 03e2 02D1     		bne	.L61
+ 876              		.loc 1 641 3 is_stmt 0 discriminator 1
+ 877 03e4 6FF00F03 		mvn	r3, #15
+ 878 03e8 34E0     		b	.L60
+ 879              	.L61:
+ 642:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if: invalid dst_ip", dst_ip != NULL, return ERR_ARG);
+ 880              		.loc 1 642 3 is_stmt 1
+ 881 03ea 7B68     		ldr	r3, [r7, #4]
+ 882 03ec 002B     		cmp	r3, #0
+ 883 03ee 02D1     		bne	.L62
+ 884              		.loc 1 642 3 is_stmt 0 discriminator 1
+ 885 03f0 6FF00F03 		mvn	r3, #15
+ 886 03f4 2EE0     		b	.L60
+ 887              	.L62:
+ 643:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if: invalid netif", netif != NULL, return ERR_ARG);
+ 888              		.loc 1 643 3 is_stmt 1
+ 889 03f6 3B6A     		ldr	r3, [r7, #32]
+ 890 03f8 002B     		cmp	r3, #0
+ 891 03fa 02D1     		bne	.L63
+ 892              		.loc 1 643 3 is_stmt 0 discriminator 1
+ 893 03fc 6FF00F03 		mvn	r3, #15
+ 894 0400 28E0     		b	.L60
+ 895              	.L63:
+ 644:./lwip-2.1.2/src/core/udp.c **** 
+ 645:./lwip-2.1.2/src/core/udp.c ****   if (!IP_ADDR_PCB_VERSION_MATCH(pcb, dst_ip)) {
+ 646:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 647:./lwip-2.1.2/src/core/udp.c ****   }
+ 648:./lwip-2.1.2/src/core/udp.c **** 
+ 649:./lwip-2.1.2/src/core/udp.c ****   /* PCB local address is IP_ANY_ADDR or multicast? */
+ 650:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6
+ 651:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_V6(dst_ip)) {
+ 652:./lwip-2.1.2/src/core/udp.c ****     if (ip6_addr_isany(ip_2_ip6(&pcb->local_ip)) ||
+ 653:./lwip-2.1.2/src/core/udp.c ****         ip6_addr_ismulticast(ip_2_ip6(&pcb->local_ip))) {
+ 654:./lwip-2.1.2/src/core/udp.c ****       src_ip = ip6_select_source_address(netif, ip_2_ip6(dst_ip));
+ 655:./lwip-2.1.2/src/core/udp.c ****       if (src_ip == NULL) {
+ 656:./lwip-2.1.2/src/core/udp.c ****         /* No suitable source address was found. */
+ 657:./lwip-2.1.2/src/core/udp.c ****         return ERR_RTE;
+ 658:./lwip-2.1.2/src/core/udp.c ****       }
+ 659:./lwip-2.1.2/src/core/udp.c ****     } else {
+ 660:./lwip-2.1.2/src/core/udp.c ****       /* use UDP PCB local IPv6 address as source address, if still valid. */
+ 661:./lwip-2.1.2/src/core/udp.c ****       if (netif_get_ip6_addr_match(netif, ip_2_ip6(&pcb->local_ip)) < 0) {
+ 662:./lwip-2.1.2/src/core/udp.c ****         /* Address isn't valid anymore. */
+ 663:./lwip-2.1.2/src/core/udp.c ****         return ERR_RTE;
+ 664:./lwip-2.1.2/src/core/udp.c ****       }
+ 665:./lwip-2.1.2/src/core/udp.c ****       src_ip = &pcb->local_ip;
+ 666:./lwip-2.1.2/src/core/udp.c ****     }
+ 667:./lwip-2.1.2/src/core/udp.c ****   }
+ 668:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 */
+ 669:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && LWIP_IPV6
+ 670:./lwip-2.1.2/src/core/udp.c ****   else
+ 671:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 && LWIP_IPV6 */
+ 672:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 673:./lwip-2.1.2/src/core/udp.c ****     if (ip4_addr_isany(ip_2_ip4(&pcb->local_ip)) ||
+ 896              		.loc 1 673 9 is_stmt 1
+ 897 0402 FB68     		ldr	r3, [r7, #12]
+ 898              		.loc 1 673 8
+ 899 0404 002B     		cmp	r3, #0
+ 900 0406 09D0     		beq	.L64
+ 901              		.loc 1 673 9 discriminator 1
+ 902 0408 FB68     		ldr	r3, [r7, #12]
+ 903 040a 1B68     		ldr	r3, [r3]
+ 904 040c 002B     		cmp	r3, #0
+ 905 040e 05D0     		beq	.L64
+ 674:./lwip-2.1.2/src/core/udp.c ****         ip4_addr_ismulticast(ip_2_ip4(&pcb->local_ip))) {
+ 906              		.loc 1 674 9 discriminator 2
+ 907 0410 FB68     		ldr	r3, [r7, #12]
+ 908 0412 1B68     		ldr	r3, [r3]
+ 909 0414 03F0F003 		and	r3, r3, #240
+ 673:./lwip-2.1.2/src/core/udp.c ****         ip4_addr_ismulticast(ip_2_ip4(&pcb->local_ip))) {
+ 910              		.loc 1 673 50 discriminator 2
+ 911 0418 E02B     		cmp	r3, #224
+ 912 041a 03D1     		bne	.L65
+ 913              	.L64:
+ 675:./lwip-2.1.2/src/core/udp.c ****       /* if the local_ip is any or multicast
+ 676:./lwip-2.1.2/src/core/udp.c ****        * use the outgoing network interface IP address as source address */
+ 677:./lwip-2.1.2/src/core/udp.c ****       src_ip = netif_ip_addr4(netif);
+ 914              		.loc 1 677 14
+ 915 041c 3B6A     		ldr	r3, [r7, #32]
+ 916 041e 0433     		adds	r3, r3, #4
+ 917 0420 7B61     		str	r3, [r7, #20]
+ 918 0422 0BE0     		b	.L66
+ 919              	.L65:
+ 678:./lwip-2.1.2/src/core/udp.c ****     } else {
+ 679:./lwip-2.1.2/src/core/udp.c ****       /* check if UDP PCB local IP address is correct
+ 680:./lwip-2.1.2/src/core/udp.c ****        * this could be an old address if netif->ip_addr has changed */
+ 681:./lwip-2.1.2/src/core/udp.c ****       if (!ip4_addr_cmp(ip_2_ip4(&(pcb->local_ip)), netif_ip4_addr(netif))) {
+ 920              		.loc 1 681 12
+ 921 0424 FB68     		ldr	r3, [r7, #12]
+ 922 0426 1A68     		ldr	r2, [r3]
+ 923 0428 3B6A     		ldr	r3, [r7, #32]
+ 924 042a 0433     		adds	r3, r3, #4
+ 925 042c 1B68     		ldr	r3, [r3]
+ 926              		.loc 1 681 10
+ 927 042e 9A42     		cmp	r2, r3
+ 928 0430 02D0     		beq	.L67
+ 682:./lwip-2.1.2/src/core/udp.c ****         /* local_ip doesn't match, drop the packet */
+ 683:./lwip-2.1.2/src/core/udp.c ****         return ERR_RTE;
+ 929              		.loc 1 683 16
+ 930 0432 6FF00303 		mvn	r3, #3
+ 931 0436 0DE0     		b	.L60
+ 932              	.L67:
+ 684:./lwip-2.1.2/src/core/udp.c ****       }
+ 685:./lwip-2.1.2/src/core/udp.c ****       /* use UDP PCB local IP address as source address */
+ 686:./lwip-2.1.2/src/core/udp.c ****       src_ip = &pcb->local_ip;
+ 933              		.loc 1 686 14
+ 934 0438 FB68     		ldr	r3, [r7, #12]
+ 935 043a 7B61     		str	r3, [r7, #20]
+ 936              	.L66:
+ 687:./lwip-2.1.2/src/core/udp.c ****     }
+ 688:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 689:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 690:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, have_chksum, chksum, src_ip);
+ 691:./lwip-2.1.2/src/core/udp.c **** #else /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 692:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if_src(pcb, p, dst_ip, dst_port, netif, src_ip);
+ 937              		.loc 1 692 10
+ 938 043c 7A88     		ldrh	r2, [r7, #2]
+ 939 043e 7B69     		ldr	r3, [r7, #20]
+ 940 0440 0193     		str	r3, [sp, #4]
+ 941 0442 3B6A     		ldr	r3, [r7, #32]
+ 942 0444 0093     		str	r3, [sp]
+ 943 0446 1346     		mov	r3, r2
+ 944 0448 7A68     		ldr	r2, [r7, #4]
+ 945 044a B968     		ldr	r1, [r7, #8]
+ 946 044c F868     		ldr	r0, [r7, #12]
+ 947 044e FFF7FEFF 		bl	udp_sendto_if_src
+ 948 0452 0346     		mov	r3, r0
+ 949              	.L60:
+ 693:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 694:./lwip-2.1.2/src/core/udp.c **** }
+ 950              		.loc 1 694 1
+ 951 0454 1846     		mov	r0, r3
+ 952 0456 1837     		adds	r7, r7, #24
+ 953              	.LCFI32:
+ 954              		.cfi_def_cfa_offset 8
+ 955 0458 BD46     		mov	sp, r7
+ 956              	.LCFI33:
+ 957              		.cfi_def_cfa_register 13
+ 958              		@ sp needed
+ 959 045a 80BD     		pop	{r7, pc}
+ 960              		.cfi_endproc
+ 961              	.LFE31:
+ 963              		.align	1
+ 964              		.global	udp_sendto_if_src
+ 965              		.syntax unified
+ 966              		.thumb
+ 967              		.thumb_func
+ 968              		.fpu fpv5-d16
+ 970              	udp_sendto_if_src:
+ 971              	.LFB32:
+ 695:./lwip-2.1.2/src/core/udp.c **** 
+ 696:./lwip-2.1.2/src/core/udp.c **** /** @ingroup udp_raw
+ 697:./lwip-2.1.2/src/core/udp.c ****  * Same as @ref udp_sendto_if, but with source address */
+ 698:./lwip-2.1.2/src/core/udp.c **** err_t
+ 699:./lwip-2.1.2/src/core/udp.c **** udp_sendto_if_src(struct udp_pcb *pcb, struct pbuf *p,
+ 700:./lwip-2.1.2/src/core/udp.c ****                   const ip_addr_t *dst_ip, u16_t dst_port, struct netif *netif, const ip_addr_t *sr
+ 701:./lwip-2.1.2/src/core/udp.c **** {
+ 972              		.loc 1 701 1
+ 973              		.cfi_startproc
+ 974              		@ args = 8, pretend = 0, frame = 32
+ 975              		@ frame_needed = 1, uses_anonymous_args = 0
+ 976 045c 80B5     		push	{r7, lr}
+ 977              	.LCFI34:
+ 978              		.cfi_def_cfa_offset 8
+ 979              		.cfi_offset 7, -8
+ 980              		.cfi_offset 14, -4
+ 981 045e 8CB0     		sub	sp, sp, #48
+ 982              	.LCFI35:
+ 983              		.cfi_def_cfa_offset 56
+ 984 0460 04AF     		add	r7, sp, #16
+ 985              	.LCFI36:
+ 986              		.cfi_def_cfa 7, 40
+ 987 0462 F860     		str	r0, [r7, #12]
+ 988 0464 B960     		str	r1, [r7, #8]
+ 989 0466 7A60     		str	r2, [r7, #4]
+ 990 0468 7B80     		strh	r3, [r7, #2]	@ movhi
+ 702:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+ 703:./lwip-2.1.2/src/core/udp.c ****   return udp_sendto_if_src_chksum(pcb, p, dst_ip, dst_port, netif, 0, 0, src_ip);
+ 704:./lwip-2.1.2/src/core/udp.c **** }
+ 705:./lwip-2.1.2/src/core/udp.c **** 
+ 706:./lwip-2.1.2/src/core/udp.c **** /** Same as udp_sendto_if_src(), but with checksum */
+ 707:./lwip-2.1.2/src/core/udp.c **** err_t
+ 708:./lwip-2.1.2/src/core/udp.c **** udp_sendto_if_src_chksum(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *dst_ip,
+ 709:./lwip-2.1.2/src/core/udp.c ****                          u16_t dst_port, struct netif *netif, u8_t have_chksum,
+ 710:./lwip-2.1.2/src/core/udp.c ****                          u16_t chksum, const ip_addr_t *src_ip)
+ 711:./lwip-2.1.2/src/core/udp.c **** {
+ 712:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP */
+ 713:./lwip-2.1.2/src/core/udp.c ****   struct udp_hdr *udphdr;
+ 714:./lwip-2.1.2/src/core/udp.c ****   err_t err;
+ 715:./lwip-2.1.2/src/core/udp.c ****   struct pbuf *q; /* q will be sent down the stack */
+ 716:./lwip-2.1.2/src/core/udp.c ****   u8_t ip_proto;
+ 717:./lwip-2.1.2/src/core/udp.c ****   u8_t ttl;
+ 718:./lwip-2.1.2/src/core/udp.c **** 
+ 719:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 720:./lwip-2.1.2/src/core/udp.c **** 
+ 721:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if_src: invalid pcb", pcb != NULL, return ERR_ARG);
+ 991              		.loc 1 721 3
+ 992 046a FB68     		ldr	r3, [r7, #12]
+ 993 046c 002B     		cmp	r3, #0
+ 994 046e 02D1     		bne	.L69
+ 995              		.loc 1 721 3 is_stmt 0 discriminator 1
+ 996 0470 6FF00F03 		mvn	r3, #15
+ 997 0474 95E0     		b	.L70
+ 998              	.L69:
+ 722:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if_src: invalid pbuf", p != NULL, return ERR_ARG);
+ 999              		.loc 1 722 3 is_stmt 1
+ 1000 0476 BB68     		ldr	r3, [r7, #8]
+ 1001 0478 002B     		cmp	r3, #0
+ 1002 047a 02D1     		bne	.L71
+ 1003              		.loc 1 722 3 is_stmt 0 discriminator 1
+ 1004 047c 6FF00F03 		mvn	r3, #15
+ 1005 0480 8FE0     		b	.L70
+ 1006              	.L71:
+ 723:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if_src: invalid dst_ip", dst_ip != NULL, return ERR_ARG);
+ 1007              		.loc 1 723 3 is_stmt 1
+ 1008 0482 7B68     		ldr	r3, [r7, #4]
+ 1009 0484 002B     		cmp	r3, #0
+ 1010 0486 02D1     		bne	.L72
+ 1011              		.loc 1 723 3 is_stmt 0 discriminator 1
+ 1012 0488 6FF00F03 		mvn	r3, #15
+ 1013 048c 89E0     		b	.L70
+ 1014              	.L72:
+ 724:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if_src: invalid src_ip", src_ip != NULL, return ERR_ARG);
+ 1015              		.loc 1 724 3 is_stmt 1
+ 1016 048e FB6A     		ldr	r3, [r7, #44]
+ 1017 0490 002B     		cmp	r3, #0
+ 1018 0492 02D1     		bne	.L73
+ 1019              		.loc 1 724 3 is_stmt 0 discriminator 1
+ 1020 0494 6FF00F03 		mvn	r3, #15
+ 1021 0498 83E0     		b	.L70
+ 1022              	.L73:
+ 725:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_sendto_if_src: invalid netif", netif != NULL, return ERR_ARG);
+ 1023              		.loc 1 725 3 is_stmt 1
+ 1024 049a BB6A     		ldr	r3, [r7, #40]
+ 1025 049c 002B     		cmp	r3, #0
+ 1026 049e 02D1     		bne	.L74
+ 1027              		.loc 1 725 3 is_stmt 0 discriminator 1
+ 1028 04a0 6FF00F03 		mvn	r3, #15
+ 1029 04a4 7DE0     		b	.L70
+ 1030              	.L74:
+ 726:./lwip-2.1.2/src/core/udp.c **** 
+ 727:./lwip-2.1.2/src/core/udp.c ****   if (!IP_ADDR_PCB_VERSION_MATCH(pcb, src_ip) ||
+ 728:./lwip-2.1.2/src/core/udp.c ****       !IP_ADDR_PCB_VERSION_MATCH(pcb, dst_ip)) {
+ 729:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 730:./lwip-2.1.2/src/core/udp.c ****   }
+ 731:./lwip-2.1.2/src/core/udp.c **** 
+ 732:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && IP_SOF_BROADCAST
+ 733:./lwip-2.1.2/src/core/udp.c ****   /* broadcast filter? */
+ 734:./lwip-2.1.2/src/core/udp.c ****   if (!ip_get_option(pcb, SOF_BROADCAST) &&
+ 735:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6
+ 736:./lwip-2.1.2/src/core/udp.c ****       IP_IS_V4(dst_ip) &&
+ 737:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 */
+ 738:./lwip-2.1.2/src/core/udp.c ****       ip_addr_isbroadcast(dst_ip, netif)) {
+ 739:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 740:./lwip-2.1.2/src/core/udp.c ****                 ("udp_sendto_if: SOF_BROADCAST not enabled on pcb %p\n", (void *)pcb));
+ 741:./lwip-2.1.2/src/core/udp.c ****     return ERR_VAL;
+ 742:./lwip-2.1.2/src/core/udp.c ****   }
+ 743:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 && IP_SOF_BROADCAST */
+ 744:./lwip-2.1.2/src/core/udp.c **** 
+ 745:./lwip-2.1.2/src/core/udp.c ****   /* if the PCB is not yet bound to a port, bind it here */
+ 746:./lwip-2.1.2/src/core/udp.c ****   if (pcb->local_port == 0) {
+ 1031              		.loc 1 746 10 is_stmt 1
+ 1032 04a6 FB68     		ldr	r3, [r7, #12]
+ 1033 04a8 5B8A     		ldrh	r3, [r3, #18]
+ 1034              		.loc 1 746 6
+ 1035 04aa 002B     		cmp	r3, #0
+ 1036 04ac 0FD1     		bne	.L75
+ 747:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_send: not yet bound to a port, binding now\n"));
+ 748:./lwip-2.1.2/src/core/udp.c ****     err = udp_bind(pcb, &pcb->local_ip, pcb->local_port);
+ 1037              		.loc 1 748 25
+ 1038 04ae F968     		ldr	r1, [r7, #12]
+ 1039              		.loc 1 748 11
+ 1040 04b0 FB68     		ldr	r3, [r7, #12]
+ 1041 04b2 5B8A     		ldrh	r3, [r3, #18]
+ 1042 04b4 1A46     		mov	r2, r3
+ 1043 04b6 F868     		ldr	r0, [r7, #12]
+ 1044 04b8 FFF7FEFF 		bl	udp_bind
+ 1045 04bc 0346     		mov	r3, r0
+ 1046 04be FB76     		strb	r3, [r7, #27]
+ 749:./lwip-2.1.2/src/core/udp.c ****     if (err != ERR_OK) {
+ 1047              		.loc 1 749 8
+ 1048 04c0 97F91B30 		ldrsb	r3, [r7, #27]
+ 1049 04c4 002B     		cmp	r3, #0
+ 1050 04c6 02D0     		beq	.L75
+ 750:./lwip-2.1.2/src/core/udp.c ****       LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("udp_send: forced port bind
+ 751:./lwip-2.1.2/src/core/udp.c ****       return err;
+ 1051              		.loc 1 751 14
+ 1052 04c8 97F91B30 		ldrsb	r3, [r7, #27]
+ 1053 04cc 69E0     		b	.L70
+ 1054              	.L75:
+ 752:./lwip-2.1.2/src/core/udp.c ****     }
+ 753:./lwip-2.1.2/src/core/udp.c ****   }
+ 754:./lwip-2.1.2/src/core/udp.c **** 
+ 755:./lwip-2.1.2/src/core/udp.c ****   /* packet too large to add a UDP header without causing an overflow? */
+ 756:./lwip-2.1.2/src/core/udp.c ****   if ((u16_t)(p->tot_len + UDP_HLEN) < p->tot_len) {
+ 1055              		.loc 1 756 16
+ 1056 04ce BB68     		ldr	r3, [r7, #8]
+ 1057 04d0 1B89     		ldrh	r3, [r3, #8]
+ 1058              		.loc 1 756 6
+ 1059 04d2 4FF6F772 		movw	r2, #65527
+ 1060 04d6 9342     		cmp	r3, r2
+ 1061 04d8 02D9     		bls	.L76
+ 757:./lwip-2.1.2/src/core/udp.c ****     return ERR_MEM;
+ 1062              		.loc 1 757 12
+ 1063 04da 4FF0FF33 		mov	r3, #-1
+ 1064 04de 60E0     		b	.L70
+ 1065              	.L76:
+ 758:./lwip-2.1.2/src/core/udp.c ****   }
+ 759:./lwip-2.1.2/src/core/udp.c ****   /* not enough space to add an UDP header to first pbuf in given p chain? */
+ 760:./lwip-2.1.2/src/core/udp.c ****   if (pbuf_add_header(p, UDP_HLEN)) {
+ 1066              		.loc 1 760 7
+ 1067 04e0 0821     		movs	r1, #8
+ 1068 04e2 B868     		ldr	r0, [r7, #8]
+ 1069 04e4 FFF7FEFF 		bl	pbuf_add_header
+ 1070 04e8 0346     		mov	r3, r0
+ 1071              		.loc 1 760 6
+ 1072 04ea 002B     		cmp	r3, #0
+ 1073 04ec 15D0     		beq	.L77
+ 761:./lwip-2.1.2/src/core/udp.c ****     /* allocate header in a separate new pbuf */
+ 762:./lwip-2.1.2/src/core/udp.c ****     q = pbuf_alloc(PBUF_IP, UDP_HLEN, PBUF_RAM);
+ 1074              		.loc 1 762 9
+ 1075 04ee 4FF42072 		mov	r2, #640
+ 1076 04f2 0821     		movs	r1, #8
+ 1077 04f4 2220     		movs	r0, #34
+ 1078 04f6 FFF7FEFF 		bl	pbuf_alloc
+ 1079 04fa F861     		str	r0, [r7, #28]
+ 763:./lwip-2.1.2/src/core/udp.c ****     /* new header pbuf could not be allocated? */
+ 764:./lwip-2.1.2/src/core/udp.c ****     if (q == NULL) {
+ 1080              		.loc 1 764 8
+ 1081 04fc FB69     		ldr	r3, [r7, #28]
+ 1082 04fe 002B     		cmp	r3, #0
+ 1083 0500 02D1     		bne	.L78
+ 765:./lwip-2.1.2/src/core/udp.c ****       LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("udp_send: could not alloca
+ 766:./lwip-2.1.2/src/core/udp.c ****       return ERR_MEM;
+ 1084              		.loc 1 766 14
+ 1085 0502 4FF0FF33 		mov	r3, #-1
+ 1086 0506 4CE0     		b	.L70
+ 1087              	.L78:
+ 767:./lwip-2.1.2/src/core/udp.c ****     }
+ 768:./lwip-2.1.2/src/core/udp.c ****     if (p->tot_len != 0) {
+ 1088              		.loc 1 768 10
+ 1089 0508 BB68     		ldr	r3, [r7, #8]
+ 1090 050a 1B89     		ldrh	r3, [r3, #8]
+ 1091              		.loc 1 768 8
+ 1092 050c 002B     		cmp	r3, #0
+ 1093 050e 06D0     		beq	.L79
+ 769:./lwip-2.1.2/src/core/udp.c ****       /* chain header q in front of given pbuf p (only if p contains data) */
+ 770:./lwip-2.1.2/src/core/udp.c ****       pbuf_chain(q, p);
+ 1094              		.loc 1 770 7
+ 1095 0510 B968     		ldr	r1, [r7, #8]
+ 1096 0512 F869     		ldr	r0, [r7, #28]
+ 1097 0514 FFF7FEFF 		bl	pbuf_chain
+ 1098 0518 01E0     		b	.L79
+ 1099              	.L77:
+ 771:./lwip-2.1.2/src/core/udp.c ****     }
+ 772:./lwip-2.1.2/src/core/udp.c ****     /* first pbuf q points to header pbuf */
+ 773:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG,
+ 774:./lwip-2.1.2/src/core/udp.c ****                 ("udp_send: added header pbuf %p before given pbuf %p\n", (void *)q, (void *)p));
+ 775:./lwip-2.1.2/src/core/udp.c ****   } else {
+ 776:./lwip-2.1.2/src/core/udp.c ****     /* adding space for header within p succeeded */
+ 777:./lwip-2.1.2/src/core/udp.c ****     /* first pbuf q equals given pbuf */
+ 778:./lwip-2.1.2/src/core/udp.c ****     q = p;
+ 1100              		.loc 1 778 7
+ 1101 051a BB68     		ldr	r3, [r7, #8]
+ 1102 051c FB61     		str	r3, [r7, #28]
+ 1103              	.L79:
+ 779:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, ("udp_send: added header in given pbuf %p\n", (void *)p));
+ 780:./lwip-2.1.2/src/core/udp.c ****   }
+ 781:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT("check that first pbuf can hold struct udp_hdr",
+ 782:./lwip-2.1.2/src/core/udp.c ****               (q->len >= sizeof(struct udp_hdr)));
+ 783:./lwip-2.1.2/src/core/udp.c ****   /* q now represents the packet to be sent */
+ 784:./lwip-2.1.2/src/core/udp.c ****   udphdr = (struct udp_hdr *)q->payload;
+ 1104              		.loc 1 784 10
+ 1105 051e FB69     		ldr	r3, [r7, #28]
+ 1106 0520 5B68     		ldr	r3, [r3, #4]
+ 1107 0522 7B61     		str	r3, [r7, #20]
+ 785:./lwip-2.1.2/src/core/udp.c ****   udphdr->src = lwip_htons(pcb->local_port);
+ 1108              		.loc 1 785 17
+ 1109 0524 FB68     		ldr	r3, [r7, #12]
+ 1110 0526 5B8A     		ldrh	r3, [r3, #18]
+ 1111 0528 1846     		mov	r0, r3
+ 1112 052a FFF7FEFF 		bl	lwip_htons
+ 1113 052e 0346     		mov	r3, r0
+ 1114 0530 1A46     		mov	r2, r3
+ 1115              		.loc 1 785 15
+ 1116 0532 7B69     		ldr	r3, [r7, #20]
+ 1117 0534 1A80     		strh	r2, [r3]	@ unaligned
+ 786:./lwip-2.1.2/src/core/udp.c ****   udphdr->dest = lwip_htons(dst_port);
+ 1118              		.loc 1 786 18
+ 1119 0536 7B88     		ldrh	r3, [r7, #2]
+ 1120 0538 1846     		mov	r0, r3
+ 1121 053a FFF7FEFF 		bl	lwip_htons
+ 1122 053e 0346     		mov	r3, r0
+ 1123 0540 1A46     		mov	r2, r3
+ 1124              		.loc 1 786 16
+ 1125 0542 7B69     		ldr	r3, [r7, #20]
+ 1126 0544 5A80     		strh	r2, [r3, #2]	@ unaligned
+ 787:./lwip-2.1.2/src/core/udp.c ****   /* in UDP, 0 checksum means 'no checksum' */
+ 788:./lwip-2.1.2/src/core/udp.c ****   udphdr->chksum = 0x0000;
+ 1127              		.loc 1 788 18
+ 1128 0546 7B69     		ldr	r3, [r7, #20]
+ 1129 0548 0022     		movs	r2, #0
+ 1130 054a 9A71     		strb	r2, [r3, #6]
+ 1131 054c 0022     		movs	r2, #0
+ 1132 054e DA71     		strb	r2, [r3, #7]
+ 789:./lwip-2.1.2/src/core/udp.c **** 
+ 790:./lwip-2.1.2/src/core/udp.c ****   /* Multicast Loop? */
+ 791:./lwip-2.1.2/src/core/udp.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 792:./lwip-2.1.2/src/core/udp.c ****   if (((pcb->flags & UDP_FLAGS_MULTICAST_LOOP) != 0) && ip_addr_ismulticast(dst_ip)) {
+ 793:./lwip-2.1.2/src/core/udp.c ****     q->flags |= PBUF_FLAG_MCASTLOOP;
+ 794:./lwip-2.1.2/src/core/udp.c ****   }
+ 795:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 796:./lwip-2.1.2/src/core/udp.c **** 
+ 797:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, ("udp_send: sending datagram of length %"U16_F"\n", q->tot_len));
+ 798:./lwip-2.1.2/src/core/udp.c **** 
+ 799:./lwip-2.1.2/src/core/udp.c **** #if LWIP_UDPLITE
+ 800:./lwip-2.1.2/src/core/udp.c ****   /* UDP Lite protocol? */
+ 801:./lwip-2.1.2/src/core/udp.c ****   if (pcb->flags & UDP_FLAGS_UDPLITE) {
+ 802:./lwip-2.1.2/src/core/udp.c ****     u16_t chklen, chklen_hdr;
+ 803:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP LITE packet length %"U16_F"\n", q->tot_len));
+ 804:./lwip-2.1.2/src/core/udp.c ****     /* set UDP message length in UDP header */
+ 805:./lwip-2.1.2/src/core/udp.c ****     chklen_hdr = chklen = pcb->chksum_len_tx;
+ 806:./lwip-2.1.2/src/core/udp.c ****     if ((chklen < sizeof(struct udp_hdr)) || (chklen > q->tot_len)) {
+ 807:./lwip-2.1.2/src/core/udp.c ****       if (chklen != 0) {
+ 808:./lwip-2.1.2/src/core/udp.c ****         LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP LITE pcb->chksum_len is illegal: %"U16_F"\n", chklen
+ 809:./lwip-2.1.2/src/core/udp.c ****       }
+ 810:./lwip-2.1.2/src/core/udp.c ****       /* For UDP-Lite, checksum length of 0 means checksum
+ 811:./lwip-2.1.2/src/core/udp.c ****          over the complete packet. (See RFC 3828 chap. 3.1)
+ 812:./lwip-2.1.2/src/core/udp.c ****          At least the UDP-Lite header must be covered by the
+ 813:./lwip-2.1.2/src/core/udp.c ****          checksum, therefore, if chksum_len has an illegal
+ 814:./lwip-2.1.2/src/core/udp.c ****          value, we generate the checksum over the complete
+ 815:./lwip-2.1.2/src/core/udp.c ****          packet to be safe. */
+ 816:./lwip-2.1.2/src/core/udp.c ****       chklen_hdr = 0;
+ 817:./lwip-2.1.2/src/core/udp.c ****       chklen = q->tot_len;
+ 818:./lwip-2.1.2/src/core/udp.c ****     }
+ 819:./lwip-2.1.2/src/core/udp.c ****     udphdr->len = lwip_htons(chklen_hdr);
+ 820:./lwip-2.1.2/src/core/udp.c ****     /* calculate checksum */
+ 821:./lwip-2.1.2/src/core/udp.c **** #if CHECKSUM_GEN_UDP
+ 822:./lwip-2.1.2/src/core/udp.c ****     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_UDP) {
+ 823:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY
+ 824:./lwip-2.1.2/src/core/udp.c ****       if (have_chksum) {
+ 825:./lwip-2.1.2/src/core/udp.c ****         chklen = UDP_HLEN;
+ 826:./lwip-2.1.2/src/core/udp.c ****       }
+ 827:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY */
+ 828:./lwip-2.1.2/src/core/udp.c ****       udphdr->chksum = ip_chksum_pseudo_partial(q, IP_PROTO_UDPLITE,
+ 829:./lwip-2.1.2/src/core/udp.c ****                        q->tot_len, chklen, src_ip, dst_ip);
+ 830:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY
+ 831:./lwip-2.1.2/src/core/udp.c ****       if (have_chksum) {
+ 832:./lwip-2.1.2/src/core/udp.c ****         u32_t acc;
+ 833:./lwip-2.1.2/src/core/udp.c ****         acc = udphdr->chksum + (u16_t)~(chksum);
+ 834:./lwip-2.1.2/src/core/udp.c ****         udphdr->chksum = FOLD_U32T(acc);
+ 835:./lwip-2.1.2/src/core/udp.c ****       }
+ 836:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY */
+ 837:./lwip-2.1.2/src/core/udp.c **** 
+ 838:./lwip-2.1.2/src/core/udp.c ****       /* chksum zero must become 0xffff, as zero means 'no checksum' */
+ 839:./lwip-2.1.2/src/core/udp.c ****       if (udphdr->chksum == 0x0000) {
+ 840:./lwip-2.1.2/src/core/udp.c ****         udphdr->chksum = 0xffff;
+ 841:./lwip-2.1.2/src/core/udp.c ****       }
+ 842:./lwip-2.1.2/src/core/udp.c ****     }
+ 843:./lwip-2.1.2/src/core/udp.c **** #endif /* CHECKSUM_GEN_UDP */
+ 844:./lwip-2.1.2/src/core/udp.c **** 
+ 845:./lwip-2.1.2/src/core/udp.c ****     ip_proto = IP_PROTO_UDPLITE;
+ 846:./lwip-2.1.2/src/core/udp.c ****   } else
+ 847:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_UDPLITE */
+ 848:./lwip-2.1.2/src/core/udp.c ****   {      /* UDP */
+ 849:./lwip-2.1.2/src/core/udp.c ****     LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP packet length %"U16_F"\n", q->tot_len));
+ 850:./lwip-2.1.2/src/core/udp.c ****     udphdr->len = lwip_htons(q->tot_len);
+ 1133              		.loc 1 850 19
+ 1134 0550 FB69     		ldr	r3, [r7, #28]
+ 1135 0552 1B89     		ldrh	r3, [r3, #8]
+ 1136 0554 1846     		mov	r0, r3
+ 1137 0556 FFF7FEFF 		bl	lwip_htons
+ 1138 055a 0346     		mov	r3, r0
+ 1139 055c 1A46     		mov	r2, r3
+ 1140              		.loc 1 850 17
+ 1141 055e 7B69     		ldr	r3, [r7, #20]
+ 1142 0560 9A80     		strh	r2, [r3, #4]	@ unaligned
+ 851:./lwip-2.1.2/src/core/udp.c ****     /* calculate checksum */
+ 852:./lwip-2.1.2/src/core/udp.c **** #if CHECKSUM_GEN_UDP
+ 853:./lwip-2.1.2/src/core/udp.c ****     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_UDP) {
+ 854:./lwip-2.1.2/src/core/udp.c ****       /* Checksum is mandatory over IPv6. */
+ 855:./lwip-2.1.2/src/core/udp.c ****       if (IP_IS_V6(dst_ip) || (pcb->flags & UDP_FLAGS_NOCHKSUM) == 0) {
+ 856:./lwip-2.1.2/src/core/udp.c ****         u16_t udpchksum;
+ 857:./lwip-2.1.2/src/core/udp.c **** #if LWIP_CHECKSUM_ON_COPY
+ 858:./lwip-2.1.2/src/core/udp.c ****         if (have_chksum) {
+ 859:./lwip-2.1.2/src/core/udp.c ****           u32_t acc;
+ 860:./lwip-2.1.2/src/core/udp.c ****           udpchksum = ip_chksum_pseudo_partial(q, IP_PROTO_UDP,
+ 861:./lwip-2.1.2/src/core/udp.c ****                                                q->tot_len, UDP_HLEN, src_ip, dst_ip);
+ 862:./lwip-2.1.2/src/core/udp.c ****           acc = udpchksum + (u16_t)~(chksum);
+ 863:./lwip-2.1.2/src/core/udp.c ****           udpchksum = FOLD_U32T(acc);
+ 864:./lwip-2.1.2/src/core/udp.c ****         } else
+ 865:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_CHECKSUM_ON_COPY */
+ 866:./lwip-2.1.2/src/core/udp.c ****         {
+ 867:./lwip-2.1.2/src/core/udp.c ****           udpchksum = ip_chksum_pseudo(q, IP_PROTO_UDP, q->tot_len,
+ 868:./lwip-2.1.2/src/core/udp.c ****                                        src_ip, dst_ip);
+ 869:./lwip-2.1.2/src/core/udp.c ****         }
+ 870:./lwip-2.1.2/src/core/udp.c **** 
+ 871:./lwip-2.1.2/src/core/udp.c ****         /* chksum zero must become 0xffff, as zero means 'no checksum' */
+ 872:./lwip-2.1.2/src/core/udp.c ****         if (udpchksum == 0x0000) {
+ 873:./lwip-2.1.2/src/core/udp.c ****           udpchksum = 0xffff;
+ 874:./lwip-2.1.2/src/core/udp.c ****         }
+ 875:./lwip-2.1.2/src/core/udp.c ****         udphdr->chksum = udpchksum;
+ 876:./lwip-2.1.2/src/core/udp.c ****       }
+ 877:./lwip-2.1.2/src/core/udp.c ****     }
+ 878:./lwip-2.1.2/src/core/udp.c **** #endif /* CHECKSUM_GEN_UDP */
+ 879:./lwip-2.1.2/src/core/udp.c ****     ip_proto = IP_PROTO_UDP;
+ 1143              		.loc 1 879 14
+ 1144 0562 1123     		movs	r3, #17
+ 1145 0564 FB74     		strb	r3, [r7, #19]
+ 880:./lwip-2.1.2/src/core/udp.c ****   }
+ 881:./lwip-2.1.2/src/core/udp.c **** 
+ 882:./lwip-2.1.2/src/core/udp.c ****   /* Determine TTL to use */
+ 883:./lwip-2.1.2/src/core/udp.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 884:./lwip-2.1.2/src/core/udp.c ****   ttl = (ip_addr_ismulticast(dst_ip) ? udp_get_multicast_ttl(pcb) : pcb->ttl);
+ 885:./lwip-2.1.2/src/core/udp.c **** #else /* LWIP_MULTICAST_TX_OPTIONS */
+ 886:./lwip-2.1.2/src/core/udp.c ****   ttl = pcb->ttl;
+ 1146              		.loc 1 886 7
+ 1147 0566 FB68     		ldr	r3, [r7, #12]
+ 1148 0568 DB7A     		ldrb	r3, [r3, #11]
+ 1149 056a BB74     		strb	r3, [r7, #18]
+ 887:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 888:./lwip-2.1.2/src/core/udp.c **** 
+ 889:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, ("udp_send: UDP checksum 0x%04"X16_F"\n", udphdr->chksum));
+ 890:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG, ("udp_send: ip_output_if (,,,,0x%02"X16_F",)\n", (u16_t)ip_proto));
+ 891:./lwip-2.1.2/src/core/udp.c ****   /* output to IP */
+ 892:./lwip-2.1.2/src/core/udp.c ****   NETIF_SET_HINTS(netif, &(pcb->netif_hints));
+ 893:./lwip-2.1.2/src/core/udp.c ****   err = ip_output_if_src(q, src_ip, dst_ip, ttl, pcb->tos, ip_proto, netif);
+ 1150              		.loc 1 893 9
+ 1151 056c FB68     		ldr	r3, [r7, #12]
+ 1152 056e 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+ 1153 0570 B97C     		ldrb	r1, [r7, #18]	@ zero_extendqisi2
+ 1154 0572 BA6A     		ldr	r2, [r7, #40]
+ 1155 0574 0292     		str	r2, [sp, #8]
+ 1156 0576 FA7C     		ldrb	r2, [r7, #19]	@ zero_extendqisi2
+ 1157 0578 0192     		str	r2, [sp, #4]
+ 1158 057a 0093     		str	r3, [sp]
+ 1159 057c 0B46     		mov	r3, r1
+ 1160 057e 7A68     		ldr	r2, [r7, #4]
+ 1161 0580 F96A     		ldr	r1, [r7, #44]
+ 1162 0582 F869     		ldr	r0, [r7, #28]
+ 1163 0584 FFF7FEFF 		bl	ip4_output_if_src
+ 1164 0588 0346     		mov	r3, r0
+ 1165 058a FB76     		strb	r3, [r7, #27]
+ 894:./lwip-2.1.2/src/core/udp.c ****   NETIF_RESET_HINTS(netif);
+ 895:./lwip-2.1.2/src/core/udp.c **** 
+ 896:./lwip-2.1.2/src/core/udp.c ****   /* @todo: must this be increased even if error occurred? */
+ 897:./lwip-2.1.2/src/core/udp.c ****   MIB2_STATS_INC(mib2.udpoutdatagrams);
+ 898:./lwip-2.1.2/src/core/udp.c **** 
+ 899:./lwip-2.1.2/src/core/udp.c ****   /* did we chain a separate header pbuf earlier? */
+ 900:./lwip-2.1.2/src/core/udp.c ****   if (q != p) {
+ 1166              		.loc 1 900 6
+ 1167 058c FA69     		ldr	r2, [r7, #28]
+ 1168 058e BB68     		ldr	r3, [r7, #8]
+ 1169 0590 9A42     		cmp	r2, r3
+ 1170 0592 04D0     		beq	.L80
+ 901:./lwip-2.1.2/src/core/udp.c ****     /* free the header pbuf */
+ 902:./lwip-2.1.2/src/core/udp.c ****     pbuf_free(q);
+ 1171              		.loc 1 902 5
+ 1172 0594 F869     		ldr	r0, [r7, #28]
+ 1173 0596 FFF7FEFF 		bl	pbuf_free
+ 903:./lwip-2.1.2/src/core/udp.c ****     q = NULL;
+ 1174              		.loc 1 903 7
+ 1175 059a 0023     		movs	r3, #0
+ 1176 059c FB61     		str	r3, [r7, #28]
+ 1177              	.L80:
+ 904:./lwip-2.1.2/src/core/udp.c ****     /* p is still referenced by the caller, and will live on */
+ 905:./lwip-2.1.2/src/core/udp.c ****   }
+ 906:./lwip-2.1.2/src/core/udp.c **** 
+ 907:./lwip-2.1.2/src/core/udp.c ****   UDP_STATS_INC(udp.xmit);
+ 908:./lwip-2.1.2/src/core/udp.c ****   return err;
+ 1178              		.loc 1 908 10
+ 1179 059e 97F91B30 		ldrsb	r3, [r7, #27]
+ 1180              	.L70:
+ 909:./lwip-2.1.2/src/core/udp.c **** }
+ 1181              		.loc 1 909 1
+ 1182 05a2 1846     		mov	r0, r3
+ 1183 05a4 2037     		adds	r7, r7, #32
+ 1184              	.LCFI37:
+ 1185              		.cfi_def_cfa_offset 8
+ 1186 05a6 BD46     		mov	sp, r7
+ 1187              	.LCFI38:
+ 1188              		.cfi_def_cfa_register 13
+ 1189              		@ sp needed
+ 1190 05a8 80BD     		pop	{r7, pc}
+ 1191              		.cfi_endproc
+ 1192              	.LFE32:
+ 1194              		.align	1
+ 1195              		.global	udp_bind
+ 1196              		.syntax unified
+ 1197              		.thumb
+ 1198              		.thumb_func
+ 1199              		.fpu fpv5-d16
+ 1201              	udp_bind:
+ 1202              	.LFB33:
+ 910:./lwip-2.1.2/src/core/udp.c **** 
+ 911:./lwip-2.1.2/src/core/udp.c **** /**
+ 912:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+ 913:./lwip-2.1.2/src/core/udp.c ****  * Bind an UDP PCB.
+ 914:./lwip-2.1.2/src/core/udp.c ****  * 
+ 915:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB to be bound with a local address ipaddr and port.
+ 916:./lwip-2.1.2/src/core/udp.c ****  * @param ipaddr local IP address to bind with. Use IP_ANY_TYPE to
+ 917:./lwip-2.1.2/src/core/udp.c ****  * bind to all local interfaces.
+ 918:./lwip-2.1.2/src/core/udp.c ****  * @param port local UDP port to bind with. Use 0 to automatically bind
+ 919:./lwip-2.1.2/src/core/udp.c ****  * to a random port between UDP_LOCAL_PORT_RANGE_START and
+ 920:./lwip-2.1.2/src/core/udp.c ****  * UDP_LOCAL_PORT_RANGE_END.
+ 921:./lwip-2.1.2/src/core/udp.c ****  *
+ 922:./lwip-2.1.2/src/core/udp.c ****  * ipaddr & port are expected to be in the same byte order as in the pcb.
+ 923:./lwip-2.1.2/src/core/udp.c ****  *
+ 924:./lwip-2.1.2/src/core/udp.c ****  * @return lwIP error code.
+ 925:./lwip-2.1.2/src/core/udp.c ****  * - ERR_OK. Successful. No error occurred.
+ 926:./lwip-2.1.2/src/core/udp.c ****  * - ERR_USE. The specified ipaddr and port are already bound to by
+ 927:./lwip-2.1.2/src/core/udp.c ****  * another UDP PCB.
+ 928:./lwip-2.1.2/src/core/udp.c ****  *
+ 929:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect()
+ 930:./lwip-2.1.2/src/core/udp.c ****  */
+ 931:./lwip-2.1.2/src/core/udp.c **** err_t
+ 932:./lwip-2.1.2/src/core/udp.c **** udp_bind(struct udp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port)
+ 933:./lwip-2.1.2/src/core/udp.c **** {
+ 1203              		.loc 1 933 1
+ 1204              		.cfi_startproc
+ 1205              		@ args = 0, pretend = 0, frame = 24
+ 1206              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1207 05aa 80B5     		push	{r7, lr}
+ 1208              	.LCFI39:
+ 1209              		.cfi_def_cfa_offset 8
+ 1210              		.cfi_offset 7, -8
+ 1211              		.cfi_offset 14, -4
+ 1212 05ac 86B0     		sub	sp, sp, #24
+ 1213              	.LCFI40:
+ 1214              		.cfi_def_cfa_offset 32
+ 1215 05ae 00AF     		add	r7, sp, #0
+ 1216              	.LCFI41:
+ 1217              		.cfi_def_cfa_register 7
+ 1218 05b0 F860     		str	r0, [r7, #12]
+ 1219 05b2 B960     		str	r1, [r7, #8]
+ 1220 05b4 1346     		mov	r3, r2
+ 1221 05b6 FB80     		strh	r3, [r7, #6]	@ movhi
+ 934:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *ipcb;
+ 935:./lwip-2.1.2/src/core/udp.c ****   u8_t rebind;
+ 936:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6 && LWIP_IPV6_SCOPES
+ 937:./lwip-2.1.2/src/core/udp.c ****   ip_addr_t zoned_ipaddr;
+ 938:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 && LWIP_IPV6_SCOPES */
+ 939:./lwip-2.1.2/src/core/udp.c **** 
+ 940:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 941:./lwip-2.1.2/src/core/udp.c **** 
+ 942:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4
+ 943:./lwip-2.1.2/src/core/udp.c ****   /* Don't propagate NULL pointer (IPv4 ANY) to subsequent functions */
+ 944:./lwip-2.1.2/src/core/udp.c ****   if (ipaddr == NULL) {
+ 1222              		.loc 1 944 6
+ 1223 05b8 BB68     		ldr	r3, [r7, #8]
+ 1224 05ba 002B     		cmp	r3, #0
+ 1225 05bc 01D1     		bne	.L82
+ 945:./lwip-2.1.2/src/core/udp.c ****     ipaddr = IP4_ADDR_ANY;
+ 1226              		.loc 1 945 12
+ 1227 05be 364B     		ldr	r3, .L98
+ 1228 05c0 BB60     		str	r3, [r7, #8]
+ 1229              	.L82:
+ 946:./lwip-2.1.2/src/core/udp.c ****   }
+ 947:./lwip-2.1.2/src/core/udp.c **** #else /* LWIP_IPV4 */
+ 948:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_bind: invalid ipaddr", ipaddr != NULL, return ERR_ARG);
+ 949:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 */
+ 950:./lwip-2.1.2/src/core/udp.c **** 
+ 951:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_bind: invalid pcb", pcb != NULL, return ERR_ARG);
+ 1230              		.loc 1 951 3
+ 1231 05c2 FB68     		ldr	r3, [r7, #12]
+ 1232 05c4 002B     		cmp	r3, #0
+ 1233 05c6 02D1     		bne	.L83
+ 1234              		.loc 1 951 3 is_stmt 0 discriminator 1
+ 1235 05c8 6FF00F03 		mvn	r3, #15
+ 1236 05cc 60E0     		b	.L84
+ 1237              	.L83:
+ 952:./lwip-2.1.2/src/core/udp.c **** 
+ 953:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, ("udp_bind(ipaddr = "));
+ 954:./lwip-2.1.2/src/core/udp.c ****   ip_addr_debug_print(UDP_DEBUG | LWIP_DBG_TRACE, ipaddr);
+ 955:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE, (", port = %"U16_F")\n", port));
+ 956:./lwip-2.1.2/src/core/udp.c **** 
+ 957:./lwip-2.1.2/src/core/udp.c ****   rebind = 0;
+ 1238              		.loc 1 957 10 is_stmt 1
+ 1239 05ce 0023     		movs	r3, #0
+ 1240 05d0 FB74     		strb	r3, [r7, #19]
+ 958:./lwip-2.1.2/src/core/udp.c ****   /* Check for double bind and rebind of the same pcb */
+ 959:./lwip-2.1.2/src/core/udp.c ****   for (ipcb = udp_pcbs; ipcb != NULL; ipcb = ipcb->next) {
+ 1241              		.loc 1 959 13
+ 1242 05d2 324B     		ldr	r3, .L98+4
+ 1243 05d4 1B68     		ldr	r3, [r3]
+ 1244 05d6 7B61     		str	r3, [r7, #20]
+ 1245              		.loc 1 959 3
+ 1246 05d8 09E0     		b	.L85
+ 1247              	.L88:
+ 960:./lwip-2.1.2/src/core/udp.c ****     /* is this UDP PCB already on active list? */
+ 961:./lwip-2.1.2/src/core/udp.c ****     if (pcb == ipcb) {
+ 1248              		.loc 1 961 8
+ 1249 05da FA68     		ldr	r2, [r7, #12]
+ 1250 05dc 7B69     		ldr	r3, [r7, #20]
+ 1251 05de 9A42     		cmp	r2, r3
+ 1252 05e0 02D1     		bne	.L86
+ 962:./lwip-2.1.2/src/core/udp.c ****       rebind = 1;
+ 1253              		.loc 1 962 14
+ 1254 05e2 0123     		movs	r3, #1
+ 1255 05e4 FB74     		strb	r3, [r7, #19]
+ 963:./lwip-2.1.2/src/core/udp.c ****       break;
+ 1256              		.loc 1 963 7
+ 1257 05e6 05E0     		b	.L87
+ 1258              	.L86:
+ 959:./lwip-2.1.2/src/core/udp.c ****     /* is this UDP PCB already on active list? */
+ 1259              		.loc 1 959 44 discriminator 2
+ 1260 05e8 7B69     		ldr	r3, [r7, #20]
+ 1261 05ea DB68     		ldr	r3, [r3, #12]
+ 1262 05ec 7B61     		str	r3, [r7, #20]
+ 1263              	.L85:
+ 959:./lwip-2.1.2/src/core/udp.c ****     /* is this UDP PCB already on active list? */
+ 1264              		.loc 1 959 3 discriminator 1
+ 1265 05ee 7B69     		ldr	r3, [r7, #20]
+ 1266 05f0 002B     		cmp	r3, #0
+ 1267 05f2 F2D1     		bne	.L88
+ 1268              	.L87:
+ 964:./lwip-2.1.2/src/core/udp.c ****     }
+ 965:./lwip-2.1.2/src/core/udp.c ****   }
+ 966:./lwip-2.1.2/src/core/udp.c **** 
+ 967:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6 && LWIP_IPV6_SCOPES
+ 968:./lwip-2.1.2/src/core/udp.c ****   /* If the given IP address should have a zone but doesn't, assign one now.
+ 969:./lwip-2.1.2/src/core/udp.c ****    * This is legacy support: scope-aware callers should always provide properly
+ 970:./lwip-2.1.2/src/core/udp.c ****    * zoned source addresses. Do the zone selection before the address-in-use
+ 971:./lwip-2.1.2/src/core/udp.c ****    * check below; as such we have to make a temporary copy of the address. */
+ 972:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_V6(ipaddr) && ip6_addr_lacks_zone(ip_2_ip6(ipaddr), IP6_UNKNOWN)) {
+ 973:./lwip-2.1.2/src/core/udp.c ****     ip_addr_copy(zoned_ipaddr, *ipaddr);
+ 974:./lwip-2.1.2/src/core/udp.c ****     ip6_addr_select_zone(ip_2_ip6(&zoned_ipaddr), ip_2_ip6(&zoned_ipaddr));
+ 975:./lwip-2.1.2/src/core/udp.c ****     ipaddr = &zoned_ipaddr;
+ 976:./lwip-2.1.2/src/core/udp.c ****   }
+ 977:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 && LWIP_IPV6_SCOPES */
+ 978:./lwip-2.1.2/src/core/udp.c **** 
+ 979:./lwip-2.1.2/src/core/udp.c ****   /* no port specified? */
+ 980:./lwip-2.1.2/src/core/udp.c ****   if (port == 0) {
+ 1269              		.loc 1 980 6
+ 1270 05f4 FB88     		ldrh	r3, [r7, #6]
+ 1271 05f6 002B     		cmp	r3, #0
+ 1272 05f8 09D1     		bne	.L89
+ 981:./lwip-2.1.2/src/core/udp.c ****     port = udp_new_port();
+ 1273              		.loc 1 981 12
+ 1274 05fa FFF713FD 		bl	udp_new_port
+ 1275 05fe 0346     		mov	r3, r0
+ 1276 0600 FB80     		strh	r3, [r7, #6]	@ movhi
+ 982:./lwip-2.1.2/src/core/udp.c ****     if (port == 0) {
+ 1277              		.loc 1 982 8
+ 1278 0602 FB88     		ldrh	r3, [r7, #6]
+ 1279 0604 002B     		cmp	r3, #0
+ 1280 0606 2CD1     		bne	.L90
+ 983:./lwip-2.1.2/src/core/udp.c ****       /* no more ports available in local range */
+ 984:./lwip-2.1.2/src/core/udp.c ****       LWIP_DEBUGF(UDP_DEBUG, ("udp_bind: out of free UDP ports\n"));
+ 985:./lwip-2.1.2/src/core/udp.c ****       return ERR_USE;
+ 1281              		.loc 1 985 14
+ 1282 0608 6FF00703 		mvn	r3, #7
+ 1283 060c 40E0     		b	.L84
+ 1284              	.L89:
+ 986:./lwip-2.1.2/src/core/udp.c ****     }
+ 987:./lwip-2.1.2/src/core/udp.c ****   } else {
+ 988:./lwip-2.1.2/src/core/udp.c ****     for (ipcb = udp_pcbs; ipcb != NULL; ipcb = ipcb->next) {
+ 1285              		.loc 1 988 15
+ 1286 060e 234B     		ldr	r3, .L98+4
+ 1287 0610 1B68     		ldr	r3, [r3]
+ 1288 0612 7B61     		str	r3, [r7, #20]
+ 1289              		.loc 1 988 5
+ 1290 0614 22E0     		b	.L91
+ 1291              	.L94:
+ 989:./lwip-2.1.2/src/core/udp.c ****       if (pcb != ipcb) {
+ 1292              		.loc 1 989 10
+ 1293 0616 FA68     		ldr	r2, [r7, #12]
+ 1294 0618 7B69     		ldr	r3, [r7, #20]
+ 1295 061a 9A42     		cmp	r2, r3
+ 1296 061c 1BD0     		beq	.L92
+ 990:./lwip-2.1.2/src/core/udp.c ****         /* By default, we don't allow to bind to a port that any other udp
+ 991:./lwip-2.1.2/src/core/udp.c ****            PCB is already bound to, unless *all* PCBs with that port have tha
+ 992:./lwip-2.1.2/src/core/udp.c ****            REUSEADDR flag set. */
+ 993:./lwip-2.1.2/src/core/udp.c **** #if SO_REUSE
+ 994:./lwip-2.1.2/src/core/udp.c ****         if (!ip_get_option(pcb, SOF_REUSEADDR) ||
+ 995:./lwip-2.1.2/src/core/udp.c ****             !ip_get_option(ipcb, SOF_REUSEADDR))
+ 996:./lwip-2.1.2/src/core/udp.c **** #endif /* SO_REUSE */
+ 997:./lwip-2.1.2/src/core/udp.c ****         {
+ 998:./lwip-2.1.2/src/core/udp.c ****           /* port matches that of PCB in list and REUSEADDR not set -> reject */
+ 999:./lwip-2.1.2/src/core/udp.c ****           if ((ipcb->local_port == port) &&
+ 1297              		.loc 1 999 20
+ 1298 061e 7B69     		ldr	r3, [r7, #20]
+ 1299 0620 5B8A     		ldrh	r3, [r3, #18]
+ 1300              		.loc 1 999 14
+ 1301 0622 FA88     		ldrh	r2, [r7, #6]
+ 1302 0624 9A42     		cmp	r2, r3
+ 1303 0626 16D1     		bne	.L92
+1000:./lwip-2.1.2/src/core/udp.c ****               /* IP address matches or any IP used? */
+1001:./lwip-2.1.2/src/core/udp.c ****               (ip_addr_cmp(&ipcb->local_ip, ipaddr) || ip_addr_isany(ipaddr) ||
+ 1304              		.loc 1 1001 16 discriminator 1
+ 1305 0628 7B69     		ldr	r3, [r7, #20]
+ 1306 062a 1A68     		ldr	r2, [r3]
+ 1307 062c BB68     		ldr	r3, [r7, #8]
+ 1308 062e 1B68     		ldr	r3, [r3]
+ 999:./lwip-2.1.2/src/core/udp.c ****               /* IP address matches or any IP used? */
+ 1309              		.loc 1 999 42 discriminator 1
+ 1310 0630 9A42     		cmp	r2, r3
+ 1311 0632 0DD0     		beq	.L93
+ 1312              		.loc 1 1001 53
+ 1313 0634 BB68     		ldr	r3, [r7, #8]
+ 1314 0636 002B     		cmp	r3, #0
+ 1315 0638 0AD0     		beq	.L93
+ 1316              		.loc 1 1001 56 discriminator 1
+ 1317 063a BB68     		ldr	r3, [r7, #8]
+ 1318 063c 1B68     		ldr	r3, [r3]
+ 1319 063e 002B     		cmp	r3, #0
+ 1320 0640 06D0     		beq	.L93
+1002:./lwip-2.1.2/src/core/udp.c ****               ip_addr_isany(&ipcb->local_ip))) {
+ 1321              		.loc 1 1002 15 discriminator 2
+ 1322 0642 7B69     		ldr	r3, [r7, #20]
+1001:./lwip-2.1.2/src/core/udp.c ****               ip_addr_isany(&ipcb->local_ip))) {
+ 1323              		.loc 1 1001 78 discriminator 2
+ 1324 0644 002B     		cmp	r3, #0
+ 1325 0646 03D0     		beq	.L93
+ 1326              		.loc 1 1002 15
+ 1327 0648 7B69     		ldr	r3, [r7, #20]
+ 1328 064a 1B68     		ldr	r3, [r3]
+ 1329 064c 002B     		cmp	r3, #0
+ 1330 064e 02D1     		bne	.L92
+ 1331              	.L93:
+1003:./lwip-2.1.2/src/core/udp.c ****             /* other PCB already binds to this local IP and port */
+1004:./lwip-2.1.2/src/core/udp.c ****             LWIP_DEBUGF(UDP_DEBUG,
+1005:./lwip-2.1.2/src/core/udp.c ****                         ("udp_bind: local port %"U16_F" already bound by another pcb\n", port));
+1006:./lwip-2.1.2/src/core/udp.c ****             return ERR_USE;
+ 1332              		.loc 1 1006 20
+ 1333 0650 6FF00703 		mvn	r3, #7
+ 1334 0654 1CE0     		b	.L84
+ 1335              	.L92:
+ 988:./lwip-2.1.2/src/core/udp.c ****       if (pcb != ipcb) {
+ 1336              		.loc 1 988 46 discriminator 2
+ 1337 0656 7B69     		ldr	r3, [r7, #20]
+ 1338 0658 DB68     		ldr	r3, [r3, #12]
+ 1339 065a 7B61     		str	r3, [r7, #20]
+ 1340              	.L91:
+ 988:./lwip-2.1.2/src/core/udp.c ****       if (pcb != ipcb) {
+ 1341              		.loc 1 988 5 discriminator 1
+ 1342 065c 7B69     		ldr	r3, [r7, #20]
+ 1343 065e 002B     		cmp	r3, #0
+ 1344 0660 D9D1     		bne	.L94
+ 1345              	.L90:
+1007:./lwip-2.1.2/src/core/udp.c ****           }
+1008:./lwip-2.1.2/src/core/udp.c ****         }
+1009:./lwip-2.1.2/src/core/udp.c ****       }
+1010:./lwip-2.1.2/src/core/udp.c ****     }
+1011:./lwip-2.1.2/src/core/udp.c ****   }
+1012:./lwip-2.1.2/src/core/udp.c **** 
+1013:./lwip-2.1.2/src/core/udp.c ****   ip_addr_set_ipaddr(&pcb->local_ip, ipaddr);
+ 1346              		.loc 1 1013 3
+ 1347 0662 BB68     		ldr	r3, [r7, #8]
+ 1348 0664 002B     		cmp	r3, #0
+ 1349 0666 02D0     		beq	.L95
+ 1350              		.loc 1 1013 3 is_stmt 0 discriminator 1
+ 1351 0668 BB68     		ldr	r3, [r7, #8]
+ 1352 066a 1B68     		ldr	r3, [r3]
+ 1353 066c 00E0     		b	.L96
+ 1354              	.L95:
+ 1355              		.loc 1 1013 3 discriminator 2
+ 1356 066e 0023     		movs	r3, #0
+ 1357              	.L96:
+ 1358              		.loc 1 1013 3 discriminator 4
+ 1359 0670 FA68     		ldr	r2, [r7, #12]
+ 1360 0672 1360     		str	r3, [r2]
+1014:./lwip-2.1.2/src/core/udp.c **** 
+1015:./lwip-2.1.2/src/core/udp.c ****   pcb->local_port = port;
+ 1361              		.loc 1 1015 19 is_stmt 1 discriminator 4
+ 1362 0674 FB68     		ldr	r3, [r7, #12]
+ 1363 0676 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 1364 0678 5A82     		strh	r2, [r3, #18]	@ movhi
+1016:./lwip-2.1.2/src/core/udp.c ****   mib2_udp_bind(pcb);
+1017:./lwip-2.1.2/src/core/udp.c ****   /* pcb not active yet? */
+1018:./lwip-2.1.2/src/core/udp.c ****   if (rebind == 0) {
+ 1365              		.loc 1 1018 6 discriminator 4
+ 1366 067a FB7C     		ldrb	r3, [r7, #19]	@ zero_extendqisi2
+ 1367 067c 002B     		cmp	r3, #0
+ 1368 067e 06D1     		bne	.L97
+1019:./lwip-2.1.2/src/core/udp.c ****     /* place the PCB on the active list if not already there */
+1020:./lwip-2.1.2/src/core/udp.c ****     pcb->next = udp_pcbs;
+ 1369              		.loc 1 1020 15
+ 1370 0680 064B     		ldr	r3, .L98+4
+ 1371 0682 1A68     		ldr	r2, [r3]
+ 1372 0684 FB68     		ldr	r3, [r7, #12]
+ 1373 0686 DA60     		str	r2, [r3, #12]
+1021:./lwip-2.1.2/src/core/udp.c ****     udp_pcbs = pcb;
+ 1374              		.loc 1 1021 14
+ 1375 0688 044A     		ldr	r2, .L98+4
+ 1376 068a FB68     		ldr	r3, [r7, #12]
+ 1377 068c 1360     		str	r3, [r2]
+ 1378              	.L97:
+1022:./lwip-2.1.2/src/core/udp.c ****   }
+1023:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("udp_bind: bound to "));
+1024:./lwip-2.1.2/src/core/udp.c ****   ip_addr_debug_print_val(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, pcb->local_ip);
+1025:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, (", port %"U16_F")\n", pcb->local_port))
+1026:./lwip-2.1.2/src/core/udp.c ****   return ERR_OK;
+ 1379              		.loc 1 1026 10
+ 1380 068e 0023     		movs	r3, #0
+ 1381              	.L84:
+1027:./lwip-2.1.2/src/core/udp.c **** }
+ 1382              		.loc 1 1027 1
+ 1383 0690 1846     		mov	r0, r3
+ 1384 0692 1837     		adds	r7, r7, #24
+ 1385              	.LCFI42:
+ 1386              		.cfi_def_cfa_offset 8
+ 1387 0694 BD46     		mov	sp, r7
+ 1388              	.LCFI43:
+ 1389              		.cfi_def_cfa_register 13
+ 1390              		@ sp needed
+ 1391 0696 80BD     		pop	{r7, pc}
+ 1392              	.L99:
+ 1393              		.align	2
+ 1394              	.L98:
+ 1395 0698 00000000 		.word	ip_addr_any
+ 1396 069c 00000000 		.word	udp_pcbs
+ 1397              		.cfi_endproc
+ 1398              	.LFE33:
+ 1400              		.align	1
+ 1401              		.global	udp_bind_netif
+ 1402              		.syntax unified
+ 1403              		.thumb
+ 1404              		.thumb_func
+ 1405              		.fpu fpv5-d16
+ 1407              	udp_bind_netif:
+ 1408              	.LFB34:
+1028:./lwip-2.1.2/src/core/udp.c **** 
+1029:./lwip-2.1.2/src/core/udp.c **** /**
+1030:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1031:./lwip-2.1.2/src/core/udp.c ****  * Bind an UDP PCB to a specific netif.
+1032:./lwip-2.1.2/src/core/udp.c ****  * After calling this function, all packets received via this PCB
+1033:./lwip-2.1.2/src/core/udp.c ****  * are guaranteed to have come in via the specified netif, and all
+1034:./lwip-2.1.2/src/core/udp.c ****  * outgoing packets will go out via the specified netif.
+1035:./lwip-2.1.2/src/core/udp.c ****  *
+1036:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB to be bound.
+1037:./lwip-2.1.2/src/core/udp.c ****  * @param netif netif to bind udp pcb to. Can be NULL.
+1038:./lwip-2.1.2/src/core/udp.c ****  *
+1039:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect()
+1040:./lwip-2.1.2/src/core/udp.c ****  */
+1041:./lwip-2.1.2/src/core/udp.c **** void
+1042:./lwip-2.1.2/src/core/udp.c **** udp_bind_netif(struct udp_pcb *pcb, const struct netif *netif)
+1043:./lwip-2.1.2/src/core/udp.c **** {
+ 1409              		.loc 1 1043 1
+ 1410              		.cfi_startproc
+ 1411              		@ args = 0, pretend = 0, frame = 8
+ 1412              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1413              		@ link register save eliminated.
+ 1414 06a0 80B4     		push	{r7}
+ 1415              	.LCFI44:
+ 1416              		.cfi_def_cfa_offset 4
+ 1417              		.cfi_offset 7, -4
+ 1418 06a2 83B0     		sub	sp, sp, #12
+ 1419              	.LCFI45:
+ 1420              		.cfi_def_cfa_offset 16
+ 1421 06a4 00AF     		add	r7, sp, #0
+ 1422              	.LCFI46:
+ 1423              		.cfi_def_cfa_register 7
+ 1424 06a6 7860     		str	r0, [r7, #4]
+ 1425 06a8 3960     		str	r1, [r7]
+1044:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1045:./lwip-2.1.2/src/core/udp.c **** 
+1046:./lwip-2.1.2/src/core/udp.c ****   if (netif != NULL) {
+ 1426              		.loc 1 1046 6
+ 1427 06aa 3B68     		ldr	r3, [r7]
+ 1428 06ac 002B     		cmp	r3, #0
+ 1429 06ae 07D0     		beq	.L101
+1047:./lwip-2.1.2/src/core/udp.c ****     pcb->netif_idx = netif_get_index(netif);
+ 1430              		.loc 1 1047 22
+ 1431 06b0 3B68     		ldr	r3, [r7]
+ 1432 06b2 93F83030 		ldrb	r3, [r3, #48]	@ zero_extendqisi2
+ 1433 06b6 0133     		adds	r3, r3, #1
+ 1434 06b8 DAB2     		uxtb	r2, r3
+ 1435              		.loc 1 1047 20
+ 1436 06ba 7B68     		ldr	r3, [r7, #4]
+ 1437 06bc 1A72     		strb	r2, [r3, #8]
+1048:./lwip-2.1.2/src/core/udp.c ****   } else {
+1049:./lwip-2.1.2/src/core/udp.c ****     pcb->netif_idx = NETIF_NO_INDEX;
+1050:./lwip-2.1.2/src/core/udp.c ****   }
+1051:./lwip-2.1.2/src/core/udp.c **** }
+ 1438              		.loc 1 1051 1
+ 1439 06be 02E0     		b	.L103
+ 1440              	.L101:
+1049:./lwip-2.1.2/src/core/udp.c ****   }
+ 1441              		.loc 1 1049 20
+ 1442 06c0 7B68     		ldr	r3, [r7, #4]
+ 1443 06c2 0022     		movs	r2, #0
+ 1444 06c4 1A72     		strb	r2, [r3, #8]
+ 1445              	.L103:
+ 1446              		.loc 1 1051 1
+ 1447 06c6 00BF     		nop
+ 1448 06c8 0C37     		adds	r7, r7, #12
+ 1449              	.LCFI47:
+ 1450              		.cfi_def_cfa_offset 4
+ 1451 06ca BD46     		mov	sp, r7
+ 1452              	.LCFI48:
+ 1453              		.cfi_def_cfa_register 13
+ 1454              		@ sp needed
+ 1455 06cc 5DF8047B 		ldr	r7, [sp], #4
+ 1456              	.LCFI49:
+ 1457              		.cfi_restore 7
+ 1458              		.cfi_def_cfa_offset 0
+ 1459 06d0 7047     		bx	lr
+ 1460              		.cfi_endproc
+ 1461              	.LFE34:
+ 1463              		.align	1
+ 1464              		.global	udp_connect
+ 1465              		.syntax unified
+ 1466              		.thumb
+ 1467              		.thumb_func
+ 1468              		.fpu fpv5-d16
+ 1470              	udp_connect:
+ 1471              	.LFB35:
+1052:./lwip-2.1.2/src/core/udp.c **** 
+1053:./lwip-2.1.2/src/core/udp.c **** /**
+1054:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1055:./lwip-2.1.2/src/core/udp.c ****  * Sets the remote end of the pcb. This function does not generate any
+1056:./lwip-2.1.2/src/core/udp.c ****  * network traffic, but only sets the remote address of the pcb.
+1057:./lwip-2.1.2/src/core/udp.c ****  *
+1058:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB to be connected with remote address ipaddr and port.
+1059:./lwip-2.1.2/src/core/udp.c ****  * @param ipaddr remote IP address to connect with.
+1060:./lwip-2.1.2/src/core/udp.c ****  * @param port remote UDP port to connect with.
+1061:./lwip-2.1.2/src/core/udp.c ****  *
+1062:./lwip-2.1.2/src/core/udp.c ****  * @return lwIP error code
+1063:./lwip-2.1.2/src/core/udp.c ****  *
+1064:./lwip-2.1.2/src/core/udp.c ****  * ipaddr & port are expected to be in the same byte order as in the pcb.
+1065:./lwip-2.1.2/src/core/udp.c ****  *
+1066:./lwip-2.1.2/src/core/udp.c ****  * The udp pcb is bound to a random local port if not already bound.
+1067:./lwip-2.1.2/src/core/udp.c ****  *
+1068:./lwip-2.1.2/src/core/udp.c ****  * @see udp_disconnect()
+1069:./lwip-2.1.2/src/core/udp.c ****  */
+1070:./lwip-2.1.2/src/core/udp.c **** err_t
+1071:./lwip-2.1.2/src/core/udp.c **** udp_connect(struct udp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port)
+1072:./lwip-2.1.2/src/core/udp.c **** {
+ 1472              		.loc 1 1072 1
+ 1473              		.cfi_startproc
+ 1474              		@ args = 0, pretend = 0, frame = 24
+ 1475              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1476 06d2 80B5     		push	{r7, lr}
+ 1477              	.LCFI50:
+ 1478              		.cfi_def_cfa_offset 8
+ 1479              		.cfi_offset 7, -8
+ 1480              		.cfi_offset 14, -4
+ 1481 06d4 86B0     		sub	sp, sp, #24
+ 1482              	.LCFI51:
+ 1483              		.cfi_def_cfa_offset 32
+ 1484 06d6 00AF     		add	r7, sp, #0
+ 1485              	.LCFI52:
+ 1486              		.cfi_def_cfa_register 7
+ 1487 06d8 F860     		str	r0, [r7, #12]
+ 1488 06da B960     		str	r1, [r7, #8]
+ 1489 06dc 1346     		mov	r3, r2
+ 1490 06de FB80     		strh	r3, [r7, #6]	@ movhi
+1073:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *ipcb;
+1074:./lwip-2.1.2/src/core/udp.c **** 
+1075:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1076:./lwip-2.1.2/src/core/udp.c **** 
+1077:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_connect: invalid pcb", pcb != NULL, return ERR_ARG);
+ 1491              		.loc 1 1077 3
+ 1492 06e0 FB68     		ldr	r3, [r7, #12]
+ 1493 06e2 002B     		cmp	r3, #0
+ 1494 06e4 02D1     		bne	.L105
+ 1495              		.loc 1 1077 3 is_stmt 0 discriminator 1
+ 1496 06e6 6FF00F03 		mvn	r3, #15
+ 1497 06ea 44E0     		b	.L106
+ 1498              	.L105:
+1078:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_connect: invalid ipaddr", ipaddr != NULL, return ERR_ARG);
+ 1499              		.loc 1 1078 3 is_stmt 1
+ 1500 06ec BB68     		ldr	r3, [r7, #8]
+ 1501 06ee 002B     		cmp	r3, #0
+ 1502 06f0 02D1     		bne	.L107
+ 1503              		.loc 1 1078 3 is_stmt 0 discriminator 1
+ 1504 06f2 6FF00F03 		mvn	r3, #15
+ 1505 06f6 3EE0     		b	.L106
+ 1506              	.L107:
+1079:./lwip-2.1.2/src/core/udp.c **** 
+1080:./lwip-2.1.2/src/core/udp.c ****   if (pcb->local_port == 0) {
+ 1507              		.loc 1 1080 10 is_stmt 1
+ 1508 06f8 FB68     		ldr	r3, [r7, #12]
+ 1509 06fa 5B8A     		ldrh	r3, [r3, #18]
+ 1510              		.loc 1 1080 6
+ 1511 06fc 002B     		cmp	r3, #0
+ 1512 06fe 0FD1     		bne	.L108
+ 1513              	.LBB2:
+1081:./lwip-2.1.2/src/core/udp.c ****     err_t err = udp_bind(pcb, &pcb->local_ip, pcb->local_port);
+ 1514              		.loc 1 1081 31
+ 1515 0700 F968     		ldr	r1, [r7, #12]
+ 1516              		.loc 1 1081 17
+ 1517 0702 FB68     		ldr	r3, [r7, #12]
+ 1518 0704 5B8A     		ldrh	r3, [r3, #18]
+ 1519 0706 1A46     		mov	r2, r3
+ 1520 0708 F868     		ldr	r0, [r7, #12]
+ 1521 070a FFF7FEFF 		bl	udp_bind
+ 1522 070e 0346     		mov	r3, r0
+ 1523 0710 FB74     		strb	r3, [r7, #19]
+1082:./lwip-2.1.2/src/core/udp.c ****     if (err != ERR_OK) {
+ 1524              		.loc 1 1082 8
+ 1525 0712 97F91330 		ldrsb	r3, [r7, #19]
+ 1526 0716 002B     		cmp	r3, #0
+ 1527 0718 02D0     		beq	.L108
+1083:./lwip-2.1.2/src/core/udp.c ****       return err;
+ 1528              		.loc 1 1083 14
+ 1529 071a 97F91330 		ldrsb	r3, [r7, #19]
+ 1530 071e 2AE0     		b	.L106
+ 1531              	.L108:
+ 1532              	.LBE2:
+1084:./lwip-2.1.2/src/core/udp.c ****     }
+1085:./lwip-2.1.2/src/core/udp.c ****   }
+1086:./lwip-2.1.2/src/core/udp.c **** 
+1087:./lwip-2.1.2/src/core/udp.c ****   ip_addr_set_ipaddr(&pcb->remote_ip, ipaddr);
+ 1533              		.loc 1 1087 3
+ 1534 0720 BB68     		ldr	r3, [r7, #8]
+ 1535 0722 002B     		cmp	r3, #0
+ 1536 0724 02D0     		beq	.L109
+ 1537              		.loc 1 1087 3 is_stmt 0 discriminator 1
+ 1538 0726 BB68     		ldr	r3, [r7, #8]
+ 1539 0728 1B68     		ldr	r3, [r3]
+ 1540 072a 00E0     		b	.L110
+ 1541              	.L109:
+ 1542              		.loc 1 1087 3 discriminator 2
+ 1543 072c 0023     		movs	r3, #0
+ 1544              	.L110:
+ 1545              		.loc 1 1087 3 discriminator 4
+ 1546 072e FA68     		ldr	r2, [r7, #12]
+ 1547 0730 5360     		str	r3, [r2, #4]
+1088:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV6 && LWIP_IPV6_SCOPES
+1089:./lwip-2.1.2/src/core/udp.c ****   /* If the given IP address should have a zone but doesn't, assign one now,
+1090:./lwip-2.1.2/src/core/udp.c ****    * using the bound address to make a more informed decision when possible. */
+1091:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_V6(&pcb->remote_ip) &&
+1092:./lwip-2.1.2/src/core/udp.c ****       ip6_addr_lacks_zone(ip_2_ip6(&pcb->remote_ip), IP6_UNKNOWN)) {
+1093:./lwip-2.1.2/src/core/udp.c ****     ip6_addr_select_zone(ip_2_ip6(&pcb->remote_ip), ip_2_ip6(&pcb->local_ip));
+1094:./lwip-2.1.2/src/core/udp.c ****   }
+1095:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV6 && LWIP_IPV6_SCOPES */
+1096:./lwip-2.1.2/src/core/udp.c **** 
+1097:./lwip-2.1.2/src/core/udp.c ****   pcb->remote_port = port;
+ 1548              		.loc 1 1097 20 is_stmt 1 discriminator 4
+ 1549 0732 FB68     		ldr	r3, [r7, #12]
+ 1550 0734 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 1551 0736 9A82     		strh	r2, [r3, #20]	@ movhi
+1098:./lwip-2.1.2/src/core/udp.c ****   pcb->flags |= UDP_FLAGS_CONNECTED;
+ 1552              		.loc 1 1098 14 discriminator 4
+ 1553 0738 FB68     		ldr	r3, [r7, #12]
+ 1554 073a 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 1555 073c 43F00403 		orr	r3, r3, #4
+ 1556 0740 DAB2     		uxtb	r2, r3
+ 1557 0742 FB68     		ldr	r3, [r7, #12]
+ 1558 0744 1A74     		strb	r2, [r3, #16]
+1099:./lwip-2.1.2/src/core/udp.c **** 
+1100:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("udp_connect: connected to "));
+1101:./lwip-2.1.2/src/core/udp.c ****   ip_addr_debug_print_val(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+1102:./lwip-2.1.2/src/core/udp.c ****                           pcb->remote_ip);
+1103:./lwip-2.1.2/src/core/udp.c ****   LWIP_DEBUGF(UDP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, (", port %"U16_F")\n", pcb->remote_port)
+1104:./lwip-2.1.2/src/core/udp.c **** 
+1105:./lwip-2.1.2/src/core/udp.c ****   /* Insert UDP PCB into the list of active UDP PCBs. */
+1106:./lwip-2.1.2/src/core/udp.c ****   for (ipcb = udp_pcbs; ipcb != NULL; ipcb = ipcb->next) {
+ 1559              		.loc 1 1106 13 discriminator 4
+ 1560 0746 0E4B     		ldr	r3, .L114
+ 1561 0748 1B68     		ldr	r3, [r3]
+ 1562 074a 7B61     		str	r3, [r7, #20]
+ 1563              		.loc 1 1106 3 discriminator 4
+ 1564 074c 08E0     		b	.L111
+ 1565              	.L113:
+1107:./lwip-2.1.2/src/core/udp.c ****     if (pcb == ipcb) {
+ 1566              		.loc 1 1107 8
+ 1567 074e FA68     		ldr	r2, [r7, #12]
+ 1568 0750 7B69     		ldr	r3, [r7, #20]
+ 1569 0752 9A42     		cmp	r2, r3
+ 1570 0754 01D1     		bne	.L112
+1108:./lwip-2.1.2/src/core/udp.c ****       /* already on the list, just return */
+1109:./lwip-2.1.2/src/core/udp.c ****       return ERR_OK;
+ 1571              		.loc 1 1109 14
+ 1572 0756 0023     		movs	r3, #0
+ 1573 0758 0DE0     		b	.L106
+ 1574              	.L112:
+1106:./lwip-2.1.2/src/core/udp.c ****     if (pcb == ipcb) {
+ 1575              		.loc 1 1106 44 discriminator 2
+ 1576 075a 7B69     		ldr	r3, [r7, #20]
+ 1577 075c DB68     		ldr	r3, [r3, #12]
+ 1578 075e 7B61     		str	r3, [r7, #20]
+ 1579              	.L111:
+1106:./lwip-2.1.2/src/core/udp.c ****     if (pcb == ipcb) {
+ 1580              		.loc 1 1106 3 discriminator 1
+ 1581 0760 7B69     		ldr	r3, [r7, #20]
+ 1582 0762 002B     		cmp	r3, #0
+ 1583 0764 F3D1     		bne	.L113
+1110:./lwip-2.1.2/src/core/udp.c ****     }
+1111:./lwip-2.1.2/src/core/udp.c ****   }
+1112:./lwip-2.1.2/src/core/udp.c ****   /* PCB not yet on the list, add PCB now */
+1113:./lwip-2.1.2/src/core/udp.c ****   pcb->next = udp_pcbs;
+ 1584              		.loc 1 1113 13
+ 1585 0766 064B     		ldr	r3, .L114
+ 1586 0768 1A68     		ldr	r2, [r3]
+ 1587 076a FB68     		ldr	r3, [r7, #12]
+ 1588 076c DA60     		str	r2, [r3, #12]
+1114:./lwip-2.1.2/src/core/udp.c ****   udp_pcbs = pcb;
+ 1589              		.loc 1 1114 12
+ 1590 076e 044A     		ldr	r2, .L114
+ 1591 0770 FB68     		ldr	r3, [r7, #12]
+ 1592 0772 1360     		str	r3, [r2]
+1115:./lwip-2.1.2/src/core/udp.c ****   return ERR_OK;
+ 1593              		.loc 1 1115 10
+ 1594 0774 0023     		movs	r3, #0
+ 1595              	.L106:
+1116:./lwip-2.1.2/src/core/udp.c **** }
+ 1596              		.loc 1 1116 1
+ 1597 0776 1846     		mov	r0, r3
+ 1598 0778 1837     		adds	r7, r7, #24
+ 1599              	.LCFI53:
+ 1600              		.cfi_def_cfa_offset 8
+ 1601 077a BD46     		mov	sp, r7
+ 1602              	.LCFI54:
+ 1603              		.cfi_def_cfa_register 13
+ 1604              		@ sp needed
+ 1605 077c 80BD     		pop	{r7, pc}
+ 1606              	.L115:
+ 1607 077e 00BF     		.align	2
+ 1608              	.L114:
+ 1609 0780 00000000 		.word	udp_pcbs
+ 1610              		.cfi_endproc
+ 1611              	.LFE35:
+ 1613              		.align	1
+ 1614              		.global	udp_disconnect
+ 1615              		.syntax unified
+ 1616              		.thumb
+ 1617              		.thumb_func
+ 1618              		.fpu fpv5-d16
+ 1620              	udp_disconnect:
+ 1621              	.LFB36:
+1117:./lwip-2.1.2/src/core/udp.c **** 
+1118:./lwip-2.1.2/src/core/udp.c **** /**
+1119:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1120:./lwip-2.1.2/src/core/udp.c ****  * Remove the remote end of the pcb. This function does not generate
+1121:./lwip-2.1.2/src/core/udp.c ****  * any network traffic, but only removes the remote address of the pcb.
+1122:./lwip-2.1.2/src/core/udp.c ****  *
+1123:./lwip-2.1.2/src/core/udp.c ****  * @param pcb the udp pcb to disconnect.
+1124:./lwip-2.1.2/src/core/udp.c ****  */
+1125:./lwip-2.1.2/src/core/udp.c **** void
+1126:./lwip-2.1.2/src/core/udp.c **** udp_disconnect(struct udp_pcb *pcb)
+1127:./lwip-2.1.2/src/core/udp.c **** {
+ 1622              		.loc 1 1127 1
+ 1623              		.cfi_startproc
+ 1624              		@ args = 0, pretend = 0, frame = 8
+ 1625              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1626              		@ link register save eliminated.
+ 1627 0784 80B4     		push	{r7}
+ 1628              	.LCFI55:
+ 1629              		.cfi_def_cfa_offset 4
+ 1630              		.cfi_offset 7, -4
+ 1631 0786 83B0     		sub	sp, sp, #12
+ 1632              	.LCFI56:
+ 1633              		.cfi_def_cfa_offset 16
+ 1634 0788 00AF     		add	r7, sp, #0
+ 1635              	.LCFI57:
+ 1636              		.cfi_def_cfa_register 7
+ 1637 078a 7860     		str	r0, [r7, #4]
+1128:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1129:./lwip-2.1.2/src/core/udp.c **** 
+1130:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_disconnect: invalid pcb", pcb != NULL, return);
+ 1638              		.loc 1 1130 3
+ 1639 078c 7B68     		ldr	r3, [r7, #4]
+ 1640 078e 002B     		cmp	r3, #0
+ 1641 0790 10D0     		beq	.L119
+1131:./lwip-2.1.2/src/core/udp.c **** 
+1132:./lwip-2.1.2/src/core/udp.c ****   /* reset remote address association */
+1133:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && LWIP_IPV6
+1134:./lwip-2.1.2/src/core/udp.c ****   if (IP_IS_ANY_TYPE_VAL(pcb->local_ip)) {
+1135:./lwip-2.1.2/src/core/udp.c ****     ip_addr_copy(pcb->remote_ip, *IP_ANY_TYPE);
+1136:./lwip-2.1.2/src/core/udp.c ****   } else {
+1137:./lwip-2.1.2/src/core/udp.c **** #endif
+1138:./lwip-2.1.2/src/core/udp.c ****     ip_addr_set_any(IP_IS_V6_VAL(pcb->remote_ip), &pcb->remote_ip);
+ 1642              		.loc 1 1138 5
+ 1643 0792 7B68     		ldr	r3, [r7, #4]
+ 1644 0794 0022     		movs	r2, #0
+ 1645 0796 5A60     		str	r2, [r3, #4]
+1139:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && LWIP_IPV6
+1140:./lwip-2.1.2/src/core/udp.c ****   }
+1141:./lwip-2.1.2/src/core/udp.c **** #endif
+1142:./lwip-2.1.2/src/core/udp.c ****   pcb->remote_port = 0;
+ 1646              		.loc 1 1142 20
+ 1647 0798 7B68     		ldr	r3, [r7, #4]
+ 1648 079a 0022     		movs	r2, #0
+ 1649 079c 9A82     		strh	r2, [r3, #20]	@ movhi
+1143:./lwip-2.1.2/src/core/udp.c ****   pcb->netif_idx = NETIF_NO_INDEX;
+ 1650              		.loc 1 1143 18
+ 1651 079e 7B68     		ldr	r3, [r7, #4]
+ 1652 07a0 0022     		movs	r2, #0
+ 1653 07a2 1A72     		strb	r2, [r3, #8]
+1144:./lwip-2.1.2/src/core/udp.c ****   /* mark PCB as unconnected */
+1145:./lwip-2.1.2/src/core/udp.c ****   udp_clear_flags(pcb, UDP_FLAGS_CONNECTED);
+ 1654              		.loc 1 1145 3
+ 1655 07a4 7B68     		ldr	r3, [r7, #4]
+ 1656 07a6 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 1657 07a8 23F00403 		bic	r3, r3, #4
+ 1658 07ac DAB2     		uxtb	r2, r3
+ 1659 07ae 7B68     		ldr	r3, [r7, #4]
+ 1660 07b0 1A74     		strb	r2, [r3, #16]
+ 1661 07b2 00E0     		b	.L116
+ 1662              	.L119:
+1130:./lwip-2.1.2/src/core/udp.c **** 
+ 1663              		.loc 1 1130 3
+ 1664 07b4 00BF     		nop
+ 1665              	.L116:
+1146:./lwip-2.1.2/src/core/udp.c **** }
+ 1666              		.loc 1 1146 1
+ 1667 07b6 0C37     		adds	r7, r7, #12
+ 1668              	.LCFI58:
+ 1669              		.cfi_def_cfa_offset 4
+ 1670 07b8 BD46     		mov	sp, r7
+ 1671              	.LCFI59:
+ 1672              		.cfi_def_cfa_register 13
+ 1673              		@ sp needed
+ 1674 07ba 5DF8047B 		ldr	r7, [sp], #4
+ 1675              	.LCFI60:
+ 1676              		.cfi_restore 7
+ 1677              		.cfi_def_cfa_offset 0
+ 1678 07be 7047     		bx	lr
+ 1679              		.cfi_endproc
+ 1680              	.LFE36:
+ 1682              		.align	1
+ 1683              		.global	udp_recv
+ 1684              		.syntax unified
+ 1685              		.thumb
+ 1686              		.thumb_func
+ 1687              		.fpu fpv5-d16
+ 1689              	udp_recv:
+ 1690              	.LFB37:
+1147:./lwip-2.1.2/src/core/udp.c **** 
+1148:./lwip-2.1.2/src/core/udp.c **** /**
+1149:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1150:./lwip-2.1.2/src/core/udp.c ****  * Set a receive callback for a UDP PCB.
+1151:./lwip-2.1.2/src/core/udp.c ****  * This callback will be called when receiving a datagram for the pcb.
+1152:./lwip-2.1.2/src/core/udp.c ****  *
+1153:./lwip-2.1.2/src/core/udp.c ****  * @param pcb the pcb for which to set the recv callback
+1154:./lwip-2.1.2/src/core/udp.c ****  * @param recv function pointer of the callback function
+1155:./lwip-2.1.2/src/core/udp.c ****  * @param recv_arg additional argument to pass to the callback function
+1156:./lwip-2.1.2/src/core/udp.c ****  */
+1157:./lwip-2.1.2/src/core/udp.c **** void
+1158:./lwip-2.1.2/src/core/udp.c **** udp_recv(struct udp_pcb *pcb, udp_recv_fn recv, void *recv_arg)
+1159:./lwip-2.1.2/src/core/udp.c **** {
+ 1691              		.loc 1 1159 1
+ 1692              		.cfi_startproc
+ 1693              		@ args = 0, pretend = 0, frame = 16
+ 1694              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1695              		@ link register save eliminated.
+ 1696 07c0 80B4     		push	{r7}
+ 1697              	.LCFI61:
+ 1698              		.cfi_def_cfa_offset 4
+ 1699              		.cfi_offset 7, -4
+ 1700 07c2 85B0     		sub	sp, sp, #20
+ 1701              	.LCFI62:
+ 1702              		.cfi_def_cfa_offset 24
+ 1703 07c4 00AF     		add	r7, sp, #0
+ 1704              	.LCFI63:
+ 1705              		.cfi_def_cfa_register 7
+ 1706 07c6 F860     		str	r0, [r7, #12]
+ 1707 07c8 B960     		str	r1, [r7, #8]
+ 1708 07ca 7A60     		str	r2, [r7, #4]
+1160:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1161:./lwip-2.1.2/src/core/udp.c **** 
+1162:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_recv: invalid pcb", pcb != NULL, return);
+ 1709              		.loc 1 1162 3
+ 1710 07cc FB68     		ldr	r3, [r7, #12]
+ 1711 07ce 002B     		cmp	r3, #0
+ 1712 07d0 06D0     		beq	.L123
+1163:./lwip-2.1.2/src/core/udp.c **** 
+1164:./lwip-2.1.2/src/core/udp.c ****   /* remember recv() callback and user data */
+1165:./lwip-2.1.2/src/core/udp.c ****   pcb->recv = recv;
+ 1713              		.loc 1 1165 13
+ 1714 07d2 FB68     		ldr	r3, [r7, #12]
+ 1715 07d4 BA68     		ldr	r2, [r7, #8]
+ 1716 07d6 9A61     		str	r2, [r3, #24]
+1166:./lwip-2.1.2/src/core/udp.c ****   pcb->recv_arg = recv_arg;
+ 1717              		.loc 1 1166 17
+ 1718 07d8 FB68     		ldr	r3, [r7, #12]
+ 1719 07da 7A68     		ldr	r2, [r7, #4]
+ 1720 07dc DA61     		str	r2, [r3, #28]
+ 1721 07de 00E0     		b	.L120
+ 1722              	.L123:
+1162:./lwip-2.1.2/src/core/udp.c **** 
+ 1723              		.loc 1 1162 3
+ 1724 07e0 00BF     		nop
+ 1725              	.L120:
+1167:./lwip-2.1.2/src/core/udp.c **** }
+ 1726              		.loc 1 1167 1
+ 1727 07e2 1437     		adds	r7, r7, #20
+ 1728              	.LCFI64:
+ 1729              		.cfi_def_cfa_offset 4
+ 1730 07e4 BD46     		mov	sp, r7
+ 1731              	.LCFI65:
+ 1732              		.cfi_def_cfa_register 13
+ 1733              		@ sp needed
+ 1734 07e6 5DF8047B 		ldr	r7, [sp], #4
+ 1735              	.LCFI66:
+ 1736              		.cfi_restore 7
+ 1737              		.cfi_def_cfa_offset 0
+ 1738 07ea 7047     		bx	lr
+ 1739              		.cfi_endproc
+ 1740              	.LFE37:
+ 1742              		.align	1
+ 1743              		.global	udp_remove
+ 1744              		.syntax unified
+ 1745              		.thumb
+ 1746              		.thumb_func
+ 1747              		.fpu fpv5-d16
+ 1749              	udp_remove:
+ 1750              	.LFB38:
+1168:./lwip-2.1.2/src/core/udp.c **** 
+1169:./lwip-2.1.2/src/core/udp.c **** /**
+1170:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1171:./lwip-2.1.2/src/core/udp.c ****  * Removes and deallocates the pcb.  
+1172:./lwip-2.1.2/src/core/udp.c ****  * 
+1173:./lwip-2.1.2/src/core/udp.c ****  * @param pcb UDP PCB to be removed. The PCB is removed from the list of
+1174:./lwip-2.1.2/src/core/udp.c ****  * UDP PCB's and the data structure is freed from memory.
+1175:./lwip-2.1.2/src/core/udp.c ****  *
+1176:./lwip-2.1.2/src/core/udp.c ****  * @see udp_new()
+1177:./lwip-2.1.2/src/core/udp.c ****  */
+1178:./lwip-2.1.2/src/core/udp.c **** void
+1179:./lwip-2.1.2/src/core/udp.c **** udp_remove(struct udp_pcb *pcb)
+1180:./lwip-2.1.2/src/core/udp.c **** {
+ 1751              		.loc 1 1180 1
+ 1752              		.cfi_startproc
+ 1753              		@ args = 0, pretend = 0, frame = 16
+ 1754              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1755 07ec 80B5     		push	{r7, lr}
+ 1756              	.LCFI67:
+ 1757              		.cfi_def_cfa_offset 8
+ 1758              		.cfi_offset 7, -8
+ 1759              		.cfi_offset 14, -4
+ 1760 07ee 84B0     		sub	sp, sp, #16
+ 1761              	.LCFI68:
+ 1762              		.cfi_def_cfa_offset 24
+ 1763 07f0 00AF     		add	r7, sp, #0
+ 1764              	.LCFI69:
+ 1765              		.cfi_def_cfa_register 7
+ 1766 07f2 7860     		str	r0, [r7, #4]
+1181:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *pcb2;
+1182:./lwip-2.1.2/src/core/udp.c **** 
+1183:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1184:./lwip-2.1.2/src/core/udp.c **** 
+1185:./lwip-2.1.2/src/core/udp.c ****   LWIP_ERROR("udp_remove: invalid pcb", pcb != NULL, return);
+ 1767              		.loc 1 1185 3
+ 1768 07f4 7B68     		ldr	r3, [r7, #4]
+ 1769 07f6 002B     		cmp	r3, #0
+ 1770 07f8 27D0     		beq	.L132
+1186:./lwip-2.1.2/src/core/udp.c **** 
+1187:./lwip-2.1.2/src/core/udp.c ****   mib2_udp_unbind(pcb);
+1188:./lwip-2.1.2/src/core/udp.c ****   /* pcb to be removed is first in list? */
+1189:./lwip-2.1.2/src/core/udp.c ****   if (udp_pcbs == pcb) {
+ 1771              		.loc 1 1189 16
+ 1772 07fa 164B     		ldr	r3, .L133
+ 1773 07fc 1B68     		ldr	r3, [r3]
+ 1774              		.loc 1 1189 6
+ 1775 07fe 7A68     		ldr	r2, [r7, #4]
+ 1776 0800 9A42     		cmp	r2, r3
+ 1777 0802 05D1     		bne	.L127
+1190:./lwip-2.1.2/src/core/udp.c ****     /* make list start at 2nd pcb */
+1191:./lwip-2.1.2/src/core/udp.c ****     udp_pcbs = udp_pcbs->next;
+ 1778              		.loc 1 1191 24
+ 1779 0804 134B     		ldr	r3, .L133
+ 1780 0806 1B68     		ldr	r3, [r3]
+ 1781 0808 DB68     		ldr	r3, [r3, #12]
+ 1782              		.loc 1 1191 14
+ 1783 080a 124A     		ldr	r2, .L133
+ 1784 080c 1360     		str	r3, [r2]
+ 1785 080e 17E0     		b	.L128
+ 1786              	.L127:
+1192:./lwip-2.1.2/src/core/udp.c ****     /* pcb not 1st in list */
+1193:./lwip-2.1.2/src/core/udp.c ****   } else {
+1194:./lwip-2.1.2/src/core/udp.c ****     for (pcb2 = udp_pcbs; pcb2 != NULL; pcb2 = pcb2->next) {
+ 1787              		.loc 1 1194 15
+ 1788 0810 104B     		ldr	r3, .L133
+ 1789 0812 1B68     		ldr	r3, [r3]
+ 1790 0814 FB60     		str	r3, [r7, #12]
+ 1791              		.loc 1 1194 5
+ 1792 0816 10E0     		b	.L129
+ 1793              	.L131:
+1195:./lwip-2.1.2/src/core/udp.c ****       /* find pcb in udp_pcbs list */
+1196:./lwip-2.1.2/src/core/udp.c ****       if (pcb2->next != NULL && pcb2->next == pcb) {
+ 1794              		.loc 1 1196 15
+ 1795 0818 FB68     		ldr	r3, [r7, #12]
+ 1796 081a DB68     		ldr	r3, [r3, #12]
+ 1797              		.loc 1 1196 10
+ 1798 081c 002B     		cmp	r3, #0
+ 1799 081e 09D0     		beq	.L130
+ 1800              		.loc 1 1196 37 discriminator 1
+ 1801 0820 FB68     		ldr	r3, [r7, #12]
+ 1802 0822 DB68     		ldr	r3, [r3, #12]
+ 1803              		.loc 1 1196 30 discriminator 1
+ 1804 0824 7A68     		ldr	r2, [r7, #4]
+ 1805 0826 9A42     		cmp	r2, r3
+ 1806 0828 04D1     		bne	.L130
+1197:./lwip-2.1.2/src/core/udp.c ****         /* remove pcb from list */
+1198:./lwip-2.1.2/src/core/udp.c ****         pcb2->next = pcb->next;
+ 1807              		.loc 1 1198 25
+ 1808 082a 7B68     		ldr	r3, [r7, #4]
+ 1809 082c DA68     		ldr	r2, [r3, #12]
+ 1810              		.loc 1 1198 20
+ 1811 082e FB68     		ldr	r3, [r7, #12]
+ 1812 0830 DA60     		str	r2, [r3, #12]
+1199:./lwip-2.1.2/src/core/udp.c ****         break;
+ 1813              		.loc 1 1199 9
+ 1814 0832 05E0     		b	.L128
+ 1815              	.L130:
+1194:./lwip-2.1.2/src/core/udp.c ****       /* find pcb in udp_pcbs list */
+ 1816              		.loc 1 1194 46 discriminator 2
+ 1817 0834 FB68     		ldr	r3, [r7, #12]
+ 1818 0836 DB68     		ldr	r3, [r3, #12]
+ 1819 0838 FB60     		str	r3, [r7, #12]
+ 1820              	.L129:
+1194:./lwip-2.1.2/src/core/udp.c ****       /* find pcb in udp_pcbs list */
+ 1821              		.loc 1 1194 5 discriminator 1
+ 1822 083a FB68     		ldr	r3, [r7, #12]
+ 1823 083c 002B     		cmp	r3, #0
+ 1824 083e EBD1     		bne	.L131
+ 1825              	.L128:
+1200:./lwip-2.1.2/src/core/udp.c ****       }
+1201:./lwip-2.1.2/src/core/udp.c ****     }
+1202:./lwip-2.1.2/src/core/udp.c ****   }
+1203:./lwip-2.1.2/src/core/udp.c ****   memp_free(MEMP_UDP_PCB, pcb);
+ 1826              		.loc 1 1203 3
+ 1827 0840 7968     		ldr	r1, [r7, #4]
+ 1828 0842 0020     		movs	r0, #0
+ 1829 0844 FFF7FEFF 		bl	memp_free
+ 1830 0848 00E0     		b	.L124
+ 1831              	.L132:
+1185:./lwip-2.1.2/src/core/udp.c **** 
+ 1832              		.loc 1 1185 3
+ 1833 084a 00BF     		nop
+ 1834              	.L124:
+1204:./lwip-2.1.2/src/core/udp.c **** }
+ 1835              		.loc 1 1204 1
+ 1836 084c 1037     		adds	r7, r7, #16
+ 1837              	.LCFI70:
+ 1838              		.cfi_def_cfa_offset 8
+ 1839 084e BD46     		mov	sp, r7
+ 1840              	.LCFI71:
+ 1841              		.cfi_def_cfa_register 13
+ 1842              		@ sp needed
+ 1843 0850 80BD     		pop	{r7, pc}
+ 1844              	.L134:
+ 1845 0852 00BF     		.align	2
+ 1846              	.L133:
+ 1847 0854 00000000 		.word	udp_pcbs
+ 1848              		.cfi_endproc
+ 1849              	.LFE38:
+ 1851              		.align	1
+ 1852              		.global	udp_new
+ 1853              		.syntax unified
+ 1854              		.thumb
+ 1855              		.thumb_func
+ 1856              		.fpu fpv5-d16
+ 1858              	udp_new:
+ 1859              	.LFB39:
+1205:./lwip-2.1.2/src/core/udp.c **** 
+1206:./lwip-2.1.2/src/core/udp.c **** /**
+1207:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1208:./lwip-2.1.2/src/core/udp.c ****  * Creates a new UDP pcb which can be used for UDP communication. The
+1209:./lwip-2.1.2/src/core/udp.c ****  * pcb is not active until it has either been bound to a local address
+1210:./lwip-2.1.2/src/core/udp.c ****  * or connected to a remote address.
+1211:./lwip-2.1.2/src/core/udp.c ****  *
+1212:./lwip-2.1.2/src/core/udp.c ****  * @return The UDP PCB which was created. NULL if the PCB data structure
+1213:./lwip-2.1.2/src/core/udp.c ****  * could not be allocated.
+1214:./lwip-2.1.2/src/core/udp.c ****  *
+1215:./lwip-2.1.2/src/core/udp.c ****  * @see udp_remove()
+1216:./lwip-2.1.2/src/core/udp.c ****  */
+1217:./lwip-2.1.2/src/core/udp.c **** struct udp_pcb *
+1218:./lwip-2.1.2/src/core/udp.c **** udp_new(void)
+1219:./lwip-2.1.2/src/core/udp.c **** {
+ 1860              		.loc 1 1219 1
+ 1861              		.cfi_startproc
+ 1862              		@ args = 0, pretend = 0, frame = 8
+ 1863              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1864 0858 80B5     		push	{r7, lr}
+ 1865              	.LCFI72:
+ 1866              		.cfi_def_cfa_offset 8
+ 1867              		.cfi_offset 7, -8
+ 1868              		.cfi_offset 14, -4
+ 1869 085a 82B0     		sub	sp, sp, #8
+ 1870              	.LCFI73:
+ 1871              		.cfi_def_cfa_offset 16
+ 1872 085c 00AF     		add	r7, sp, #0
+ 1873              	.LCFI74:
+ 1874              		.cfi_def_cfa_register 7
+1220:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *pcb;
+1221:./lwip-2.1.2/src/core/udp.c **** 
+1222:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1223:./lwip-2.1.2/src/core/udp.c **** 
+1224:./lwip-2.1.2/src/core/udp.c ****   pcb = (struct udp_pcb *)memp_malloc(MEMP_UDP_PCB);
+ 1875              		.loc 1 1224 27
+ 1876 085e 0020     		movs	r0, #0
+ 1877 0860 FFF7FEFF 		bl	memp_malloc
+ 1878 0864 7860     		str	r0, [r7, #4]
+1225:./lwip-2.1.2/src/core/udp.c ****   /* could allocate UDP PCB? */
+1226:./lwip-2.1.2/src/core/udp.c ****   if (pcb != NULL) {
+ 1879              		.loc 1 1226 6
+ 1880 0866 7B68     		ldr	r3, [r7, #4]
+ 1881 0868 002B     		cmp	r3, #0
+ 1882 086a 07D0     		beq	.L136
+1227:./lwip-2.1.2/src/core/udp.c ****     /* UDP Lite: by initializing to all zeroes, chksum_len is set to 0
+1228:./lwip-2.1.2/src/core/udp.c ****      * which means checksum is generated over the whole datagram per default
+1229:./lwip-2.1.2/src/core/udp.c ****      * (recommended as default by RFC 3828). */
+1230:./lwip-2.1.2/src/core/udp.c ****     /* initialize PCB to all zeroes */
+1231:./lwip-2.1.2/src/core/udp.c ****     memset(pcb, 0, sizeof(struct udp_pcb));
+ 1883              		.loc 1 1231 5
+ 1884 086c 2022     		movs	r2, #32
+ 1885 086e 0021     		movs	r1, #0
+ 1886 0870 7868     		ldr	r0, [r7, #4]
+ 1887 0872 FFF7FEFF 		bl	memset
+1232:./lwip-2.1.2/src/core/udp.c ****     pcb->ttl = UDP_TTL;
+ 1888              		.loc 1 1232 14
+ 1889 0876 7B68     		ldr	r3, [r7, #4]
+ 1890 0878 FF22     		movs	r2, #255
+ 1891 087a DA72     		strb	r2, [r3, #11]
+ 1892              	.L136:
+1233:./lwip-2.1.2/src/core/udp.c **** #if LWIP_MULTICAST_TX_OPTIONS
+1234:./lwip-2.1.2/src/core/udp.c ****     udp_set_multicast_ttl(pcb, UDP_TTL);
+1235:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+1236:./lwip-2.1.2/src/core/udp.c ****   }
+1237:./lwip-2.1.2/src/core/udp.c ****   return pcb;
+ 1893              		.loc 1 1237 10
+ 1894 087c 7B68     		ldr	r3, [r7, #4]
+1238:./lwip-2.1.2/src/core/udp.c **** }
+ 1895              		.loc 1 1238 1
+ 1896 087e 1846     		mov	r0, r3
+ 1897 0880 0837     		adds	r7, r7, #8
+ 1898              	.LCFI75:
+ 1899              		.cfi_def_cfa_offset 8
+ 1900 0882 BD46     		mov	sp, r7
+ 1901              	.LCFI76:
+ 1902              		.cfi_def_cfa_register 13
+ 1903              		@ sp needed
+ 1904 0884 80BD     		pop	{r7, pc}
+ 1905              		.cfi_endproc
+ 1906              	.LFE39:
+ 1908              		.align	1
+ 1909              		.global	udp_new_ip_type
+ 1910              		.syntax unified
+ 1911              		.thumb
+ 1912              		.thumb_func
+ 1913              		.fpu fpv5-d16
+ 1915              	udp_new_ip_type:
+ 1916              	.LFB40:
+1239:./lwip-2.1.2/src/core/udp.c **** 
+1240:./lwip-2.1.2/src/core/udp.c **** /**
+1241:./lwip-2.1.2/src/core/udp.c ****  * @ingroup udp_raw
+1242:./lwip-2.1.2/src/core/udp.c ****  * Create a UDP PCB for specific IP type.
+1243:./lwip-2.1.2/src/core/udp.c ****  * The pcb is not active until it has either been bound to a local address
+1244:./lwip-2.1.2/src/core/udp.c ****  * or connected to a remote address.
+1245:./lwip-2.1.2/src/core/udp.c ****  * 
+1246:./lwip-2.1.2/src/core/udp.c ****  * @param type IP address type, see @ref lwip_ip_addr_type definitions.
+1247:./lwip-2.1.2/src/core/udp.c ****  * If you want to listen to IPv4 and IPv6 (dual-stack) packets,
+1248:./lwip-2.1.2/src/core/udp.c ****  * supply @ref IPADDR_TYPE_ANY as argument and bind to @ref IP_ANY_TYPE.
+1249:./lwip-2.1.2/src/core/udp.c ****  * @return The UDP PCB which was created. NULL if the PCB data structure
+1250:./lwip-2.1.2/src/core/udp.c ****  * could not be allocated.
+1251:./lwip-2.1.2/src/core/udp.c ****  *
+1252:./lwip-2.1.2/src/core/udp.c ****  * @see udp_remove()
+1253:./lwip-2.1.2/src/core/udp.c ****  */
+1254:./lwip-2.1.2/src/core/udp.c **** struct udp_pcb *
+1255:./lwip-2.1.2/src/core/udp.c **** udp_new_ip_type(u8_t type)
+1256:./lwip-2.1.2/src/core/udp.c **** {
+ 1917              		.loc 1 1256 1
+ 1918              		.cfi_startproc
+ 1919              		@ args = 0, pretend = 0, frame = 16
+ 1920              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1921 0886 80B5     		push	{r7, lr}
+ 1922              	.LCFI77:
+ 1923              		.cfi_def_cfa_offset 8
+ 1924              		.cfi_offset 7, -8
+ 1925              		.cfi_offset 14, -4
+ 1926 0888 84B0     		sub	sp, sp, #16
+ 1927              	.LCFI78:
+ 1928              		.cfi_def_cfa_offset 24
+ 1929 088a 00AF     		add	r7, sp, #0
+ 1930              	.LCFI79:
+ 1931              		.cfi_def_cfa_register 7
+ 1932 088c 0346     		mov	r3, r0
+ 1933 088e FB71     		strb	r3, [r7, #7]
+1257:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *pcb;
+1258:./lwip-2.1.2/src/core/udp.c **** 
+1259:./lwip-2.1.2/src/core/udp.c ****   LWIP_ASSERT_CORE_LOCKED();
+1260:./lwip-2.1.2/src/core/udp.c **** 
+1261:./lwip-2.1.2/src/core/udp.c ****   pcb = udp_new();
+ 1934              		.loc 1 1261 9
+ 1935 0890 FFF7FEFF 		bl	udp_new
+ 1936 0894 F860     		str	r0, [r7, #12]
+1262:./lwip-2.1.2/src/core/udp.c **** #if LWIP_IPV4 && LWIP_IPV6
+1263:./lwip-2.1.2/src/core/udp.c ****   if (pcb != NULL) {
+1264:./lwip-2.1.2/src/core/udp.c ****     IP_SET_TYPE_VAL(pcb->local_ip,  type);
+1265:./lwip-2.1.2/src/core/udp.c ****     IP_SET_TYPE_VAL(pcb->remote_ip, type);
+1266:./lwip-2.1.2/src/core/udp.c ****   }
+1267:./lwip-2.1.2/src/core/udp.c **** #else
+1268:./lwip-2.1.2/src/core/udp.c ****   LWIP_UNUSED_ARG(type);
+1269:./lwip-2.1.2/src/core/udp.c **** #endif /* LWIP_IPV4 && LWIP_IPV6 */
+1270:./lwip-2.1.2/src/core/udp.c ****   return pcb;
+ 1937              		.loc 1 1270 10
+ 1938 0896 FB68     		ldr	r3, [r7, #12]
+1271:./lwip-2.1.2/src/core/udp.c **** }
+ 1939              		.loc 1 1271 1
+ 1940 0898 1846     		mov	r0, r3
+ 1941 089a 1037     		adds	r7, r7, #16
+ 1942              	.LCFI80:
+ 1943              		.cfi_def_cfa_offset 8
+ 1944 089c BD46     		mov	sp, r7
+ 1945              	.LCFI81:
+ 1946              		.cfi_def_cfa_register 13
+ 1947              		@ sp needed
+ 1948 089e 80BD     		pop	{r7, pc}
+ 1949              		.cfi_endproc
+ 1950              	.LFE40:
+ 1952              		.align	1
+ 1953              		.global	udp_netif_ip_addr_changed
+ 1954              		.syntax unified
+ 1955              		.thumb
+ 1956              		.thumb_func
+ 1957              		.fpu fpv5-d16
+ 1959              	udp_netif_ip_addr_changed:
+ 1960              	.LFB41:
+1272:./lwip-2.1.2/src/core/udp.c **** 
+1273:./lwip-2.1.2/src/core/udp.c **** /** This function is called from netif.c when address is changed
+1274:./lwip-2.1.2/src/core/udp.c ****  *
+1275:./lwip-2.1.2/src/core/udp.c ****  * @param old_addr IP address of the netif before change
+1276:./lwip-2.1.2/src/core/udp.c ****  * @param new_addr IP address of the netif after change
+1277:./lwip-2.1.2/src/core/udp.c ****  */
+1278:./lwip-2.1.2/src/core/udp.c **** void udp_netif_ip_addr_changed(const ip_addr_t *old_addr, const ip_addr_t *new_addr)
+1279:./lwip-2.1.2/src/core/udp.c **** {
+ 1961              		.loc 1 1279 1
+ 1962              		.cfi_startproc
+ 1963              		@ args = 0, pretend = 0, frame = 16
+ 1964              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1965              		@ link register save eliminated.
+ 1966 08a0 80B4     		push	{r7}
+ 1967              	.LCFI82:
+ 1968              		.cfi_def_cfa_offset 4
+ 1969              		.cfi_offset 7, -4
+ 1970 08a2 85B0     		sub	sp, sp, #20
+ 1971              	.LCFI83:
+ 1972              		.cfi_def_cfa_offset 24
+ 1973 08a4 00AF     		add	r7, sp, #0
+ 1974              	.LCFI84:
+ 1975              		.cfi_def_cfa_register 7
+ 1976 08a6 7860     		str	r0, [r7, #4]
+ 1977 08a8 3960     		str	r1, [r7]
+1280:./lwip-2.1.2/src/core/udp.c ****   struct udp_pcb *upcb;
+1281:./lwip-2.1.2/src/core/udp.c **** 
+1282:./lwip-2.1.2/src/core/udp.c ****   if (!ip_addr_isany(old_addr) && !ip_addr_isany(new_addr)) {
+ 1978              		.loc 1 1282 6
+ 1979 08aa 7B68     		ldr	r3, [r7, #4]
+ 1980 08ac 002B     		cmp	r3, #0
+ 1981 08ae 1ED0     		beq	.L145
+ 1982              		.loc 1 1282 8 discriminator 1
+ 1983 08b0 7B68     		ldr	r3, [r7, #4]
+ 1984 08b2 1B68     		ldr	r3, [r3]
+ 1985              		.loc 1 1282 7 discriminator 1
+ 1986 08b4 002B     		cmp	r3, #0
+ 1987 08b6 1AD0     		beq	.L145
+ 1988              		.loc 1 1282 32 discriminator 2
+ 1989 08b8 3B68     		ldr	r3, [r7]
+ 1990 08ba 002B     		cmp	r3, #0
+ 1991 08bc 17D0     		beq	.L145
+ 1992              		.loc 1 1282 36 discriminator 3
+ 1993 08be 3B68     		ldr	r3, [r7]
+ 1994 08c0 1B68     		ldr	r3, [r3]
+ 1995              		.loc 1 1282 35 discriminator 3
+ 1996 08c2 002B     		cmp	r3, #0
+ 1997 08c4 13D0     		beq	.L145
+1283:./lwip-2.1.2/src/core/udp.c ****     for (upcb = udp_pcbs; upcb != NULL; upcb = upcb->next) {
+ 1998              		.loc 1 1283 15
+ 1999 08c6 0D4B     		ldr	r3, .L146
+ 2000 08c8 1B68     		ldr	r3, [r3]
+ 2001 08ca FB60     		str	r3, [r7, #12]
+ 2002              		.loc 1 1283 5
+ 2003 08cc 0CE0     		b	.L142
+ 2004              	.L144:
+1284:./lwip-2.1.2/src/core/udp.c ****       /* PCB bound to current local interface address? */
+1285:./lwip-2.1.2/src/core/udp.c ****       if (ip_addr_cmp(&upcb->local_ip, old_addr)) {
+ 2005              		.loc 1 1285 11
+ 2006 08ce FB68     		ldr	r3, [r7, #12]
+ 2007 08d0 1A68     		ldr	r2, [r3]
+ 2008 08d2 7B68     		ldr	r3, [r7, #4]
+ 2009 08d4 1B68     		ldr	r3, [r3]
+ 2010              		.loc 1 1285 10
+ 2011 08d6 9A42     		cmp	r2, r3
+ 2012 08d8 03D1     		bne	.L143
+1286:./lwip-2.1.2/src/core/udp.c ****         /* The PCB is bound to the old ipaddr and
+1287:./lwip-2.1.2/src/core/udp.c ****          * is set to bound to the new one instead */
+1288:./lwip-2.1.2/src/core/udp.c ****         ip_addr_copy(upcb->local_ip, *new_addr);
+ 2013              		.loc 1 1288 9
+ 2014 08da 3B68     		ldr	r3, [r7]
+ 2015 08dc 1A68     		ldr	r2, [r3]
+ 2016 08de FB68     		ldr	r3, [r7, #12]
+ 2017 08e0 1A60     		str	r2, [r3]
+ 2018              	.L143:
+1283:./lwip-2.1.2/src/core/udp.c ****       /* PCB bound to current local interface address? */
+ 2019              		.loc 1 1283 46 discriminator 2
+ 2020 08e2 FB68     		ldr	r3, [r7, #12]
+ 2021 08e4 DB68     		ldr	r3, [r3, #12]
+ 2022 08e6 FB60     		str	r3, [r7, #12]
+ 2023              	.L142:
+1283:./lwip-2.1.2/src/core/udp.c ****       /* PCB bound to current local interface address? */
+ 2024              		.loc 1 1283 5 discriminator 1
+ 2025 08e8 FB68     		ldr	r3, [r7, #12]
+ 2026 08ea 002B     		cmp	r3, #0
+ 2027 08ec EFD1     		bne	.L144
+ 2028              	.L145:
+1289:./lwip-2.1.2/src/core/udp.c ****       }
+1290:./lwip-2.1.2/src/core/udp.c ****     }
+1291:./lwip-2.1.2/src/core/udp.c ****   }
+1292:./lwip-2.1.2/src/core/udp.c **** }
+ 2029              		.loc 1 1292 1
+ 2030 08ee 00BF     		nop
+ 2031 08f0 1437     		adds	r7, r7, #20
+ 2032              	.LCFI85:
+ 2033              		.cfi_def_cfa_offset 4
+ 2034 08f2 BD46     		mov	sp, r7
+ 2035              	.LCFI86:
+ 2036              		.cfi_def_cfa_register 13
+ 2037              		@ sp needed
+ 2038 08f4 5DF8047B 		ldr	r7, [sp], #4
+ 2039              	.LCFI87:
+ 2040              		.cfi_restore 7
+ 2041              		.cfi_def_cfa_offset 0
+ 2042 08f8 7047     		bx	lr
+ 2043              	.L147:
+ 2044 08fa 00BF     		.align	2
+ 2045              	.L146:
+ 2046 08fc 00000000 		.word	udp_pcbs
+ 2047              		.cfi_endproc
+ 2048              	.LFE41:
+ 2050              	.Letext0:
+ 2051              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 2052              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 2053              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 2054              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
+ 2055              		.file 6 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 2056              		.file 7 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 2057              		.file 8 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 2058              		.file 9 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 2059              		.file 10 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 2060              		.file 11 "./lwip-2.1.2/src/include/lwip/prot/ip4.h"
+ 2061              		.file 12 "./lwip-2.1.2/src/include/lwip/ip.h"
+ 2062              		.file 13 "./lwip-2.1.2/src/include/lwip/prot/udp.h"
+ 2063              		.file 14 "./lwip-2.1.2/src/include/lwip/udp.h"
+ 2064              		.file 15 "./lwip-2.1.2/src/include/lwip/icmp.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 udp.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:17     .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:20     .data:00000000 udp_port
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:27     .bss:00000000 udp_pcbs
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:24     .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:30     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:38     .text:00000000 udp_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:70     .text:00000020 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:74     .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:80     .text:00000024 udp_new_port
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:174    .text:0000008c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:179    .text:00000094 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:185    .text:00000094 udp_input_local_match
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:309    .text:00000128 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:313    .text:0000012c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:320    .text:0000012c udp_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:661    .text:00000304 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:667    .text:00000310 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:674    .text:00000310 udp_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:740    .text:0000034c udp_sendto
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:843    .text:000003c4 udp_sendto_if
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:970    .text:0000045c udp_sendto_if_src
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1201   .text:000005aa udp_bind
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1395   .text:00000698 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1400   .text:000006a0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1407   .text:000006a0 udp_bind_netif
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1470   .text:000006d2 udp_connect
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1609   .text:00000780 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1613   .text:00000784 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1620   .text:00000784 udp_disconnect
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1689   .text:000007c0 udp_recv
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1749   .text:000007ec udp_remove
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1847   .text:00000854 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1851   .text:00000858 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1858   .text:00000858 udp_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1915   .text:00000886 udp_new_ip_type
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:1959   .text:000008a0 udp_netif_ip_addr_changed
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQi9Qbc.s:2046   .text:000008fc $d
+
+UNDEFINED SYMBOLS
+rand
+ip_data
+pbuf_free
+ip4_addr_isbroadcast_u32
+lwip_htons
+pbuf_remove_header
+pbuf_header_force
+icmp_dest_unreach
+netif_get_by_index
+ip4_route
+pbuf_add_header
+pbuf_alloc
+pbuf_chain
+ip4_output_if_src
+ip_addr_any
+memp_free
+memp_malloc
+memset

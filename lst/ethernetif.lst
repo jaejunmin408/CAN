@@ -1,0 +1,2104 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ethernetif.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.global	DMARxDscrTab
+  17              		.bss
+  18              		.align	2
+  21              	DMARxDscrTab:
+  22 0000 00000000 		.space	128
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23              		.global	DMATxDscrTab
+  24              		.align	2
+  27              	DMATxDscrTab:
+  28 0080 00000000 		.space	128
+  28      00000000 
+  28      00000000 
+  28      00000000 
+  28      00000000 
+  29              		.global	Rx_Buff
+  30              		.align	2
+  33              	Rx_Buff:
+  34 0100 00000000 		.space	6096
+  34      00000000 
+  34      00000000 
+  34      00000000 
+  34      00000000 
+  35              		.global	Tx_Buff
+  36              		.align	2
+  39              	Tx_Buff:
+  40 18d0 00000000 		.space	6096
+  40      00000000 
+  40      00000000 
+  40      00000000 
+  40      00000000 
+  41              		.global	s_xSemaphore
+  42              		.align	2
+  45              	s_xSemaphore:
+  46 30a0 00000000 		.space	4
+  47              		.global	heth
+  48              		.align	2
+  51              	heth:
+  52 30a4 00000000 		.space	72
+  52      00000000 
+  52      00000000 
+  52      00000000 
+  52      00000000 
+  53              		.text
+  54              		.align	1
+  55              		.global	HAL_ETH_MspInit
+  56              		.arch armv7e-m
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+  60              		.fpu fpv5-d16
+  62              	HAL_ETH_MspInit:
+  63              	.LFB169:
+  64              		.file 1 "./src/ethernetif.c"
+   1:./src/ethernetif.c **** /**
+   2:./src/ethernetif.c ****   ******************************************************************************
+   3:./src/ethernetif.c ****   * File Name          : ethernetif.c
+   4:./src/ethernetif.c ****   * Description        : This file provides code for the configuration
+   5:./src/ethernetif.c ****   *                      of the ethernetif.c MiddleWare.
+   6:./src/ethernetif.c ****   ******************************************************************************
+   7:./src/ethernetif.c ****   * This notice applies to any and all portions of this file
+   8:./src/ethernetif.c ****   * that are not between comment pairs USER CODE BEGIN and
+   9:./src/ethernetif.c ****   * USER CODE END. Other portions of this file, whether 
+  10:./src/ethernetif.c ****   * inserted by the user or by software development tools
+  11:./src/ethernetif.c ****   * are owned by their respective copyright owners.
+  12:./src/ethernetif.c ****   *
+  13:./src/ethernetif.c ****   * Copyright (c) 2019 STMicroelectronics International N.V. 
+  14:./src/ethernetif.c ****   * All rights reserved.
+  15:./src/ethernetif.c ****   *
+  16:./src/ethernetif.c ****   * Redistribution and use in source and binary forms, with or without 
+  17:./src/ethernetif.c ****   * modification, are permitted, provided that the following conditions are met:
+  18:./src/ethernetif.c ****   *
+  19:./src/ethernetif.c ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:./src/ethernetif.c ****   *    this list of conditions and the following disclaimer.
+  21:./src/ethernetif.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:./src/ethernetif.c ****   *    this list of conditions and the following disclaimer in the documentation
+  23:./src/ethernetif.c ****   *    and/or other materials provided with the distribution.
+  24:./src/ethernetif.c ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:./src/ethernetif.c ****   *    contributors to this software may be used to endorse or promote products 
+  26:./src/ethernetif.c ****   *    derived from this software without specific written permission.
+  27:./src/ethernetif.c ****   * 4. This software, including modifications and/or derivative works of this 
+  28:./src/ethernetif.c ****   *    software, must execute solely and exclusively on microcontroller or
+  29:./src/ethernetif.c ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:./src/ethernetif.c ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:./src/ethernetif.c ****   *    this license is void and will automatically terminate your rights under 
+  32:./src/ethernetif.c ****   *    this license. 
+  33:./src/ethernetif.c ****   *
+  34:./src/ethernetif.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:./src/ethernetif.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:./src/ethernetif.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:./src/ethernetif.c ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:./src/ethernetif.c ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:./src/ethernetif.c ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:./src/ethernetif.c ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:./src/ethernetif.c ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:./src/ethernetif.c ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:./src/ethernetif.c ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:./src/ethernetif.c ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:./src/ethernetif.c ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:./src/ethernetif.c ****   *
+  47:./src/ethernetif.c ****   ******************************************************************************
+  48:./src/ethernetif.c ****   */
+  49:./src/ethernetif.c **** 
+  50:./src/ethernetif.c **** /* Includes ------------------------------------------------------------------*/
+  51:./src/ethernetif.c **** #include "main.h"
+  52:./src/ethernetif.c **** #include "lwip/opt.h"
+  53:./src/ethernetif.c **** 
+  54:./src/ethernetif.c **** #include "arch/cc.h"
+  55:./src/ethernetif.c **** #include "stm32f7xx_hal_conf.h"
+  56:./src/ethernetif.c **** #include "stm32f7xx_hal_eth.h"
+  57:./src/ethernetif.c **** #include "stm32f7xx_hal_gpio.h"
+  58:./src/ethernetif.c **** #include "stm32f7xx_hal_rcc_ex.h"
+  59:./src/ethernetif.c **** #include "stm32f7xx_hal_cortex.h"
+  60:./src/ethernetif.c **** 
+  61:./src/ethernetif.c **** #include "lwip/timeouts.h"
+  62:./src/ethernetif.c **** #include "netif/ethernet.h"
+  63:./src/ethernetif.c **** #include "netif/etharp.h"
+  64:./src/ethernetif.c **** #include "lwip/ethip6.h"
+  65:./src/ethernetif.c **** #include "ethernetif.h"
+  66:./src/ethernetif.c **** #include <string.h>
+  67:./src/ethernetif.c **** #include "cmsis_os2.h"
+  68:./src/ethernetif.c **** #include "eeprom.h"
+  69:./src/ethernetif.c **** /* Within 'USER CODE' section, code will be kept by default at each generation */
+  70:./src/ethernetif.c **** /* USER CODE BEGIN 0 */
+  71:./src/ethernetif.c **** 
+  72:./src/ethernetif.c **** #if _PHY_IS_T1_
+  73:./src/ethernetif.c **** 	// use this for 100Base-T1
+  74:./src/ethernetif.c **** 	#define  ETH_PHY_ADDRESS		0x4
+  75:./src/ethernetif.c **** #else
+  76:./src/ethernetif.c **** 	// use this for 100Base-TX
+  77:./src/ethernetif.c **** 	#define  ETH_PHY_ADDRESS		0x3
+  78:./src/ethernetif.c **** #endif
+  79:./src/ethernetif.c **** 
+  80:./src/ethernetif.c **** 
+  81:./src/ethernetif.c **** void ETH_IRQHandler(void);
+  82:./src/ethernetif.c **** 
+  83:./src/ethernetif.c **** 
+  84:./src/ethernetif.c **** 
+  85:./src/ethernetif.c **** 
+  86:./src/ethernetif.c **** 
+  87:./src/ethernetif.c **** /* USER CODE END 0 */
+  88:./src/ethernetif.c **** 
+  89:./src/ethernetif.c **** /* Private define ------------------------------------------------------------*/
+  90:./src/ethernetif.c **** /* The time to block waiting for input. */
+  91:./src/ethernetif.c **** #define TIME_WAITING_FOR_INPUT ( osWaitForever )
+  92:./src/ethernetif.c **** /* Stack size of the interface thread */
+  93:./src/ethernetif.c **** #define INTERFACE_THREAD_STACK_SIZE ( 512 )
+  94:./src/ethernetif.c **** /* Network interface name */
+  95:./src/ethernetif.c **** #define IFNAME0 's'
+  96:./src/ethernetif.c **** #define IFNAME1 't'
+  97:./src/ethernetif.c **** 
+  98:./src/ethernetif.c **** /* USER CODE BEGIN 1 */
+  99:./src/ethernetif.c **** 
+ 100:./src/ethernetif.c **** /* USER CODE END 1 */
+ 101:./src/ethernetif.c **** 
+ 102:./src/ethernetif.c **** /* Private variables ---------------------------------------------------------*/
+ 103:./src/ethernetif.c **** #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+ 104:./src/ethernetif.c ****   #pragma data_alignment=4   
+ 105:./src/ethernetif.c **** #endif
+ 106:./src/ethernetif.c **** __ALIGN_BEGIN ETH_DMADescTypeDef  DMARxDscrTab[ETH_RXBUFNB] __ALIGN_END;/* Ethernet Rx MA Descripto
+ 107:./src/ethernetif.c **** 
+ 108:./src/ethernetif.c **** #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+ 109:./src/ethernetif.c ****   #pragma data_alignment=4   
+ 110:./src/ethernetif.c **** #endif
+ 111:./src/ethernetif.c **** __ALIGN_BEGIN ETH_DMADescTypeDef  DMATxDscrTab[ETH_TXBUFNB] __ALIGN_END;/* Ethernet Tx DMA Descript
+ 112:./src/ethernetif.c **** 
+ 113:./src/ethernetif.c **** #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+ 114:./src/ethernetif.c ****   #pragma data_alignment=4   
+ 115:./src/ethernetif.c **** #endif
+ 116:./src/ethernetif.c **** __ALIGN_BEGIN uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __ALIGN_END; /* Ethernet Receive Buffer
+ 117:./src/ethernetif.c **** 
+ 118:./src/ethernetif.c **** #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+ 119:./src/ethernetif.c ****   #pragma data_alignment=4   
+ 120:./src/ethernetif.c **** #endif
+ 121:./src/ethernetif.c **** __ALIGN_BEGIN uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __ALIGN_END; /* Ethernet Transmit Buffe
+ 122:./src/ethernetif.c **** 
+ 123:./src/ethernetif.c **** /* USER CODE BEGIN 2 */
+ 124:./src/ethernetif.c **** 
+ 125:./src/ethernetif.c **** /* USER CODE END 2 */
+ 126:./src/ethernetif.c **** 
+ 127:./src/ethernetif.c **** /* Semaphore to signal incoming packets */
+ 128:./src/ethernetif.c **** osSemaphoreId_t s_xSemaphore = NULL;
+ 129:./src/ethernetif.c **** /* Global Ethernet handle */
+ 130:./src/ethernetif.c **** ETH_HandleTypeDef heth;
+ 131:./src/ethernetif.c **** 
+ 132:./src/ethernetif.c **** /* USER CODE BEGIN 3 */
+ 133:./src/ethernetif.c **** 
+ 134:./src/ethernetif.c **** /* USER CODE END 3 */
+ 135:./src/ethernetif.c **** 
+ 136:./src/ethernetif.c **** /* Private functions ---------------------------------------------------------*/
+ 137:./src/ethernetif.c **** 
+ 138:./src/ethernetif.c **** void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
+ 139:./src/ethernetif.c **** {
+  65              		.loc 1 139 1
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 40
+  68              		@ frame_needed = 1, uses_anonymous_args = 0
+  69 0000 80B5     		push	{r7, lr}
+  70              	.LCFI0:
+  71              		.cfi_def_cfa_offset 8
+  72              		.cfi_offset 7, -8
+  73              		.cfi_offset 14, -4
+  74 0002 8AB0     		sub	sp, sp, #40
+  75              	.LCFI1:
+  76              		.cfi_def_cfa_offset 48
+  77 0004 00AF     		add	r7, sp, #0
+  78              	.LCFI2:
+  79              		.cfi_def_cfa_register 7
+  80 0006 7860     		str	r0, [r7, #4]
+ 140:./src/ethernetif.c ****   GPIO_InitTypeDef GPIO_InitStruct;
+ 141:./src/ethernetif.c ****   if(ethHandle->Instance==ETH)
+  81              		.loc 1 141 15
+  82 0008 7B68     		ldr	r3, [r7, #4]
+  83 000a 1B68     		ldr	r3, [r3]
+  84              		.loc 1 141 5
+  85 000c 3A4A     		ldr	r2, .L4
+  86 000e 9342     		cmp	r3, r2
+  87 0010 6DD1     		bne	.L3
+  88              	.LBB2:
+ 142:./src/ethernetif.c ****   {
+ 143:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_MspInit 0 */
+ 144:./src/ethernetif.c **** 
+ 145:./src/ethernetif.c ****   /* USER CODE END ETH_MspInit 0 */
+ 146:./src/ethernetif.c ****     /* Enable Peripheral clock */
+ 147:./src/ethernetif.c ****     __HAL_RCC_ETH_CLK_ENABLE();
+  89              		.loc 1 147 5
+  90 0012 3A4B     		ldr	r3, .L4+4
+  91 0014 1B6B     		ldr	r3, [r3, #48]
+  92 0016 394A     		ldr	r2, .L4+4
+  93 0018 43F00073 		orr	r3, r3, #33554432
+  94 001c 1363     		str	r3, [r2, #48]
+  95 001e 374B     		ldr	r3, .L4+4
+  96 0020 1B6B     		ldr	r3, [r3, #48]
+  97 0022 03F00073 		and	r3, r3, #33554432
+  98 0026 3B61     		str	r3, [r7, #16]
+  99 0028 3B69     		ldr	r3, [r7, #16]
+ 100              	.LBE2:
+ 101              	.LBB3:
+ 102 002a 344B     		ldr	r3, .L4+4
+ 103 002c 1B6B     		ldr	r3, [r3, #48]
+ 104 002e 334A     		ldr	r2, .L4+4
+ 105 0030 43F08063 		orr	r3, r3, #67108864
+ 106 0034 1363     		str	r3, [r2, #48]
+ 107 0036 314B     		ldr	r3, .L4+4
+ 108 0038 1B6B     		ldr	r3, [r3, #48]
+ 109 003a 03F08063 		and	r3, r3, #67108864
+ 110 003e FB60     		str	r3, [r7, #12]
+ 111 0040 FB68     		ldr	r3, [r7, #12]
+ 112              	.LBE3:
+ 113              	.LBB4:
+ 114 0042 2E4B     		ldr	r3, .L4+4
+ 115 0044 1B6B     		ldr	r3, [r3, #48]
+ 116 0046 2D4A     		ldr	r2, .L4+4
+ 117 0048 43F00063 		orr	r3, r3, #134217728
+ 118 004c 1363     		str	r3, [r2, #48]
+ 119 004e 2B4B     		ldr	r3, .L4+4
+ 120 0050 1B6B     		ldr	r3, [r3, #48]
+ 121 0052 03F00063 		and	r3, r3, #134217728
+ 122 0056 BB60     		str	r3, [r7, #8]
+ 123 0058 BB68     		ldr	r3, [r7, #8]
+ 124              	.LBE4:
+ 148:./src/ethernetif.c ****   
+ 149:./src/ethernetif.c ****     /**ETH GPIO Configuration    
+ 150:./src/ethernetif.c ****     PG14     ------> ETH_TXD1
+ 151:./src/ethernetif.c ****     PG13     ------> ETH_TXD0
+ 152:./src/ethernetif.c ****     PC1     ------> ETH_MDC
+ 153:./src/ethernetif.c ****     PA1     ------> ETH_REF_CLK
+ 154:./src/ethernetif.c ****     PC4     ------> ETH_RXD0
+ 155:./src/ethernetif.c ****     PA2     ------> ETH_MDIO
+ 156:./src/ethernetif.c ****     PC5     ------> ETH_RXD1
+ 157:./src/ethernetif.c ****     PA7     ------> ETH_CRS_DV
+ 158:./src/ethernetif.c ****     PB11     ------> ETH_TX_EN 
+ 159:./src/ethernetif.c ****     */
+ 160:./src/ethernetif.c ****     GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_13;
+ 125              		.loc 1 160 25
+ 126 005a 4FF4C043 		mov	r3, #24576
+ 127 005e 7B61     		str	r3, [r7, #20]
+ 161:./src/ethernetif.c ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 128              		.loc 1 161 26
+ 129 0060 0223     		movs	r3, #2
+ 130 0062 BB61     		str	r3, [r7, #24]
+ 162:./src/ethernetif.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 131              		.loc 1 162 26
+ 132 0064 0023     		movs	r3, #0
+ 133 0066 FB61     		str	r3, [r7, #28]
+ 163:./src/ethernetif.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 134              		.loc 1 163 27
+ 135 0068 0323     		movs	r3, #3
+ 136 006a 3B62     		str	r3, [r7, #32]
+ 164:./src/ethernetif.c ****     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+ 137              		.loc 1 164 31
+ 138 006c 0B23     		movs	r3, #11
+ 139 006e 7B62     		str	r3, [r7, #36]
+ 165:./src/ethernetif.c ****     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+ 140              		.loc 1 165 5
+ 141 0070 07F11403 		add	r3, r7, #20
+ 142 0074 1946     		mov	r1, r3
+ 143 0076 2248     		ldr	r0, .L4+8
+ 144 0078 FFF7FEFF 		bl	HAL_GPIO_Init
+ 166:./src/ethernetif.c **** 
+ 167:./src/ethernetif.c ****     GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5;
+ 145              		.loc 1 167 25
+ 146 007c 3223     		movs	r3, #50
+ 147 007e 7B61     		str	r3, [r7, #20]
+ 168:./src/ethernetif.c ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 148              		.loc 1 168 26
+ 149 0080 0223     		movs	r3, #2
+ 150 0082 BB61     		str	r3, [r7, #24]
+ 169:./src/ethernetif.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 151              		.loc 1 169 26
+ 152 0084 0023     		movs	r3, #0
+ 153 0086 FB61     		str	r3, [r7, #28]
+ 170:./src/ethernetif.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 154              		.loc 1 170 27
+ 155 0088 0323     		movs	r3, #3
+ 156 008a 3B62     		str	r3, [r7, #32]
+ 171:./src/ethernetif.c ****     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+ 157              		.loc 1 171 31
+ 158 008c 0B23     		movs	r3, #11
+ 159 008e 7B62     		str	r3, [r7, #36]
+ 172:./src/ethernetif.c ****     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+ 160              		.loc 1 172 5
+ 161 0090 07F11403 		add	r3, r7, #20
+ 162 0094 1946     		mov	r1, r3
+ 163 0096 1B48     		ldr	r0, .L4+12
+ 164 0098 FFF7FEFF 		bl	HAL_GPIO_Init
+ 173:./src/ethernetif.c **** 
+ 174:./src/ethernetif.c ****     GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7;
+ 165              		.loc 1 174 25
+ 166 009c 8623     		movs	r3, #134
+ 167 009e 7B61     		str	r3, [r7, #20]
+ 175:./src/ethernetif.c ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 168              		.loc 1 175 26
+ 169 00a0 0223     		movs	r3, #2
+ 170 00a2 BB61     		str	r3, [r7, #24]
+ 176:./src/ethernetif.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 171              		.loc 1 176 26
+ 172 00a4 0023     		movs	r3, #0
+ 173 00a6 FB61     		str	r3, [r7, #28]
+ 177:./src/ethernetif.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 174              		.loc 1 177 27
+ 175 00a8 0323     		movs	r3, #3
+ 176 00aa 3B62     		str	r3, [r7, #32]
+ 178:./src/ethernetif.c ****     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+ 177              		.loc 1 178 31
+ 178 00ac 0B23     		movs	r3, #11
+ 179 00ae 7B62     		str	r3, [r7, #36]
+ 179:./src/ethernetif.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 180              		.loc 1 179 5
+ 181 00b0 07F11403 		add	r3, r7, #20
+ 182 00b4 1946     		mov	r1, r3
+ 183 00b6 1448     		ldr	r0, .L4+16
+ 184 00b8 FFF7FEFF 		bl	HAL_GPIO_Init
+ 180:./src/ethernetif.c **** 
+ 181:./src/ethernetif.c ****     GPIO_InitStruct.Pin = GPIO_PIN_11;
+ 185              		.loc 1 181 25
+ 186 00bc 4FF40063 		mov	r3, #2048
+ 187 00c0 7B61     		str	r3, [r7, #20]
+ 182:./src/ethernetif.c ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 188              		.loc 1 182 26
+ 189 00c2 0223     		movs	r3, #2
+ 190 00c4 BB61     		str	r3, [r7, #24]
+ 183:./src/ethernetif.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 191              		.loc 1 183 26
+ 192 00c6 0023     		movs	r3, #0
+ 193 00c8 FB61     		str	r3, [r7, #28]
+ 184:./src/ethernetif.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 194              		.loc 1 184 27
+ 195 00ca 0323     		movs	r3, #3
+ 196 00cc 3B62     		str	r3, [r7, #32]
+ 185:./src/ethernetif.c ****     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+ 197              		.loc 1 185 31
+ 198 00ce 0B23     		movs	r3, #11
+ 199 00d0 7B62     		str	r3, [r7, #36]
+ 186:./src/ethernetif.c ****     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 200              		.loc 1 186 5
+ 201 00d2 07F11403 		add	r3, r7, #20
+ 202 00d6 1946     		mov	r1, r3
+ 203 00d8 0C48     		ldr	r0, .L4+20
+ 204 00da FFF7FEFF 		bl	HAL_GPIO_Init
+ 187:./src/ethernetif.c **** 
+ 188:./src/ethernetif.c ****     /* Peripheral interrupt init */
+ 189:./src/ethernetif.c ****     HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);
+ 205              		.loc 1 189 5
+ 206 00de 0022     		movs	r2, #0
+ 207 00e0 0521     		movs	r1, #5
+ 208 00e2 3D20     		movs	r0, #61
+ 209 00e4 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 190:./src/ethernetif.c ****     HAL_NVIC_EnableIRQ(ETH_IRQn);
+ 210              		.loc 1 190 5
+ 211 00e8 3D20     		movs	r0, #61
+ 212 00ea FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 213              	.L3:
+ 191:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_MspInit 1 */
+ 192:./src/ethernetif.c **** 
+ 193:./src/ethernetif.c ****   /* USER CODE END ETH_MspInit 1 */
+ 194:./src/ethernetif.c ****   }
+ 195:./src/ethernetif.c **** }
+ 214              		.loc 1 195 1
+ 215 00ee 00BF     		nop
+ 216 00f0 2837     		adds	r7, r7, #40
+ 217              	.LCFI3:
+ 218              		.cfi_def_cfa_offset 8
+ 219 00f2 BD46     		mov	sp, r7
+ 220              	.LCFI4:
+ 221              		.cfi_def_cfa_register 13
+ 222              		@ sp needed
+ 223 00f4 80BD     		pop	{r7, pc}
+ 224              	.L5:
+ 225 00f6 00BF     		.align	2
+ 226              	.L4:
+ 227 00f8 00800240 		.word	1073905664
+ 228 00fc 00380240 		.word	1073887232
+ 229 0100 00180240 		.word	1073879040
+ 230 0104 00080240 		.word	1073874944
+ 231 0108 00000240 		.word	1073872896
+ 232 010c 00040240 		.word	1073873920
+ 233              		.cfi_endproc
+ 234              	.LFE169:
+ 236              		.align	1
+ 237              		.global	HAL_ETH_MspDeInit
+ 238              		.syntax unified
+ 239              		.thumb
+ 240              		.thumb_func
+ 241              		.fpu fpv5-d16
+ 243              	HAL_ETH_MspDeInit:
+ 244              	.LFB170:
+ 196:./src/ethernetif.c **** 
+ 197:./src/ethernetif.c **** void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
+ 198:./src/ethernetif.c **** {
+ 245              		.loc 1 198 1
+ 246              		.cfi_startproc
+ 247              		@ args = 0, pretend = 0, frame = 8
+ 248              		@ frame_needed = 1, uses_anonymous_args = 0
+ 249 0110 80B5     		push	{r7, lr}
+ 250              	.LCFI5:
+ 251              		.cfi_def_cfa_offset 8
+ 252              		.cfi_offset 7, -8
+ 253              		.cfi_offset 14, -4
+ 254 0112 82B0     		sub	sp, sp, #8
+ 255              	.LCFI6:
+ 256              		.cfi_def_cfa_offset 16
+ 257 0114 00AF     		add	r7, sp, #0
+ 258              	.LCFI7:
+ 259              		.cfi_def_cfa_register 7
+ 260 0116 7860     		str	r0, [r7, #4]
+ 199:./src/ethernetif.c ****   if(ethHandle->Instance==ETH)
+ 261              		.loc 1 199 15
+ 262 0118 7B68     		ldr	r3, [r7, #4]
+ 263 011a 1B68     		ldr	r3, [r3]
+ 264              		.loc 1 199 5
+ 265 011c 164A     		ldr	r2, .L9
+ 266 011e 9342     		cmp	r3, r2
+ 267 0120 26D1     		bne	.L8
+ 200:./src/ethernetif.c ****   {
+ 201:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_MspDeInit 0 */
+ 202:./src/ethernetif.c **** 
+ 203:./src/ethernetif.c ****   /* USER CODE END ETH_MspDeInit 0 */
+ 204:./src/ethernetif.c ****     /* Peripheral clock disable */
+ 205:./src/ethernetif.c ****     __HAL_RCC_ETH_CLK_DISABLE();
+ 268              		.loc 1 205 5
+ 269 0122 164B     		ldr	r3, .L9+4
+ 270 0124 1B6B     		ldr	r3, [r3, #48]
+ 271 0126 154A     		ldr	r2, .L9+4
+ 272 0128 23F08063 		bic	r3, r3, #67108864
+ 273 012c 1363     		str	r3, [r2, #48]
+ 274 012e 134B     		ldr	r3, .L9+4
+ 275 0130 1B6B     		ldr	r3, [r3, #48]
+ 276 0132 124A     		ldr	r2, .L9+4
+ 277 0134 23F00063 		bic	r3, r3, #134217728
+ 278 0138 1363     		str	r3, [r2, #48]
+ 279 013a 104B     		ldr	r3, .L9+4
+ 280 013c 1B6B     		ldr	r3, [r3, #48]
+ 281 013e 0F4A     		ldr	r2, .L9+4
+ 282 0140 23F00073 		bic	r3, r3, #33554432
+ 283 0144 1363     		str	r3, [r2, #48]
+ 206:./src/ethernetif.c ****   
+ 207:./src/ethernetif.c ****     /**ETH GPIO Configuration    
+ 208:./src/ethernetif.c ****     PG14     ------> ETH_TXD1
+ 209:./src/ethernetif.c ****     PG13     ------> ETH_TXD0
+ 210:./src/ethernetif.c ****     PC1     ------> ETH_MDC
+ 211:./src/ethernetif.c ****     PA1     ------> ETH_REF_CLK
+ 212:./src/ethernetif.c ****     PC4     ------> ETH_RXD0
+ 213:./src/ethernetif.c ****     PA2     ------> ETH_MDIO
+ 214:./src/ethernetif.c ****     PC5     ------> ETH_RXD1
+ 215:./src/ethernetif.c ****     PA7     ------> ETH_CRS_DV
+ 216:./src/ethernetif.c ****     PB11     ------> ETH_TX_EN 
+ 217:./src/ethernetif.c ****     */
+ 218:./src/ethernetif.c ****     HAL_GPIO_DeInit(GPIOG, GPIO_PIN_14|GPIO_PIN_13);
+ 284              		.loc 1 218 5
+ 285 0146 4FF4C041 		mov	r1, #24576
+ 286 014a 0D48     		ldr	r0, .L9+8
+ 287 014c FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 219:./src/ethernetif.c **** 
+ 220:./src/ethernetif.c ****     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5);
+ 288              		.loc 1 220 5
+ 289 0150 3221     		movs	r1, #50
+ 290 0152 0C48     		ldr	r0, .L9+12
+ 291 0154 FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 221:./src/ethernetif.c **** 
+ 222:./src/ethernetif.c ****     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7);
+ 292              		.loc 1 222 5
+ 293 0158 8621     		movs	r1, #134
+ 294 015a 0B48     		ldr	r0, .L9+16
+ 295 015c FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 223:./src/ethernetif.c **** 
+ 224:./src/ethernetif.c ****     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_11);
+ 296              		.loc 1 224 5
+ 297 0160 4FF40061 		mov	r1, #2048
+ 298 0164 0948     		ldr	r0, .L9+20
+ 299 0166 FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 225:./src/ethernetif.c **** 
+ 226:./src/ethernetif.c ****     /* Peripheral interrupt Deinit*/
+ 227:./src/ethernetif.c ****     HAL_NVIC_DisableIRQ(ETH_IRQn);
+ 300              		.loc 1 227 5
+ 301 016a 3D20     		movs	r0, #61
+ 302 016c FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 303              	.L8:
+ 228:./src/ethernetif.c **** 
+ 229:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_MspDeInit 1 */
+ 230:./src/ethernetif.c **** 
+ 231:./src/ethernetif.c ****   /* USER CODE END ETH_MspDeInit 1 */
+ 232:./src/ethernetif.c ****   }
+ 233:./src/ethernetif.c **** }
+ 304              		.loc 1 233 1
+ 305 0170 00BF     		nop
+ 306 0172 0837     		adds	r7, r7, #8
+ 307              	.LCFI8:
+ 308              		.cfi_def_cfa_offset 8
+ 309 0174 BD46     		mov	sp, r7
+ 310              	.LCFI9:
+ 311              		.cfi_def_cfa_register 13
+ 312              		@ sp needed
+ 313 0176 80BD     		pop	{r7, pc}
+ 314              	.L10:
+ 315              		.align	2
+ 316              	.L9:
+ 317 0178 00800240 		.word	1073905664
+ 318 017c 00380240 		.word	1073887232
+ 319 0180 00180240 		.word	1073879040
+ 320 0184 00080240 		.word	1073874944
+ 321 0188 00000240 		.word	1073872896
+ 322 018c 00040240 		.word	1073873920
+ 323              		.cfi_endproc
+ 324              	.LFE170:
+ 326              		.align	1
+ 327              		.global	HAL_ETH_RxCpltCallback
+ 328              		.syntax unified
+ 329              		.thumb
+ 330              		.thumb_func
+ 331              		.fpu fpv5-d16
+ 333              	HAL_ETH_RxCpltCallback:
+ 334              	.LFB171:
+ 234:./src/ethernetif.c **** 
+ 235:./src/ethernetif.c **** /**
+ 236:./src/ethernetif.c ****   * @brief  Ethernet Rx Transfer completed callback
+ 237:./src/ethernetif.c ****   * @param  heth: ETH handle
+ 238:./src/ethernetif.c ****   * @retval None
+ 239:./src/ethernetif.c ****   */
+ 240:./src/ethernetif.c **** void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *ethHandle)
+ 241:./src/ethernetif.c **** {
+ 335              		.loc 1 241 1
+ 336              		.cfi_startproc
+ 337              		@ args = 0, pretend = 0, frame = 8
+ 338              		@ frame_needed = 1, uses_anonymous_args = 0
+ 339 0190 80B5     		push	{r7, lr}
+ 340              	.LCFI10:
+ 341              		.cfi_def_cfa_offset 8
+ 342              		.cfi_offset 7, -8
+ 343              		.cfi_offset 14, -4
+ 344 0192 82B0     		sub	sp, sp, #8
+ 345              	.LCFI11:
+ 346              		.cfi_def_cfa_offset 16
+ 347 0194 00AF     		add	r7, sp, #0
+ 348              	.LCFI12:
+ 349              		.cfi_def_cfa_register 7
+ 350 0196 7860     		str	r0, [r7, #4]
+ 242:./src/ethernetif.c ****   osSemaphoreRelease(s_xSemaphore);
+ 351              		.loc 1 242 3
+ 352 0198 044B     		ldr	r3, .L12
+ 353 019a 1B68     		ldr	r3, [r3]
+ 354 019c 1846     		mov	r0, r3
+ 355 019e FFF7FEFF 		bl	osSemaphoreRelease
+ 243:./src/ethernetif.c **** }
+ 356              		.loc 1 243 1
+ 357 01a2 00BF     		nop
+ 358 01a4 0837     		adds	r7, r7, #8
+ 359              	.LCFI13:
+ 360              		.cfi_def_cfa_offset 8
+ 361 01a6 BD46     		mov	sp, r7
+ 362              	.LCFI14:
+ 363              		.cfi_def_cfa_register 13
+ 364              		@ sp needed
+ 365 01a8 80BD     		pop	{r7, pc}
+ 366              	.L13:
+ 367 01aa 00BF     		.align	2
+ 368              	.L12:
+ 369 01ac 00000000 		.word	s_xSemaphore
+ 370              		.cfi_endproc
+ 371              	.LFE171:
+ 373              		.align	1
+ 374              		.global	ETH_IRQHandler
+ 375              		.syntax unified
+ 376              		.thumb
+ 377              		.thumb_func
+ 378              		.fpu fpv5-d16
+ 380              	ETH_IRQHandler:
+ 381              	.LFB172:
+ 244:./src/ethernetif.c **** 
+ 245:./src/ethernetif.c **** /* USER CODE BEGIN 4 */
+ 246:./src/ethernetif.c **** 
+ 247:./src/ethernetif.c **** void ETH_IRQHandler(void)
+ 248:./src/ethernetif.c **** {
+ 382              		.loc 1 248 1
+ 383              		.cfi_startproc
+ 384              		@ args = 0, pretend = 0, frame = 0
+ 385              		@ frame_needed = 1, uses_anonymous_args = 0
+ 386 01b0 80B5     		push	{r7, lr}
+ 387              	.LCFI15:
+ 388              		.cfi_def_cfa_offset 8
+ 389              		.cfi_offset 7, -8
+ 390              		.cfi_offset 14, -4
+ 391 01b2 00AF     		add	r7, sp, #0
+ 392              	.LCFI16:
+ 393              		.cfi_def_cfa_register 7
+ 249:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_IRQn 0 */
+ 250:./src/ethernetif.c **** 
+ 251:./src/ethernetif.c ****   /* USER CODE END ETH_IRQn 0 */
+ 252:./src/ethernetif.c ****   HAL_ETH_IRQHandler(&heth);
+ 394              		.loc 1 252 3
+ 395 01b4 0248     		ldr	r0, .L15
+ 396 01b6 FFF7FEFF 		bl	HAL_ETH_IRQHandler
+ 253:./src/ethernetif.c ****   /* USER CODE BEGIN ETH_IRQn 1 */
+ 254:./src/ethernetif.c **** 
+ 255:./src/ethernetif.c ****   /* USER CODE END ETH_IRQn 1 */
+ 256:./src/ethernetif.c **** }
+ 397              		.loc 1 256 1
+ 398 01ba 00BF     		nop
+ 399 01bc 80BD     		pop	{r7, pc}
+ 400              	.L16:
+ 401 01be 00BF     		.align	2
+ 402              	.L15:
+ 403 01c0 00000000 		.word	heth
+ 404              		.cfi_endproc
+ 405              	.LFE172:
+ 407              		.align	1
+ 408              		.syntax unified
+ 409              		.thumb
+ 410              		.thumb_func
+ 411              		.fpu fpv5-d16
+ 413              	low_level_init:
+ 414              	.LFB173:
+ 257:./src/ethernetif.c **** 
+ 258:./src/ethernetif.c **** /* USER CODE END 4 */
+ 259:./src/ethernetif.c **** 
+ 260:./src/ethernetif.c **** /*******************************************************************************
+ 261:./src/ethernetif.c ****                        LL Driver Interface ( LwIP stack --> ETH) 
+ 262:./src/ethernetif.c **** *******************************************************************************/
+ 263:./src/ethernetif.c **** /**
+ 264:./src/ethernetif.c ****  * In this function, the hardware should be initialized.
+ 265:./src/ethernetif.c ****  * Called from ethernetif_init().
+ 266:./src/ethernetif.c ****  *
+ 267:./src/ethernetif.c ****  * @param netif the already initialized lwip network interface structure
+ 268:./src/ethernetif.c ****  *        for this ethernetif
+ 269:./src/ethernetif.c ****  */
+ 270:./src/ethernetif.c **** static void low_level_init(struct netif *netif)
+ 271:./src/ethernetif.c **** { 
+ 415              		.loc 1 271 1
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 56
+ 418              		@ frame_needed = 1, uses_anonymous_args = 0
+ 419 01c4 80B5     		push	{r7, lr}
+ 420              	.LCFI17:
+ 421              		.cfi_def_cfa_offset 8
+ 422              		.cfi_offset 7, -8
+ 423              		.cfi_offset 14, -4
+ 424 01c6 8EB0     		sub	sp, sp, #56
+ 425              	.LCFI18:
+ 426              		.cfi_def_cfa_offset 64
+ 427 01c8 00AF     		add	r7, sp, #0
+ 428              	.LCFI19:
+ 429              		.cfi_def_cfa_register 7
+ 430 01ca 7860     		str	r0, [r7, #4]
+ 272:./src/ethernetif.c ****   //uint32_t regvalue = 0;
+ 273:./src/ethernetif.c ****   HAL_StatusTypeDef hal_eth_init_status;
+ 274:./src/ethernetif.c ****   
+ 275:./src/ethernetif.c **** /* Init ETH */
+ 276:./src/ethernetif.c **** 
+ 277:./src/ethernetif.c ****    uint8_t MACAddr[6] ;
+ 278:./src/ethernetif.c ****   heth.Instance = ETH;
+ 431              		.loc 1 278 17
+ 432 01cc 4D4B     		ldr	r3, .L19
+ 433 01ce 4E4A     		ldr	r2, .L19+4
+ 434 01d0 1A60     		str	r2, [r3]
+ 279:./src/ethernetif.c **** 
+ 280:./src/ethernetif.c ****   #if _PHY_IS_T1_
+ 281:./src/ethernetif.c ****   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_DISABLE;
+ 282:./src/ethernetif.c ****   #else
+ 283:./src/ethernetif.c ****   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
+ 435              		.loc 1 283 29
+ 436 01d2 4C4B     		ldr	r3, .L19
+ 437 01d4 0122     		movs	r2, #1
+ 438 01d6 5A60     		str	r2, [r3, #4]
+ 284:./src/ethernetif.c ****   #endif
+ 285:./src/ethernetif.c **** 
+ 286:./src/ethernetif.c ****   heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
+ 439              		.loc 1 286 24
+ 440 01d8 4A4B     		ldr	r3, .L19
+ 441 01da 4FF40062 		mov	r2, #2048
+ 442 01de DA60     		str	r2, [r3, #12]
+ 287:./src/ethernetif.c ****   heth.Init.Speed = ETH_SPEED_100M;
+ 443              		.loc 1 287 19
+ 444 01e0 484B     		ldr	r3, .L19
+ 445 01e2 4FF48042 		mov	r2, #16384
+ 446 01e6 9A60     		str	r2, [r3, #8]
+ 288:./src/ethernetif.c ****   heth.Init.PhyAddress = ETH_PHY_ADDRESS;
+ 447              		.loc 1 288 24
+ 448 01e8 464B     		ldr	r3, .L19
+ 449 01ea 0322     		movs	r2, #3
+ 450 01ec 1A82     		strh	r2, [r3, #16]	@ movhi
+ 289:./src/ethernetif.c **** 
+ 290:./src/ethernetif.c **** 
+ 291:./src/ethernetif.c ****   // read MAC address from PHY board eeprom
+ 292:./src/ethernetif.c ****   EEPROM_Read ( 0x7FFF8, &MACAddr[0], 6);
+ 451              		.loc 1 292 3
+ 452 01ee 07F13003 		add	r3, r7, #48
+ 453 01f2 0622     		movs	r2, #6
+ 454 01f4 1946     		mov	r1, r3
+ 455 01f6 4548     		ldr	r0, .L19+8
+ 456 01f8 FFF7FEFF 		bl	EEPROM_Read
+ 293:./src/ethernetif.c **** 
+ 294:./src/ethernetif.c ****   heth.Init.MACAddr = &MACAddr[0];
+ 457              		.loc 1 294 21
+ 458 01fc 414A     		ldr	r2, .L19
+ 459 01fe 07F13003 		add	r3, r7, #48
+ 460 0202 5361     		str	r3, [r2, #20]
+ 295:./src/ethernetif.c ****   heth.Init.RxMode = ETH_RXINTERRUPT_MODE;
+ 461              		.loc 1 295 20
+ 462 0204 3F4B     		ldr	r3, .L19
+ 463 0206 0122     		movs	r2, #1
+ 464 0208 9A61     		str	r2, [r3, #24]
+ 296:./src/ethernetif.c ****   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
+ 465              		.loc 1 296 26
+ 466 020a 3E4B     		ldr	r3, .L19
+ 467 020c 0022     		movs	r2, #0
+ 468 020e DA61     		str	r2, [r3, #28]
+ 297:./src/ethernetif.c ****   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
+ 469              		.loc 1 297 28
+ 470 0210 3C4B     		ldr	r3, .L19
+ 471 0212 4FF40002 		mov	r2, #8388608
+ 472 0216 1A62     		str	r2, [r3, #32]
+ 298:./src/ethernetif.c **** 
+ 299:./src/ethernetif.c ****   /* USER CODE BEGIN MACADDRESS */
+ 300:./src/ethernetif.c ****     
+ 301:./src/ethernetif.c ****   /* USER CODE END MACADDRESS */
+ 302:./src/ethernetif.c **** 
+ 303:./src/ethernetif.c ****   hal_eth_init_status = HAL_ETH_Init(&heth);
+ 473              		.loc 1 303 25
+ 474 0218 3A48     		ldr	r0, .L19
+ 475 021a FFF7FEFF 		bl	HAL_ETH_Init
+ 476 021e 0346     		mov	r3, r0
+ 477 0220 87F83730 		strb	r3, [r7, #55]
+ 304:./src/ethernetif.c **** 
+ 305:./src/ethernetif.c ****   if (hal_eth_init_status == HAL_OK)
+ 478              		.loc 1 305 6
+ 479 0224 97F83730 		ldrb	r3, [r7, #55]	@ zero_extendqisi2
+ 480 0228 002B     		cmp	r3, #0
+ 481 022a 08D1     		bne	.L18
+ 306:./src/ethernetif.c ****   {
+ 307:./src/ethernetif.c ****     /* Set netif link flag */  
+ 308:./src/ethernetif.c ****     netif->flags |= NETIF_FLAG_LINK_UP;
+ 482              		.loc 1 308 18
+ 483 022c 7B68     		ldr	r3, [r7, #4]
+ 484 022e 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 485 0232 43F00403 		orr	r3, r3, #4
+ 486 0236 DAB2     		uxtb	r2, r3
+ 487 0238 7B68     		ldr	r3, [r7, #4]
+ 488 023a 83F82D20 		strb	r2, [r3, #45]
+ 489              	.L18:
+ 309:./src/ethernetif.c ****   }
+ 310:./src/ethernetif.c ****   /* Initialize Tx Descriptors list: Chain Mode */
+ 311:./src/ethernetif.c ****   HAL_ETH_DMATxDescListInit(&heth, DMATxDscrTab, &Tx_Buff[0][0], ETH_TXBUFNB);
+ 490              		.loc 1 311 3
+ 491 023e 0423     		movs	r3, #4
+ 492 0240 334A     		ldr	r2, .L19+12
+ 493 0242 3449     		ldr	r1, .L19+16
+ 494 0244 2F48     		ldr	r0, .L19
+ 495 0246 FFF7FEFF 		bl	HAL_ETH_DMATxDescListInit
+ 312:./src/ethernetif.c ****      
+ 313:./src/ethernetif.c ****   /* Initialize Rx Descriptors list: Chain Mode  */
+ 314:./src/ethernetif.c ****   HAL_ETH_DMARxDescListInit(&heth, DMARxDscrTab, &Rx_Buff[0][0], ETH_RXBUFNB);
+ 496              		.loc 1 314 3
+ 497 024a 0423     		movs	r3, #4
+ 498 024c 324A     		ldr	r2, .L19+20
+ 499 024e 3349     		ldr	r1, .L19+24
+ 500 0250 2C48     		ldr	r0, .L19
+ 501 0252 FFF7FEFF 		bl	HAL_ETH_DMARxDescListInit
+ 315:./src/ethernetif.c ****  
+ 316:./src/ethernetif.c **** #if LWIP_ARP || LWIP_ETHERNET 
+ 317:./src/ethernetif.c **** 
+ 318:./src/ethernetif.c ****   /* set MAC hardware address length */
+ 319:./src/ethernetif.c ****   netif->hwaddr_len = ETH_HWADDR_LEN;
+ 502              		.loc 1 319 21
+ 503 0256 7B68     		ldr	r3, [r7, #4]
+ 504 0258 0622     		movs	r2, #6
+ 505 025a 83F82C20 		strb	r2, [r3, #44]
+ 320:./src/ethernetif.c ****   
+ 321:./src/ethernetif.c ****   /* set MAC hardware address */
+ 322:./src/ethernetif.c ****   netif->hwaddr[0] =  heth.Init.MACAddr[0];
+ 506              		.loc 1 322 32
+ 507 025e 294B     		ldr	r3, .L19
+ 508 0260 5B69     		ldr	r3, [r3, #20]
+ 509              		.loc 1 322 40
+ 510 0262 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 511              		.loc 1 322 20
+ 512 0264 7B68     		ldr	r3, [r7, #4]
+ 513 0266 83F82620 		strb	r2, [r3, #38]
+ 323:./src/ethernetif.c ****   netif->hwaddr[1] =  heth.Init.MACAddr[1];
+ 514              		.loc 1 323 32
+ 515 026a 264B     		ldr	r3, .L19
+ 516 026c 5B69     		ldr	r3, [r3, #20]
+ 517              		.loc 1 323 20
+ 518 026e 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 519 0270 7B68     		ldr	r3, [r7, #4]
+ 520 0272 83F82720 		strb	r2, [r3, #39]
+ 324:./src/ethernetif.c ****   netif->hwaddr[2] =  heth.Init.MACAddr[2];
+ 521              		.loc 1 324 32
+ 522 0276 234B     		ldr	r3, .L19
+ 523 0278 5B69     		ldr	r3, [r3, #20]
+ 524              		.loc 1 324 20
+ 525 027a 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 526 027c 7B68     		ldr	r3, [r7, #4]
+ 527 027e 83F82820 		strb	r2, [r3, #40]
+ 325:./src/ethernetif.c ****   netif->hwaddr[3] =  heth.Init.MACAddr[3];
+ 528              		.loc 1 325 32
+ 529 0282 204B     		ldr	r3, .L19
+ 530 0284 5B69     		ldr	r3, [r3, #20]
+ 531              		.loc 1 325 20
+ 532 0286 DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 533 0288 7B68     		ldr	r3, [r7, #4]
+ 534 028a 83F82920 		strb	r2, [r3, #41]
+ 326:./src/ethernetif.c ****   netif->hwaddr[4] =  heth.Init.MACAddr[4];
+ 535              		.loc 1 326 32
+ 536 028e 1D4B     		ldr	r3, .L19
+ 537 0290 5B69     		ldr	r3, [r3, #20]
+ 538              		.loc 1 326 20
+ 539 0292 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 540 0294 7B68     		ldr	r3, [r7, #4]
+ 541 0296 83F82A20 		strb	r2, [r3, #42]
+ 327:./src/ethernetif.c ****   netif->hwaddr[5] =  heth.Init.MACAddr[5];
+ 542              		.loc 1 327 32
+ 543 029a 1A4B     		ldr	r3, .L19
+ 544 029c 5B69     		ldr	r3, [r3, #20]
+ 545              		.loc 1 327 20
+ 546 029e 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 547 02a0 7B68     		ldr	r3, [r7, #4]
+ 548 02a2 83F82B20 		strb	r2, [r3, #43]
+ 328:./src/ethernetif.c ****   
+ 329:./src/ethernetif.c ****   /* maximum transfer unit */
+ 330:./src/ethernetif.c ****   netif->mtu = 1500;
+ 549              		.loc 1 330 14
+ 550 02a6 7B68     		ldr	r3, [r7, #4]
+ 551 02a8 40F2DC52 		movw	r2, #1500
+ 552 02ac 9A84     		strh	r2, [r3, #36]	@ movhi
+ 331:./src/ethernetif.c ****   
+ 332:./src/ethernetif.c ****   /* Accept broadcast address and ARP traffic */
+ 333:./src/ethernetif.c ****   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
+ 334:./src/ethernetif.c ****   #if LWIP_ARP
+ 335:./src/ethernetif.c ****     netif->flags |= NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
+ 553              		.loc 1 335 18
+ 554 02ae 7B68     		ldr	r3, [r7, #4]
+ 555 02b0 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 556 02b4 43F00A03 		orr	r3, r3, #10
+ 557 02b8 DAB2     		uxtb	r2, r3
+ 558 02ba 7B68     		ldr	r3, [r7, #4]
+ 559 02bc 83F82D20 		strb	r2, [r3, #45]
+ 336:./src/ethernetif.c ****   #else 
+ 337:./src/ethernetif.c ****     netif->flags |= NETIF_FLAG_BROADCAST;
+ 338:./src/ethernetif.c ****   #endif /* LWIP_ARP */
+ 339:./src/ethernetif.c ****   
+ 340:./src/ethernetif.c **** /* create a binary semaphore used for informing ethernetif of frame reception */
+ 341:./src/ethernetif.c ****   //osSemaphoreDef(SEM);
+ 342:./src/ethernetif.c ****   s_xSemaphore = osSemaphoreNew ( 1, 1, NULL);
+ 560              		.loc 1 342 18
+ 561 02c0 0022     		movs	r2, #0
+ 562 02c2 0121     		movs	r1, #1
+ 563 02c4 0120     		movs	r0, #1
+ 564 02c6 FFF7FEFF 		bl	osSemaphoreNew
+ 565 02ca 0346     		mov	r3, r0
+ 566              		.loc 1 342 16
+ 567 02cc 144A     		ldr	r2, .L19+28
+ 568 02ce 1360     		str	r3, [r2]
+ 569              	.LBB5:
+ 343:./src/ethernetif.c **** 
+ 344:./src/ethernetif.c **** /* create the task that handles the ETH_MAC */
+ 345:./src/ethernetif.c ****   //osThreadDef(EthIf, ethernetif_input, osPriorityRealtime, 0, INTERFACE_THREAD_STACK_SIZE);
+ 346:./src/ethernetif.c ****   {
+ 347:./src/ethernetif.c **** 	osThreadAttr_t  attr;
+ 348:./src/ethernetif.c **** 
+ 349:./src/ethernetif.c **** 
+ 350:./src/ethernetif.c **** 	memset ( &attr, 0, sizeof ( attr));
+ 570              		.loc 1 350 2
+ 571 02d0 07F10C03 		add	r3, r7, #12
+ 572 02d4 2422     		movs	r2, #36
+ 573 02d6 0021     		movs	r1, #0
+ 574 02d8 1846     		mov	r0, r3
+ 575 02da FFF7FEFF 		bl	memset
+ 351:./src/ethernetif.c **** 
+ 352:./src/ethernetif.c **** 	attr.stack_size = INTERFACE_THREAD_STACK_SIZE;
+ 576              		.loc 1 352 18
+ 577 02de 4FF40073 		mov	r3, #512
+ 578 02e2 3B62     		str	r3, [r7, #32]
+ 353:./src/ethernetif.c **** 	attr.priority = osPriorityRealtime;
+ 579              		.loc 1 353 16
+ 580 02e4 3023     		movs	r3, #48
+ 581 02e6 7B62     		str	r3, [r7, #36]
+ 354:./src/ethernetif.c **** 
+ 355:./src/ethernetif.c ****     osThreadNew ( ethernetif_input, netif, &attr);
+ 582              		.loc 1 355 5
+ 583 02e8 07F10C03 		add	r3, r7, #12
+ 584 02ec 1A46     		mov	r2, r3
+ 585 02ee 7968     		ldr	r1, [r7, #4]
+ 586 02f0 0C48     		ldr	r0, .L19+32
+ 587 02f2 FFF7FEFF 		bl	osThreadNew
+ 588              	.LBE5:
+ 356:./src/ethernetif.c ****   }
+ 357:./src/ethernetif.c ****   /* Enable MAC and DMA transmission and reception */
+ 358:./src/ethernetif.c ****   HAL_ETH_Start(&heth);
+ 589              		.loc 1 358 3
+ 590 02f6 0348     		ldr	r0, .L19
+ 591 02f8 FFF7FEFF 		bl	HAL_ETH_Start
+ 359:./src/ethernetif.c **** 
+ 360:./src/ethernetif.c **** /* USER CODE BEGIN PHY_PRE_CONFIG */ 
+ 361:./src/ethernetif.c ****     
+ 362:./src/ethernetif.c **** /* USER CODE END PHY_PRE_CONFIG */
+ 363:./src/ethernetif.c ****   
+ 364:./src/ethernetif.c **** 
+ 365:./src/ethernetif.c ****   /* Read Register Configuration */
+ 366:./src/ethernetif.c ****   #if 0  // _todo
+ 367:./src/ethernetif.c ****   HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+ 368:./src/ethernetif.c ****   regvalue |= (PHY_ISFR_INT4);
+ 369:./src/ethernetif.c **** 
+ 370:./src/ethernetif.c ****   /* Enable Interrupt on change of link status */ 
+ 371:./src/ethernetif.c ****   HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
+ 372:./src/ethernetif.c ****   
+ 373:./src/ethernetif.c ****   /* Read Register Configuration */
+ 374:./src/ethernetif.c ****   HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
+ 375:./src/ethernetif.c ****   #endif
+ 376:./src/ethernetif.c **** 
+ 377:./src/ethernetif.c **** /* USER CODE BEGIN PHY_POST_CONFIG */ 
+ 378:./src/ethernetif.c ****     
+ 379:./src/ethernetif.c **** /* USER CODE END PHY_POST_CONFIG */
+ 380:./src/ethernetif.c **** 
+ 381:./src/ethernetif.c **** #endif /* LWIP_ARP || LWIP_ETHERNET */
+ 382:./src/ethernetif.c **** 
+ 383:./src/ethernetif.c **** /* USER CODE BEGIN LOW_LEVEL_INIT */ 
+ 384:./src/ethernetif.c ****     
+ 385:./src/ethernetif.c **** /* USER CODE END LOW_LEVEL_INIT */
+ 386:./src/ethernetif.c **** }
+ 592              		.loc 1 386 1
+ 593 02fc 00BF     		nop
+ 594 02fe 3837     		adds	r7, r7, #56
+ 595              	.LCFI20:
+ 596              		.cfi_def_cfa_offset 8
+ 597 0300 BD46     		mov	sp, r7
+ 598              	.LCFI21:
+ 599              		.cfi_def_cfa_register 13
+ 600              		@ sp needed
+ 601 0302 80BD     		pop	{r7, pc}
+ 602              	.L20:
+ 603              		.align	2
+ 604              	.L19:
+ 605 0304 00000000 		.word	heth
+ 606 0308 00800240 		.word	1073905664
+ 607 030c F8FF0700 		.word	524280
+ 608 0310 00000000 		.word	Tx_Buff
+ 609 0314 00000000 		.word	DMATxDscrTab
+ 610 0318 00000000 		.word	Rx_Buff
+ 611 031c 00000000 		.word	DMARxDscrTab
+ 612 0320 00000000 		.word	s_xSemaphore
+ 613 0324 00000000 		.word	ethernetif_input
+ 614              		.cfi_endproc
+ 615              	.LFE173:
+ 617              		.align	1
+ 618              		.syntax unified
+ 619              		.thumb
+ 620              		.thumb_func
+ 621              		.fpu fpv5-d16
+ 623              	low_level_output:
+ 624              	.LFB174:
+ 387:./src/ethernetif.c **** 
+ 388:./src/ethernetif.c **** /**
+ 389:./src/ethernetif.c ****  * This function should do the actual transmission of the packet. The packet is
+ 390:./src/ethernetif.c ****  * contained in the pbuf that is passed to the function. This pbuf
+ 391:./src/ethernetif.c ****  * might be chained.
+ 392:./src/ethernetif.c ****  *
+ 393:./src/ethernetif.c ****  * @param netif the lwip network interface structure for this ethernetif
+ 394:./src/ethernetif.c ****  * @param p the MAC packet to send (e.g. IP packet including MAC addresses and type)
+ 395:./src/ethernetif.c ****  * @return ERR_OK if the packet could be sent
+ 396:./src/ethernetif.c ****  *         an err_t value if the packet couldn't be sent
+ 397:./src/ethernetif.c ****  *
+ 398:./src/ethernetif.c ****  * @note Returning ERR_MEM here if a DMA queue of your MAC is full can lead to
+ 399:./src/ethernetif.c ****  *       strange results. You might consider waiting for space in the DMA queue
+ 400:./src/ethernetif.c ****  *       to become availale since the stack doesn't retry to send a packet
+ 401:./src/ethernetif.c ****  *       dropped because of memory failure (except for the TCP timers).
+ 402:./src/ethernetif.c ****  */
+ 403:./src/ethernetif.c **** 
+ 404:./src/ethernetif.c **** static err_t low_level_output(struct netif *netif, struct pbuf *p)
+ 405:./src/ethernetif.c **** {
+ 625              		.loc 1 405 1
+ 626              		.cfi_startproc
+ 627              		@ args = 0, pretend = 0, frame = 40
+ 628              		@ frame_needed = 1, uses_anonymous_args = 0
+ 629 0328 80B5     		push	{r7, lr}
+ 630              	.LCFI22:
+ 631              		.cfi_def_cfa_offset 8
+ 632              		.cfi_offset 7, -8
+ 633              		.cfi_offset 14, -4
+ 634 032a 8AB0     		sub	sp, sp, #40
+ 635              	.LCFI23:
+ 636              		.cfi_def_cfa_offset 48
+ 637 032c 00AF     		add	r7, sp, #0
+ 638              	.LCFI24:
+ 639              		.cfi_def_cfa_register 7
+ 640 032e 7860     		str	r0, [r7, #4]
+ 641 0330 3960     		str	r1, [r7]
+ 406:./src/ethernetif.c ****   err_t errval;
+ 407:./src/ethernetif.c ****   struct pbuf *q;
+ 408:./src/ethernetif.c ****   uint8_t *buffer = (uint8_t *)(heth.TxDesc->Buffer1Addr);
+ 642              		.loc 1 408 37
+ 643 0332 4B4B     		ldr	r3, .L31
+ 644 0334 DB6A     		ldr	r3, [r3, #44]
+ 645              		.loc 1 408 44
+ 646 0336 9B68     		ldr	r3, [r3, #8]
+ 647              		.loc 1 408 12
+ 648 0338 FB61     		str	r3, [r7, #28]
+ 409:./src/ethernetif.c ****   __IO ETH_DMADescTypeDef *DmaTxDesc;
+ 410:./src/ethernetif.c ****   uint32_t framelength = 0;
+ 649              		.loc 1 410 12
+ 650 033a 0023     		movs	r3, #0
+ 651 033c 7B61     		str	r3, [r7, #20]
+ 411:./src/ethernetif.c ****   uint32_t bufferoffset = 0;
+ 652              		.loc 1 411 12
+ 653 033e 0023     		movs	r3, #0
+ 654 0340 3B61     		str	r3, [r7, #16]
+ 412:./src/ethernetif.c ****   uint32_t byteslefttocopy = 0;
+ 655              		.loc 1 412 12
+ 656 0342 0023     		movs	r3, #0
+ 657 0344 FB60     		str	r3, [r7, #12]
+ 413:./src/ethernetif.c ****   uint32_t payloadoffset = 0;
+ 658              		.loc 1 413 12
+ 659 0346 0023     		movs	r3, #0
+ 660 0348 BB60     		str	r3, [r7, #8]
+ 414:./src/ethernetif.c ****   DmaTxDesc = heth.TxDesc;
+ 661              		.loc 1 414 13
+ 662 034a 454B     		ldr	r3, .L31
+ 663 034c DB6A     		ldr	r3, [r3, #44]
+ 664 034e BB61     		str	r3, [r7, #24]
+ 415:./src/ethernetif.c ****   bufferoffset = 0;
+ 665              		.loc 1 415 16
+ 666 0350 0023     		movs	r3, #0
+ 667 0352 3B61     		str	r3, [r7, #16]
+ 416:./src/ethernetif.c ****   
+ 417:./src/ethernetif.c ****   /* copy frame from pbufs to driver buffers */
+ 418:./src/ethernetif.c ****   for(q = p; q != NULL; q = q->next)
+ 668              		.loc 1 418 9
+ 669 0354 3B68     		ldr	r3, [r7]
+ 670 0356 3B62     		str	r3, [r7, #32]
+ 671              		.loc 1 418 3
+ 672 0358 5AE0     		b	.L22
+ 673              	.L28:
+ 419:./src/ethernetif.c ****     {
+ 420:./src/ethernetif.c ****       /* Is this buffer available? If not, goto error */
+ 421:./src/ethernetif.c ****       if((DmaTxDesc->Status & ETH_DMATXDESC_OWN) != (uint32_t)RESET)
+ 674              		.loc 1 421 20
+ 675 035a BB69     		ldr	r3, [r7, #24]
+ 676 035c 1B68     		ldr	r3, [r3]
+ 677              		.loc 1 421 9
+ 678 035e 002B     		cmp	r3, #0
+ 679 0360 03DA     		bge	.L23
+ 422:./src/ethernetif.c ****       {
+ 423:./src/ethernetif.c ****         errval = ERR_USE;
+ 680              		.loc 1 423 16
+ 681 0362 F823     		movs	r3, #248
+ 682 0364 87F82730 		strb	r3, [r7, #39]
+ 424:./src/ethernetif.c ****         goto error;
+ 683              		.loc 1 424 9
+ 684 0368 5CE0     		b	.L24
+ 685              	.L23:
+ 425:./src/ethernetif.c ****       }
+ 426:./src/ethernetif.c ****     
+ 427:./src/ethernetif.c ****       /* Get bytes in current lwIP buffer */
+ 428:./src/ethernetif.c ****       byteslefttocopy = q->len;
+ 686              		.loc 1 428 26
+ 687 036a 3B6A     		ldr	r3, [r7, #32]
+ 688 036c 5B89     		ldrh	r3, [r3, #10]
+ 689              		.loc 1 428 23
+ 690 036e FB60     		str	r3, [r7, #12]
+ 429:./src/ethernetif.c ****       payloadoffset = 0;
+ 691              		.loc 1 429 21
+ 692 0370 0023     		movs	r3, #0
+ 693 0372 BB60     		str	r3, [r7, #8]
+ 430:./src/ethernetif.c ****     
+ 431:./src/ethernetif.c ****       /* Check if the length of data to copy is bigger than Tx buffer size*/
+ 432:./src/ethernetif.c ****       while( (byteslefttocopy + bufferoffset) > ETH_TX_BUF_SIZE )
+ 694              		.loc 1 432 12
+ 695 0374 2FE0     		b	.L25
+ 696              	.L27:
+ 433:./src/ethernetif.c ****       {
+ 434:./src/ethernetif.c ****         /* Copy data to Tx buffer*/
+ 435:./src/ethernetif.c ****         memcpy( (uint8_t*)((uint8_t*)buffer + bufferoffset), (uint8_t*)((uint8_t*)q->payload + payl
+ 697              		.loc 1 435 17
+ 698 0376 FA69     		ldr	r2, [r7, #28]
+ 699 0378 3B69     		ldr	r3, [r7, #16]
+ 700 037a D018     		adds	r0, r2, r3
+ 701              		.loc 1 435 84
+ 702 037c 3B6A     		ldr	r3, [r7, #32]
+ 703 037e 5A68     		ldr	r2, [r3, #4]
+ 704              		.loc 1 435 9
+ 705 0380 BB68     		ldr	r3, [r7, #8]
+ 706 0382 D118     		adds	r1, r2, r3
+ 707              		.loc 1 435 129
+ 708 0384 3A69     		ldr	r2, [r7, #16]
+ 709 0386 40F2F453 		movw	r3, #1524
+ 710 038a 9B1A     		subs	r3, r3, r2
+ 711              		.loc 1 435 9
+ 712 038c 1A46     		mov	r2, r3
+ 713 038e FFF7FEFF 		bl	memcpy
+ 436:./src/ethernetif.c ****       
+ 437:./src/ethernetif.c ****         /* Point to next descriptor */
+ 438:./src/ethernetif.c ****         DmaTxDesc = (ETH_DMADescTypeDef *)(DmaTxDesc->Buffer2NextDescAddr);
+ 714              		.loc 1 438 53
+ 715 0392 BB69     		ldr	r3, [r7, #24]
+ 716 0394 DB68     		ldr	r3, [r3, #12]
+ 717              		.loc 1 438 19
+ 718 0396 BB61     		str	r3, [r7, #24]
+ 439:./src/ethernetif.c ****       
+ 440:./src/ethernetif.c ****         /* Check if the buffer is available */
+ 441:./src/ethernetif.c ****         if((DmaTxDesc->Status & ETH_DMATXDESC_OWN) != (uint32_t)RESET)
+ 719              		.loc 1 441 22
+ 720 0398 BB69     		ldr	r3, [r7, #24]
+ 721 039a 1B68     		ldr	r3, [r3]
+ 722              		.loc 1 441 11
+ 723 039c 002B     		cmp	r3, #0
+ 724 039e 03DA     		bge	.L26
+ 442:./src/ethernetif.c ****         {
+ 443:./src/ethernetif.c ****           errval = ERR_USE;
+ 725              		.loc 1 443 18
+ 726 03a0 F823     		movs	r3, #248
+ 727 03a2 87F82730 		strb	r3, [r7, #39]
+ 444:./src/ethernetif.c ****           goto error;
+ 728              		.loc 1 444 11
+ 729 03a6 3DE0     		b	.L24
+ 730              	.L26:
+ 445:./src/ethernetif.c ****         }
+ 446:./src/ethernetif.c ****       
+ 447:./src/ethernetif.c ****         buffer = (uint8_t *)(DmaTxDesc->Buffer1Addr);
+ 731              		.loc 1 447 39
+ 732 03a8 BB69     		ldr	r3, [r7, #24]
+ 733 03aa 9B68     		ldr	r3, [r3, #8]
+ 734              		.loc 1 447 16
+ 735 03ac FB61     		str	r3, [r7, #28]
+ 448:./src/ethernetif.c ****       
+ 449:./src/ethernetif.c ****         byteslefttocopy = byteslefttocopy - (ETH_TX_BUF_SIZE - bufferoffset);
+ 736              		.loc 1 449 43
+ 737 03ae 3A69     		ldr	r2, [r7, #16]
+ 738 03b0 FB68     		ldr	r3, [r7, #12]
+ 739 03b2 1344     		add	r3, r3, r2
+ 740              		.loc 1 449 25
+ 741 03b4 A3F2F453 		subw	r3, r3, #1524
+ 742 03b8 FB60     		str	r3, [r7, #12]
+ 450:./src/ethernetif.c ****         payloadoffset = payloadoffset + (ETH_TX_BUF_SIZE - bufferoffset);
+ 743              		.loc 1 450 39
+ 744 03ba BA68     		ldr	r2, [r7, #8]
+ 745 03bc 3B69     		ldr	r3, [r7, #16]
+ 746 03be D31A     		subs	r3, r2, r3
+ 747              		.loc 1 450 23
+ 748 03c0 03F2F453 		addw	r3, r3, #1524
+ 749 03c4 BB60     		str	r3, [r7, #8]
+ 451:./src/ethernetif.c ****         framelength = framelength + (ETH_TX_BUF_SIZE - bufferoffset);
+ 750              		.loc 1 451 35
+ 751 03c6 7A69     		ldr	r2, [r7, #20]
+ 752 03c8 3B69     		ldr	r3, [r7, #16]
+ 753 03ca D31A     		subs	r3, r2, r3
+ 754              		.loc 1 451 21
+ 755 03cc 03F2F453 		addw	r3, r3, #1524
+ 756 03d0 7B61     		str	r3, [r7, #20]
+ 452:./src/ethernetif.c ****         bufferoffset = 0;
+ 757              		.loc 1 452 22
+ 758 03d2 0023     		movs	r3, #0
+ 759 03d4 3B61     		str	r3, [r7, #16]
+ 760              	.L25:
+ 432:./src/ethernetif.c ****       {
+ 761              		.loc 1 432 31
+ 762 03d6 FA68     		ldr	r2, [r7, #12]
+ 763 03d8 3B69     		ldr	r3, [r7, #16]
+ 764 03da 1344     		add	r3, r3, r2
+ 432:./src/ethernetif.c ****       {
+ 765              		.loc 1 432 12
+ 766 03dc 40F2F452 		movw	r2, #1524
+ 767 03e0 9342     		cmp	r3, r2
+ 768 03e2 C8D8     		bhi	.L27
+ 453:./src/ethernetif.c ****       }
+ 454:./src/ethernetif.c ****     
+ 455:./src/ethernetif.c ****       /* Copy the remaining bytes */
+ 456:./src/ethernetif.c ****       memcpy( (uint8_t*)((uint8_t*)buffer + bufferoffset), (uint8_t*)((uint8_t*)q->payload + payloa
+ 769              		.loc 1 456 15 discriminator 2
+ 770 03e4 FA69     		ldr	r2, [r7, #28]
+ 771 03e6 3B69     		ldr	r3, [r7, #16]
+ 772 03e8 D018     		adds	r0, r2, r3
+ 773              		.loc 1 456 82 discriminator 2
+ 774 03ea 3B6A     		ldr	r3, [r7, #32]
+ 775 03ec 5A68     		ldr	r2, [r3, #4]
+ 776              		.loc 1 456 7 discriminator 2
+ 777 03ee BB68     		ldr	r3, [r7, #8]
+ 778 03f0 1344     		add	r3, r3, r2
+ 779 03f2 FA68     		ldr	r2, [r7, #12]
+ 780 03f4 1946     		mov	r1, r3
+ 781 03f6 FFF7FEFF 		bl	memcpy
+ 457:./src/ethernetif.c ****       bufferoffset = bufferoffset + byteslefttocopy;
+ 782              		.loc 1 457 20 discriminator 2
+ 783 03fa 3A69     		ldr	r2, [r7, #16]
+ 784 03fc FB68     		ldr	r3, [r7, #12]
+ 785 03fe 1344     		add	r3, r3, r2
+ 786 0400 3B61     		str	r3, [r7, #16]
+ 458:./src/ethernetif.c ****       framelength = framelength + byteslefttocopy;
+ 787              		.loc 1 458 19 discriminator 2
+ 788 0402 7A69     		ldr	r2, [r7, #20]
+ 789 0404 FB68     		ldr	r3, [r7, #12]
+ 790 0406 1344     		add	r3, r3, r2
+ 791 0408 7B61     		str	r3, [r7, #20]
+ 418:./src/ethernetif.c ****     {
+ 792              		.loc 1 418 27 discriminator 2
+ 793 040a 3B6A     		ldr	r3, [r7, #32]
+ 794 040c 1B68     		ldr	r3, [r3]
+ 795 040e 3B62     		str	r3, [r7, #32]
+ 796              	.L22:
+ 418:./src/ethernetif.c ****     {
+ 797              		.loc 1 418 3 discriminator 1
+ 798 0410 3B6A     		ldr	r3, [r7, #32]
+ 799 0412 002B     		cmp	r3, #0
+ 800 0414 A1D1     		bne	.L28
+ 459:./src/ethernetif.c ****     }
+ 460:./src/ethernetif.c ****   
+ 461:./src/ethernetif.c ****   /* Prepare transmit descriptors to give to DMA */ 
+ 462:./src/ethernetif.c ****   HAL_ETH_TransmitFrame(&heth, framelength);
+ 801              		.loc 1 462 3
+ 802 0416 7969     		ldr	r1, [r7, #20]
+ 803 0418 1148     		ldr	r0, .L31
+ 804 041a FFF7FEFF 		bl	HAL_ETH_TransmitFrame
+ 463:./src/ethernetif.c ****   
+ 464:./src/ethernetif.c ****   errval = ERR_OK;
+ 805              		.loc 1 464 10
+ 806 041e 0023     		movs	r3, #0
+ 807 0420 87F82730 		strb	r3, [r7, #39]
+ 808              	.L24:
+ 465:./src/ethernetif.c ****   
+ 466:./src/ethernetif.c **** error:
+ 467:./src/ethernetif.c ****   
+ 468:./src/ethernetif.c ****   /* When Transmit Underflow flag is set, clear it and issue a Transmit Poll Demand to resume trans
+ 469:./src/ethernetif.c ****   if ((heth.Instance->DMASR & ETH_DMASR_TUS) != (uint32_t)RESET)
+ 809              		.loc 1 469 12
+ 810 0424 0E4B     		ldr	r3, .L31
+ 811 0426 1B68     		ldr	r3, [r3]
+ 812              		.loc 1 469 21
+ 813 0428 03F58053 		add	r3, r3, #4096
+ 814 042c 5B69     		ldr	r3, [r3, #20]
+ 815              		.loc 1 469 29
+ 816 042e 03F02003 		and	r3, r3, #32
+ 817              		.loc 1 469 6
+ 818 0432 002B     		cmp	r3, #0
+ 819 0434 0DD0     		beq	.L29
+ 470:./src/ethernetif.c ****   {
+ 471:./src/ethernetif.c ****     /* Clear TUS ETHERNET DMA flag */
+ 472:./src/ethernetif.c ****     heth.Instance->DMASR = ETH_DMASR_TUS;
+ 820              		.loc 1 472 9
+ 821 0436 0A4B     		ldr	r3, .L31
+ 822 0438 1B68     		ldr	r3, [r3]
+ 823              		.loc 1 472 26
+ 824 043a 03F58053 		add	r3, r3, #4096
+ 825 043e 1A46     		mov	r2, r3
+ 826 0440 2023     		movs	r3, #32
+ 827 0442 5361     		str	r3, [r2, #20]
+ 473:./src/ethernetif.c **** 
+ 474:./src/ethernetif.c ****     /* Resume DMA transmission*/
+ 475:./src/ethernetif.c ****     heth.Instance->DMATPDR = 0;
+ 828              		.loc 1 475 9
+ 829 0444 064B     		ldr	r3, .L31
+ 830 0446 1B68     		ldr	r3, [r3]
+ 831              		.loc 1 475 28
+ 832 0448 03F58053 		add	r3, r3, #4096
+ 833 044c 1A46     		mov	r2, r3
+ 834 044e 0023     		movs	r3, #0
+ 835 0450 5360     		str	r3, [r2, #4]
+ 836              	.L29:
+ 476:./src/ethernetif.c ****   }
+ 477:./src/ethernetif.c ****   return errval;
+ 837              		.loc 1 477 10
+ 838 0452 97F92730 		ldrsb	r3, [r7, #39]
+ 478:./src/ethernetif.c **** }
+ 839              		.loc 1 478 1
+ 840 0456 1846     		mov	r0, r3
+ 841 0458 2837     		adds	r7, r7, #40
+ 842              	.LCFI25:
+ 843              		.cfi_def_cfa_offset 8
+ 844 045a BD46     		mov	sp, r7
+ 845              	.LCFI26:
+ 846              		.cfi_def_cfa_register 13
+ 847              		@ sp needed
+ 848 045c 80BD     		pop	{r7, pc}
+ 849              	.L32:
+ 850 045e 00BF     		.align	2
+ 851              	.L31:
+ 852 0460 00000000 		.word	heth
+ 853              		.cfi_endproc
+ 854              	.LFE174:
+ 856              		.align	1
+ 857              		.syntax unified
+ 858              		.thumb
+ 859              		.thumb_func
+ 860              		.fpu fpv5-d16
+ 862              	low_level_input:
+ 863              	.LFB175:
+ 479:./src/ethernetif.c **** 
+ 480:./src/ethernetif.c **** /**
+ 481:./src/ethernetif.c ****  * Should allocate a pbuf and transfer the bytes of the incoming
+ 482:./src/ethernetif.c ****  * packet from the interface into the pbuf.
+ 483:./src/ethernetif.c ****  *
+ 484:./src/ethernetif.c ****  * @param netif the lwip network interface structure for this ethernetif
+ 485:./src/ethernetif.c ****  * @return a pbuf filled with the received packet (including MAC header)
+ 486:./src/ethernetif.c ****  *         NULL on memory error
+ 487:./src/ethernetif.c ****    */
+ 488:./src/ethernetif.c **** static struct pbuf * low_level_input(struct netif *netif)
+ 489:./src/ethernetif.c **** {
+ 864              		.loc 1 489 1
+ 865              		.cfi_startproc
+ 866              		@ args = 0, pretend = 0, frame = 48
+ 867              		@ frame_needed = 1, uses_anonymous_args = 0
+ 868 0464 80B5     		push	{r7, lr}
+ 869              	.LCFI27:
+ 870              		.cfi_def_cfa_offset 8
+ 871              		.cfi_offset 7, -8
+ 872              		.cfi_offset 14, -4
+ 873 0466 8CB0     		sub	sp, sp, #48
+ 874              	.LCFI28:
+ 875              		.cfi_def_cfa_offset 56
+ 876 0468 00AF     		add	r7, sp, #0
+ 877              	.LCFI29:
+ 878              		.cfi_def_cfa_register 7
+ 879 046a 7860     		str	r0, [r7, #4]
+ 490:./src/ethernetif.c ****   struct pbuf *p = NULL;
+ 880              		.loc 1 490 16
+ 881 046c 0023     		movs	r3, #0
+ 882 046e FB62     		str	r3, [r7, #44]
+ 491:./src/ethernetif.c ****   struct pbuf *q = NULL;
+ 883              		.loc 1 491 16
+ 884 0470 0023     		movs	r3, #0
+ 885 0472 BB62     		str	r3, [r7, #40]
+ 492:./src/ethernetif.c ****   uint16_t len = 0;
+ 886              		.loc 1 492 12
+ 887 0474 0023     		movs	r3, #0
+ 888 0476 FB81     		strh	r3, [r7, #14]	@ movhi
+ 493:./src/ethernetif.c ****   uint8_t *buffer;
+ 494:./src/ethernetif.c ****   __IO ETH_DMADescTypeDef *dmarxdesc;
+ 495:./src/ethernetif.c ****   uint32_t bufferoffset = 0;
+ 889              		.loc 1 495 12
+ 890 0478 0023     		movs	r3, #0
+ 891 047a FB61     		str	r3, [r7, #28]
+ 496:./src/ethernetif.c ****   uint32_t payloadoffset = 0;
+ 892              		.loc 1 496 12
+ 893 047c 0023     		movs	r3, #0
+ 894 047e BB61     		str	r3, [r7, #24]
+ 497:./src/ethernetif.c ****   uint32_t byteslefttocopy = 0;
+ 895              		.loc 1 497 12
+ 896 0480 0023     		movs	r3, #0
+ 897 0482 7B61     		str	r3, [r7, #20]
+ 498:./src/ethernetif.c ****   uint32_t i=0;
+ 898              		.loc 1 498 12
+ 899 0484 0023     		movs	r3, #0
+ 900 0486 3B61     		str	r3, [r7, #16]
+ 499:./src/ethernetif.c ****   
+ 500:./src/ethernetif.c **** 
+ 501:./src/ethernetif.c ****   /* get received frame */
+ 502:./src/ethernetif.c ****   if (HAL_ETH_GetReceivedFrame_IT(&heth) != HAL_OK)
+ 901              		.loc 1 502 7
+ 902 0488 4E48     		ldr	r0, .L45
+ 903 048a FFF7FEFF 		bl	HAL_ETH_GetReceivedFrame_IT
+ 904 048e 0346     		mov	r3, r0
+ 905              		.loc 1 502 6
+ 906 0490 002B     		cmp	r3, #0
+ 907 0492 01D0     		beq	.L34
+ 503:./src/ethernetif.c ****     return NULL;
+ 908              		.loc 1 503 12
+ 909 0494 0023     		movs	r3, #0
+ 910 0496 91E0     		b	.L35
+ 911              	.L34:
+ 504:./src/ethernetif.c ****   
+ 505:./src/ethernetif.c ****   /* Obtain the size of the packet and put it into the "len" variable. */
+ 506:./src/ethernetif.c ****   len = heth.RxFrameInfos.length;
+ 912              		.loc 1 506 26
+ 913 0498 4A4B     		ldr	r3, .L45
+ 914 049a DB6B     		ldr	r3, [r3, #60]
+ 915              		.loc 1 506 7
+ 916 049c FB81     		strh	r3, [r7, #14]	@ movhi
+ 507:./src/ethernetif.c ****   buffer = (uint8_t *)heth.RxFrameInfos.buffer;
+ 917              		.loc 1 507 40
+ 918 049e 494B     		ldr	r3, .L45
+ 919 04a0 1B6C     		ldr	r3, [r3, #64]
+ 920              		.loc 1 507 10
+ 921 04a2 7B62     		str	r3, [r7, #36]
+ 508:./src/ethernetif.c ****   
+ 509:./src/ethernetif.c ****   if (len > 0)
+ 922              		.loc 1 509 6
+ 923 04a4 FB89     		ldrh	r3, [r7, #14]
+ 924 04a6 002B     		cmp	r3, #0
+ 925 04a8 07D0     		beq	.L36
+ 510:./src/ethernetif.c ****   {
+ 511:./src/ethernetif.c ****     /* We allocate a pbuf chain of pbufs from the Lwip buffer pool */
+ 512:./src/ethernetif.c ****     p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
+ 926              		.loc 1 512 9
+ 927 04aa FB89     		ldrh	r3, [r7, #14]
+ 928 04ac 4FF4C172 		mov	r2, #386
+ 929 04b0 1946     		mov	r1, r3
+ 930 04b2 0020     		movs	r0, #0
+ 931 04b4 FFF7FEFF 		bl	pbuf_alloc
+ 932 04b8 F862     		str	r0, [r7, #44]
+ 933              	.L36:
+ 513:./src/ethernetif.c ****   }
+ 514:./src/ethernetif.c ****   
+ 515:./src/ethernetif.c ****   if (p != NULL)
+ 934              		.loc 1 515 6
+ 935 04ba FB6A     		ldr	r3, [r7, #44]
+ 936 04bc 002B     		cmp	r3, #0
+ 937 04be 4BD0     		beq	.L37
+ 516:./src/ethernetif.c ****   {
+ 517:./src/ethernetif.c ****     dmarxdesc = heth.RxFrameInfos.FSRxDesc;
+ 938              		.loc 1 517 15
+ 939 04c0 404B     		ldr	r3, .L45
+ 940 04c2 1B6B     		ldr	r3, [r3, #48]
+ 941 04c4 3B62     		str	r3, [r7, #32]
+ 518:./src/ethernetif.c ****     bufferoffset = 0;
+ 942              		.loc 1 518 18
+ 943 04c6 0023     		movs	r3, #0
+ 944 04c8 FB61     		str	r3, [r7, #28]
+ 519:./src/ethernetif.c ****     for(q = p; q != NULL; q = q->next)
+ 945              		.loc 1 519 11
+ 946 04ca FB6A     		ldr	r3, [r7, #44]
+ 947 04cc BB62     		str	r3, [r7, #40]
+ 948              		.loc 1 519 5
+ 949 04ce 40E0     		b	.L38
+ 950              	.L41:
+ 520:./src/ethernetif.c ****     {
+ 521:./src/ethernetif.c ****       byteslefttocopy = q->len;
+ 951              		.loc 1 521 26
+ 952 04d0 BB6A     		ldr	r3, [r7, #40]
+ 953 04d2 5B89     		ldrh	r3, [r3, #10]
+ 954              		.loc 1 521 23
+ 955 04d4 7B61     		str	r3, [r7, #20]
+ 522:./src/ethernetif.c ****       payloadoffset = 0;
+ 956              		.loc 1 522 21
+ 957 04d6 0023     		movs	r3, #0
+ 958 04d8 BB61     		str	r3, [r7, #24]
+ 523:./src/ethernetif.c ****       
+ 524:./src/ethernetif.c ****       /* Check if the length of bytes to copy in current pbuf is bigger than Rx buffer size*/
+ 525:./src/ethernetif.c ****       while( (byteslefttocopy + bufferoffset) > ETH_RX_BUF_SIZE )
+ 959              		.loc 1 525 12
+ 960 04da 21E0     		b	.L39
+ 961              	.L40:
+ 526:./src/ethernetif.c ****       {
+ 527:./src/ethernetif.c ****         /* Copy data to pbuf */
+ 528:./src/ethernetif.c ****         memcpy( (uint8_t*)((uint8_t*)q->payload + payloadoffset), (uint8_t*)((uint8_t*)buffer + buf
+ 962              		.loc 1 528 39
+ 963 04dc BB6A     		ldr	r3, [r7, #40]
+ 964 04de 5A68     		ldr	r2, [r3, #4]
+ 965              		.loc 1 528 9
+ 966 04e0 BB69     		ldr	r3, [r7, #24]
+ 967 04e2 D018     		adds	r0, r2, r3
+ 968              		.loc 1 528 67
+ 969 04e4 7A6A     		ldr	r2, [r7, #36]
+ 970 04e6 FB69     		ldr	r3, [r7, #28]
+ 971 04e8 D118     		adds	r1, r2, r3
+ 972              		.loc 1 528 129
+ 973 04ea FA69     		ldr	r2, [r7, #28]
+ 974 04ec 40F2F453 		movw	r3, #1524
+ 975 04f0 9B1A     		subs	r3, r3, r2
+ 976              		.loc 1 528 9
+ 977 04f2 1A46     		mov	r2, r3
+ 978 04f4 FFF7FEFF 		bl	memcpy
+ 529:./src/ethernetif.c ****         
+ 530:./src/ethernetif.c ****         /* Point to next descriptor */
+ 531:./src/ethernetif.c ****         dmarxdesc = (ETH_DMADescTypeDef *)(dmarxdesc->Buffer2NextDescAddr);
+ 979              		.loc 1 531 53
+ 980 04f8 3B6A     		ldr	r3, [r7, #32]
+ 981 04fa DB68     		ldr	r3, [r3, #12]
+ 982              		.loc 1 531 19
+ 983 04fc 3B62     		str	r3, [r7, #32]
+ 532:./src/ethernetif.c ****         buffer = (uint8_t *)(dmarxdesc->Buffer1Addr);
+ 984              		.loc 1 532 39
+ 985 04fe 3B6A     		ldr	r3, [r7, #32]
+ 986 0500 9B68     		ldr	r3, [r3, #8]
+ 987              		.loc 1 532 16
+ 988 0502 7B62     		str	r3, [r7, #36]
+ 533:./src/ethernetif.c ****         
+ 534:./src/ethernetif.c ****         byteslefttocopy = byteslefttocopy - (ETH_RX_BUF_SIZE - bufferoffset);
+ 989              		.loc 1 534 43
+ 990 0504 FA69     		ldr	r2, [r7, #28]
+ 991 0506 7B69     		ldr	r3, [r7, #20]
+ 992 0508 1344     		add	r3, r3, r2
+ 993              		.loc 1 534 25
+ 994 050a A3F2F453 		subw	r3, r3, #1524
+ 995 050e 7B61     		str	r3, [r7, #20]
+ 535:./src/ethernetif.c ****         payloadoffset = payloadoffset + (ETH_RX_BUF_SIZE - bufferoffset);
+ 996              		.loc 1 535 39
+ 997 0510 BA69     		ldr	r2, [r7, #24]
+ 998 0512 FB69     		ldr	r3, [r7, #28]
+ 999 0514 D31A     		subs	r3, r2, r3
+ 1000              		.loc 1 535 23
+ 1001 0516 03F2F453 		addw	r3, r3, #1524
+ 1002 051a BB61     		str	r3, [r7, #24]
+ 536:./src/ethernetif.c ****         bufferoffset = 0;
+ 1003              		.loc 1 536 22
+ 1004 051c 0023     		movs	r3, #0
+ 1005 051e FB61     		str	r3, [r7, #28]
+ 1006              	.L39:
+ 525:./src/ethernetif.c ****       {
+ 1007              		.loc 1 525 31
+ 1008 0520 7A69     		ldr	r2, [r7, #20]
+ 1009 0522 FB69     		ldr	r3, [r7, #28]
+ 1010 0524 1344     		add	r3, r3, r2
+ 525:./src/ethernetif.c ****       {
+ 1011              		.loc 1 525 12
+ 1012 0526 40F2F452 		movw	r2, #1524
+ 1013 052a 9342     		cmp	r3, r2
+ 1014 052c D6D8     		bhi	.L40
+ 537:./src/ethernetif.c ****       }
+ 538:./src/ethernetif.c ****       /* Copy remaining data in pbuf */
+ 539:./src/ethernetif.c ****       memcpy( (uint8_t*)((uint8_t*)q->payload + payloadoffset), (uint8_t*)((uint8_t*)buffer + buffe
+ 1015              		.loc 1 539 37 discriminator 2
+ 1016 052e BB6A     		ldr	r3, [r7, #40]
+ 1017 0530 5A68     		ldr	r2, [r3, #4]
+ 1018              		.loc 1 539 7 discriminator 2
+ 1019 0532 BB69     		ldr	r3, [r7, #24]
+ 1020 0534 D018     		adds	r0, r2, r3
+ 1021              		.loc 1 539 65 discriminator 2
+ 1022 0536 7A6A     		ldr	r2, [r7, #36]
+ 1023 0538 FB69     		ldr	r3, [r7, #28]
+ 1024 053a 1344     		add	r3, r3, r2
+ 1025              		.loc 1 539 7 discriminator 2
+ 1026 053c 7A69     		ldr	r2, [r7, #20]
+ 1027 053e 1946     		mov	r1, r3
+ 1028 0540 FFF7FEFF 		bl	memcpy
+ 540:./src/ethernetif.c ****       bufferoffset = bufferoffset + byteslefttocopy;
+ 1029              		.loc 1 540 20 discriminator 2
+ 1030 0544 FA69     		ldr	r2, [r7, #28]
+ 1031 0546 7B69     		ldr	r3, [r7, #20]
+ 1032 0548 1344     		add	r3, r3, r2
+ 1033 054a FB61     		str	r3, [r7, #28]
+ 519:./src/ethernetif.c ****     {
+ 1034              		.loc 1 519 29 discriminator 2
+ 1035 054c BB6A     		ldr	r3, [r7, #40]
+ 1036 054e 1B68     		ldr	r3, [r3]
+ 1037 0550 BB62     		str	r3, [r7, #40]
+ 1038              	.L38:
+ 519:./src/ethernetif.c ****     {
+ 1039              		.loc 1 519 5 discriminator 1
+ 1040 0552 BB6A     		ldr	r3, [r7, #40]
+ 1041 0554 002B     		cmp	r3, #0
+ 1042 0556 BBD1     		bne	.L41
+ 1043              	.L37:
+ 541:./src/ethernetif.c ****     }
+ 542:./src/ethernetif.c ****   }  
+ 543:./src/ethernetif.c ****   
+ 544:./src/ethernetif.c ****     /* Release descriptors to DMA */
+ 545:./src/ethernetif.c ****     /* Point to first descriptor */
+ 546:./src/ethernetif.c ****     dmarxdesc = heth.RxFrameInfos.FSRxDesc;
+ 1044              		.loc 1 546 15
+ 1045 0558 1A4B     		ldr	r3, .L45
+ 1046 055a 1B6B     		ldr	r3, [r3, #48]
+ 1047 055c 3B62     		str	r3, [r7, #32]
+ 547:./src/ethernetif.c ****     /* Set Own bit in Rx descriptors: gives the buffers back to DMA */
+ 548:./src/ethernetif.c ****     for (i=0; i< heth.RxFrameInfos.SegCount; i++)
+ 1048              		.loc 1 548 11
+ 1049 055e 0023     		movs	r3, #0
+ 1050 0560 3B61     		str	r3, [r7, #16]
+ 1051              		.loc 1 548 5
+ 1052 0562 0BE0     		b	.L42
+ 1053              	.L43:
+ 549:./src/ethernetif.c ****     {  
+ 550:./src/ethernetif.c ****       dmarxdesc->Status |= ETH_DMARXDESC_OWN;
+ 1054              		.loc 1 550 25 discriminator 3
+ 1055 0564 3B6A     		ldr	r3, [r7, #32]
+ 1056 0566 1B68     		ldr	r3, [r3]
+ 1057 0568 43F00042 		orr	r2, r3, #-2147483648
+ 1058 056c 3B6A     		ldr	r3, [r7, #32]
+ 1059 056e 1A60     		str	r2, [r3]
+ 551:./src/ethernetif.c ****       dmarxdesc = (ETH_DMADescTypeDef *)(dmarxdesc->Buffer2NextDescAddr);
+ 1060              		.loc 1 551 51 discriminator 3
+ 1061 0570 3B6A     		ldr	r3, [r7, #32]
+ 1062 0572 DB68     		ldr	r3, [r3, #12]
+ 1063              		.loc 1 551 17 discriminator 3
+ 1064 0574 3B62     		str	r3, [r7, #32]
+ 548:./src/ethernetif.c ****     {  
+ 1065              		.loc 1 548 47 discriminator 3
+ 1066 0576 3B69     		ldr	r3, [r7, #16]
+ 1067 0578 0133     		adds	r3, r3, #1
+ 1068 057a 3B61     		str	r3, [r7, #16]
+ 1069              	.L42:
+ 548:./src/ethernetif.c ****     {  
+ 1070              		.loc 1 548 35 discriminator 1
+ 1071 057c 114B     		ldr	r3, .L45
+ 1072 057e 9B6B     		ldr	r3, [r3, #56]
+ 548:./src/ethernetif.c ****     {  
+ 1073              		.loc 1 548 5 discriminator 1
+ 1074 0580 3A69     		ldr	r2, [r7, #16]
+ 1075 0582 9A42     		cmp	r2, r3
+ 1076 0584 EED3     		bcc	.L43
+ 552:./src/ethernetif.c ****     }
+ 553:./src/ethernetif.c ****     
+ 554:./src/ethernetif.c ****     /* Clear Segment_Count */
+ 555:./src/ethernetif.c ****     heth.RxFrameInfos.SegCount =0;  
+ 1077              		.loc 1 555 32
+ 1078 0586 0F4B     		ldr	r3, .L45
+ 1079 0588 0022     		movs	r2, #0
+ 1080 058a 9A63     		str	r2, [r3, #56]
+ 556:./src/ethernetif.c ****   
+ 557:./src/ethernetif.c ****   /* When Rx Buffer unavailable flag is set: clear it and resume reception */
+ 558:./src/ethernetif.c ****   if ((heth.Instance->DMASR & ETH_DMASR_RBUS) != (uint32_t)RESET)  
+ 1081              		.loc 1 558 12
+ 1082 058c 0D4B     		ldr	r3, .L45
+ 1083 058e 1B68     		ldr	r3, [r3]
+ 1084              		.loc 1 558 21
+ 1085 0590 03F58053 		add	r3, r3, #4096
+ 1086 0594 5B69     		ldr	r3, [r3, #20]
+ 1087              		.loc 1 558 29
+ 1088 0596 03F08003 		and	r3, r3, #128
+ 1089              		.loc 1 558 6
+ 1090 059a 002B     		cmp	r3, #0
+ 1091 059c 0DD0     		beq	.L44
+ 559:./src/ethernetif.c ****   {
+ 560:./src/ethernetif.c ****     /* Clear RBUS ETHERNET DMA flag */
+ 561:./src/ethernetif.c ****     heth.Instance->DMASR = ETH_DMASR_RBUS;
+ 1092              		.loc 1 561 9
+ 1093 059e 094B     		ldr	r3, .L45
+ 1094 05a0 1B68     		ldr	r3, [r3]
+ 1095              		.loc 1 561 26
+ 1096 05a2 03F58053 		add	r3, r3, #4096
+ 1097 05a6 1A46     		mov	r2, r3
+ 1098 05a8 8023     		movs	r3, #128
+ 1099 05aa 5361     		str	r3, [r2, #20]
+ 562:./src/ethernetif.c ****     /* Resume DMA reception */
+ 563:./src/ethernetif.c ****     heth.Instance->DMARPDR = 0;
+ 1100              		.loc 1 563 9
+ 1101 05ac 054B     		ldr	r3, .L45
+ 1102 05ae 1B68     		ldr	r3, [r3]
+ 1103              		.loc 1 563 28
+ 1104 05b0 03F58053 		add	r3, r3, #4096
+ 1105 05b4 1A46     		mov	r2, r3
+ 1106 05b6 0023     		movs	r3, #0
+ 1107 05b8 9360     		str	r3, [r2, #8]
+ 1108              	.L44:
+ 564:./src/ethernetif.c ****   }
+ 565:./src/ethernetif.c ****   return p;
+ 1109              		.loc 1 565 10
+ 1110 05ba FB6A     		ldr	r3, [r7, #44]
+ 1111              	.L35:
+ 566:./src/ethernetif.c **** }
+ 1112              		.loc 1 566 1
+ 1113 05bc 1846     		mov	r0, r3
+ 1114 05be 3037     		adds	r7, r7, #48
+ 1115              	.LCFI30:
+ 1116              		.cfi_def_cfa_offset 8
+ 1117 05c0 BD46     		mov	sp, r7
+ 1118              	.LCFI31:
+ 1119              		.cfi_def_cfa_register 13
+ 1120              		@ sp needed
+ 1121 05c2 80BD     		pop	{r7, pc}
+ 1122              	.L46:
+ 1123              		.align	2
+ 1124              	.L45:
+ 1125 05c4 00000000 		.word	heth
+ 1126              		.cfi_endproc
+ 1127              	.LFE175:
+ 1129              		.align	1
+ 1130              		.global	ethernetif_input
+ 1131              		.syntax unified
+ 1132              		.thumb
+ 1133              		.thumb_func
+ 1134              		.fpu fpv5-d16
+ 1136              	ethernetif_input:
+ 1137              	.LFB176:
+ 567:./src/ethernetif.c **** 
+ 568:./src/ethernetif.c **** /**
+ 569:./src/ethernetif.c ****  * This function should be called when a packet is ready to be read
+ 570:./src/ethernetif.c ****  * from the interface. It uses the function low_level_input() that
+ 571:./src/ethernetif.c ****  * should handle the actual reception of bytes from the network
+ 572:./src/ethernetif.c ****  * interface. Then the type of the received packet is determined and
+ 573:./src/ethernetif.c ****  * the appropriate input function is called.
+ 574:./src/ethernetif.c ****  *
+ 575:./src/ethernetif.c ****  * @param netif the lwip network interface structure for this ethernetif
+ 576:./src/ethernetif.c ****  */
+ 577:./src/ethernetif.c **** void ethernetif_input( void /*const*/ * argument ) 
+ 578:./src/ethernetif.c **** {
+ 1138              		.loc 1 578 1
+ 1139              		.cfi_startproc
+ 1140              		@ args = 0, pretend = 0, frame = 16
+ 1141              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1142 05c8 80B5     		push	{r7, lr}
+ 1143              	.LCFI32:
+ 1144              		.cfi_def_cfa_offset 8
+ 1145              		.cfi_offset 7, -8
+ 1146              		.cfi_offset 14, -4
+ 1147 05ca 84B0     		sub	sp, sp, #16
+ 1148              	.LCFI33:
+ 1149              		.cfi_def_cfa_offset 24
+ 1150 05cc 00AF     		add	r7, sp, #0
+ 1151              	.LCFI34:
+ 1152              		.cfi_def_cfa_register 7
+ 1153 05ce 7860     		str	r0, [r7, #4]
+ 579:./src/ethernetif.c ****   struct pbuf *p;
+ 580:./src/ethernetif.c ****   struct netif *netif = (struct netif *) argument;
+ 1154              		.loc 1 580 17
+ 1155 05d0 7B68     		ldr	r3, [r7, #4]
+ 1156 05d2 FB60     		str	r3, [r7, #12]
+ 1157              	.L51:
+ 581:./src/ethernetif.c **** 	
+ 582:./src/ethernetif.c **** 	
+ 583:./src/ethernetif.c ****   for( ;; )
+ 584:./src/ethernetif.c ****   {
+ 585:./src/ethernetif.c ****     if ( osSemaphoreAcquire ( s_xSemaphore, TIME_WAITING_FOR_INPUT)==osOK)
+ 1158              		.loc 1 585 10
+ 1159 05d4 0F4B     		ldr	r3, .L52
+ 1160 05d6 1B68     		ldr	r3, [r3]
+ 1161 05d8 4FF0FF31 		mov	r1, #-1
+ 1162 05dc 1846     		mov	r0, r3
+ 1163 05de FFF7FEFF 		bl	osSemaphoreAcquire
+ 1164 05e2 0346     		mov	r3, r0
+ 1165              		.loc 1 585 8
+ 1166 05e4 002B     		cmp	r3, #0
+ 1167 05e6 F5D1     		bne	.L51
+ 1168              	.L50:
+ 586:./src/ethernetif.c ****     {
+ 587:./src/ethernetif.c ****       do
+ 588:./src/ethernetif.c ****       {   
+ 589:./src/ethernetif.c ****         p = low_level_input( netif );
+ 1169              		.loc 1 589 13
+ 1170 05e8 F868     		ldr	r0, [r7, #12]
+ 1171 05ea FFF73BFF 		bl	low_level_input
+ 1172 05ee B860     		str	r0, [r7, #8]
+ 590:./src/ethernetif.c ****         if   (p != NULL)
+ 1173              		.loc 1 590 14
+ 1174 05f0 BB68     		ldr	r3, [r7, #8]
+ 1175 05f2 002B     		cmp	r3, #0
+ 1176 05f4 0AD0     		beq	.L49
+ 591:./src/ethernetif.c ****         {
+ 592:./src/ethernetif.c ****           if (netif->input( p, netif) != ERR_OK )
+ 1177              		.loc 1 592 20
+ 1178 05f6 FB68     		ldr	r3, [r7, #12]
+ 1179 05f8 1B69     		ldr	r3, [r3, #16]
+ 1180              		.loc 1 592 15
+ 1181 05fa F968     		ldr	r1, [r7, #12]
+ 1182 05fc B868     		ldr	r0, [r7, #8]
+ 1183 05fe 9847     		blx	r3
+ 1184              	.LVL0:
+ 1185 0600 0346     		mov	r3, r0
+ 1186              		.loc 1 592 14
+ 1187 0602 002B     		cmp	r3, #0
+ 1188 0604 02D0     		beq	.L49
+ 593:./src/ethernetif.c ****           {
+ 594:./src/ethernetif.c ****             pbuf_free(p);
+ 1189              		.loc 1 594 13
+ 1190 0606 B868     		ldr	r0, [r7, #8]
+ 1191 0608 FFF7FEFF 		bl	pbuf_free
+ 1192              	.L49:
+ 595:./src/ethernetif.c ****           }
+ 596:./src/ethernetif.c ****         }
+ 597:./src/ethernetif.c ****       } while(p!=NULL);
+ 1193              		.loc 1 597 7
+ 1194 060c BB68     		ldr	r3, [r7, #8]
+ 1195 060e 002B     		cmp	r3, #0
+ 1196 0610 EAD1     		bne	.L50
+ 585:./src/ethernetif.c ****     {
+ 1197              		.loc 1 585 8
+ 1198 0612 DFE7     		b	.L51
+ 1199              	.L53:
+ 1200              		.align	2
+ 1201              	.L52:
+ 1202 0614 00000000 		.word	s_xSemaphore
+ 1203              		.cfi_endproc
+ 1204              	.LFE176:
+ 1206              		.align	1
+ 1207              		.global	ethernetif_enter_sleep
+ 1208              		.syntax unified
+ 1209              		.thumb
+ 1210              		.thumb_func
+ 1211              		.fpu fpv5-d16
+ 1213              	ethernetif_enter_sleep:
+ 1214              	.LFB177:
+ 598:./src/ethernetif.c ****     }
+ 599:./src/ethernetif.c ****   }
+ 600:./src/ethernetif.c **** }
+ 601:./src/ethernetif.c **** 
+ 602:./src/ethernetif.c **** 
+ 603:./src/ethernetif.c **** 
+ 604:./src/ethernetif.c **** 
+ 605:./src/ethernetif.c **** 
+ 606:./src/ethernetif.c **** void  ethernetif_enter_sleep ( void)
+ 607:./src/ethernetif.c **** {
+ 1215              		.loc 1 607 1
+ 1216              		.cfi_startproc
+ 1217              		@ args = 0, pretend = 0, frame = 8
+ 1218              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1219 0618 80B5     		push	{r7, lr}
+ 1220              	.LCFI35:
+ 1221              		.cfi_def_cfa_offset 8
+ 1222              		.cfi_offset 7, -8
+ 1223              		.cfi_offset 14, -4
+ 1224 061a 82B0     		sub	sp, sp, #8
+ 1225              	.LCFI36:
+ 1226              		.cfi_def_cfa_offset 16
+ 1227 061c 00AF     		add	r7, sp, #0
+ 1228              	.LCFI37:
+ 1229              		.cfi_def_cfa_register 7
+ 608:./src/ethernetif.c **** 	uint32_t  phy_reg;
+ 609:./src/ethernetif.c **** 
+ 610:./src/ethernetif.c **** 
+ 611:./src/ethernetif.c **** 	// for TJA1100 ( 100Base-T1)
+ 612:./src/ethernetif.c **** 	HAL_ETH_ReadPHYRegister ( &heth, 17, &phy_reg);
+ 1230              		.loc 1 612 2
+ 1231 061e 3B1D     		adds	r3, r7, #4
+ 1232 0620 1A46     		mov	r2, r3
+ 1233 0622 1121     		movs	r1, #17
+ 1234 0624 0A48     		ldr	r0, .L55
+ 1235 0626 FFF7FEFF 		bl	HAL_ETH_ReadPHYRegister
+ 613:./src/ethernetif.c **** 
+ 614:./src/ethernetif.c **** 	phy_reg &= ~( 0xF << 11);
+ 1236              		.loc 1 614 10
+ 1237 062a 7B68     		ldr	r3, [r7, #4]
+ 1238 062c 23F4F043 		bic	r3, r3, #30720
+ 1239 0630 7B60     		str	r3, [r7, #4]
+ 615:./src/ethernetif.c **** 	phy_reg |= 0xBU << 11;
+ 1240              		.loc 1 615 10
+ 1241 0632 7B68     		ldr	r3, [r7, #4]
+ 1242 0634 43F4B043 		orr	r3, r3, #22528
+ 1243 0638 7B60     		str	r3, [r7, #4]
+ 616:./src/ethernetif.c **** 
+ 617:./src/ethernetif.c **** 	HAL_ETH_WritePHYRegister ( &heth, 17, phy_reg);
+ 1244              		.loc 1 617 2
+ 1245 063a 7B68     		ldr	r3, [r7, #4]
+ 1246 063c 1A46     		mov	r2, r3
+ 1247 063e 1121     		movs	r1, #17
+ 1248 0640 0348     		ldr	r0, .L55
+ 1249 0642 FFF7FEFF 		bl	HAL_ETH_WritePHYRegister
+ 618:./src/ethernetif.c **** }
+ 1250              		.loc 1 618 1
+ 1251 0646 00BF     		nop
+ 1252 0648 0837     		adds	r7, r7, #8
+ 1253              	.LCFI38:
+ 1254              		.cfi_def_cfa_offset 8
+ 1255 064a BD46     		mov	sp, r7
+ 1256              	.LCFI39:
+ 1257              		.cfi_def_cfa_register 13
+ 1258              		@ sp needed
+ 1259 064c 80BD     		pop	{r7, pc}
+ 1260              	.L56:
+ 1261 064e 00BF     		.align	2
+ 1262              	.L55:
+ 1263 0650 00000000 		.word	heth
+ 1264              		.cfi_endproc
+ 1265              	.LFE177:
+ 1267              		.align	1
+ 1268              		.global	ethernetif_init
+ 1269              		.syntax unified
+ 1270              		.thumb
+ 1271              		.thumb_func
+ 1272              		.fpu fpv5-d16
+ 1274              	ethernetif_init:
+ 1275              	.LFB178:
+ 619:./src/ethernetif.c **** 
+ 620:./src/ethernetif.c **** 
+ 621:./src/ethernetif.c **** 
+ 622:./src/ethernetif.c **** #if !LWIP_ARP
+ 623:./src/ethernetif.c **** /**
+ 624:./src/ethernetif.c ****  * This function has to be completed by user in case of ARP OFF.
+ 625:./src/ethernetif.c ****  *
+ 626:./src/ethernetif.c ****  * @param netif the lwip network interface structure for this ethernetif
+ 627:./src/ethernetif.c ****  * @return ERR_OK if ...
+ 628:./src/ethernetif.c ****  */
+ 629:./src/ethernetif.c **** static err_t low_level_output_arp_off(struct netif *netif, struct pbuf *q, const ip4_addr_t *ipaddr
+ 630:./src/ethernetif.c **** {  
+ 631:./src/ethernetif.c ****   err_t errval;
+ 632:./src/ethernetif.c ****   errval = ERR_OK;
+ 633:./src/ethernetif.c ****     
+ 634:./src/ethernetif.c **** /* USER CODE BEGIN 5 */ 
+ 635:./src/ethernetif.c ****     
+ 636:./src/ethernetif.c **** /* USER CODE END 5 */  
+ 637:./src/ethernetif.c ****     
+ 638:./src/ethernetif.c ****   return errval;
+ 639:./src/ethernetif.c ****   
+ 640:./src/ethernetif.c **** }
+ 641:./src/ethernetif.c **** #endif /* LWIP_ARP */ 
+ 642:./src/ethernetif.c **** 
+ 643:./src/ethernetif.c **** /**
+ 644:./src/ethernetif.c ****  * Should be called at the beginning of the program to set up the
+ 645:./src/ethernetif.c ****  * network interface. It calls the function low_level_init() to do the
+ 646:./src/ethernetif.c ****  * actual setup of the hardware.
+ 647:./src/ethernetif.c ****  *
+ 648:./src/ethernetif.c ****  * This function should be passed as a parameter to netif_add().
+ 649:./src/ethernetif.c ****  *
+ 650:./src/ethernetif.c ****  * @param netif the lwip network interface structure for this ethernetif
+ 651:./src/ethernetif.c ****  * @return ERR_OK if the loopif is initialized
+ 652:./src/ethernetif.c ****  *         ERR_MEM if private data couldn't be allocated
+ 653:./src/ethernetif.c ****  *         any other err_t on error
+ 654:./src/ethernetif.c ****  */
+ 655:./src/ethernetif.c **** err_t ethernetif_init(struct netif *netif)
+ 656:./src/ethernetif.c **** {
+ 1276              		.loc 1 656 1
+ 1277              		.cfi_startproc
+ 1278              		@ args = 0, pretend = 0, frame = 8
+ 1279              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1280 0654 80B5     		push	{r7, lr}
+ 1281              	.LCFI40:
+ 1282              		.cfi_def_cfa_offset 8
+ 1283              		.cfi_offset 7, -8
+ 1284              		.cfi_offset 14, -4
+ 1285 0656 82B0     		sub	sp, sp, #8
+ 1286              	.LCFI41:
+ 1287              		.cfi_def_cfa_offset 16
+ 1288 0658 00AF     		add	r7, sp, #0
+ 1289              	.LCFI42:
+ 1290              		.cfi_def_cfa_register 7
+ 1291 065a 7860     		str	r0, [r7, #4]
+ 657:./src/ethernetif.c ****   LWIP_ASSERT("netif != NULL", (netif != NULL));
+ 658:./src/ethernetif.c ****   
+ 659:./src/ethernetif.c **** #if LWIP_NETIF_HOSTNAME
+ 660:./src/ethernetif.c ****   /* Initialize interface hostname */
+ 661:./src/ethernetif.c ****   netif->hostname = "lwip";
+ 662:./src/ethernetif.c **** #endif /* LWIP_NETIF_HOSTNAME */
+ 663:./src/ethernetif.c **** 
+ 664:./src/ethernetif.c ****   netif->name[0] = IFNAME0;
+ 1292              		.loc 1 664 18
+ 1293 065c 7B68     		ldr	r3, [r7, #4]
+ 1294 065e 7322     		movs	r2, #115
+ 1295 0660 83F82E20 		strb	r2, [r3, #46]
+ 665:./src/ethernetif.c ****   netif->name[1] = IFNAME1;
+ 1296              		.loc 1 665 18
+ 1297 0664 7B68     		ldr	r3, [r7, #4]
+ 1298 0666 7422     		movs	r2, #116
+ 1299 0668 83F82F20 		strb	r2, [r3, #47]
+ 666:./src/ethernetif.c ****   /* We directly use etharp_output() here to save a function call.
+ 667:./src/ethernetif.c ****    * You can instead declare your own function an call etharp_output()
+ 668:./src/ethernetif.c ****    * from it if you have to do some checks before sending (e.g. if link
+ 669:./src/ethernetif.c ****    * is available...) */
+ 670:./src/ethernetif.c **** 
+ 671:./src/ethernetif.c **** #if LWIP_IPV4
+ 672:./src/ethernetif.c **** #if LWIP_ARP || LWIP_ETHERNET
+ 673:./src/ethernetif.c **** #if LWIP_ARP
+ 674:./src/ethernetif.c ****   netif->output = etharp_output;
+ 1300              		.loc 1 674 17
+ 1301 066c 7B68     		ldr	r3, [r7, #4]
+ 1302 066e 064A     		ldr	r2, .L59
+ 1303 0670 5A61     		str	r2, [r3, #20]
+ 675:./src/ethernetif.c **** #else
+ 676:./src/ethernetif.c ****   /* The user should write ist own code in low_level_output_arp_off function */
+ 677:./src/ethernetif.c ****   netif->output = low_level_output_arp_off;
+ 678:./src/ethernetif.c **** #endif /* LWIP_ARP */
+ 679:./src/ethernetif.c **** #endif /* LWIP_ARP || LWIP_ETHERNET */
+ 680:./src/ethernetif.c **** #endif /* LWIP_IPV4 */
+ 681:./src/ethernetif.c ****  
+ 682:./src/ethernetif.c **** #if LWIP_IPV6
+ 683:./src/ethernetif.c ****   netif->output_ip6 = ethip6_output;
+ 684:./src/ethernetif.c **** #endif /* LWIP_IPV6 */
+ 685:./src/ethernetif.c **** 
+ 686:./src/ethernetif.c ****   netif->linkoutput = low_level_output;
+ 1304              		.loc 1 686 21
+ 1305 0672 7B68     		ldr	r3, [r7, #4]
+ 1306 0674 054A     		ldr	r2, .L59+4
+ 1307 0676 9A61     		str	r2, [r3, #24]
+ 687:./src/ethernetif.c **** 
+ 688:./src/ethernetif.c ****   /* initialize the hardware */
+ 689:./src/ethernetif.c ****   low_level_init(netif);
+ 1308              		.loc 1 689 3
+ 1309 0678 7868     		ldr	r0, [r7, #4]
+ 1310 067a FFF7A3FD 		bl	low_level_init
+ 690:./src/ethernetif.c **** 
+ 691:./src/ethernetif.c ****   return ERR_OK;
+ 1311              		.loc 1 691 10
+ 1312 067e 0023     		movs	r3, #0
+ 692:./src/ethernetif.c **** }
+ 1313              		.loc 1 692 1
+ 1314 0680 1846     		mov	r0, r3
+ 1315 0682 0837     		adds	r7, r7, #8
+ 1316              	.LCFI43:
+ 1317              		.cfi_def_cfa_offset 8
+ 1318 0684 BD46     		mov	sp, r7
+ 1319              	.LCFI44:
+ 1320              		.cfi_def_cfa_register 13
+ 1321              		@ sp needed
+ 1322 0686 80BD     		pop	{r7, pc}
+ 1323              	.L60:
+ 1324              		.align	2
+ 1325              	.L59:
+ 1326 0688 00000000 		.word	etharp_output
+ 1327 068c 00000000 		.word	low_level_output
+ 1328              		.cfi_endproc
+ 1329              	.LFE178:
+ 1331              	.Letext0:
+ 1332              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1333              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1334              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1335              		.file 5 "./inc/stm32f765xx.h"
+ 1336              		.file 6 "./inc/stm32f7xx.h"
+ 1337              		.file 7 "./inc/stm32f7xx_hal_def.h"
+ 1338              		.file 8 "./inc/stm32f7xx_hal_gpio.h"
+ 1339              		.file 9 "./inc/stm32f7xx_hal_eth.h"
+ 1340              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1341              		.file 11 "./inc/cmsis_os2.h"
+ 1342              		.file 12 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 1343              		.file 13 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 1344              		.file 14 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 1345              		.file 15 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1346              		.file 16 "./inc/ARMCM7_DP.h"
+ 1347              		.file 17 "./lwip-2.1.2/src/include/lwip/netif.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ethernetif.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:21     .bss:00000000 DMARxDscrTab
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:18     .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:27     .bss:00000080 DMATxDscrTab
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:33     .bss:00000100 Rx_Buff
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:39     .bss:000018d0 Tx_Buff
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:45     .bss:000030a0 s_xSemaphore
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:51     .bss:000030a4 heth
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:54     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:62     .text:00000000 HAL_ETH_MspInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:227    .text:000000f8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:236    .text:00000110 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:243    .text:00000110 HAL_ETH_MspDeInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:317    .text:00000178 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:326    .text:00000190 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:333    .text:00000190 HAL_ETH_RxCpltCallback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:369    .text:000001ac $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:373    .text:000001b0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:380    .text:000001b0 ETH_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:403    .text:000001c0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:407    .text:000001c4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:413    .text:000001c4 low_level_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:605    .text:00000304 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1136   .text:000005c8 ethernetif_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:617    .text:00000328 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:623    .text:00000328 low_level_output
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:852    .text:00000460 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:856    .text:00000464 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:862    .text:00000464 low_level_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1125   .text:000005c4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1129   .text:000005c8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1202   .text:00000614 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1206   .text:00000618 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1213   .text:00000618 ethernetif_enter_sleep
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1263   .text:00000650 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1267   .text:00000654 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1274   .text:00000654 ethernetif_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccybqp1u.s:1326   .text:00000688 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_Init
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_GPIO_DeInit
+HAL_NVIC_DisableIRQ
+osSemaphoreRelease
+HAL_ETH_IRQHandler
+EEPROM_Read
+HAL_ETH_Init
+HAL_ETH_DMATxDescListInit
+HAL_ETH_DMARxDescListInit
+osSemaphoreNew
+memset
+osThreadNew
+HAL_ETH_Start
+memcpy
+HAL_ETH_TransmitFrame
+HAL_ETH_GetReceivedFrame_IT
+pbuf_alloc
+osSemaphoreAcquire
+pbuf_free
+HAL_ETH_ReadPHYRegister
+HAL_ETH_WritePHYRegister
+etharp_output

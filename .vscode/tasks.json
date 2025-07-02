@@ -1,0 +1,136 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash Device",
+            "type": "shell",
+            "command": "PEAK-Flash.exe",
+            "options": {
+                "env": {
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/PEAK-Flash/"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Make Clean",
+            "type": "shell",
+            "command": "make clean",
+            "options": {
+                "env": {
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Build Tools Win64/4.2.1-2/bin/;C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Compiler/10 2020-q4-major/bin/"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "group": "build",
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Make All",
+            "type": "shell",
+            "command": "make all",
+            "options": {
+                "env": {
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Build Tools Win64/4.2.1-2/bin/;C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Compiler/10 2020-q4-major/bin/"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+		 {
+            "label": "Make Debug Task",
+            "type": "shell",
+            "command": "make all",
+            "options": {
+                "env": {
+					"OPT": "0", 	
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Build Tools Win64/4.2.1-2/bin/;C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Compiler/10 2020-q4-major/bin/"
+                }
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Make Debug",
+            "type": "shell",
+            "command": "(Get-Content '${workspaceFolder}/.vscode/launch.json') | ForEach-Object {$_ -Replace '/.*.elf' , ('/out/'+( gci '${workspaceFolder}/out/' -Filter *.elf | Sort-Object -Descending -Property LastWriteTime | Select -First 1).Name )} | Set-Content '${workspaceFolder}/.vscode/launch.json'",
+            "dependsOn": [
+            	"Make Debug Task"
+            ],
+            "presentation": {
+            	"echo": true,
+            	"reveal": "always",
+            	"focus": false,
+            	"panel": "shared"
+            },
+            "group": {
+               "kind": "build",
+               "isDefault": true
+            },
+            "problemMatcher": "$gcc"        
+        },
+        {
+            "label": "Compile File",
+            "type": "shell",
+            "command": "make singlefile SINGLE_FILE=${relativeFile}",
+            "options": {
+                "env": {
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Build Tools Win64/4.2.1-2/bin/;C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Compiler/10 2020-q4-major/bin/"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Compile File ARM (ARM7 based hardware only)",
+            "type": "shell",
+            "command": "make singlefileARM SINGLE_FILE=${relativeFile}",
+            "options": {
+                "env": {
+			"path": "C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Build Tools Win64/4.2.1-2/bin/;C:/Users/JAEJUNMIN/Downloads/PEAK-DevPack/Compiler/10 2020-q4-major/bin/"
+                }
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}

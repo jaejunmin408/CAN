@@ -1,0 +1,906 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"rtx_lib.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.bss.os,"aw",%nobits
+  17              		.align	3
+  20              	os_mem:
+  21 0000 00000000 		.space	32768
+  21      00000000 
+  21      00000000 
+  21      00000000 
+  21      00000000 
+  22              		.align	2
+  25              	os_isr_queue:
+  26 8000 00000000 		.space	64
+  26      00000000 
+  26      00000000 
+  26      00000000 
+  26      00000000 
+  27              		.section	.bss.os.thread.cb,"aw",%nobits
+  28              		.align	2
+  31              	os_idle_thread_cb:
+  32 0000 00000000 		.space	68
+  32      00000000 
+  32      00000000 
+  32      00000000 
+  32      00000000 
+  33              		.section	.bss.os.thread.stack,"aw",%nobits
+  34              		.align	3
+  37              	os_idle_thread_stack:
+  38 0000 00000000 		.space	256
+  38      00000000 
+  38      00000000 
+  38      00000000 
+  38      00000000 
+  39              		.section	.rodata
+  40              		.align	2
+  43              	os_idle_thread_attr:
+  44 0000 00000000 		.word	0
+  45 0004 00000000 		.word	0
+  46 0008 00000000 		.word	os_idle_thread_cb
+  47 000c 44000000 		.word	68
+  48 0010 00000000 		.word	os_idle_thread_stack
+  49 0014 00010000 		.word	256
+  50 0018 01000000 		.word	1
+  51 001c 00000000 		.word	0
+  52 0020 00000000 		.word	0
+  53              		.section	.bss.os.thread.cb
+  54              		.align	2
+  57              	os_timer_thread_cb:
+  58 0044 00000000 		.space	68
+  58      00000000 
+  58      00000000 
+  58      00000000 
+  58      00000000 
+  59              		.section	.bss.os.thread.stack
+  60              		.align	3
+  63              	os_timer_thread_stack:
+  64 0100 00000000 		.space	256
+  64      00000000 
+  64      00000000 
+  64      00000000 
+  64      00000000 
+  65              		.section	.rodata
+  66              		.align	2
+  69              	os_timer_thread_attr:
+  70 0024 00000000 		.word	0
+  71 0028 00000000 		.word	0
+  72 002c 44000000 		.word	os_timer_thread_cb
+  73 0030 44000000 		.word	68
+  74 0034 00010000 		.word	os_timer_thread_stack
+  75 0038 00010000 		.word	256
+  76 003c 28000000 		.word	40
+  77 0040 00000000 		.word	0
+  78 0044 00000000 		.word	0
+  79              		.section	.bss.os.msgqueue.cb,"aw",%nobits
+  80              		.align	2
+  83              	os_timer_mq_cb:
+  84 0000 00000000 		.space	52
+  84      00000000 
+  84      00000000 
+  84      00000000 
+  84      00000000 
+  85              		.section	.bss.os.msgqueue.mem,"aw",%nobits
+  86              		.align	2
+  89              	os_timer_mq_data:
+  90 0000 00000000 		.space	80
+  90      00000000 
+  90      00000000 
+  90      00000000 
+  90      00000000 
+  91              		.section	.rodata
+  92              		.align	2
+  95              	os_timer_mq_attr:
+  96 0048 00000000 		.word	0
+  97 004c 00000000 		.word	0
+  98 0050 00000000 		.word	os_timer_mq_cb
+  99 0054 34000000 		.word	52
+ 100 0058 00000000 		.word	os_timer_mq_data
+ 101 005c 50000000 		.word	80
+ 102              		.global	osRtxConfig
+ 103              		.section	.rodata,"a"
+ 104              		.align	2
+ 107              	osRtxConfig:
+ 108 0060 03000000 		.word	3
+ 109 0064 88130000 		.word	5000
+ 110 0068 05000000 		.word	5
+ 111 006c 00800000 		.word	os_isr_queue
+ 112 0070 1000     		.short	16
+ 113 0072 0000     		.short	0
+ 114 0074 00000000 		.word	0
+ 115 0078 00000000 		.word	0
+ 116 007c 00000000 		.word	0
+ 117 0080 00000000 		.word	0
+ 118 0084 00000000 		.word	0
+ 119 0088 00000000 		.word	0
+ 120 008c 00000000 		.word	os_mem
+ 121 0090 00800000 		.word	32768
+ 122 0094 00000000 		.word	0
+ 123 0098 00000000 		.word	0
+ 124 009c 00000000 		.word	0
+ 125 00a0 00000000 		.word	0
+ 126 00a4 00000000 		.word	0
+ 127 00a8 00000000 		.word	0
+ 128 00ac 00000000 		.word	0
+ 129 00b0 00000000 		.word	0
+ 130 00b4 00100000 		.word	4096
+ 131 00b8 00000000 		.word	os_idle_thread_attr
+ 132 00bc 24000000 		.word	os_timer_thread_attr
+ 133 00c0 48000000 		.word	os_timer_mq_attr
+ 134 00c4 04000000 		.word	4
+ 135              		.global	irqRtxLibRef
+ 136              		.data
+ 137              		.align	2
+ 140              	irqRtxLibRef:
+ 141 0000 00000000 		.word	irqRtxLib
+ 142              		.weak	osRtxUserSVC
+ 143              		.section	.rodata
+ 144              		.align	2
+ 147              	osRtxUserSVC:
+ 148 00c8 00000000 		.space	4
+ 149              		.global	os_cb_sections
+ 150              		.section	.rodata
+ 151              		.align	2
+ 154              	os_cb_sections:
+ 155 00cc 00000000 		.word	__os_thread_cb_start__
+ 156 00d0 00000000 		.word	__os_thread_cb_end__
+ 157 00d4 00000000 		.word	__os_timer_cb_start__
+ 158 00d8 00000000 		.word	__os_timer_cb_end__
+ 159 00dc 00000000 		.word	__os_evflags_cb_start__
+ 160 00e0 00000000 		.word	__os_evflags_cb_end__
+ 161 00e4 00000000 		.word	__os_mutex_cb_start__
+ 162 00e8 00000000 		.word	__os_mutex_cb_end__
+ 163 00ec 00000000 		.word	__os_semaphore_cb_start__
+ 164 00f0 00000000 		.word	__os_semaphore_cb_end__
+ 165 00f4 00000000 		.word	__os_mempool_cb_start__
+ 166 00f8 00000000 		.word	__os_mempool_cb_end__
+ 167 00fc 00000000 		.word	__os_msgqueue_cb_start__
+ 168 0100 00000000 		.word	__os_msgqueue_cb_end__
+ 169              		.text
+ 170              		.align	1
+ 171              		.weak	software_init_hook
+ 172              		.arch armv7e-m
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.fpu fpv5-d16
+ 178              	software_init_hook:
+ 179              	.LFB104:
+ 180              		.file 1 "./src/rtx_lib.c"
+   1:./src/rtx_lib.c **** /*
+   2:./src/rtx_lib.c ****  * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+   3:./src/rtx_lib.c ****  *
+   4:./src/rtx_lib.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:./src/rtx_lib.c ****  *
+   6:./src/rtx_lib.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:./src/rtx_lib.c ****  * not use this file except in compliance with the License.
+   8:./src/rtx_lib.c ****  * You may obtain a copy of the License at
+   9:./src/rtx_lib.c ****  *
+  10:./src/rtx_lib.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:./src/rtx_lib.c ****  *
+  12:./src/rtx_lib.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:./src/rtx_lib.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:./src/rtx_lib.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:./src/rtx_lib.c ****  * See the License for the specific language governing permissions and
+  16:./src/rtx_lib.c ****  * limitations under the License.
+  17:./src/rtx_lib.c ****  *
+  18:./src/rtx_lib.c ****  * -----------------------------------------------------------------------------
+  19:./src/rtx_lib.c ****  *
+  20:./src/rtx_lib.c ****  * Project:     CMSIS-RTOS RTX
+  21:./src/rtx_lib.c ****  * Title:       RTX Library Configuration
+  22:./src/rtx_lib.c ****  *
+  23:./src/rtx_lib.c ****  * -----------------------------------------------------------------------------
+  24:./src/rtx_lib.c ****  */
+  25:./src/rtx_lib.c **** 
+  26:./src/rtx_lib.c **** #include "cmsis_compiler.h"
+  27:./src/rtx_lib.c **** #include "RTX_Config.h"
+  28:./src/rtx_lib.c **** #include "rtx_os.h"
+  29:./src/rtx_lib.c **** 
+  30:./src/rtx_lib.c **** #ifdef    RTE_Compiler_EventRecorder
+  31:./src/rtx_lib.c **** #include "EventRecorder.h"
+  32:./src/rtx_lib.c **** #include "EventRecorderConf.h"
+  33:./src/rtx_lib.c **** #endif
+  34:./src/rtx_lib.c **** #include "rtx_evr.h"
+  35:./src/rtx_lib.c **** 
+  36:./src/rtx_lib.c **** 
+  37:./src/rtx_lib.c **** // System Configuration
+  38:./src/rtx_lib.c **** // ====================
+  39:./src/rtx_lib.c **** 
+  40:./src/rtx_lib.c **** // Dynamic Memory
+  41:./src/rtx_lib.c **** #if (OS_DYNAMIC_MEM_SIZE != 0)
+  42:./src/rtx_lib.c **** #if ((OS_DYNAMIC_MEM_SIZE % 8) != 0)
+  43:./src/rtx_lib.c **** #error "Invalid Dynamic Memory size!"
+  44:./src/rtx_lib.c **** #endif
+  45:./src/rtx_lib.c **** static uint64_t os_mem[OS_DYNAMIC_MEM_SIZE/8] \
+  46:./src/rtx_lib.c **** __attribute__((section(".bss.os")));
+  47:./src/rtx_lib.c **** #endif
+  48:./src/rtx_lib.c **** 
+  49:./src/rtx_lib.c **** // Kernel Tick Frequency
+  50:./src/rtx_lib.c **** #if (OS_TICK_FREQ < 1)
+  51:./src/rtx_lib.c **** #error "Invalid Kernel Tick Frequency!"
+  52:./src/rtx_lib.c **** #endif
+  53:./src/rtx_lib.c **** 
+  54:./src/rtx_lib.c **** // ISR FIFO Queue
+  55:./src/rtx_lib.c **** #if (OS_ISR_FIFO_QUEUE < 4)
+  56:./src/rtx_lib.c **** #error "Invalid ISR FIFO Queue size!"
+  57:./src/rtx_lib.c **** #endif
+  58:./src/rtx_lib.c **** static void *os_isr_queue[OS_ISR_FIFO_QUEUE] \
+  59:./src/rtx_lib.c **** __attribute__((section(".bss.os")));
+  60:./src/rtx_lib.c **** 
+  61:./src/rtx_lib.c **** 
+  62:./src/rtx_lib.c **** // Thread Configuration
+  63:./src/rtx_lib.c **** // ====================
+  64:./src/rtx_lib.c **** 
+  65:./src/rtx_lib.c **** #if (((OS_STACK_SIZE % 8) != 0) || (OS_STACK_SIZE < 72))
+  66:./src/rtx_lib.c **** #error "Invalid default Thread Stack size!"
+  67:./src/rtx_lib.c **** #endif
+  68:./src/rtx_lib.c **** 
+  69:./src/rtx_lib.c **** #if (((OS_IDLE_THREAD_STACK_SIZE % 8) != 0) || (OS_IDLE_THREAD_STACK_SIZE < 72))
+  70:./src/rtx_lib.c **** #error "Invalid Idle Thread Stack size!"
+  71:./src/rtx_lib.c **** #endif
+  72:./src/rtx_lib.c **** 
+  73:./src/rtx_lib.c **** 
+  74:./src/rtx_lib.c **** #if (OS_THREAD_OBJ_MEM != 0)
+  75:./src/rtx_lib.c **** 
+  76:./src/rtx_lib.c **** #if (OS_THREAD_NUM == 0)
+  77:./src/rtx_lib.c **** #error "Invalid number of user Threads!"
+  78:./src/rtx_lib.c **** #endif
+  79:./src/rtx_lib.c **** 
+  80:./src/rtx_lib.c **** #if ((OS_THREAD_USER_STACK_SIZE != 0) && ((OS_THREAD_USER_STACK_SIZE % 8) != 0))
+  81:./src/rtx_lib.c **** #error "Invalid total Stack size!"
+  82:./src/rtx_lib.c **** #endif
+  83:./src/rtx_lib.c **** 
+  84:./src/rtx_lib.c **** // Thread Control Blocks
+  85:./src/rtx_lib.c **** static osRtxThread_t os_thread_cb[OS_THREAD_NUM] \
+  86:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.cb")));
+  87:./src/rtx_lib.c **** 
+  88:./src/rtx_lib.c **** // Thread Default Stack
+  89:./src/rtx_lib.c **** #if (OS_THREAD_DEF_STACK_NUM != 0)
+  90:./src/rtx_lib.c **** static uint64_t os_thread_def_stack[OS_THREAD_DEF_STACK_NUM*(OS_STACK_SIZE/8)] \
+  91:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.stack")));
+  92:./src/rtx_lib.c **** #endif
+  93:./src/rtx_lib.c **** 
+  94:./src/rtx_lib.c **** // Memory Pool for Thread Control Blocks
+  95:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_thread \
+  96:./src/rtx_lib.c **** __attribute__((section(".data.os.thread.mpi"))) =
+  97:./src/rtx_lib.c **** { (uint32_t)OS_THREAD_NUM, 0U, (uint32_t)osRtxThreadCbSize, &os_thread_cb[0], NULL, NULL };
+  98:./src/rtx_lib.c **** 
+  99:./src/rtx_lib.c **** // Memory Pool for Thread Default Stack
+ 100:./src/rtx_lib.c **** #if (OS_THREAD_DEF_STACK_NUM != 0)
+ 101:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_def_stack \
+ 102:./src/rtx_lib.c **** __attribute__((section(".data.os.thread.mpi"))) =
+ 103:./src/rtx_lib.c **** { (uint32_t)OS_THREAD_DEF_STACK_NUM, 0U, (uint32_t)OS_STACK_SIZE, &os_thread_def_stack[0], NULL, NU
+ 104:./src/rtx_lib.c **** #endif
+ 105:./src/rtx_lib.c **** 
+ 106:./src/rtx_lib.c **** // Memory Pool for Thread Stack
+ 107:./src/rtx_lib.c **** #if (OS_THREAD_USER_STACK_SIZE != 0)
+ 108:./src/rtx_lib.c **** static uint64_t os_thread_stack[2 + OS_THREAD_NUM + (OS_THREAD_USER_STACK_SIZE/8)] \
+ 109:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.stack")));
+ 110:./src/rtx_lib.c **** #endif
+ 111:./src/rtx_lib.c **** 
+ 112:./src/rtx_lib.c **** #endif  // (OS_THREAD_OBJ_MEM != 0)
+ 113:./src/rtx_lib.c **** 
+ 114:./src/rtx_lib.c **** 
+ 115:./src/rtx_lib.c **** // Stack overrun checking
+ 116:./src/rtx_lib.c **** #if (OS_STACK_CHECK == 0)
+ 117:./src/rtx_lib.c **** // Override library function
+ 118:./src/rtx_lib.c **** extern void osRtxThreadStackCheck (void);
+ 119:./src/rtx_lib.c ****        void osRtxThreadStackCheck (void) {}
+ 120:./src/rtx_lib.c **** #endif
+ 121:./src/rtx_lib.c **** 
+ 122:./src/rtx_lib.c **** 
+ 123:./src/rtx_lib.c **** // Idle Thread Control Block
+ 124:./src/rtx_lib.c **** static osRtxThread_t os_idle_thread_cb \
+ 125:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.cb")));
+ 126:./src/rtx_lib.c **** 
+ 127:./src/rtx_lib.c **** // Idle Thread Stack
+ 128:./src/rtx_lib.c **** static uint64_t os_idle_thread_stack[OS_IDLE_THREAD_STACK_SIZE/8] \
+ 129:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.stack")));
+ 130:./src/rtx_lib.c **** 
+ 131:./src/rtx_lib.c **** // Idle Thread Attributes
+ 132:./src/rtx_lib.c **** static const osThreadAttr_t os_idle_thread_attr = {
+ 133:./src/rtx_lib.c **** #if defined(OS_IDLE_THREAD_NAME)
+ 134:./src/rtx_lib.c ****   OS_IDLE_THREAD_NAME,
+ 135:./src/rtx_lib.c **** #else
+ 136:./src/rtx_lib.c ****   NULL,
+ 137:./src/rtx_lib.c **** #endif
+ 138:./src/rtx_lib.c ****   osThreadDetached,
+ 139:./src/rtx_lib.c ****   &os_idle_thread_cb,
+ 140:./src/rtx_lib.c ****   (uint32_t)sizeof(os_idle_thread_cb),
+ 141:./src/rtx_lib.c ****   &os_idle_thread_stack[0],
+ 142:./src/rtx_lib.c ****   (uint32_t)sizeof(os_idle_thread_stack),
+ 143:./src/rtx_lib.c ****   osPriorityIdle,
+ 144:./src/rtx_lib.c **** #if defined(OS_IDLE_THREAD_TZ_MOD_ID)
+ 145:./src/rtx_lib.c ****   (uint32_t)OS_IDLE_THREAD_TZ_MOD_ID,
+ 146:./src/rtx_lib.c **** #else
+ 147:./src/rtx_lib.c ****   0U,
+ 148:./src/rtx_lib.c **** #endif
+ 149:./src/rtx_lib.c ****   0U
+ 150:./src/rtx_lib.c **** };
+ 151:./src/rtx_lib.c **** 
+ 152:./src/rtx_lib.c **** 
+ 153:./src/rtx_lib.c **** // Timer Configuration
+ 154:./src/rtx_lib.c **** // ===================
+ 155:./src/rtx_lib.c **** 
+ 156:./src/rtx_lib.c **** #if (OS_TIMER_OBJ_MEM != 0)
+ 157:./src/rtx_lib.c **** 
+ 158:./src/rtx_lib.c **** #if (OS_TIMER_NUM == 0)
+ 159:./src/rtx_lib.c **** #error "Invalid number of Timer objects!"
+ 160:./src/rtx_lib.c **** #endif
+ 161:./src/rtx_lib.c **** 
+ 162:./src/rtx_lib.c **** // Timer Control Blocks
+ 163:./src/rtx_lib.c **** static osRtxTimer_t os_timer_cb[OS_TIMER_NUM] \
+ 164:./src/rtx_lib.c **** __attribute__((section(".bss.os.timer.cb")));
+ 165:./src/rtx_lib.c **** 
+ 166:./src/rtx_lib.c **** // Memory Pool for Timer Control Blocks
+ 167:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_timer \
+ 168:./src/rtx_lib.c **** __attribute__((section(".data.os.timer.mpi"))) =
+ 169:./src/rtx_lib.c **** { (uint32_t)OS_TIMER_NUM, 0U, (uint32_t)osRtxTimerCbSize, &os_timer_cb[0], NULL, NULL };
+ 170:./src/rtx_lib.c **** 
+ 171:./src/rtx_lib.c **** #endif  // (OS_TIMER_OBJ_MEM != 0)
+ 172:./src/rtx_lib.c **** 
+ 173:./src/rtx_lib.c **** 
+ 174:./src/rtx_lib.c **** #if ((OS_TIMER_THREAD_STACK_SIZE != 0) && (OS_TIMER_CB_QUEUE != 0))
+ 175:./src/rtx_lib.c **** 
+ 176:./src/rtx_lib.c **** #if (((OS_TIMER_THREAD_STACK_SIZE % 8) != 0) || (OS_TIMER_THREAD_STACK_SIZE < 96))
+ 177:./src/rtx_lib.c **** #error "Invalid Timer Thread Stack size!"
+ 178:./src/rtx_lib.c **** #endif
+ 179:./src/rtx_lib.c **** 
+ 180:./src/rtx_lib.c **** // Timer Thread Control Block
+ 181:./src/rtx_lib.c **** static osRtxThread_t os_timer_thread_cb \
+ 182:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.cb")));
+ 183:./src/rtx_lib.c **** 
+ 184:./src/rtx_lib.c **** // Timer Thread Stack
+ 185:./src/rtx_lib.c **** static uint64_t os_timer_thread_stack[OS_TIMER_THREAD_STACK_SIZE/8] \
+ 186:./src/rtx_lib.c **** __attribute__((section(".bss.os.thread.stack")));
+ 187:./src/rtx_lib.c **** 
+ 188:./src/rtx_lib.c **** // Timer Thread Attributes
+ 189:./src/rtx_lib.c **** static const osThreadAttr_t os_timer_thread_attr = {
+ 190:./src/rtx_lib.c **** #if defined(OS_TIMER_THREAD_NAME)
+ 191:./src/rtx_lib.c ****   OS_TIMER_THREAD_NAME,
+ 192:./src/rtx_lib.c **** #else
+ 193:./src/rtx_lib.c ****   NULL,
+ 194:./src/rtx_lib.c **** #endif
+ 195:./src/rtx_lib.c ****   osThreadDetached,
+ 196:./src/rtx_lib.c ****   &os_timer_thread_cb,
+ 197:./src/rtx_lib.c ****   (uint32_t)sizeof(os_timer_thread_cb),
+ 198:./src/rtx_lib.c ****   &os_timer_thread_stack[0],
+ 199:./src/rtx_lib.c ****   (uint32_t)sizeof(os_timer_thread_stack),
+ 200:./src/rtx_lib.c ****   //lint -e{9030} -e{9034} "cast from signed to enum"
+ 201:./src/rtx_lib.c ****   (osPriority_t)OS_TIMER_THREAD_PRIO,
+ 202:./src/rtx_lib.c **** #if defined(OS_TIMER_THREAD_TZ_MOD_ID)
+ 203:./src/rtx_lib.c ****   (uint32_t)OS_TIMER_THREAD_TZ_MOD_ID,
+ 204:./src/rtx_lib.c **** #else
+ 205:./src/rtx_lib.c ****   0U,
+ 206:./src/rtx_lib.c **** #endif
+ 207:./src/rtx_lib.c ****   0U
+ 208:./src/rtx_lib.c **** };
+ 209:./src/rtx_lib.c **** 
+ 210:./src/rtx_lib.c **** // Timer Message Queue Control Block
+ 211:./src/rtx_lib.c **** static osRtxMessageQueue_t os_timer_mq_cb \
+ 212:./src/rtx_lib.c **** __attribute__((section(".bss.os.msgqueue.cb")));
+ 213:./src/rtx_lib.c **** 
+ 214:./src/rtx_lib.c **** // Timer Message Queue Data
+ 215:./src/rtx_lib.c **** static uint32_t os_timer_mq_data[osRtxMessageQueueMemSize(OS_TIMER_CB_QUEUE,8)/4] \
+ 216:./src/rtx_lib.c **** __attribute__((section(".bss.os.msgqueue.mem")));
+ 217:./src/rtx_lib.c **** 
+ 218:./src/rtx_lib.c **** // Timer Message Queue Attributes
+ 219:./src/rtx_lib.c **** static const osMessageQueueAttr_t os_timer_mq_attr = {
+ 220:./src/rtx_lib.c ****   NULL,
+ 221:./src/rtx_lib.c ****   0U,
+ 222:./src/rtx_lib.c ****   &os_timer_mq_cb,
+ 223:./src/rtx_lib.c ****   (uint32_t)sizeof(os_timer_mq_cb),
+ 224:./src/rtx_lib.c ****   &os_timer_mq_data[0],
+ 225:./src/rtx_lib.c ****   (uint32_t)sizeof(os_timer_mq_data)
+ 226:./src/rtx_lib.c **** };
+ 227:./src/rtx_lib.c **** 
+ 228:./src/rtx_lib.c **** #else
+ 229:./src/rtx_lib.c **** 
+ 230:./src/rtx_lib.c **** extern void osRtxTimerThread (void *argument);
+ 231:./src/rtx_lib.c ****        void osRtxTimerThread (void *argument) { (void)argument; }
+ 232:./src/rtx_lib.c **** 
+ 233:./src/rtx_lib.c **** #endif  // ((OS_TIMER_THREAD_STACK_SIZE != 0) && (OS_TIMER_CB_QUEUE != 0))
+ 234:./src/rtx_lib.c **** 
+ 235:./src/rtx_lib.c **** 
+ 236:./src/rtx_lib.c **** // Event Flags Configuration
+ 237:./src/rtx_lib.c **** // =========================
+ 238:./src/rtx_lib.c **** 
+ 239:./src/rtx_lib.c **** #if (OS_EVFLAGS_OBJ_MEM != 0)
+ 240:./src/rtx_lib.c **** 
+ 241:./src/rtx_lib.c **** #if (OS_EVFLAGS_NUM == 0)
+ 242:./src/rtx_lib.c **** #error "Invalid number of Event Flags objects!"
+ 243:./src/rtx_lib.c **** #endif
+ 244:./src/rtx_lib.c **** 
+ 245:./src/rtx_lib.c **** // Event Flags Control Blocks
+ 246:./src/rtx_lib.c **** static osRtxEventFlags_t os_ef_cb[OS_EVFLAGS_NUM] \
+ 247:./src/rtx_lib.c **** __attribute__((section(".bss.os.evflags.cb")));
+ 248:./src/rtx_lib.c **** 
+ 249:./src/rtx_lib.c **** // Memory Pool for Event Flags Control Blocks
+ 250:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_ef \
+ 251:./src/rtx_lib.c **** __attribute__((section(".data.os.evflags.mpi"))) =
+ 252:./src/rtx_lib.c **** { (uint32_t)OS_EVFLAGS_NUM, 0U, (uint32_t)osRtxEventFlagsCbSize, &os_ef_cb[0], NULL, NULL };
+ 253:./src/rtx_lib.c **** 
+ 254:./src/rtx_lib.c **** #endif  // (OS_EVFLAGS_OBJ_MEM != 0)
+ 255:./src/rtx_lib.c **** 
+ 256:./src/rtx_lib.c **** 
+ 257:./src/rtx_lib.c **** // Mutex Configuration
+ 258:./src/rtx_lib.c **** // ===================
+ 259:./src/rtx_lib.c **** 
+ 260:./src/rtx_lib.c **** #if (OS_MUTEX_OBJ_MEM != 0)
+ 261:./src/rtx_lib.c **** 
+ 262:./src/rtx_lib.c **** #if (OS_MUTEX_NUM == 0)
+ 263:./src/rtx_lib.c **** #error "Invalid number of Mutex objects!"
+ 264:./src/rtx_lib.c **** #endif
+ 265:./src/rtx_lib.c **** 
+ 266:./src/rtx_lib.c **** // Mutex Control Blocks
+ 267:./src/rtx_lib.c **** static osRtxMutex_t os_mutex_cb[OS_MUTEX_NUM] \
+ 268:./src/rtx_lib.c **** __attribute__((section(".bss.os.mutex.cb")));
+ 269:./src/rtx_lib.c **** 
+ 270:./src/rtx_lib.c **** // Memory Pool for Mutex Control Blocks
+ 271:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_mutex \
+ 272:./src/rtx_lib.c **** __attribute__((section(".data.os.mutex.mpi"))) =
+ 273:./src/rtx_lib.c **** { (uint32_t)OS_MUTEX_NUM, 0U, (uint32_t)osRtxMutexCbSize, &os_mutex_cb[0], NULL, NULL };
+ 274:./src/rtx_lib.c **** 
+ 275:./src/rtx_lib.c **** #endif  // (OS_MUTEX_OBJ_MEM != 0)
+ 276:./src/rtx_lib.c **** 
+ 277:./src/rtx_lib.c **** 
+ 278:./src/rtx_lib.c **** // Semaphore Configuration
+ 279:./src/rtx_lib.c **** // =======================
+ 280:./src/rtx_lib.c **** 
+ 281:./src/rtx_lib.c **** #if (OS_SEMAPHORE_OBJ_MEM != 0)
+ 282:./src/rtx_lib.c **** 
+ 283:./src/rtx_lib.c **** #if (OS_SEMAPHORE_NUM == 0)
+ 284:./src/rtx_lib.c **** #error "Invalid number of Semaphore objects!"
+ 285:./src/rtx_lib.c **** #endif
+ 286:./src/rtx_lib.c **** 
+ 287:./src/rtx_lib.c **** // Semaphore Control Blocks
+ 288:./src/rtx_lib.c **** static osRtxSemaphore_t os_semaphore_cb[OS_SEMAPHORE_NUM] \
+ 289:./src/rtx_lib.c **** __attribute__((section(".bss.os.semaphore.cb")));
+ 290:./src/rtx_lib.c **** 
+ 291:./src/rtx_lib.c **** // Memory Pool for Semaphore Control Blocks
+ 292:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_semaphore \
+ 293:./src/rtx_lib.c **** __attribute__((section(".data.os.semaphore.mpi"))) =
+ 294:./src/rtx_lib.c **** { (uint32_t)OS_SEMAPHORE_NUM, 0U, (uint32_t)osRtxSemaphoreCbSize, &os_semaphore_cb[0], NULL, NULL }
+ 295:./src/rtx_lib.c **** 
+ 296:./src/rtx_lib.c **** #endif  // (OS_SEMAPHORE_OBJ_MEM != 0)
+ 297:./src/rtx_lib.c **** 
+ 298:./src/rtx_lib.c **** 
+ 299:./src/rtx_lib.c **** // Memory Pool Configuration
+ 300:./src/rtx_lib.c **** // =========================
+ 301:./src/rtx_lib.c **** 
+ 302:./src/rtx_lib.c **** #if (OS_MEMPOOL_OBJ_MEM != 0)
+ 303:./src/rtx_lib.c **** 
+ 304:./src/rtx_lib.c **** #if (OS_MEMPOOL_NUM == 0)
+ 305:./src/rtx_lib.c **** #error "Invalid number of Memory Pool objects!"
+ 306:./src/rtx_lib.c **** #endif
+ 307:./src/rtx_lib.c **** 
+ 308:./src/rtx_lib.c **** // Memory Pool Control Blocks
+ 309:./src/rtx_lib.c **** static osRtxMemoryPool_t os_mp_cb[OS_MEMPOOL_NUM] \
+ 310:./src/rtx_lib.c **** __attribute__((section(".bss.os.mempool.cb")));
+ 311:./src/rtx_lib.c **** 
+ 312:./src/rtx_lib.c **** // Memory Pool for Memory Pool Control Blocks
+ 313:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_mp \
+ 314:./src/rtx_lib.c **** __attribute__((section(".data.os.mempool.mpi"))) =
+ 315:./src/rtx_lib.c **** { (uint32_t)OS_MEMPOOL_NUM, 0U, (uint32_t)osRtxMemoryPoolCbSize, &os_mp_cb[0], NULL, NULL };
+ 316:./src/rtx_lib.c **** 
+ 317:./src/rtx_lib.c **** // Memory Pool for Memory Pool Data Storage
+ 318:./src/rtx_lib.c **** #if (OS_MEMPOOL_DATA_SIZE != 0)
+ 319:./src/rtx_lib.c **** #if ((OS_MEMPOOL_DATA_SIZE % 8) != 0)
+ 320:./src/rtx_lib.c **** #error "Invalid Data Memory size for Memory Pools!"
+ 321:./src/rtx_lib.c **** #endif
+ 322:./src/rtx_lib.c **** static uint64_t os_mp_data[2 + OS_MEMPOOL_NUM + (OS_MEMPOOL_DATA_SIZE/8)] \
+ 323:./src/rtx_lib.c **** __attribute__((section(".bss.os.mempool.mem")));
+ 324:./src/rtx_lib.c **** #endif
+ 325:./src/rtx_lib.c **** 
+ 326:./src/rtx_lib.c **** #endif  // (OS_MEMPOOL_OBJ_MEM != 0)
+ 327:./src/rtx_lib.c **** 
+ 328:./src/rtx_lib.c **** 
+ 329:./src/rtx_lib.c **** // Message Queue Configuration
+ 330:./src/rtx_lib.c **** // ===========================
+ 331:./src/rtx_lib.c **** 
+ 332:./src/rtx_lib.c **** #if (OS_MSGQUEUE_OBJ_MEM != 0)
+ 333:./src/rtx_lib.c **** 
+ 334:./src/rtx_lib.c **** #if (OS_MSGQUEUE_NUM == 0)
+ 335:./src/rtx_lib.c **** #error "Invalid number of Message Queue objects!"
+ 336:./src/rtx_lib.c **** #endif
+ 337:./src/rtx_lib.c **** 
+ 338:./src/rtx_lib.c **** // Message Queue Control Blocks
+ 339:./src/rtx_lib.c **** static osRtxMessageQueue_t os_mq_cb[OS_MSGQUEUE_NUM] \
+ 340:./src/rtx_lib.c **** __attribute__((section(".bss.os.msgqueue.cb")));
+ 341:./src/rtx_lib.c **** 
+ 342:./src/rtx_lib.c **** // Memory Pool for Message Queue Control Blocks
+ 343:./src/rtx_lib.c **** static osRtxMpInfo_t os_mpi_mq \
+ 344:./src/rtx_lib.c **** __attribute__((section(".data.os.msgqueue.mpi"))) =
+ 345:./src/rtx_lib.c **** { (uint32_t)OS_MSGQUEUE_NUM, 0U, (uint32_t)osRtxMessageQueueCbSize, &os_mq_cb[0], NULL, NULL };
+ 346:./src/rtx_lib.c **** 
+ 347:./src/rtx_lib.c **** // Memory Pool for Message Queue Data Storage
+ 348:./src/rtx_lib.c **** #if (OS_MSGQUEUE_DATA_SIZE != 0)
+ 349:./src/rtx_lib.c **** #if ((OS_MSGQUEUE_DATA_SIZE % 8) != 0)
+ 350:./src/rtx_lib.c **** #error "Invalid Data Memory size for Message Queues!"
+ 351:./src/rtx_lib.c **** #endif
+ 352:./src/rtx_lib.c **** static uint64_t os_mq_data[2 + OS_MSGQUEUE_NUM + (OS_MSGQUEUE_DATA_SIZE/8)] \
+ 353:./src/rtx_lib.c **** __attribute__((section(".bss.os.msgqueue.mem")));
+ 354:./src/rtx_lib.c **** #endif
+ 355:./src/rtx_lib.c **** 
+ 356:./src/rtx_lib.c **** #endif  // (OS_MSGQUEUE_OBJ_MEM != 0)
+ 357:./src/rtx_lib.c **** 
+ 358:./src/rtx_lib.c **** 
+ 359:./src/rtx_lib.c **** // Event Recorder Configuration
+ 360:./src/rtx_lib.c **** // ============================
+ 361:./src/rtx_lib.c **** 
+ 362:./src/rtx_lib.c **** #if (defined(OS_EVR_INIT) && (OS_EVR_INIT != 0))
+ 363:./src/rtx_lib.c **** 
+ 364:./src/rtx_lib.c **** // Initial Thread configuration covered also Thread Flags and Generic Wait
+ 365:./src/rtx_lib.c **** #if  defined(OS_EVR_THREAD_FILTER)
+ 366:./src/rtx_lib.c **** #if !defined(OS_EVR_THFLAGS_FILTER)
+ 367:./src/rtx_lib.c **** #define OS_EVR_THFLAGS_FILTER   OS_EVR_THREAD_FILTER
+ 368:./src/rtx_lib.c **** #endif
+ 369:./src/rtx_lib.c **** #if !defined(OS_EVR_WAIT_FILTER)
+ 370:./src/rtx_lib.c **** #define OS_EVR_WAIT_FILTER      OS_EVR_THREAD_FILTER
+ 371:./src/rtx_lib.c **** #endif
+ 372:./src/rtx_lib.c **** #endif
+ 373:./src/rtx_lib.c **** 
+ 374:./src/rtx_lib.c **** // Migrate initial filter configuration
+ 375:./src/rtx_lib.c **** #if  defined(OS_EVR_MEMORY_FILTER)
+ 376:./src/rtx_lib.c **** #define OS_EVR_MEMORY_LEVEL     (((OS_EVR_MEMORY_FILTER    & 0x80U) != 0U) ? (OS_EVR_MEMORY_FILTER 
+ 377:./src/rtx_lib.c **** #endif
+ 378:./src/rtx_lib.c **** #if  defined(OS_EVR_KERNEL_FILTER)
+ 379:./src/rtx_lib.c **** #define OS_EVR_KERNEL_LEVEL     (((OS_EVR_KERNEL_FILTER    & 0x80U) != 0U) ? (OS_EVR_KERNEL_FILTER 
+ 380:./src/rtx_lib.c **** #endif
+ 381:./src/rtx_lib.c **** #if  defined(OS_EVR_THREAD_FILTER)
+ 382:./src/rtx_lib.c **** #define OS_EVR_THREAD_LEVEL     (((OS_EVR_THREAD_FILTER    & 0x80U) != 0U) ? (OS_EVR_THREAD_FILTER 
+ 383:./src/rtx_lib.c **** #endif
+ 384:./src/rtx_lib.c **** #if  defined(OS_EVR_WAIT_FILTER)
+ 385:./src/rtx_lib.c **** #define OS_EVR_WAIT_LEVEL       (((OS_EVR_WAIT_FILTER      & 0x80U) != 0U) ? (OS_EVR_WAIT_FILTER   
+ 386:./src/rtx_lib.c **** #endif
+ 387:./src/rtx_lib.c **** #if  defined(OS_EVR_THFLAGS_FILTER)
+ 388:./src/rtx_lib.c **** #define OS_EVR_THFLAGS_LEVEL    (((OS_EVR_THFLAGS_FILTER   & 0x80U) != 0U) ? (OS_EVR_THFLAGS_FILTER
+ 389:./src/rtx_lib.c **** #endif
+ 390:./src/rtx_lib.c **** #if  defined(OS_EVR_EVFLAGS_FILTER)
+ 391:./src/rtx_lib.c **** #define OS_EVR_EVFLAGS_LEVEL    (((OS_EVR_EVFLAGS_FILTER   & 0x80U) != 0U) ? (OS_EVR_EVFLAGS_FILTER
+ 392:./src/rtx_lib.c **** #endif
+ 393:./src/rtx_lib.c **** #if  defined(OS_EVR_TIMER_FILTER)
+ 394:./src/rtx_lib.c **** #define OS_EVR_TIMER_LEVEL      (((OS_EVR_TIMER_FILTER     & 0x80U) != 0U) ? (OS_EVR_TIMER_FILTER  
+ 395:./src/rtx_lib.c **** #endif
+ 396:./src/rtx_lib.c **** #if  defined(OS_EVR_MUTEX_FILTER)
+ 397:./src/rtx_lib.c **** #define OS_EVR_MUTEX_LEVEL      (((OS_EVR_MUTEX_FILTER     & 0x80U) != 0U) ? (OS_EVR_MUTEX_FILTER  
+ 398:./src/rtx_lib.c **** #endif
+ 399:./src/rtx_lib.c **** #if  defined(OS_EVR_SEMAPHORE_FILTER)
+ 400:./src/rtx_lib.c **** #define OS_EVR_SEMAPHORE_LEVEL  (((OS_EVR_SEMAPHORE_FILTER & 0x80U) != 0U) ? (OS_EVR_SEMAPHORE_FILT
+ 401:./src/rtx_lib.c **** #endif
+ 402:./src/rtx_lib.c **** #if  defined(OS_EVR_MEMPOOL_FILTER)
+ 403:./src/rtx_lib.c **** #define OS_EVR_MEMPOOL_LEVEL    (((OS_EVR_MEMPOOL_FILTER   & 0x80U) != 0U) ? (OS_EVR_MEMPOOL_FILTER
+ 404:./src/rtx_lib.c **** #endif
+ 405:./src/rtx_lib.c **** #if  defined(OS_EVR_MSGQUEUE_FILTER)
+ 406:./src/rtx_lib.c **** #define OS_EVR_MSGQUEUE_LEVEL   (((OS_EVR_MSGQUEUE_FILTER  & 0x80U) != 0U) ? (OS_EVR_MSGQUEUE_FILTE
+ 407:./src/rtx_lib.c **** #endif
+ 408:./src/rtx_lib.c **** 
+ 409:./src/rtx_lib.c **** #if  defined(RTE_Compiler_EventRecorder)
+ 410:./src/rtx_lib.c **** 
+ 411:./src/rtx_lib.c **** // Event Recorder Initialize
+ 412:./src/rtx_lib.c **** __STATIC_INLINE void evr_initialize (void) {
+ 413:./src/rtx_lib.c **** 
+ 414:./src/rtx_lib.c ****   (void)EventRecorderInitialize(OS_EVR_LEVEL, (uint32_t)OS_EVR_START);
+ 415:./src/rtx_lib.c **** 
+ 416:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_MEMORY_LEVEL,    EvtRtxMemoryNo,       EvtRtxMemoryNo);
+ 417:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_KERNEL_LEVEL,    EvtRtxKernelNo,       EvtRtxKernelNo);
+ 418:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_THREAD_LEVEL,    EvtRtxThreadNo,       EvtRtxThreadNo);
+ 419:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_WAIT_LEVEL,      EvtRtxWaitNo,         EvtRtxWaitNo);
+ 420:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_THFLAGS_LEVEL,   EvtRtxThreadFlagsNo,  EvtRtxThreadFlagsNo);
+ 421:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_EVFLAGS_LEVEL,   EvtRtxEventFlagsNo,   EvtRtxEventFlagsNo);
+ 422:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_TIMER_LEVEL,     EvtRtxTimerNo,        EvtRtxTimerNo);
+ 423:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_MUTEX_LEVEL,     EvtRtxMutexNo,        EvtRtxMutexNo);
+ 424:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_SEMAPHORE_LEVEL, EvtRtxSemaphoreNo,    EvtRtxSemaphoreNo);
+ 425:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_MEMPOOL_LEVEL,   EvtRtxMemoryPoolNo,   EvtRtxMemoryPoolNo);
+ 426:./src/rtx_lib.c ****   (void)EventRecorderEnable(OS_EVR_MSGQUEUE_LEVEL,  EvtRtxMessageQueueNo, EvtRtxMessageQueueNo);
+ 427:./src/rtx_lib.c **** }
+ 428:./src/rtx_lib.c **** 
+ 429:./src/rtx_lib.c **** #else
+ 430:./src/rtx_lib.c **** #warning "Event Recorder cannot be initialized (Event Recorder component is not selected)!"
+ 431:./src/rtx_lib.c **** #define evr_initialize()
+ 432:./src/rtx_lib.c **** #endif
+ 433:./src/rtx_lib.c **** 
+ 434:./src/rtx_lib.c **** #endif  // (OS_EVR_INIT != 0)
+ 435:./src/rtx_lib.c **** 
+ 436:./src/rtx_lib.c **** 
+ 437:./src/rtx_lib.c **** // OS Configuration
+ 438:./src/rtx_lib.c **** // ================
+ 439:./src/rtx_lib.c **** 
+ 440:./src/rtx_lib.c **** 
+ 441:./src/rtx_lib.c **** const osRtxConfig_t osRtxConfig \
+ 442:./src/rtx_lib.c **** __USED \
+ 443:./src/rtx_lib.c **** __attribute__((section(".rodata"))) =
+ 444:./src/rtx_lib.c **** {
+ 445:./src/rtx_lib.c ****   //lint -e{835} "Zero argument to operator"
+ 446:./src/rtx_lib.c ****   0U   // Flags
+ 447:./src/rtx_lib.c **** #if (OS_PRIVILEGE_MODE != 0)
+ 448:./src/rtx_lib.c ****   | osRtxConfigPrivilegedMode
+ 449:./src/rtx_lib.c **** #endif
+ 450:./src/rtx_lib.c **** #if (OS_STACK_CHECK != 0)
+ 451:./src/rtx_lib.c ****   | osRtxConfigStackCheck
+ 452:./src/rtx_lib.c **** #endif
+ 453:./src/rtx_lib.c **** #if (OS_STACK_WATERMARK != 0)
+ 454:./src/rtx_lib.c ****   | osRtxConfigStackWatermark
+ 455:./src/rtx_lib.c **** #endif
+ 456:./src/rtx_lib.c ****   ,
+ 457:./src/rtx_lib.c ****   (uint32_t)OS_TICK_FREQ,
+ 458:./src/rtx_lib.c **** #if (OS_ROBIN_ENABLE != 0)
+ 459:./src/rtx_lib.c ****   (uint32_t)OS_ROBIN_TIMEOUT,
+ 460:./src/rtx_lib.c **** #else
+ 461:./src/rtx_lib.c ****   0U,
+ 462:./src/rtx_lib.c **** #endif
+ 463:./src/rtx_lib.c ****   { &os_isr_queue[0], (uint16_t)(sizeof(os_isr_queue)/sizeof(void *)), 0U },
+ 464:./src/rtx_lib.c ****   { 
+ 465:./src/rtx_lib.c ****     // Memory Pools (Variable Block Size)
+ 466:./src/rtx_lib.c **** #if ((OS_THREAD_OBJ_MEM != 0) && (OS_THREAD_USER_STACK_SIZE != 0))
+ 467:./src/rtx_lib.c ****     &os_thread_stack[0], sizeof(os_thread_stack),
+ 468:./src/rtx_lib.c **** #else
+ 469:./src/rtx_lib.c ****     NULL, 0U,
+ 470:./src/rtx_lib.c **** #endif
+ 471:./src/rtx_lib.c **** #if ((OS_MEMPOOL_OBJ_MEM != 0) && (OS_MEMPOOL_DATA_SIZE != 0))
+ 472:./src/rtx_lib.c ****     &os_mp_data[0], sizeof(os_mp_data),
+ 473:./src/rtx_lib.c **** #else
+ 474:./src/rtx_lib.c ****     NULL, 0U,
+ 475:./src/rtx_lib.c **** #endif
+ 476:./src/rtx_lib.c **** #if ((OS_MSGQUEUE_OBJ_MEM != 0) && (OS_MSGQUEUE_DATA_SIZE != 0))
+ 477:./src/rtx_lib.c ****     &os_mq_data[0], sizeof(os_mq_data),
+ 478:./src/rtx_lib.c **** #else
+ 479:./src/rtx_lib.c ****     NULL, 0U,
+ 480:./src/rtx_lib.c **** #endif
+ 481:./src/rtx_lib.c **** #if (OS_DYNAMIC_MEM_SIZE != 0)
+ 482:./src/rtx_lib.c ****     &os_mem[0], (uint32_t)OS_DYNAMIC_MEM_SIZE,
+ 483:./src/rtx_lib.c **** #else
+ 484:./src/rtx_lib.c ****     NULL, 0U
+ 485:./src/rtx_lib.c **** #endif
+ 486:./src/rtx_lib.c ****   },
+ 487:./src/rtx_lib.c ****   {
+ 488:./src/rtx_lib.c ****     // Memory Pools (Fixed Block Size)
+ 489:./src/rtx_lib.c **** #if (OS_THREAD_OBJ_MEM != 0)
+ 490:./src/rtx_lib.c **** #if (OS_THREAD_DEF_STACK_NUM != 0)
+ 491:./src/rtx_lib.c ****     &os_mpi_def_stack,
+ 492:./src/rtx_lib.c **** #else
+ 493:./src/rtx_lib.c ****     NULL,
+ 494:./src/rtx_lib.c **** #endif
+ 495:./src/rtx_lib.c ****     &os_mpi_thread,
+ 496:./src/rtx_lib.c **** #else
+ 497:./src/rtx_lib.c ****     NULL, 
+ 498:./src/rtx_lib.c ****     NULL,
+ 499:./src/rtx_lib.c **** #endif
+ 500:./src/rtx_lib.c **** #if (OS_TIMER_OBJ_MEM != 0)
+ 501:./src/rtx_lib.c ****     &os_mpi_timer,
+ 502:./src/rtx_lib.c **** #else
+ 503:./src/rtx_lib.c ****     NULL,
+ 504:./src/rtx_lib.c **** #endif
+ 505:./src/rtx_lib.c **** #if (OS_EVFLAGS_OBJ_MEM != 0)
+ 506:./src/rtx_lib.c ****     &os_mpi_ef,
+ 507:./src/rtx_lib.c **** #else
+ 508:./src/rtx_lib.c ****     NULL,
+ 509:./src/rtx_lib.c **** #endif
+ 510:./src/rtx_lib.c **** #if (OS_MUTEX_OBJ_MEM != 0)
+ 511:./src/rtx_lib.c ****     &os_mpi_mutex,
+ 512:./src/rtx_lib.c **** #else
+ 513:./src/rtx_lib.c ****     NULL,
+ 514:./src/rtx_lib.c **** #endif
+ 515:./src/rtx_lib.c **** #if (OS_SEMAPHORE_OBJ_MEM != 0)
+ 516:./src/rtx_lib.c ****     &os_mpi_semaphore,
+ 517:./src/rtx_lib.c **** #else
+ 518:./src/rtx_lib.c ****     NULL,
+ 519:./src/rtx_lib.c **** #endif
+ 520:./src/rtx_lib.c **** #if (OS_MEMPOOL_OBJ_MEM != 0)
+ 521:./src/rtx_lib.c ****     &os_mpi_mp,
+ 522:./src/rtx_lib.c **** #else
+ 523:./src/rtx_lib.c ****     NULL,
+ 524:./src/rtx_lib.c **** #endif
+ 525:./src/rtx_lib.c **** #if (OS_MSGQUEUE_OBJ_MEM != 0)
+ 526:./src/rtx_lib.c ****     &os_mpi_mq,
+ 527:./src/rtx_lib.c **** #else
+ 528:./src/rtx_lib.c ****     NULL,
+ 529:./src/rtx_lib.c **** #endif
+ 530:./src/rtx_lib.c ****   },
+ 531:./src/rtx_lib.c ****   (uint32_t)OS_STACK_SIZE,
+ 532:./src/rtx_lib.c ****   &os_idle_thread_attr,
+ 533:./src/rtx_lib.c **** #if ((OS_TIMER_THREAD_STACK_SIZE != 0) && (OS_TIMER_CB_QUEUE != 0))
+ 534:./src/rtx_lib.c ****   &os_timer_thread_attr,
+ 535:./src/rtx_lib.c ****   &os_timer_mq_attr,
+ 536:./src/rtx_lib.c ****   (uint32_t)OS_TIMER_CB_QUEUE
+ 537:./src/rtx_lib.c **** #else
+ 538:./src/rtx_lib.c ****   NULL,
+ 539:./src/rtx_lib.c ****   NULL,
+ 540:./src/rtx_lib.c ****   0U
+ 541:./src/rtx_lib.c **** #endif
+ 542:./src/rtx_lib.c **** };
+ 543:./src/rtx_lib.c **** 
+ 544:./src/rtx_lib.c **** 
+ 545:./src/rtx_lib.c **** // Non weak reference to library irq module
+ 546:./src/rtx_lib.c **** //lint -esym(526,irqRtxLib)    "Defined by Exception handlers"
+ 547:./src/rtx_lib.c **** //lint -esym(714,irqRtxLibRef) "Non weak reference"
+ 548:./src/rtx_lib.c **** //lint -esym(765,irqRtxLibRef) "Global scope"
+ 549:./src/rtx_lib.c **** extern       uint8_t  irqRtxLib;
+ 550:./src/rtx_lib.c **** extern const uint8_t *irqRtxLibRef;
+ 551:./src/rtx_lib.c ****        const uint8_t *irqRtxLibRef = &irqRtxLib;
+ 552:./src/rtx_lib.c **** 
+ 553:./src/rtx_lib.c **** // Default User SVC Table
+ 554:./src/rtx_lib.c **** //lint -esym(714,osRtxUserSVC) "Referenced by Exception handlers"
+ 555:./src/rtx_lib.c **** //lint -esym(765,osRtxUserSVC) "Global scope"
+ 556:./src/rtx_lib.c **** //lint -e{9067} "extern array declared without size"
+ 557:./src/rtx_lib.c **** extern void * const osRtxUserSVC[];
+ 558:./src/rtx_lib.c **** __WEAK void * const osRtxUserSVC[1] = { (void *)0 };
+ 559:./src/rtx_lib.c **** 
+ 560:./src/rtx_lib.c **** 
+ 561:./src/rtx_lib.c **** // OS Sections
+ 562:./src/rtx_lib.c **** // ===========
+ 563:./src/rtx_lib.c **** 
+ 564:./src/rtx_lib.c **** #if  defined(__CC_ARM) || \
+ 565:./src/rtx_lib.c ****     (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
+ 566:./src/rtx_lib.c **** static uint32_t __os_thread_cb_start__    __attribute__((weakref(".bss.os.thread.cb$$Base")));     
+ 567:./src/rtx_lib.c **** static uint32_t __os_thread_cb_end__      __attribute__((weakref(".bss.os.thread.cb$$Limit")));    
+ 568:./src/rtx_lib.c **** static uint32_t __os_timer_cb_start__     __attribute__((weakref(".bss.os.timer.cb$$Base")));      
+ 569:./src/rtx_lib.c **** static uint32_t __os_timer_cb_end__       __attribute__((weakref(".bss.os.timer.cb$$Limit")));     
+ 570:./src/rtx_lib.c **** static uint32_t __os_evflags_cb_start__   __attribute__((weakref(".bss.os.evflags.cb$$Base")));    
+ 571:./src/rtx_lib.c **** static uint32_t __os_evflags_cb_end__     __attribute__((weakref(".bss.os.evflags.cb$$Limit")));   
+ 572:./src/rtx_lib.c **** static uint32_t __os_mutex_cb_start__     __attribute__((weakref(".bss.os.mutex.cb$$Base")));      
+ 573:./src/rtx_lib.c **** static uint32_t __os_mutex_cb_end__       __attribute__((weakref(".bss.os.mutex.cb$$Limit")));     
+ 574:./src/rtx_lib.c **** static uint32_t __os_semaphore_cb_start__ __attribute__((weakref(".bss.os.semaphore.cb$$Base")));  
+ 575:./src/rtx_lib.c **** static uint32_t __os_semaphore_cb_end__   __attribute__((weakref(".bss.os.semaphore.cb$$Limit"))); 
+ 576:./src/rtx_lib.c **** static uint32_t __os_mempool_cb_start__   __attribute__((weakref(".bss.os.mempool.cb$$Base")));    
+ 577:./src/rtx_lib.c **** static uint32_t __os_mempool_cb_end__     __attribute__((weakref(".bss.os.mempool.cb$$Limit")));   
+ 578:./src/rtx_lib.c **** static uint32_t __os_msgqueue_cb_start__  __attribute__((weakref(".bss.os.msgqueue.cb$$Base")));   
+ 579:./src/rtx_lib.c **** static uint32_t __os_msgqueue_cb_end__    __attribute__((weakref(".bss.os.msgqueue.cb$$Limit")));  
+ 580:./src/rtx_lib.c **** #else
+ 581:./src/rtx_lib.c **** extern uint32_t __os_thread_cb_start__    __attribute__((weak));
+ 582:./src/rtx_lib.c **** extern uint32_t __os_thread_cb_end__      __attribute__((weak));
+ 583:./src/rtx_lib.c **** extern uint32_t __os_timer_cb_start__     __attribute__((weak));
+ 584:./src/rtx_lib.c **** extern uint32_t __os_timer_cb_end__       __attribute__((weak));
+ 585:./src/rtx_lib.c **** extern uint32_t __os_evflags_cb_start__   __attribute__((weak));
+ 586:./src/rtx_lib.c **** extern uint32_t __os_evflags_cb_end__     __attribute__((weak));
+ 587:./src/rtx_lib.c **** extern uint32_t __os_mutex_cb_start__     __attribute__((weak));
+ 588:./src/rtx_lib.c **** extern uint32_t __os_mutex_cb_end__       __attribute__((weak));
+ 589:./src/rtx_lib.c **** extern uint32_t __os_semaphore_cb_start__ __attribute__((weak));
+ 590:./src/rtx_lib.c **** extern uint32_t __os_semaphore_cb_end__   __attribute__((weak));
+ 591:./src/rtx_lib.c **** extern uint32_t __os_mempool_cb_start__   __attribute__((weak));
+ 592:./src/rtx_lib.c **** extern uint32_t __os_mempool_cb_end__     __attribute__((weak));
+ 593:./src/rtx_lib.c **** extern uint32_t __os_msgqueue_cb_start__  __attribute__((weak));
+ 594:./src/rtx_lib.c **** extern uint32_t __os_msgqueue_cb_end__    __attribute__((weak));
+ 595:./src/rtx_lib.c **** #endif
+ 596:./src/rtx_lib.c **** 
+ 597:./src/rtx_lib.c **** //lint -e{9067} "extern array declared without size"
+ 598:./src/rtx_lib.c **** extern const uint32_t * const os_cb_sections[];
+ 599:./src/rtx_lib.c **** 
+ 600:./src/rtx_lib.c **** //lint -esym(714,os_cb_sections) "Referenced by debugger"
+ 601:./src/rtx_lib.c **** //lint -esym(765,os_cb_sections) "Global scope"
+ 602:./src/rtx_lib.c **** const uint32_t * const os_cb_sections[] \
+ 603:./src/rtx_lib.c **** __USED \
+ 604:./src/rtx_lib.c **** __attribute__((section(".rodata"))) =
+ 605:./src/rtx_lib.c **** {
+ 606:./src/rtx_lib.c ****   &__os_thread_cb_start__,
+ 607:./src/rtx_lib.c ****   &__os_thread_cb_end__,
+ 608:./src/rtx_lib.c ****   &__os_timer_cb_start__,
+ 609:./src/rtx_lib.c ****   &__os_timer_cb_end__,
+ 610:./src/rtx_lib.c ****   &__os_evflags_cb_start__,
+ 611:./src/rtx_lib.c ****   &__os_evflags_cb_end__,
+ 612:./src/rtx_lib.c ****   &__os_mutex_cb_start__,
+ 613:./src/rtx_lib.c ****   &__os_mutex_cb_end__,
+ 614:./src/rtx_lib.c ****   &__os_semaphore_cb_start__,
+ 615:./src/rtx_lib.c ****   &__os_semaphore_cb_end__,
+ 616:./src/rtx_lib.c ****   &__os_mempool_cb_start__,
+ 617:./src/rtx_lib.c ****   &__os_mempool_cb_end__,
+ 618:./src/rtx_lib.c ****   &__os_msgqueue_cb_start__,
+ 619:./src/rtx_lib.c ****   &__os_msgqueue_cb_end__
+ 620:./src/rtx_lib.c **** };
+ 621:./src/rtx_lib.c **** 
+ 622:./src/rtx_lib.c **** 
+ 623:./src/rtx_lib.c **** // OS Initialization
+ 624:./src/rtx_lib.c **** // =================
+ 625:./src/rtx_lib.c **** 
+ 626:./src/rtx_lib.c **** #if  defined(__CC_ARM) || \
+ 627:./src/rtx_lib.c ****     (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
+ 628:./src/rtx_lib.c **** 
+ 629:./src/rtx_lib.c **** #ifndef __MICROLIB
+ 630:./src/rtx_lib.c **** //lint -esym(714,_platform_post_stackheap_init) "Referenced by C library"
+ 631:./src/rtx_lib.c **** //lint -esym(765,_platform_post_stackheap_init) "Global scope"
+ 632:./src/rtx_lib.c **** extern void _platform_post_stackheap_init (void);
+ 633:./src/rtx_lib.c **** __WEAK void _platform_post_stackheap_init (void) {
+ 634:./src/rtx_lib.c ****   (void)osKernelInitialize();
+ 635:./src/rtx_lib.c **** }
+ 636:./src/rtx_lib.c **** #endif
+ 637:./src/rtx_lib.c **** 
+ 638:./src/rtx_lib.c **** #elif defined(__GNUC__)
+ 639:./src/rtx_lib.c **** 
+ 640:./src/rtx_lib.c **** extern void software_init_hook (void);
+ 641:./src/rtx_lib.c **** __WEAK void software_init_hook (void) {
+ 181              		.loc 1 641 39
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 1, uses_anonymous_args = 0
+ 185 0000 80B5     		push	{r7, lr}
+ 186              	.LCFI0:
+ 187              		.cfi_def_cfa_offset 8
+ 188              		.cfi_offset 7, -8
+ 189              		.cfi_offset 14, -4
+ 190 0002 00AF     		add	r7, sp, #0
+ 191              	.LCFI1:
+ 192              		.cfi_def_cfa_register 7
+ 642:./src/rtx_lib.c ****   (void)osKernelInitialize();
+ 193              		.loc 1 642 9
+ 194 0004 FFF7FEFF 		bl	osKernelInitialize
+ 643:./src/rtx_lib.c **** }
+ 195              		.loc 1 643 1
+ 196 0008 00BF     		nop
+ 197 000a 80BD     		pop	{r7, pc}
+ 198              		.cfi_endproc
+ 199              	.LFE104:
+ 201              		.weak	__os_msgqueue_cb_end__
+ 202              		.weak	__os_msgqueue_cb_start__
+ 203              		.weak	__os_mempool_cb_end__
+ 204              		.weak	__os_mempool_cb_start__
+ 205              		.weak	__os_semaphore_cb_end__
+ 206              		.weak	__os_semaphore_cb_start__
+ 207              		.weak	__os_mutex_cb_end__
+ 208              		.weak	__os_mutex_cb_start__
+ 209              		.weak	__os_evflags_cb_end__
+ 210              		.weak	__os_evflags_cb_start__
+ 211              		.weak	__os_timer_cb_end__
+ 212              		.weak	__os_timer_cb_start__
+ 213              		.weak	__os_thread_cb_end__
+ 214              		.weak	__os_thread_cb_start__
+ 215              	.Letext0:
+ 216              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 217              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 218              		.file 4 "./inc/cmsis_os2.h"
+ 219              		.file 5 "./inc/rtx_os.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 rtx_lib.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:17     .bss.os:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:20     .bss.os:00000000 os_mem
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:25     .bss.os:00008000 os_isr_queue
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:28     .bss.os.thread.cb:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:31     .bss.os.thread.cb:00000000 os_idle_thread_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:34     .bss.os.thread.stack:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:37     .bss.os.thread.stack:00000000 os_idle_thread_stack
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:40     .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:43     .rodata:00000000 os_idle_thread_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:57     .bss.os.thread.cb:00000044 os_timer_thread_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:63     .bss.os.thread.stack:00000100 os_timer_thread_stack
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:69     .rodata:00000024 os_timer_thread_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:80     .bss.os.msgqueue.cb:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:83     .bss.os.msgqueue.cb:00000000 os_timer_mq_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:86     .bss.os.msgqueue.mem:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:89     .bss.os.msgqueue.mem:00000000 os_timer_mq_data
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:95     .rodata:00000048 os_timer_mq_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:107    .rodata:00000060 osRtxConfig
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:140    .data:00000000 irqRtxLibRef
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:137    .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:147    .rodata:000000c8 osRtxUserSVC
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:154    .rodata:000000cc os_cb_sections
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:170    .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:178    .text:00000000 software_init_hook
+
+UNDEFINED SYMBOLS
+irqRtxLib
+__os_thread_cb_start__
+__os_thread_cb_end__
+__os_timer_cb_start__
+__os_timer_cb_end__
+__os_evflags_cb_start__
+__os_evflags_cb_end__
+__os_mutex_cb_start__
+__os_mutex_cb_end__
+__os_semaphore_cb_start__
+__os_semaphore_cb_end__
+__os_mempool_cb_start__
+__os_mempool_cb_end__
+__os_msgqueue_cb_start__
+__os_msgqueue_cb_end__
+osKernelInitialize

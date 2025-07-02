@@ -1,0 +1,2179 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ip4.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.bss
+  17              		.align	1
+  18              	ip_id:
+  19 0000 0000     		.space	2
+  21              		.text
+  22              		.align	1
+  23              		.global	ip4_route
+  24              		.arch armv7e-m
+  25              		.syntax unified
+  26              		.thumb
+  27              		.thumb_func
+  28              		.fpu fpv5-d16
+  30              	ip4_route:
+  31              	.LFB25:
+  32              		.file 1 "./lwip-2.1.2/src/core/ipv4/ip4.c"
+   1:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+   2:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @file
+   3:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * This is the IPv4 layer implementation for incoming and outgoing IP traffic.
+   4:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+   5:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @see ip_frag.c
+   6:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+   7:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+   8:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+   9:./lwip-2.1.2/src/core/ipv4/ip4.c **** /*
+  10:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+  11:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * All rights reserved.
+  12:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  13:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  14:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * are permitted provided that the following conditions are met:
+  15:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  16:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  17:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *    this list of conditions and the following disclaimer.
+  18:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  19:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *    this list of conditions and the following disclaimer in the documentation
+  20:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *    and/or other materials provided with the distribution.
+  21:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * 3. The name of the author may not be used to endorse or promote products
+  22:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *    derived from this software without specific prior written permission.
+  23:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  24:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  25:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  26:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  27:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  28:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  29:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  30:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  31:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  32:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  33:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * OF SUCH DAMAGE.
+  34:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  35:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * This file is part of the lwIP TCP/IP stack.
+  36:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  37:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Author: Adam Dunkels <adam@sics.se>
+  38:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+  39:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+  40:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  41:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/opt.h"
+  42:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  43:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_IPV4
+  44:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  45:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/ip.h"
+  46:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/def.h"
+  47:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/mem.h"
+  48:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/ip4_frag.h"
+  49:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/inet_chksum.h"
+  50:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/netif.h"
+  51:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/icmp.h"
+  52:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/igmp.h"
+  53:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/priv/raw_priv.h"
+  54:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/udp.h"
+  55:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/priv/tcp_priv.h"
+  56:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/autoip.h"
+  57:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/stats.h"
+  58:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include "lwip/prot/iana.h"
+  59:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  60:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include <string.h>
+  61:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  62:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifdef LWIP_HOOK_FILENAME
+  63:./lwip-2.1.2/src/core/ipv4/ip4.c **** #include LWIP_HOOK_FILENAME
+  64:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+  65:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  66:./lwip-2.1.2/src/core/ipv4/ip4.c **** /** Set this to 0 in the rare case of wanting to call an extra function to
+  67:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * generate the IP checksum (in contrast to calculating it on-the-fly). */
+  68:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifndef LWIP_INLINE_IP_CHKSUM
+  69:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_CHECKSUM_CTRL_PER_NETIF
+  70:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define LWIP_INLINE_IP_CHKSUM   0
+  71:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* LWIP_CHECKSUM_CTRL_PER_NETIF */
+  72:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define LWIP_INLINE_IP_CHKSUM   1
+  73:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_CHECKSUM_CTRL_PER_NETIF */
+  74:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+  75:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  76:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_INLINE_IP_CHKSUM && CHECKSUM_GEN_IP
+  77:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define CHECKSUM_GEN_IP_INLINE  1
+  78:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else
+  79:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define CHECKSUM_GEN_IP_INLINE  0
+  80:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+  81:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  82:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_DHCP || defined(LWIP_IP_ACCEPT_UDP_PORT)
+  83:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define IP_ACCEPT_LINK_LAYER_ADDRESSING 1
+  84:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+  85:./lwip-2.1.2/src/core/ipv4/ip4.c **** /** Some defines for DHCP to let link-layer-addressed packets through while the
+  86:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * netif is down.
+  87:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * To use this in your own application/protocol, define LWIP_IP_ACCEPT_UDP_PORT(port)
+  88:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * to return 1 if the port is accepted and 0 if the port is not accepted.
+  89:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+  90:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT)
+  91:./lwip-2.1.2/src/core/ipv4/ip4.c **** /* accept DHCP client port and custom port */
+  92:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT))
+  93:./lwip-2.1.2/src/core/ipv4/ip4.c ****          || (LWIP_IP_ACCEPT_UDP_PORT(port)))
+  94:./lwip-2.1.2/src/core/ipv4/ip4.c **** #elif defined(LWIP_IP_ACCEPT_UDP_PORT) /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
+  95:./lwip-2.1.2/src/core/ipv4/ip4.c **** /* accept custom port only */
+  96:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) (LWIP_IP_ACCEPT_UDP_PORT(port))
+  97:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
+  98:./lwip-2.1.2/src/core/ipv4/ip4.c **** /* accept DHCP client port only */
+  99:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(port) ((port) == PP_NTOHS(LWIP_IANA_PORT_DHCP_CLIENT))
+ 100:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_DHCP && defined(LWIP_IP_ACCEPT_UDP_PORT) */
+ 101:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 102:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* LWIP_DHCP */
+ 103:./lwip-2.1.2/src/core/ipv4/ip4.c **** #define IP_ACCEPT_LINK_LAYER_ADDRESSING 0
+ 104:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_DHCP */
+ 105:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 106:./lwip-2.1.2/src/core/ipv4/ip4.c **** /** The IP header ID of the next outgoing IP packet */
+ 107:./lwip-2.1.2/src/core/ipv4/ip4.c **** static u16_t ip_id;
+ 108:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 109:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 110:./lwip-2.1.2/src/core/ipv4/ip4.c **** /** The default netif used for multicast */
+ 111:./lwip-2.1.2/src/core/ipv4/ip4.c **** static struct netif *ip4_default_multicast_netif;
+ 112:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 113:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 114:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @ingroup ip4
+ 115:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Set a default netif for IPv4 multicast. */
+ 116:./lwip-2.1.2/src/core/ipv4/ip4.c **** void
+ 117:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_set_default_multicast_netif(struct netif *default_multicast_netif)
+ 118:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 119:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_default_multicast_netif = default_multicast_netif;
+ 120:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 121:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 122:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 123:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifdef LWIP_HOOK_IP4_ROUTE_SRC
+ 124:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 125:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Source based IPv4 routing must be fully implemented in
+ 126:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
+ 127:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 128:./lwip-2.1.2/src/core/ipv4/ip4.c **** struct netif *
+ 129:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_route_src(const ip4_addr_t *src, const ip4_addr_t *dest)
+ 130:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 131:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (src != NULL) {
+ 132:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* when src==NULL, the hook is called from ip4_route(dest) */
+ 133:./lwip-2.1.2/src/core/ipv4/ip4.c ****     struct netif *netif = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
+ 134:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (netif != NULL) {
+ 135:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return netif;
+ 136:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 137:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 138:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_route(dest);
+ 139:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 140:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_HOOK_IP4_ROUTE_SRC */
+ 141:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 142:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 143:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Finds the appropriate network interface for a given IP address. It
+ 144:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * searches the list of network interfaces linearly. A match is found
+ 145:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * if the masked IP address of the network interface equals the masked
+ 146:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * IP address given to the function.
+ 147:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 148:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param dest the destination IP address for which to find the route
+ 149:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @return the netif on which to send to reach dest
+ 150:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 151:./lwip-2.1.2/src/core/ipv4/ip4.c **** struct netif *
+ 152:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_route(const ip4_addr_t *dest)
+ 153:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+  33              		.loc 1 153 1
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 16
+  36              		@ frame_needed = 1, uses_anonymous_args = 0
+  37              		@ link register save eliminated.
+  38 0000 80B4     		push	{r7}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 4
+  41              		.cfi_offset 7, -4
+  42 0002 85B0     		sub	sp, sp, #20
+  43              	.LCFI1:
+  44              		.cfi_def_cfa_offset 24
+  45 0004 00AF     		add	r7, sp, #0
+  46              	.LCFI2:
+  47              		.cfi_def_cfa_register 7
+  48 0006 7860     		str	r0, [r7, #4]
+ 154:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if !LWIP_SINGLE_NETIF
+ 155:./lwip-2.1.2/src/core/ipv4/ip4.c ****   struct netif *netif;
+ 156:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 157:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 158:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 159:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 160:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Use administratively selected interface for multicast by default */
+ 161:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ip4_addr_ismulticast(dest) && ip4_default_multicast_netif) {
+ 162:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ip4_default_multicast_netif;
+ 163:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 164:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 165:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 166:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* bug #54569: in case LWIP_SINGLE_NETIF=1 and LWIP_DEBUGF() disabled, the following loop is opti
+ 167:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_UNUSED_ARG(dest);
+ 168:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 169:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* iterate through netifs */
+ 170:./lwip-2.1.2/src/core/ipv4/ip4.c ****   NETIF_FOREACH(netif) {
+  49              		.loc 1 170 3
+  50 0008 334B     		ldr	r3, .L9
+  51 000a 1B68     		ldr	r3, [r3]
+  52 000c FB60     		str	r3, [r7, #12]
+  53 000e 36E0     		b	.L2
+  54              	.L6:
+ 171:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* is the netif up, does it have a link and a valid address? */
+ 172:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (netif_is_up(netif) && netif_is_link_up(netif) && !ip4_addr_isany_val(*netif_ip4_addr(netif)
+  55              		.loc 1 172 9
+  56 0010 FB68     		ldr	r3, [r7, #12]
+  57 0012 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+  58              		.loc 1 172 28
+  59 0016 03F00103 		and	r3, r3, #1
+  60 001a DBB2     		uxtb	r3, r3
+  61              		.loc 1 172 8
+  62 001c 002B     		cmp	r3, #0
+  63 001e 2BD0     		beq	.L3
+  64              		.loc 1 172 31 discriminator 1
+  65 0020 FB68     		ldr	r3, [r7, #12]
+  66 0022 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+  67              		.loc 1 172 28 discriminator 1
+  68 0026 9B08     		lsrs	r3, r3, #2
+  69 0028 03F00103 		and	r3, r3, #1
+  70 002c DBB2     		uxtb	r3, r3
+  71 002e 002B     		cmp	r3, #0
+  72 0030 22D0     		beq	.L3
+  73              		.loc 1 172 59 discriminator 2
+  74 0032 FB68     		ldr	r3, [r7, #12]
+  75 0034 0433     		adds	r3, r3, #4
+  76 0036 1B68     		ldr	r3, [r3]
+  77              		.loc 1 172 55 discriminator 2
+  78 0038 002B     		cmp	r3, #0
+  79 003a 1DD0     		beq	.L3
+ 173:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* network mask matches? */
+ 174:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (ip4_addr_netcmp(dest, netif_ip4_addr(netif), netif_ip4_netmask(netif))) {
+  80              		.loc 1 174 11
+  81 003c 7B68     		ldr	r3, [r7, #4]
+  82 003e 1A68     		ldr	r2, [r3]
+  83 0040 FB68     		ldr	r3, [r7, #12]
+  84 0042 0433     		adds	r3, r3, #4
+  85 0044 1B68     		ldr	r3, [r3]
+  86 0046 5A40     		eors	r2, r2, r3
+  87 0048 FB68     		ldr	r3, [r7, #12]
+  88 004a 0833     		adds	r3, r3, #8
+  89 004c 1B68     		ldr	r3, [r3]
+  90 004e 1340     		ands	r3, r3, r2
+  91              		.loc 1 174 10
+  92 0050 002B     		cmp	r3, #0
+  93 0052 01D1     		bne	.L4
+ 175:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* return netif on which to forward IP packet */
+ 176:./lwip-2.1.2/src/core/ipv4/ip4.c ****         return netif;
+  94              		.loc 1 176 16
+  95 0054 FB68     		ldr	r3, [r7, #12]
+  96 0056 38E0     		b	.L5
+  97              	.L4:
+ 177:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 178:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* gateway matches on a non broadcast interface? (i.e. peer in a point to point interface) */
+ 179:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (((netif->flags & NETIF_FLAG_BROADCAST) == 0) && ip4_addr_cmp(dest, netif_ip4_gw(netif))) 
+  98              		.loc 1 179 18
+  99 0058 FB68     		ldr	r3, [r7, #12]
+ 100 005a 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 101              		.loc 1 179 26
+ 102 005e 03F00203 		and	r3, r3, #2
+ 103              		.loc 1 179 10
+ 104 0062 002B     		cmp	r3, #0
+ 105 0064 08D1     		bne	.L3
+ 106              		.loc 1 179 59 discriminator 1
+ 107 0066 7B68     		ldr	r3, [r7, #4]
+ 108 0068 1A68     		ldr	r2, [r3]
+ 109 006a FB68     		ldr	r3, [r7, #12]
+ 110 006c 0C33     		adds	r3, r3, #12
+ 111 006e 1B68     		ldr	r3, [r3]
+ 112              		.loc 1 179 56 discriminator 1
+ 113 0070 9A42     		cmp	r2, r3
+ 114 0072 01D1     		bne	.L3
+ 180:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* return netif on which to forward IP packet */
+ 181:./lwip-2.1.2/src/core/ipv4/ip4.c ****         return netif;
+ 115              		.loc 1 181 16
+ 116 0074 FB68     		ldr	r3, [r7, #12]
+ 117 0076 28E0     		b	.L5
+ 118              	.L3:
+ 170:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* is the netif up, does it have a link and a valid address? */
+ 119              		.loc 1 170 3 discriminator 2
+ 120 0078 FB68     		ldr	r3, [r7, #12]
+ 121 007a 1B68     		ldr	r3, [r3]
+ 122 007c FB60     		str	r3, [r7, #12]
+ 123              	.L2:
+ 170:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* is the netif up, does it have a link and a valid address? */
+ 124              		.loc 1 170 3 is_stmt 0 discriminator 1
+ 125 007e FB68     		ldr	r3, [r7, #12]
+ 126 0080 002B     		cmp	r3, #0
+ 127 0082 C5D1     		bne	.L6
+ 182:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 183:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 184:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 185:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 186:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF
+ 187:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* loopif is disabled, looopback traffic is passed through any netif */
+ 188:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ip4_addr_isloopback(dest)) {
+ 189:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* don't check for link on loopback traffic */
+ 190:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (netif_default != NULL && netif_is_up(netif_default)) {
+ 191:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return netif_default;
+ 192:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 193:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* default netif is not up, just use any netif for loopback traffic */
+ 194:./lwip-2.1.2/src/core/ipv4/ip4.c ****     NETIF_FOREACH(netif) {
+ 195:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (netif_is_up(netif)) {
+ 196:./lwip-2.1.2/src/core/ipv4/ip4.c ****         return netif;
+ 197:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 198:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 199:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return NULL;
+ 200:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 201:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF */
+ 202:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 203:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifdef LWIP_HOOK_IP4_ROUTE_SRC
+ 204:./lwip-2.1.2/src/core/ipv4/ip4.c ****   netif = LWIP_HOOK_IP4_ROUTE_SRC(NULL, dest);
+ 205:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif != NULL) {
+ 206:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return netif;
+ 207:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 208:./lwip-2.1.2/src/core/ipv4/ip4.c **** #elif defined(LWIP_HOOK_IP4_ROUTE)
+ 209:./lwip-2.1.2/src/core/ipv4/ip4.c ****   netif = LWIP_HOOK_IP4_ROUTE(dest);
+ 210:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif != NULL) {
+ 211:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return netif;
+ 212:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 213:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+ 214:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* !LWIP_SINGLE_NETIF */
+ 215:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 216:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((netif_default == NULL) || !netif_is_up(netif_default) || !netif_is_link_up(netif_default) ||
+ 128              		.loc 1 216 22 is_stmt 1
+ 129 0084 154B     		ldr	r3, .L9+4
+ 130 0086 1B68     		ldr	r3, [r3]
+ 131              		.loc 1 216 6
+ 132 0088 002B     		cmp	r3, #0
+ 133 008a 1AD0     		beq	.L7
+ 134              		.loc 1 216 35 discriminator 1
+ 135 008c 134B     		ldr	r3, .L9+4
+ 136 008e 1B68     		ldr	r3, [r3]
+ 137 0090 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 138 0094 03F00103 		and	r3, r3, #1
+ 139              		.loc 1 216 31 discriminator 1
+ 140 0098 002B     		cmp	r3, #0
+ 141 009a 12D0     		beq	.L7
+ 142              		.loc 1 216 66 discriminator 2
+ 143 009c 0F4B     		ldr	r3, .L9+4
+ 144 009e 1B68     		ldr	r3, [r3]
+ 145 00a0 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 146 00a4 03F00403 		and	r3, r3, #4
+ 147              		.loc 1 216 62 discriminator 2
+ 148 00a8 002B     		cmp	r3, #0
+ 149 00aa 0AD0     		beq	.L7
+ 217:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_addr_isany_val(*netif_ip4_addr(netif_default)) || ip4_addr_isloopback(dest)) {
+ 150              		.loc 1 217 7 discriminator 3
+ 151 00ac 0B4B     		ldr	r3, .L9+4
+ 152 00ae 1B68     		ldr	r3, [r3]
+ 153 00b0 0433     		adds	r3, r3, #4
+ 154 00b2 1B68     		ldr	r3, [r3]
+ 216:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_addr_isany_val(*netif_ip4_addr(netif_default)) || ip4_addr_isloopback(dest)) {
+ 155              		.loc 1 216 98 discriminator 3
+ 156 00b4 002B     		cmp	r3, #0
+ 157 00b6 04D0     		beq	.L7
+ 158              		.loc 1 217 61
+ 159 00b8 7B68     		ldr	r3, [r7, #4]
+ 160 00ba 1B68     		ldr	r3, [r3]
+ 161 00bc DBB2     		uxtb	r3, r3
+ 162              		.loc 1 217 58
+ 163 00be 7F2B     		cmp	r3, #127
+ 164 00c0 01D1     		bne	.L8
+ 165              	.L7:
+ 218:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* No matching netif found and default netif is not usable.
+ 219:./lwip-2.1.2/src/core/ipv4/ip4.c ****        If this is not good enough for you, use LWIP_HOOK_IP4_ROUTE() */
+ 220:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_route: No route to %"U16_F".%"U16_F".%"U16
+ 221:./lwip-2.1.2/src/core/ipv4/ip4.c ****                 ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16(dest)));
+ 222:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.rterr);
+ 223:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipoutnoroutes);
+ 224:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return NULL;
+ 166              		.loc 1 224 12
+ 167 00c2 0023     		movs	r3, #0
+ 168 00c4 01E0     		b	.L5
+ 169              	.L8:
+ 225:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 226:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 227:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return netif_default;
+ 170              		.loc 1 227 10
+ 171 00c6 054B     		ldr	r3, .L9+4
+ 172 00c8 1B68     		ldr	r3, [r3]
+ 173              	.L5:
+ 228:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 174              		.loc 1 228 1
+ 175 00ca 1846     		mov	r0, r3
+ 176 00cc 1437     		adds	r7, r7, #20
+ 177              	.LCFI3:
+ 178              		.cfi_def_cfa_offset 4
+ 179 00ce BD46     		mov	sp, r7
+ 180              	.LCFI4:
+ 181              		.cfi_def_cfa_register 13
+ 182              		@ sp needed
+ 183 00d0 5DF8047B 		ldr	r7, [sp], #4
+ 184              	.LCFI5:
+ 185              		.cfi_restore 7
+ 186              		.cfi_def_cfa_offset 0
+ 187 00d4 7047     		bx	lr
+ 188              	.L10:
+ 189 00d6 00BF     		.align	2
+ 190              	.L9:
+ 191 00d8 00000000 		.word	netif_list
+ 192 00dc 00000000 		.word	netif_default
+ 193              		.cfi_endproc
+ 194              	.LFE25:
+ 196              		.align	1
+ 197              		.syntax unified
+ 198              		.thumb
+ 199              		.thumb_func
+ 200              		.fpu fpv5-d16
+ 202              	ip4_input_accept:
+ 203              	.LFB26:
+ 229:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 230:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_FORWARD
+ 231:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 232:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Determine whether an IP address is in a reserved set of addresses
+ 233:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * that may not be forwarded, or whether datagrams to that destination
+ 234:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * may be forwarded.
+ 235:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param p the packet to forward
+ 236:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @return 1: can forward 0: discard
+ 237:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 238:./lwip-2.1.2/src/core/ipv4/ip4.c **** static int
+ 239:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_canforward(struct pbuf *p)
+ 240:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 241:./lwip-2.1.2/src/core/ipv4/ip4.c ****   u32_t addr = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
+ 242:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 243:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifdef LWIP_HOOK_IP4_CANFORWARD
+ 244:./lwip-2.1.2/src/core/ipv4/ip4.c ****   int ret = LWIP_HOOK_IP4_CANFORWARD(p, addr);
+ 245:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ret >= 0) {
+ 246:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ret;
+ 247:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 248:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_HOOK_IP4_CANFORWARD */
+ 249:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 250:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (p->flags & PBUF_FLAG_LLBCAST) {
+ 251:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* don't route link-layer broadcasts */
+ 252:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return 0;
+ 253:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 254:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((p->flags & PBUF_FLAG_LLMCAST) || IP_MULTICAST(addr)) {
+ 255:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* don't route link-layer multicasts (use LWIP_HOOK_IP4_CANFORWARD instead) */
+ 256:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return 0;
+ 257:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 258:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (IP_EXPERIMENTAL(addr)) {
+ 259:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return 0;
+ 260:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 261:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (IP_CLASSA(addr)) {
+ 262:./lwip-2.1.2/src/core/ipv4/ip4.c ****     u32_t net = addr & IP_CLASSA_NET;
+ 263:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if ((net == 0) || (net == ((u32_t)IP_LOOPBACKNET << IP_CLASSA_NSHIFT))) {
+ 264:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* don't route loopback packets */
+ 265:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return 0;
+ 266:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 267:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 268:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return 1;
+ 269:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 270:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 271:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 272:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Forwards an IP packet. It finds an appropriate route for the
+ 273:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * packet, decrements the TTL value of the packet, adjusts the
+ 274:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * checksum and outputs the packet on the appropriate interface.
+ 275:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 276:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param p the packet to forward (p->payload points to IP header)
+ 277:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param iphdr the IP header of the input packet
+ 278:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param inp the netif on which this packet was received
+ 279:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 280:./lwip-2.1.2/src/core/ipv4/ip4.c **** static void
+ 281:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_forward(struct pbuf *p, struct ip_hdr *iphdr, struct netif *inp)
+ 282:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 283:./lwip-2.1.2/src/core/ipv4/ip4.c ****   struct netif *netif;
+ 284:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 285:./lwip-2.1.2/src/core/ipv4/ip4.c ****   PERF_START;
+ 286:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_UNUSED_ARG(inp);
+ 287:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 288:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (!ip4_canforward(p)) {
+ 289:./lwip-2.1.2/src/core/ipv4/ip4.c ****     goto return_noroute;
+ 290:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 291:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 292:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* RFC3927 2.7: do not forward link-local addresses */
+ 293:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ip4_addr_islinklocal(ip4_current_dest_addr())) {
+ 294:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not forwarding LLA %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+ 295:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_add
+ 296:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_add
+ 297:./lwip-2.1.2/src/core/ipv4/ip4.c ****     goto return_noroute;
+ 298:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 299:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 300:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Find network interface where to forward this IP packet to. */
+ 301:./lwip-2.1.2/src/core/ipv4/ip4.c ****   netif = ip4_route_src(ip4_current_src_addr(), ip4_current_dest_addr());
+ 302:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif == NULL) {
+ 303:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: no forwarding route for %"U16_F".%"U16_F".%"U16_F".%"U16_F
+ 304:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_add
+ 305:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_add
+ 306:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* @todo: send ICMP_DUR_NET? */
+ 307:./lwip-2.1.2/src/core/ipv4/ip4.c ****     goto return_noroute;
+ 308:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 309:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if !IP_FORWARD_ALLOW_TX_ON_RX_NETIF
+ 310:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Do not forward packets onto the same network interface on which
+ 311:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * they arrived. */
+ 312:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif == inp) {
+ 313:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not bouncing packets back on incoming interface.\n"));
+ 314:./lwip-2.1.2/src/core/ipv4/ip4.c ****     goto return_noroute;
+ 315:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 316:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_FORWARD_ALLOW_TX_ON_RX_NETIF */
+ 317:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 318:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* decrement TTL */
+ 319:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IPH_TTL_SET(iphdr, IPH_TTL(iphdr) - 1);
+ 320:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* send ICMP if TTL == 0 */
+ 321:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (IPH_TTL(iphdr) == 0) {
+ 322:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipinhdrerrors);
+ 323:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_ICMP
+ 324:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* Don't send ICMP messages in response to ICMP messages */
+ 325:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (IPH_PROTO(iphdr) != IP_PROTO_ICMP) {
+ 326:./lwip-2.1.2/src/core/ipv4/ip4.c ****       icmp_time_exceeded(p, ICMP_TE_TTL);
+ 327:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 328:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_ICMP */
+ 329:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return;
+ 330:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 331:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 332:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Incrementally update the IP checksum. */
+ 333:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffffU - 0x100)) {
+ 334:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_CHKSUM_SET(iphdr, (u16_t)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100) + 1));
+ 335:./lwip-2.1.2/src/core/ipv4/ip4.c ****   } else {
+ 336:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_CHKSUM_SET(iphdr, (u16_t)(IPH_CHKSUM(iphdr) + PP_HTONS(0x100)));
+ 337:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 338:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 339:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: forwarding packet to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+ 340:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr(
+ 341:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr(
+ 342:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 343:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IP_STATS_INC(ip.fw);
+ 344:./lwip-2.1.2/src/core/ipv4/ip4.c ****   MIB2_STATS_INC(mib2.ipforwdatagrams);
+ 345:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IP_STATS_INC(ip.xmit);
+ 346:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 347:./lwip-2.1.2/src/core/ipv4/ip4.c ****   PERF_STOP("ip4_forward");
+ 348:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* don't fragment if interface has mtu set to 0 [loopif] */
+ 349:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif->mtu && (p->tot_len > netif->mtu)) {
+ 350:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if ((IPH_OFFSET(iphdr) & PP_NTOHS(IP_DF)) == 0) {
+ 351:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_FRAG
+ 352:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_frag(p, netif, ip4_current_dest_addr());
+ 353:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* IP_FRAG */
+ 354:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* @todo: send ICMP Destination Unreachable code 13 "Communication administratively prohibite
+ 355:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_FRAG */
+ 356:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else {
+ 357:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_ICMP
+ 358:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* send ICMP Destination Unreachable code 4: "Fragmentation Needed and DF Set" */
+ 359:./lwip-2.1.2/src/core/ipv4/ip4.c ****       icmp_dest_unreach(p, ICMP_DUR_FRAG);
+ 360:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_ICMP */
+ 361:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 362:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return;
+ 363:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 364:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* transmit pbuf on chosen interface */
+ 365:./lwip-2.1.2/src/core/ipv4/ip4.c ****   netif->output(netif, p, ip4_current_dest_addr());
+ 366:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return;
+ 367:./lwip-2.1.2/src/core/ipv4/ip4.c **** return_noroute:
+ 368:./lwip-2.1.2/src/core/ipv4/ip4.c ****   MIB2_STATS_INC(mib2.ipoutnoroutes);
+ 369:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 370:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_FORWARD */
+ 371:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 372:./lwip-2.1.2/src/core/ipv4/ip4.c **** /** Return true if the current input packet should be accepted on this netif */
+ 373:./lwip-2.1.2/src/core/ipv4/ip4.c **** static int
+ 374:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_input_accept(struct netif *netif)
+ 375:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 204              		.loc 1 375 1
+ 205              		.cfi_startproc
+ 206              		@ args = 0, pretend = 0, frame = 8
+ 207              		@ frame_needed = 1, uses_anonymous_args = 0
+ 208 00e0 80B5     		push	{r7, lr}
+ 209              	.LCFI6:
+ 210              		.cfi_def_cfa_offset 8
+ 211              		.cfi_offset 7, -8
+ 212              		.cfi_offset 14, -4
+ 213 00e2 82B0     		sub	sp, sp, #8
+ 214              	.LCFI7:
+ 215              		.cfi_def_cfa_offset 16
+ 216 00e4 00AF     		add	r7, sp, #0
+ 217              	.LCFI8:
+ 218              		.cfi_def_cfa_register 7
+ 219 00e6 7860     		str	r0, [r7, #4]
+ 376:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip_input: iphdr->dest 0x%"X32_F" netif->ip_addr 0x%"X32_F" (0x%"X32_F", 0
+ 377:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr_get_u32(ip4_current_dest_addr()), ip4_addr_get_u32(netif_ip4_addr
+ 378:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr_get_u32(ip4_current_dest_addr()) & ip4_addr_get_u32(netif_ip4_net
+ 379:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr_get_u32(netif_ip4_addr(netif)) & ip4_addr_get_u32(netif_ip4_netma
+ 380:./lwip-2.1.2/src/core/ipv4/ip4.c ****                          ip4_addr_get_u32(ip4_current_dest_addr()) & ~ip4_addr_get_u32(netif_ip4_ne
+ 381:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 382:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* interface is up and configured? */
+ 383:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((netif_is_up(netif)) && (!ip4_addr_isany_val(*netif_ip4_addr(netif)))) {
+ 220              		.loc 1 383 8
+ 221 00e8 7B68     		ldr	r3, [r7, #4]
+ 222 00ea 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 223              		.loc 1 383 28
+ 224 00ee 03F00103 		and	r3, r3, #1
+ 225 00f2 DBB2     		uxtb	r3, r3
+ 226              		.loc 1 383 6
+ 227 00f4 002B     		cmp	r3, #0
+ 228 00f6 16D0     		beq	.L12
+ 229              		.loc 1 383 33 discriminator 1
+ 230 00f8 7B68     		ldr	r3, [r7, #4]
+ 231 00fa 0433     		adds	r3, r3, #4
+ 232 00fc 1B68     		ldr	r3, [r3]
+ 233              		.loc 1 383 28 discriminator 1
+ 234 00fe 002B     		cmp	r3, #0
+ 235 0100 11D0     		beq	.L12
+ 384:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* unicast to this interface address? */
+ 385:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (ip4_addr_cmp(ip4_current_dest_addr(), netif_ip4_addr(netif)) ||
+ 236              		.loc 1 385 9
+ 237 0102 0B4B     		ldr	r3, .L15
+ 238 0104 5A69     		ldr	r2, [r3, #20]
+ 239 0106 7B68     		ldr	r3, [r7, #4]
+ 240 0108 0433     		adds	r3, r3, #4
+ 241 010a 1B68     		ldr	r3, [r3]
+ 242              		.loc 1 385 8
+ 243 010c 9A42     		cmp	r2, r3
+ 244 010e 08D0     		beq	.L13
+ 386:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* or broadcast on this interface network address? */
+ 387:./lwip-2.1.2/src/core/ipv4/ip4.c ****         ip4_addr_isbroadcast(ip4_current_dest_addr(), netif)
+ 245              		.loc 1 387 9 discriminator 1
+ 246 0110 074B     		ldr	r3, .L15
+ 247 0112 5B69     		ldr	r3, [r3, #20]
+ 248 0114 7968     		ldr	r1, [r7, #4]
+ 249 0116 1846     		mov	r0, r3
+ 250 0118 FFF7FEFF 		bl	ip4_addr_isbroadcast_u32
+ 251 011c 0346     		mov	r3, r0
+ 385:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* or broadcast on this interface network address? */
+ 252              		.loc 1 385 70 discriminator 1
+ 253 011e 002B     		cmp	r3, #0
+ 254 0120 01D0     		beq	.L12
+ 255              	.L13:
+ 388:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF
+ 389:./lwip-2.1.2/src/core/ipv4/ip4.c ****         || (ip4_addr_get_u32(ip4_current_dest_addr()) == PP_HTONL(IPADDR_LOOPBACK))
+ 390:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF */
+ 391:./lwip-2.1.2/src/core/ipv4/ip4.c ****        ) {
+ 392:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG, ("ip4_input: packet accepted on interface %c%c\n",
+ 393:./lwip-2.1.2/src/core/ipv4/ip4.c ****                              netif->name[0], netif->name[1]));
+ 394:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* accept on this netif */
+ 395:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return 1;
+ 256              		.loc 1 395 14
+ 257 0122 0123     		movs	r3, #1
+ 258 0124 00E0     		b	.L14
+ 259              	.L12:
+ 396:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 397:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_AUTOIP
+ 398:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* connections to link-local addresses must persist after changing
+ 399:./lwip-2.1.2/src/core/ipv4/ip4.c ****         the netif's address (RFC3927 ch. 1.9) */
+ 400:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (autoip_accept_packet(netif, ip4_current_dest_addr())) {
+ 401:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG, ("ip4_input: LLA packet accepted on interface %c%c\n",
+ 402:./lwip-2.1.2/src/core/ipv4/ip4.c ****                              netif->name[0], netif->name[1]));
+ 403:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* accept on this netif */
+ 404:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return 1;
+ 405:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 406:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_AUTOIP */
+ 407:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 408:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return 0;
+ 260              		.loc 1 408 10
+ 261 0126 0023     		movs	r3, #0
+ 262              	.L14:
+ 409:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 263              		.loc 1 409 1
+ 264 0128 1846     		mov	r0, r3
+ 265 012a 0837     		adds	r7, r7, #8
+ 266              	.LCFI9:
+ 267              		.cfi_def_cfa_offset 8
+ 268 012c BD46     		mov	sp, r7
+ 269              	.LCFI10:
+ 270              		.cfi_def_cfa_register 13
+ 271              		@ sp needed
+ 272 012e 80BD     		pop	{r7, pc}
+ 273              	.L16:
+ 274              		.align	2
+ 275              	.L15:
+ 276 0130 00000000 		.word	ip_data
+ 277              		.cfi_endproc
+ 278              	.LFE26:
+ 280              		.align	1
+ 281              		.global	ip4_input
+ 282              		.syntax unified
+ 283              		.thumb
+ 284              		.thumb_func
+ 285              		.fpu fpv5-d16
+ 287              	ip4_input:
+ 288              	.LFB27:
+ 410:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 411:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 412:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * This function is called by the network interface device driver when
+ 413:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * an IP packet is received. The function does the basic checks of the
+ 414:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * IP header such as packet size being at least larger than the header
+ 415:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * size etc. If the packet was not destined for us, the packet is
+ 416:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * forwarded (using ip_forward). The IP checksum is always checked.
+ 417:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 418:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Finally, the packet is sent to the upper layer protocol input function.
+ 419:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 420:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param p the received IP packet (p->payload points to IP header)
+ 421:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param inp the netif on which this packet was received
+ 422:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
+ 423:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         processed, but currently always returns ERR_OK)
+ 424:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 425:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+ 426:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_input(struct pbuf *p, struct netif *inp)
+ 427:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 289              		.loc 1 427 1
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 32
+ 292              		@ frame_needed = 1, uses_anonymous_args = 0
+ 293 0134 80B5     		push	{r7, lr}
+ 294              	.LCFI11:
+ 295              		.cfi_def_cfa_offset 8
+ 296              		.cfi_offset 7, -8
+ 297              		.cfi_offset 14, -4
+ 298 0136 88B0     		sub	sp, sp, #32
+ 299              	.LCFI12:
+ 300              		.cfi_def_cfa_offset 40
+ 301 0138 00AF     		add	r7, sp, #0
+ 302              	.LCFI13:
+ 303              		.cfi_def_cfa_register 7
+ 304 013a 7860     		str	r0, [r7, #4]
+ 305 013c 3960     		str	r1, [r7]
+ 428:./lwip-2.1.2/src/core/ipv4/ip4.c ****   const struct ip_hdr *iphdr;
+ 429:./lwip-2.1.2/src/core/ipv4/ip4.c ****   struct netif *netif;
+ 430:./lwip-2.1.2/src/core/ipv4/ip4.c ****   u16_t iphdr_hlen;
+ 431:./lwip-2.1.2/src/core/ipv4/ip4.c ****   u16_t iphdr_len;
+ 432:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_ACCEPT_LINK_LAYER_ADDRESSING || LWIP_IGMP
+ 433:./lwip-2.1.2/src/core/ipv4/ip4.c ****   int check_ip_src = 1;
+ 306              		.loc 1 433 7
+ 307 013e 0123     		movs	r3, #1
+ 308 0140 7B61     		str	r3, [r7, #20]
+ 434:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_ACCEPT_LINK_LAYER_ADDRESSING || LWIP_IGMP */
+ 435:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_RAW
+ 436:./lwip-2.1.2/src/core/ipv4/ip4.c ****   raw_input_state_t raw_status;
+ 437:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_RAW */
+ 438:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 439:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 440:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 441:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IP_STATS_INC(ip.recv);
+ 442:./lwip-2.1.2/src/core/ipv4/ip4.c ****   MIB2_STATS_INC(mib2.ipinreceives);
+ 443:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 444:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* identify the IP header */
+ 445:./lwip-2.1.2/src/core/ipv4/ip4.c ****   iphdr = (struct ip_hdr *)p->payload;
+ 309              		.loc 1 445 9
+ 310 0142 7B68     		ldr	r3, [r7, #4]
+ 311 0144 5B68     		ldr	r3, [r3, #4]
+ 312 0146 FB61     		str	r3, [r7, #28]
+ 446:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (IPH_V(iphdr) != 4) {
+ 313              		.loc 1 446 7
+ 314 0148 FB69     		ldr	r3, [r7, #28]
+ 315 014a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 316              		.loc 1 446 20
+ 317 014c 1B09     		lsrs	r3, r3, #4
+ 318 014e DBB2     		uxtb	r3, r3
+ 319              		.loc 1 446 6
+ 320 0150 042B     		cmp	r3, #4
+ 321 0152 04D0     		beq	.L18
+ 447:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_WARNING, ("IP packet dropped due to bad version number %"
+ 448:./lwip-2.1.2/src/core/ipv4/ip4.c ****     ip4_debug_print(p);
+ 449:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_free(p);
+ 322              		.loc 1 449 5
+ 323 0154 7868     		ldr	r0, [r7, #4]
+ 324 0156 FFF7FEFF 		bl	pbuf_free
+ 450:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.err);
+ 451:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.drop);
+ 452:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipinhdrerrors);
+ 453:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 325              		.loc 1 453 12
+ 326 015a 0023     		movs	r3, #0
+ 327 015c 23E1     		b	.L19
+ 328              	.L18:
+ 454:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 455:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 456:./lwip-2.1.2/src/core/ipv4/ip4.c **** #ifdef LWIP_HOOK_IP4_INPUT
+ 457:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (LWIP_HOOK_IP4_INPUT(p, inp)) {
+ 458:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* the packet has been eaten */
+ 459:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 460:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 461:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+ 462:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 463:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* obtain IP header length in bytes */
+ 464:./lwip-2.1.2/src/core/ipv4/ip4.c ****   iphdr_hlen = IPH_HL_BYTES(iphdr);
+ 329              		.loc 1 464 16
+ 330 015e FB69     		ldr	r3, [r7, #28]
+ 331 0160 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 332 0162 03F00F03 		and	r3, r3, #15
+ 333 0166 DBB2     		uxtb	r3, r3
+ 334 0168 9B00     		lsls	r3, r3, #2
+ 335 016a DBB2     		uxtb	r3, r3
+ 336              		.loc 1 464 14
+ 337 016c 7B82     		strh	r3, [r7, #18]	@ movhi
+ 465:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* obtain ip length in bytes */
+ 466:./lwip-2.1.2/src/core/ipv4/ip4.c ****   iphdr_len = lwip_ntohs(IPH_LEN(iphdr));
+ 338              		.loc 1 466 15
+ 339 016e FB69     		ldr	r3, [r7, #28]
+ 340 0170 5B88     		ldrh	r3, [r3, #2]	@ unaligned
+ 341 0172 9BB2     		uxth	r3, r3
+ 342 0174 1846     		mov	r0, r3
+ 343 0176 FFF7FEFF 		bl	lwip_htons
+ 344 017a 0346     		mov	r3, r0
+ 345 017c 3B82     		strh	r3, [r7, #16]	@ movhi
+ 467:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 468:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Trim pbuf. This is especially required for packets < 60 bytes. */
+ 469:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (iphdr_len < p->tot_len) {
+ 346              		.loc 1 469 20
+ 347 017e 7B68     		ldr	r3, [r7, #4]
+ 348 0180 1B89     		ldrh	r3, [r3, #8]
+ 349              		.loc 1 469 6
+ 350 0182 3A8A     		ldrh	r2, [r7, #16]
+ 351 0184 9A42     		cmp	r2, r3
+ 352 0186 04D2     		bcs	.L20
+ 470:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_realloc(p, iphdr_len);
+ 353              		.loc 1 470 5
+ 354 0188 3B8A     		ldrh	r3, [r7, #16]
+ 355 018a 1946     		mov	r1, r3
+ 356 018c 7868     		ldr	r0, [r7, #4]
+ 357 018e FFF7FEFF 		bl	pbuf_realloc
+ 358              	.L20:
+ 471:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 472:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 473:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* header length exceeds first pbuf length, or ip length exceeds total pbuf length? */
+ 474:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((iphdr_hlen > p->len) || (iphdr_len > p->tot_len) || (iphdr_hlen < IP_HLEN)) {
+ 359              		.loc 1 474 22
+ 360 0192 7B68     		ldr	r3, [r7, #4]
+ 361 0194 5B89     		ldrh	r3, [r3, #10]
+ 362              		.loc 1 474 6
+ 363 0196 7A8A     		ldrh	r2, [r7, #18]
+ 364 0198 9A42     		cmp	r2, r3
+ 365 019a 07D8     		bhi	.L21
+ 366              		.loc 1 474 46 discriminator 1
+ 367 019c 7B68     		ldr	r3, [r7, #4]
+ 368 019e 1B89     		ldrh	r3, [r3, #8]
+ 369              		.loc 1 474 29 discriminator 1
+ 370 01a0 3A8A     		ldrh	r2, [r7, #16]
+ 371 01a2 9A42     		cmp	r2, r3
+ 372 01a4 02D8     		bhi	.L21
+ 373              		.loc 1 474 57 discriminator 2
+ 374 01a6 7B8A     		ldrh	r3, [r7, #18]
+ 375 01a8 132B     		cmp	r3, #19
+ 376 01aa 04D8     		bhi	.L22
+ 377              	.L21:
+ 475:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (iphdr_hlen < IP_HLEN) {
+ 476:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 477:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   ("ip4_input: short IP header (%"U16_F" bytes) received, IP packet dropped\n", iph
+ 478:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 479:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (iphdr_hlen > p->len) {
+ 480:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 481:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   ("IP header (len %"U16_F") does not fit in first pbuf (len %"U16_F"), IP packet d
+ 482:./lwip-2.1.2/src/core/ipv4/ip4.c ****                    iphdr_hlen, p->len));
+ 483:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 484:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (iphdr_len > p->tot_len) {
+ 485:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 486:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   ("IP (len %"U16_F") is longer than pbuf (len %"U16_F"), IP packet dropped.\n",
+ 487:./lwip-2.1.2/src/core/ipv4/ip4.c ****                    iphdr_len, p->tot_len));
+ 488:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 489:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* free (drop) packet pbufs */
+ 490:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_free(p);
+ 378              		.loc 1 490 5
+ 379 01ac 7868     		ldr	r0, [r7, #4]
+ 380 01ae FFF7FEFF 		bl	pbuf_free
+ 491:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.lenerr);
+ 492:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.drop);
+ 493:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipindiscards);
+ 494:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 381              		.loc 1 494 12
+ 382 01b2 0023     		movs	r3, #0
+ 383 01b4 F7E0     		b	.L19
+ 384              	.L22:
+ 495:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 496:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 497:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* verify checksum */
+ 498:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_CHECK_IP
+ 499:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_IP) {
+ 500:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (inet_chksum(iphdr, iphdr_hlen) != 0) {
+ 501:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 502:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+ 503:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   ("Checksum (0x%"X16_F") failed, IP packet dropped.\n", inet_chksum(iphdr, iphdr_h
+ 504:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_debug_print(p);
+ 505:./lwip-2.1.2/src/core/ipv4/ip4.c ****       pbuf_free(p);
+ 506:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.chkerr);
+ 507:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.drop);
+ 508:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipinhdrerrors);
+ 509:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return ERR_OK;
+ 510:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 511:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 512:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif
+ 513:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 514:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* copy IP addresses to aligned ip_addr_t */
+ 515:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_addr_copy_from_ip4(ip_data.current_iphdr_dest, iphdr->dest);
+ 385              		.loc 1 515 3
+ 386 01b6 FB69     		ldr	r3, [r7, #28]
+ 387 01b8 1B69     		ldr	r3, [r3, #16]	@ unaligned
+ 388 01ba 7D4A     		ldr	r2, .L46
+ 389 01bc 5361     		str	r3, [r2, #20]
+ 516:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_addr_copy_from_ip4(ip_data.current_iphdr_src, iphdr->src);
+ 390              		.loc 1 516 3
+ 391 01be FB69     		ldr	r3, [r7, #28]
+ 392 01c0 DB68     		ldr	r3, [r3, #12]	@ unaligned
+ 393 01c2 7B4A     		ldr	r2, .L46
+ 394 01c4 1361     		str	r3, [r2, #16]
+ 517:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 518:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* match packet against an interface, i.e. is this packet for us? */
+ 519:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ip4_addr_ismulticast(ip4_current_dest_addr())) {
+ 395              		.loc 1 519 7
+ 396 01c6 7A4B     		ldr	r3, .L46
+ 397 01c8 5B69     		ldr	r3, [r3, #20]
+ 398 01ca 03F0F003 		and	r3, r3, #240
+ 399              		.loc 1 519 6
+ 400 01ce E02B     		cmp	r3, #224
+ 401 01d0 12D1     		bne	.L23
+ 520:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_IGMP
+ 521:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if ((inp->flags & NETIF_FLAG_IGMP) && (igmp_lookfor_group(inp, ip4_current_dest_addr()))) {
+ 522:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* IGMP snooping switches need 0.0.0.0 to be allowed as source address (RFC 4541) */
+ 523:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_addr_t allsystems;
+ 524:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP4_ADDR(&allsystems, 224, 0, 0, 1);
+ 525:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (ip4_addr_cmp(ip4_current_dest_addr(), &allsystems) &&
+ 526:./lwip-2.1.2/src/core/ipv4/ip4.c ****           ip4_addr_isany(ip4_current_src_addr())) {
+ 527:./lwip-2.1.2/src/core/ipv4/ip4.c ****         check_ip_src = 0;
+ 528:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 529:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = inp;
+ 530:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else {
+ 531:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = NULL;
+ 532:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 533:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* LWIP_IGMP */
+ 534:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if ((netif_is_up(inp)) && (!ip4_addr_isany_val(*netif_ip4_addr(inp)))) {
+ 402              		.loc 1 534 10
+ 403 01d2 3B68     		ldr	r3, [r7]
+ 404 01d4 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+ 405              		.loc 1 534 28
+ 406 01d8 03F00103 		and	r3, r3, #1
+ 407 01dc DBB2     		uxtb	r3, r3
+ 408              		.loc 1 534 8
+ 409 01de 002B     		cmp	r3, #0
+ 410 01e0 07D0     		beq	.L24
+ 411              		.loc 1 534 33 discriminator 1
+ 412 01e2 3B68     		ldr	r3, [r7]
+ 413 01e4 0433     		adds	r3, r3, #4
+ 414 01e6 1B68     		ldr	r3, [r3]
+ 415              		.loc 1 534 28 discriminator 1
+ 416 01e8 002B     		cmp	r3, #0
+ 417 01ea 02D0     		beq	.L24
+ 535:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = inp;
+ 418              		.loc 1 535 13
+ 419 01ec 3B68     		ldr	r3, [r7]
+ 420 01ee BB61     		str	r3, [r7, #24]
+ 421 01f0 2AE0     		b	.L26
+ 422              	.L24:
+ 536:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else {
+ 537:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = NULL;
+ 423              		.loc 1 537 13
+ 424 01f2 0023     		movs	r3, #0
+ 425 01f4 BB61     		str	r3, [r7, #24]
+ 426 01f6 27E0     		b	.L26
+ 427              	.L23:
+ 538:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 539:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_IGMP */
+ 540:./lwip-2.1.2/src/core/ipv4/ip4.c ****   } else {
+ 541:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* start trying with inp. if that's not acceptable, start walking the
+ 542:./lwip-2.1.2/src/core/ipv4/ip4.c ****        list of configured netifs. */
+ 543:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (ip4_input_accept(inp)) {
+ 428              		.loc 1 543 9
+ 429 01f8 3868     		ldr	r0, [r7]
+ 430 01fa FFF771FF 		bl	ip4_input_accept
+ 431 01fe 0346     		mov	r3, r0
+ 432              		.loc 1 543 8
+ 433 0200 002B     		cmp	r3, #0
+ 434 0202 02D0     		beq	.L27
+ 544:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = inp;
+ 435              		.loc 1 544 13
+ 436 0204 3B68     		ldr	r3, [r7]
+ 437 0206 BB61     		str	r3, [r7, #24]
+ 438 0208 1EE0     		b	.L26
+ 439              	.L27:
+ 545:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else {
+ 546:./lwip-2.1.2/src/core/ipv4/ip4.c ****       netif = NULL;
+ 440              		.loc 1 546 13
+ 441 020a 0023     		movs	r3, #0
+ 442 020c BB61     		str	r3, [r7, #24]
+ 547:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if !LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF
+ 548:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* Packets sent to the loopback address must not be accepted on an
+ 549:./lwip-2.1.2/src/core/ipv4/ip4.c ****        * interface that does not have the loopback address assigned to it,
+ 550:./lwip-2.1.2/src/core/ipv4/ip4.c ****        * unless a non-loopback interface is used for loopback traffic. */
+ 551:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (!ip4_addr_isloopback(ip4_current_dest_addr()))
+ 443              		.loc 1 551 12
+ 444 020e 684B     		ldr	r3, .L46
+ 445 0210 5B69     		ldr	r3, [r3, #20]
+ 446 0212 DBB2     		uxtb	r3, r3
+ 447              		.loc 1 551 10
+ 448 0214 7F2B     		cmp	r3, #127
+ 449 0216 17D0     		beq	.L26
+ 552:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* !LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF */
+ 553:./lwip-2.1.2/src/core/ipv4/ip4.c ****       {
+ 554:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if !LWIP_SINGLE_NETIF
+ 555:./lwip-2.1.2/src/core/ipv4/ip4.c ****         NETIF_FOREACH(netif) {
+ 450              		.loc 1 555 9
+ 451 0218 664B     		ldr	r3, .L46+4
+ 452 021a 1B68     		ldr	r3, [r3]
+ 453 021c BB61     		str	r3, [r7, #24]
+ 454 021e 0EE0     		b	.L28
+ 455              	.L31:
+ 556:./lwip-2.1.2/src/core/ipv4/ip4.c ****           if (netif == inp) {
+ 456              		.loc 1 556 14
+ 457 0220 BA69     		ldr	r2, [r7, #24]
+ 458 0222 3B68     		ldr	r3, [r7]
+ 459 0224 9A42     		cmp	r2, r3
+ 460 0226 06D0     		beq	.L44
+ 557:./lwip-2.1.2/src/core/ipv4/ip4.c ****             /* we checked that before already */
+ 558:./lwip-2.1.2/src/core/ipv4/ip4.c ****             continue;
+ 559:./lwip-2.1.2/src/core/ipv4/ip4.c ****           }
+ 560:./lwip-2.1.2/src/core/ipv4/ip4.c ****           if (ip4_input_accept(netif)) {
+ 461              		.loc 1 560 15
+ 462 0228 B869     		ldr	r0, [r7, #24]
+ 463 022a FFF759FF 		bl	ip4_input_accept
+ 464 022e 0346     		mov	r3, r0
+ 465              		.loc 1 560 14
+ 466 0230 002B     		cmp	r3, #0
+ 467 0232 08D1     		bne	.L45
+ 468 0234 00E0     		b	.L30
+ 469              	.L44:
+ 558:./lwip-2.1.2/src/core/ipv4/ip4.c ****           }
+ 470              		.loc 1 558 13
+ 471 0236 00BF     		nop
+ 472              	.L30:
+ 555:./lwip-2.1.2/src/core/ipv4/ip4.c ****           if (netif == inp) {
+ 473              		.loc 1 555 9 discriminator 2
+ 474 0238 BB69     		ldr	r3, [r7, #24]
+ 475 023a 1B68     		ldr	r3, [r3]
+ 476 023c BB61     		str	r3, [r7, #24]
+ 477              	.L28:
+ 555:./lwip-2.1.2/src/core/ipv4/ip4.c ****           if (netif == inp) {
+ 478              		.loc 1 555 9 is_stmt 0 discriminator 1
+ 479 023e BB69     		ldr	r3, [r7, #24]
+ 480 0240 002B     		cmp	r3, #0
+ 481 0242 EDD1     		bne	.L31
+ 482 0244 00E0     		b	.L26
+ 483              	.L45:
+ 561:./lwip-2.1.2/src/core/ipv4/ip4.c ****             break;
+ 484              		.loc 1 561 13 is_stmt 1
+ 485 0246 00BF     		nop
+ 486              	.L26:
+ 562:./lwip-2.1.2/src/core/ipv4/ip4.c ****           }
+ 563:./lwip-2.1.2/src/core/ipv4/ip4.c ****         }
+ 564:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* !LWIP_SINGLE_NETIF */
+ 565:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 566:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 567:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 568:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 569:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_ACCEPT_LINK_LAYER_ADDRESSING
+ 570:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Pass DHCP messages regardless of destination address. DHCP traffic is addressed
+ 571:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * using link layer addressing (such as Ethernet MAC) so we must not filter on IP.
+ 572:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * According to RFC 1542 section 3.1.1, referred by RFC 2131).
+ 573:./lwip-2.1.2/src/core/ipv4/ip4.c ****    *
+ 574:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * If you want to accept private broadcast communication while a netif is down,
+ 575:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * define LWIP_IP_ACCEPT_UDP_PORT(dst_port), e.g.:
+ 576:./lwip-2.1.2/src/core/ipv4/ip4.c ****    *
+ 577:./lwip-2.1.2/src/core/ipv4/ip4.c ****    * #define LWIP_IP_ACCEPT_UDP_PORT(dst_port) ((dst_port) == PP_NTOHS(12345))
+ 578:./lwip-2.1.2/src/core/ipv4/ip4.c ****    */
+ 579:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif == NULL) {
+ 487              		.loc 1 579 6
+ 488 0248 BB69     		ldr	r3, [r7, #24]
+ 489 024a 002B     		cmp	r3, #0
+ 490 024c 11D1     		bne	.L32
+ 580:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* remote port is DHCP server? */
+ 581:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (IPH_PROTO(iphdr) == IP_PROTO_UDP) {
+ 491              		.loc 1 581 9
+ 492 024e FB69     		ldr	r3, [r7, #28]
+ 493 0250 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+ 494              		.loc 1 581 8
+ 495 0252 112B     		cmp	r3, #17
+ 496 0254 0DD1     		bne	.L32
+ 497              	.LBB2:
+ 582:./lwip-2.1.2/src/core/ipv4/ip4.c ****       const struct udp_hdr *udphdr = (const struct udp_hdr *)((const u8_t *)iphdr + iphdr_hlen);
+ 498              		.loc 1 582 38
+ 499 0256 7B8A     		ldrh	r3, [r7, #18]
+ 500              		.loc 1 582 29
+ 501 0258 FA69     		ldr	r2, [r7, #28]
+ 502 025a 1344     		add	r3, r3, r2
+ 503 025c FB60     		str	r3, [r7, #12]
+ 583:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: UDP packet to DHCP client port %"U16_F"\n
+ 584:./lwip-2.1.2/src/core/ipv4/ip4.c ****                                               lwip_ntohs(udphdr->dest)));
+ 585:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (IP_ACCEPT_LINK_LAYER_ADDRESSED_PORT(udphdr->dest)) {
+ 504              		.loc 1 585 11
+ 505 025e FB68     		ldr	r3, [r7, #12]
+ 506 0260 5B88     		ldrh	r3, [r3, #2]	@ unaligned
+ 507 0262 9BB2     		uxth	r3, r3
+ 508              		.loc 1 585 10
+ 509 0264 B3F5884F 		cmp	r3, #17408
+ 510 0268 03D1     		bne	.L32
+ 586:./lwip-2.1.2/src/core/ipv4/ip4.c ****         LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: DHCP packet accepted.\n"));
+ 587:./lwip-2.1.2/src/core/ipv4/ip4.c ****         netif = inp;
+ 511              		.loc 1 587 15
+ 512 026a 3B68     		ldr	r3, [r7]
+ 513 026c BB61     		str	r3, [r7, #24]
+ 588:./lwip-2.1.2/src/core/ipv4/ip4.c ****         check_ip_src = 0;
+ 514              		.loc 1 588 22
+ 515 026e 0023     		movs	r3, #0
+ 516 0270 7B61     		str	r3, [r7, #20]
+ 517              	.L32:
+ 518              	.LBE2:
+ 589:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 590:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 591:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 592:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_ACCEPT_LINK_LAYER_ADDRESSING */
+ 593:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 594:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* broadcast or multicast packet source address? Compliant with RFC 1122: 3.2.1.3 */
+ 595:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_IGMP || IP_ACCEPT_LINK_LAYER_ADDRESSING
+ 596:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (check_ip_src
+ 519              		.loc 1 596 6
+ 520 0272 7B69     		ldr	r3, [r7, #20]
+ 521 0274 002B     		cmp	r3, #0
+ 522 0276 17D0     		beq	.L33
+ 597:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_ACCEPT_LINK_LAYER_ADDRESSING
+ 598:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* DHCP servers need 0.0.0.0 to be allowed as source address (RFC 1.1.2.2: 3.2.1.3/a) */
+ 599:./lwip-2.1.2/src/core/ipv4/ip4.c ****       && !ip4_addr_isany_val(*ip4_current_src_addr())
+ 523              		.loc 1 599 11
+ 524 0278 4D4B     		ldr	r3, .L46
+ 525 027a 1B69     		ldr	r3, [r3, #16]
+ 526              		.loc 1 599 7
+ 527 027c 002B     		cmp	r3, #0
+ 528 027e 13D0     		beq	.L33
+ 600:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_ACCEPT_LINK_LAYER_ADDRESSING */
+ 601:./lwip-2.1.2/src/core/ipv4/ip4.c ****      )
+ 602:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_IGMP || IP_ACCEPT_LINK_LAYER_ADDRESSING */
+ 603:./lwip-2.1.2/src/core/ipv4/ip4.c ****   {
+ 604:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if ((ip4_addr_isbroadcast(ip4_current_src_addr(), inp)) ||
+ 529              		.loc 1 604 10
+ 530 0280 4B4B     		ldr	r3, .L46
+ 531 0282 1B69     		ldr	r3, [r3, #16]
+ 532 0284 3968     		ldr	r1, [r7]
+ 533 0286 1846     		mov	r0, r3
+ 534 0288 FFF7FEFF 		bl	ip4_addr_isbroadcast_u32
+ 535 028c 0346     		mov	r3, r0
+ 536              		.loc 1 604 8
+ 537 028e 002B     		cmp	r3, #0
+ 538 0290 05D1     		bne	.L34
+ 605:./lwip-2.1.2/src/core/ipv4/ip4.c ****         (ip4_addr_ismulticast(ip4_current_src_addr()))) {
+ 539              		.loc 1 605 10 discriminator 1
+ 540 0292 474B     		ldr	r3, .L46
+ 541 0294 1B69     		ldr	r3, [r3, #16]
+ 542 0296 03F0F003 		and	r3, r3, #240
+ 604:./lwip-2.1.2/src/core/ipv4/ip4.c ****         (ip4_addr_ismulticast(ip4_current_src_addr()))) {
+ 543              		.loc 1 604 61 discriminator 1
+ 544 029a E02B     		cmp	r3, #224
+ 545 029c 04D1     		bne	.L33
+ 546              	.L34:
+ 606:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* packet source is not valid */
+ 607:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING, ("ip4_input: packet source is
+ 608:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* free (drop) packet pbufs */
+ 609:./lwip-2.1.2/src/core/ipv4/ip4.c ****       pbuf_free(p);
+ 547              		.loc 1 609 7
+ 548 029e 7868     		ldr	r0, [r7, #4]
+ 549 02a0 FFF7FEFF 		bl	pbuf_free
+ 610:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.drop);
+ 611:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipinaddrerrors);
+ 612:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipindiscards);
+ 613:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return ERR_OK;
+ 550              		.loc 1 613 14
+ 551 02a4 0023     		movs	r3, #0
+ 552 02a6 7EE0     		b	.L19
+ 553              	.L33:
+ 614:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 615:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 616:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 617:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* packet not for us? */
+ 618:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif == NULL) {
+ 554              		.loc 1 618 6
+ 555 02a8 BB69     		ldr	r3, [r7, #24]
+ 556 02aa 002B     		cmp	r3, #0
+ 557 02ac 04D1     		bne	.L35
+ 619:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* packet not for us, route or discard */
+ 620:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: packet not for us.\n"));
+ 621:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_FORWARD
+ 622:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* non-broadcast packet? */
+ 623:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (!ip4_addr_isbroadcast(ip4_current_dest_addr(), inp)) {
+ 624:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* try to forward IP packet on (other) interfaces */
+ 625:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_forward(p, (struct ip_hdr *)p->payload, inp);
+ 626:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else
+ 627:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_FORWARD */
+ 628:./lwip-2.1.2/src/core/ipv4/ip4.c ****     {
+ 629:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.drop);
+ 630:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipinaddrerrors);
+ 631:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipindiscards);
+ 632:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 633:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_free(p);
+ 558              		.loc 1 633 5
+ 559 02ae 7868     		ldr	r0, [r7, #4]
+ 560 02b0 FFF7FEFF 		bl	pbuf_free
+ 634:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 561              		.loc 1 634 12
+ 562 02b4 0023     		movs	r3, #0
+ 563 02b6 76E0     		b	.L19
+ 564              	.L35:
+ 635:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 636:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* packet consists of multiple fragments? */
+ 637:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((IPH_OFFSET(iphdr) & PP_HTONS(IP_OFFMASK | IP_MF)) != 0) {
+ 565              		.loc 1 637 8
+ 566 02b8 FB69     		ldr	r3, [r7, #28]
+ 567 02ba DB88     		ldrh	r3, [r3, #6]	@ unaligned
+ 568 02bc 9BB2     		uxth	r3, r3
+ 569              		.loc 1 637 26
+ 570 02be 1A46     		mov	r2, r3
+ 571 02c0 4FF63F73 		movw	r3, #65343
+ 572 02c4 1340     		ands	r3, r3, r2
+ 573              		.loc 1 637 6
+ 574 02c6 002B     		cmp	r3, #0
+ 575 02c8 0BD0     		beq	.L36
+ 638:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_REASSEMBLY /* packet fragment reassembly code present? */
+ 639:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("IP packet is a fragment (id=0x%04"X16_F" tot_len=%"U16_F" len=%"U16_F" 
+ 640:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            lwip_ntohs(IPH_ID(iphdr)), p->tot_len, lwip_ntohs(IPH_LEN(iphdr)), (u16_
+ 641:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* reassemble the packet*/
+ 642:./lwip-2.1.2/src/core/ipv4/ip4.c ****     p = ip4_reass(p);
+ 576              		.loc 1 642 9
+ 577 02ca 7868     		ldr	r0, [r7, #4]
+ 578 02cc FFF7FEFF 		bl	ip4_reass
+ 579 02d0 7860     		str	r0, [r7, #4]
+ 643:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* packet not fully reassembled yet? */
+ 644:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (p == NULL) {
+ 580              		.loc 1 644 8
+ 581 02d2 7B68     		ldr	r3, [r7, #4]
+ 582 02d4 002B     		cmp	r3, #0
+ 583 02d6 01D1     		bne	.L37
+ 645:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return ERR_OK;
+ 584              		.loc 1 645 14
+ 585 02d8 0023     		movs	r3, #0
+ 586 02da 64E0     		b	.L19
+ 587              	.L37:
+ 646:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 647:./lwip-2.1.2/src/core/ipv4/ip4.c ****     iphdr = (const struct ip_hdr *)p->payload;
+ 588              		.loc 1 647 11
+ 589 02dc 7B68     		ldr	r3, [r7, #4]
+ 590 02de 5B68     		ldr	r3, [r3, #4]
+ 591 02e0 FB61     		str	r3, [r7, #28]
+ 592              	.L36:
+ 648:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* IP_REASSEMBLY == 0, no packet fragment reassembly code present */
+ 649:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_free(p);
+ 650:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("IP packet dropped since it was fragmented (0x%
+ 651:./lwip-2.1.2/src/core/ipv4/ip4.c ****                 lwip_ntohs(IPH_OFFSET(iphdr))));
+ 652:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.opterr);
+ 653:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.drop);
+ 654:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* unsupported protocol feature */
+ 655:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipinunknownprotos);
+ 656:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 657:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_REASSEMBLY */
+ 658:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 659:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 660:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_OPTIONS_ALLOWED == 0 /* no support for IP options in the IP header? */
+ 661:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 662:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_IGMP
+ 663:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* there is an extra "router alert" option in IGMP messages which we allow for but do not police 
+ 664:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((iphdr_hlen > IP_HLEN) &&  (IPH_PROTO(iphdr) != IP_PROTO_IGMP)) {
+ 665:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else
+ 666:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (iphdr_hlen > IP_HLEN) {
+ 667:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_IGMP */
+ 668:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("IP packet dropped since there were IP options 
+ 669:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_free(p);
+ 670:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.opterr);
+ 671:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.drop);
+ 672:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* unsupported protocol feature */
+ 673:./lwip-2.1.2/src/core/ipv4/ip4.c ****     MIB2_STATS_INC(mib2.ipinunknownprotos);
+ 674:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_OK;
+ 675:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 676:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_OPTIONS_ALLOWED == 0 */
+ 677:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 678:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* send to upper layers */
+ 679:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip4_input: \n"));
+ 680:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_debug_print(p);
+ 681:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip4_input: p->len %"U16_F" p->tot_len %"U16_F"\n", p->len, p->tot_len));
+ 682:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 683:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_netif = netif;
+ 593              		.loc 1 683 25
+ 594 02e2 334A     		ldr	r2, .L46
+ 595 02e4 BB69     		ldr	r3, [r7, #24]
+ 596 02e6 1360     		str	r3, [r2]
+ 684:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_input_netif = inp;
+ 597              		.loc 1 684 31
+ 598 02e8 314A     		ldr	r2, .L46
+ 599 02ea 3B68     		ldr	r3, [r7]
+ 600 02ec 5360     		str	r3, [r2, #4]
+ 685:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_ip4_header = iphdr;
+ 601              		.loc 1 685 30
+ 602 02ee 304A     		ldr	r2, .L46
+ 603 02f0 FB69     		ldr	r3, [r7, #28]
+ 604 02f2 9360     		str	r3, [r2, #8]
+ 686:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_ip_header_tot_len = IPH_HL_BYTES(iphdr);
+ 605              		.loc 1 686 39
+ 606 02f4 FB69     		ldr	r3, [r7, #28]
+ 607 02f6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 608 02f8 03F00F03 		and	r3, r3, #15
+ 609 02fc DBB2     		uxtb	r3, r3
+ 610 02fe 9B00     		lsls	r3, r3, #2
+ 611 0300 DBB2     		uxtb	r3, r3
+ 612 0302 9AB2     		uxth	r2, r3
+ 613              		.loc 1 686 37
+ 614 0304 2A4B     		ldr	r3, .L46
+ 615 0306 9A81     		strh	r2, [r3, #12]	@ movhi
+ 687:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 688:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_RAW
+ 689:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* raw input did not eat the packet? */
+ 690:./lwip-2.1.2/src/core/ipv4/ip4.c ****   raw_status = raw_input(p, inp);
+ 691:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (raw_status != RAW_INPUT_EATEN)
+ 692:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_RAW */
+ 693:./lwip-2.1.2/src/core/ipv4/ip4.c ****   {
+ 694:./lwip-2.1.2/src/core/ipv4/ip4.c ****     pbuf_remove_header(p, iphdr_hlen); /* Move to payload, no check necessary. */
+ 616              		.loc 1 694 5
+ 617 0308 7B8A     		ldrh	r3, [r7, #18]
+ 618 030a 1946     		mov	r1, r3
+ 619 030c 7868     		ldr	r0, [r7, #4]
+ 620 030e FFF7FEFF 		bl	pbuf_remove_header
+ 695:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 696:./lwip-2.1.2/src/core/ipv4/ip4.c ****     switch (IPH_PROTO(iphdr)) {
+ 621              		.loc 1 696 13
+ 622 0312 FB69     		ldr	r3, [r7, #28]
+ 623 0314 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+ 624              		.loc 1 696 5
+ 625 0316 112B     		cmp	r3, #17
+ 626 0318 06D0     		beq	.L38
+ 627 031a 112B     		cmp	r3, #17
+ 628 031c 13DC     		bgt	.L39
+ 629 031e 012B     		cmp	r3, #1
+ 630 0320 0CD0     		beq	.L40
+ 631 0322 062B     		cmp	r3, #6
+ 632 0324 05D0     		beq	.L41
+ 633 0326 0EE0     		b	.L39
+ 634              	.L38:
+ 697:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_UDP
+ 698:./lwip-2.1.2/src/core/ipv4/ip4.c ****       case IP_PROTO_UDP:
+ 699:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_UDPLITE
+ 700:./lwip-2.1.2/src/core/ipv4/ip4.c ****       case IP_PROTO_UDPLITE:
+ 701:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_UDPLITE */
+ 702:./lwip-2.1.2/src/core/ipv4/ip4.c ****         MIB2_STATS_INC(mib2.ipindelivers);
+ 703:./lwip-2.1.2/src/core/ipv4/ip4.c ****         udp_input(p, inp);
+ 635              		.loc 1 703 9
+ 636 0328 3968     		ldr	r1, [r7]
+ 637 032a 7868     		ldr	r0, [r7, #4]
+ 638 032c FFF7FEFF 		bl	udp_input
+ 704:./lwip-2.1.2/src/core/ipv4/ip4.c ****         break;
+ 639              		.loc 1 704 9
+ 640 0330 26E0     		b	.L42
+ 641              	.L41:
+ 705:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_UDP */
+ 706:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_TCP
+ 707:./lwip-2.1.2/src/core/ipv4/ip4.c ****       case IP_PROTO_TCP:
+ 708:./lwip-2.1.2/src/core/ipv4/ip4.c ****         MIB2_STATS_INC(mib2.ipindelivers);
+ 709:./lwip-2.1.2/src/core/ipv4/ip4.c ****         tcp_input(p, inp);
+ 642              		.loc 1 709 9
+ 643 0332 3968     		ldr	r1, [r7]
+ 644 0334 7868     		ldr	r0, [r7, #4]
+ 645 0336 FFF7FEFF 		bl	tcp_input
+ 710:./lwip-2.1.2/src/core/ipv4/ip4.c ****         break;
+ 646              		.loc 1 710 9
+ 647 033a 21E0     		b	.L42
+ 648              	.L40:
+ 711:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_TCP */
+ 712:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_ICMP
+ 713:./lwip-2.1.2/src/core/ipv4/ip4.c ****       case IP_PROTO_ICMP:
+ 714:./lwip-2.1.2/src/core/ipv4/ip4.c ****         MIB2_STATS_INC(mib2.ipindelivers);
+ 715:./lwip-2.1.2/src/core/ipv4/ip4.c ****         icmp_input(p, inp);
+ 649              		.loc 1 715 9
+ 650 033c 3968     		ldr	r1, [r7]
+ 651 033e 7868     		ldr	r0, [r7, #4]
+ 652 0340 FFF7FEFF 		bl	icmp_input
+ 716:./lwip-2.1.2/src/core/ipv4/ip4.c ****         break;
+ 653              		.loc 1 716 9
+ 654 0344 1CE0     		b	.L42
+ 655              	.L39:
+ 717:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_ICMP */
+ 718:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_IGMP
+ 719:./lwip-2.1.2/src/core/ipv4/ip4.c ****       case IP_PROTO_IGMP:
+ 720:./lwip-2.1.2/src/core/ipv4/ip4.c ****         igmp_input(p, inp, ip4_current_dest_addr());
+ 721:./lwip-2.1.2/src/core/ipv4/ip4.c ****         break;
+ 722:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_IGMP */
+ 723:./lwip-2.1.2/src/core/ipv4/ip4.c ****       default:
+ 724:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_RAW
+ 725:./lwip-2.1.2/src/core/ipv4/ip4.c ****         if (raw_status == RAW_INPUT_DELIVERED) {
+ 726:./lwip-2.1.2/src/core/ipv4/ip4.c ****           MIB2_STATS_INC(mib2.ipindelivers);
+ 727:./lwip-2.1.2/src/core/ipv4/ip4.c ****         } else
+ 728:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_RAW */
+ 729:./lwip-2.1.2/src/core/ipv4/ip4.c ****         {
+ 730:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_ICMP
+ 731:./lwip-2.1.2/src/core/ipv4/ip4.c ****           /* send ICMP destination protocol unreachable unless is was a broadcast */
+ 732:./lwip-2.1.2/src/core/ipv4/ip4.c ****           if (!ip4_addr_isbroadcast(ip4_current_dest_addr(), netif) &&
+ 656              		.loc 1 732 16
+ 657 0346 1A4B     		ldr	r3, .L46
+ 658 0348 5B69     		ldr	r3, [r3, #20]
+ 659 034a B969     		ldr	r1, [r7, #24]
+ 660 034c 1846     		mov	r0, r3
+ 661 034e FFF7FEFF 		bl	ip4_addr_isbroadcast_u32
+ 662 0352 0346     		mov	r3, r0
+ 663              		.loc 1 732 14
+ 664 0354 002B     		cmp	r3, #0
+ 665 0356 0FD1     		bne	.L43
+ 733:./lwip-2.1.2/src/core/ipv4/ip4.c ****               !ip4_addr_ismulticast(ip4_current_dest_addr())) {
+ 666              		.loc 1 733 16 discriminator 1
+ 667 0358 154B     		ldr	r3, .L46
+ 668 035a 5B69     		ldr	r3, [r3, #20]
+ 669 035c 03F0F003 		and	r3, r3, #240
+ 732:./lwip-2.1.2/src/core/ipv4/ip4.c ****               !ip4_addr_ismulticast(ip4_current_dest_addr())) {
+ 670              		.loc 1 732 69 discriminator 1
+ 671 0360 E02B     		cmp	r3, #224
+ 672 0362 09D0     		beq	.L43
+ 734:./lwip-2.1.2/src/core/ipv4/ip4.c ****             pbuf_header_force(p, (s16_t)iphdr_hlen); /* Move to ip header, no check necessary. */
+ 673              		.loc 1 734 13
+ 674 0364 B7F91230 		ldrsh	r3, [r7, #18]
+ 675 0368 1946     		mov	r1, r3
+ 676 036a 7868     		ldr	r0, [r7, #4]
+ 677 036c FFF7FEFF 		bl	pbuf_header_force
+ 735:./lwip-2.1.2/src/core/ipv4/ip4.c ****             icmp_dest_unreach(p, ICMP_DUR_PROTO);
+ 678              		.loc 1 735 13
+ 679 0370 0221     		movs	r1, #2
+ 680 0372 7868     		ldr	r0, [r7, #4]
+ 681 0374 FFF7FEFF 		bl	icmp_dest_unreach
+ 682              	.L43:
+ 736:./lwip-2.1.2/src/core/ipv4/ip4.c ****           }
+ 737:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_ICMP */
+ 738:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 739:./lwip-2.1.2/src/core/ipv4/ip4.c ****           LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("Unsupported transport protocol %"U16_F"\
+ 740:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 741:./lwip-2.1.2/src/core/ipv4/ip4.c ****           IP_STATS_INC(ip.proterr);
+ 742:./lwip-2.1.2/src/core/ipv4/ip4.c ****           IP_STATS_INC(ip.drop);
+ 743:./lwip-2.1.2/src/core/ipv4/ip4.c ****           MIB2_STATS_INC(mib2.ipinunknownprotos);
+ 744:./lwip-2.1.2/src/core/ipv4/ip4.c ****         }
+ 745:./lwip-2.1.2/src/core/ipv4/ip4.c ****         pbuf_free(p);
+ 683              		.loc 1 745 9
+ 684 0378 7868     		ldr	r0, [r7, #4]
+ 685 037a FFF7FEFF 		bl	pbuf_free
+ 746:./lwip-2.1.2/src/core/ipv4/ip4.c ****         break;
+ 686              		.loc 1 746 9
+ 687 037e 00BF     		nop
+ 688              	.L42:
+ 747:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 748:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 749:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 750:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* @todo: this is not really necessary... */
+ 751:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_netif = NULL;
+ 689              		.loc 1 751 25
+ 690 0380 0B4B     		ldr	r3, .L46
+ 691 0382 0022     		movs	r2, #0
+ 692 0384 1A60     		str	r2, [r3]
+ 752:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_input_netif = NULL;
+ 693              		.loc 1 752 31
+ 694 0386 0A4B     		ldr	r3, .L46
+ 695 0388 0022     		movs	r2, #0
+ 696 038a 5A60     		str	r2, [r3, #4]
+ 753:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_ip4_header = NULL;
+ 697              		.loc 1 753 30
+ 698 038c 084B     		ldr	r3, .L46
+ 699 038e 0022     		movs	r2, #0
+ 700 0390 9A60     		str	r2, [r3, #8]
+ 754:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip_data.current_ip_header_tot_len = 0;
+ 701              		.loc 1 754 37
+ 702 0392 074B     		ldr	r3, .L46
+ 703 0394 0022     		movs	r2, #0
+ 704 0396 9A81     		strh	r2, [r3, #12]	@ movhi
+ 755:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_addr_set_any(ip4_current_src_addr());
+ 705              		.loc 1 755 3
+ 706 0398 054B     		ldr	r3, .L46
+ 707 039a 0022     		movs	r2, #0
+ 708 039c 1A61     		str	r2, [r3, #16]
+ 756:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_addr_set_any(ip4_current_dest_addr());
+ 709              		.loc 1 756 3
+ 710 039e 044B     		ldr	r3, .L46
+ 711 03a0 0022     		movs	r2, #0
+ 712 03a2 5A61     		str	r2, [r3, #20]
+ 757:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 758:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ERR_OK;
+ 713              		.loc 1 758 10
+ 714 03a4 0023     		movs	r3, #0
+ 715              	.L19:
+ 759:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 716              		.loc 1 759 1
+ 717 03a6 1846     		mov	r0, r3
+ 718 03a8 2037     		adds	r7, r7, #32
+ 719              	.LCFI14:
+ 720              		.cfi_def_cfa_offset 8
+ 721 03aa BD46     		mov	sp, r7
+ 722              	.LCFI15:
+ 723              		.cfi_def_cfa_register 13
+ 724              		@ sp needed
+ 725 03ac 80BD     		pop	{r7, pc}
+ 726              	.L47:
+ 727 03ae 00BF     		.align	2
+ 728              	.L46:
+ 729 03b0 00000000 		.word	ip_data
+ 730 03b4 00000000 		.word	netif_list
+ 731              		.cfi_endproc
+ 732              	.LFE27:
+ 734              		.align	1
+ 735              		.global	ip4_output_if
+ 736              		.syntax unified
+ 737              		.thumb
+ 738              		.thumb_func
+ 739              		.fpu fpv5-d16
+ 741              	ip4_output_if:
+ 742              	.LFB28:
+ 760:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 761:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 762:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Sends an IP packet on a network interface. This function constructs
+ 763:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * the IP header and calculates the IP header checksum. If the source
+ 764:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * IP address is NULL, the IP address of the outgoing network
+ 765:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * interface is filled in as source address.
+ 766:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * If the destination IP address is LWIP_IP_HDRINCL, p is assumed to already
+ 767:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * include an IP header and p->payload points to it instead of the data.
+ 768:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 769:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param p the packet to send (p->payload points to the data, e.g. next
+ 770:./lwip-2.1.2/src/core/ipv4/ip4.c ****             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
+ 771:./lwip-2.1.2/src/core/ipv4/ip4.c ****             IP header and p->payload points to that IP header)
+ 772:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+ 773:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         IP  address of the netif used to send is used as source address)
+ 774:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param dest the destination IP address to send the packet to
+ 775:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param ttl the TTL value to be set in the IP header
+ 776:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param tos the TOS value to be set in the IP header
+ 777:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param proto the PROTOCOL to be set in the IP header
+ 778:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param netif the netif on which to send this packet
+ 779:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @return ERR_OK if the packet was sent OK
+ 780:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         ERR_BUF if p doesn't have enough space for IP/LINK headers
+ 781:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         returns errors returned by netif->output
+ 782:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 783:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @note ip_id: RFC791 "some host may be able to simply use
+ 784:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *  unique identifiers independent of destination"
+ 785:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 786:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+ 787:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ 788:./lwip-2.1.2/src/core/ipv4/ip4.c ****               u8_t ttl, u8_t tos,
+ 789:./lwip-2.1.2/src/core/ipv4/ip4.c ****               u8_t proto, struct netif *netif)
+ 790:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 743              		.loc 1 790 1
+ 744              		.cfi_startproc
+ 745              		@ args = 12, pretend = 0, frame = 24
+ 746              		@ frame_needed = 1, uses_anonymous_args = 0
+ 747 03b8 80B5     		push	{r7, lr}
+ 748              	.LCFI16:
+ 749              		.cfi_def_cfa_offset 8
+ 750              		.cfi_offset 7, -8
+ 751              		.cfi_offset 14, -4
+ 752 03ba 8AB0     		sub	sp, sp, #40
+ 753              	.LCFI17:
+ 754              		.cfi_def_cfa_offset 48
+ 755 03bc 04AF     		add	r7, sp, #16
+ 756              	.LCFI18:
+ 757              		.cfi_def_cfa 7, 32
+ 758 03be F860     		str	r0, [r7, #12]
+ 759 03c0 B960     		str	r1, [r7, #8]
+ 760 03c2 7A60     		str	r2, [r7, #4]
+ 761 03c4 FB70     		strb	r3, [r7, #3]
+ 791:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_OPTIONS_SEND
+ 792:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_output_if_opt(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+ 793:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 794:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 795:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 796:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Same as ip_output_if() but with the possibility to include IP options:
+ 797:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+ 798:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @ param ip_options pointer to the IP options, copied into the IP header
+ 799:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @ param optlen length of ip_options
+ 800:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 801:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+ 802:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_output_if_opt(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ 803:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   u8_t ttl, u8_t tos, u8_t proto, struct netif *netif, void *ip_options,
+ 804:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   u16_t optlen)
+ 805:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 806:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_OPTIONS_SEND */
+ 807:./lwip-2.1.2/src/core/ipv4/ip4.c ****   const ip4_addr_t *src_used = src;
+ 762              		.loc 1 807 21
+ 763 03c6 BB68     		ldr	r3, [r7, #8]
+ 764 03c8 7B61     		str	r3, [r7, #20]
+ 808:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (dest != LWIP_IP_HDRINCL) {
+ 765              		.loc 1 808 6
+ 766 03ca 7B68     		ldr	r3, [r7, #4]
+ 767 03cc 002B     		cmp	r3, #0
+ 768 03ce 09D0     		beq	.L49
+ 809:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (ip4_addr_isany(src)) {
+ 769              		.loc 1 809 8
+ 770 03d0 BB68     		ldr	r3, [r7, #8]
+ 771 03d2 002B     		cmp	r3, #0
+ 772 03d4 03D0     		beq	.L50
+ 773              		.loc 1 809 9 discriminator 1
+ 774 03d6 BB68     		ldr	r3, [r7, #8]
+ 775 03d8 1B68     		ldr	r3, [r3]
+ 776 03da 002B     		cmp	r3, #0
+ 777 03dc 02D1     		bne	.L49
+ 778              	.L50:
+ 810:./lwip-2.1.2/src/core/ipv4/ip4.c ****       src_used = netif_ip4_addr(netif);
+ 779              		.loc 1 810 16
+ 780 03de BB6A     		ldr	r3, [r7, #40]
+ 781 03e0 0433     		adds	r3, r3, #4
+ 782 03e2 7B61     		str	r3, [r7, #20]
+ 783              	.L49:
+ 811:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 812:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 813:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 814:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_OPTIONS_SEND
+ 815:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_output_if_opt_src(p, src_used, dest, ttl, tos, proto, netif,
+ 816:./lwip-2.1.2/src/core/ipv4/ip4.c ****                                ip_options, optlen);
+ 817:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* IP_OPTIONS_SEND */
+ 818:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_output_if_src(p, src_used, dest, ttl, tos, proto, netif);
+ 784              		.loc 1 818 10
+ 785 03e4 FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
+ 786 03e6 BB6A     		ldr	r3, [r7, #40]
+ 787 03e8 0293     		str	r3, [sp, #8]
+ 788 03ea 97F82430 		ldrb	r3, [r7, #36]	@ zero_extendqisi2
+ 789 03ee 0193     		str	r3, [sp, #4]
+ 790 03f0 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 791 03f4 0093     		str	r3, [sp]
+ 792 03f6 1346     		mov	r3, r2
+ 793 03f8 7A68     		ldr	r2, [r7, #4]
+ 794 03fa 7969     		ldr	r1, [r7, #20]
+ 795 03fc F868     		ldr	r0, [r7, #12]
+ 796 03fe FFF7FEFF 		bl	ip4_output_if_src
+ 797 0402 0346     		mov	r3, r0
+ 819:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_OPTIONS_SEND */
+ 820:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 798              		.loc 1 820 1
+ 799 0404 1846     		mov	r0, r3
+ 800 0406 1837     		adds	r7, r7, #24
+ 801              	.LCFI19:
+ 802              		.cfi_def_cfa_offset 8
+ 803 0408 BD46     		mov	sp, r7
+ 804              	.LCFI20:
+ 805              		.cfi_def_cfa_register 13
+ 806              		@ sp needed
+ 807 040a 80BD     		pop	{r7, pc}
+ 808              		.cfi_endproc
+ 809              	.LFE28:
+ 811              		.align	1
+ 812              		.global	ip4_output_if_src
+ 813              		.syntax unified
+ 814              		.thumb
+ 815              		.thumb_func
+ 816              		.fpu fpv5-d16
+ 818              	ip4_output_if_src:
+ 819              	.LFB29:
+ 821:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 822:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 823:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Same as ip_output_if() but 'src' address is not replaced by netif address
+ 824:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * when it is 'any'.
+ 825:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 826:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+ 827:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_output_if_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ 828:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   u8_t ttl, u8_t tos,
+ 829:./lwip-2.1.2/src/core/ipv4/ip4.c ****                   u8_t proto, struct netif *netif)
+ 830:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 820              		.loc 1 830 1
+ 821              		.cfi_startproc
+ 822              		@ args = 12, pretend = 0, frame = 32
+ 823              		@ frame_needed = 1, uses_anonymous_args = 0
+ 824 040c 80B5     		push	{r7, lr}
+ 825              	.LCFI21:
+ 826              		.cfi_def_cfa_offset 8
+ 827              		.cfi_offset 7, -8
+ 828              		.cfi_offset 14, -4
+ 829 040e 88B0     		sub	sp, sp, #32
+ 830              	.LCFI22:
+ 831              		.cfi_def_cfa_offset 40
+ 832 0410 00AF     		add	r7, sp, #0
+ 833              	.LCFI23:
+ 834              		.cfi_def_cfa_register 7
+ 835 0412 F860     		str	r0, [r7, #12]
+ 836 0414 B960     		str	r1, [r7, #8]
+ 837 0416 7A60     		str	r2, [r7, #4]
+ 838 0418 FB70     		strb	r3, [r7, #3]
+ 831:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_OPTIONS_SEND
+ 832:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_output_if_opt_src(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+ 833:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 834:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 835:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+ 836:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Same as ip_output_if_opt() but 'src' address is not replaced by netif address
+ 837:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * when it is 'any'.
+ 838:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+ 839:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+ 840:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ 841:./lwip-2.1.2/src/core/ipv4/ip4.c ****                       u8_t ttl, u8_t tos, u8_t proto, struct netif *netif, void *ip_options,
+ 842:./lwip-2.1.2/src/core/ipv4/ip4.c ****                       u16_t optlen)
+ 843:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 844:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_OPTIONS_SEND */
+ 845:./lwip-2.1.2/src/core/ipv4/ip4.c ****   struct ip_hdr *iphdr;
+ 846:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_addr_t dest_addr;
+ 847:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 848:./lwip-2.1.2/src/core/ipv4/ip4.c ****   u32_t chk_sum = 0;
+ 849:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 850:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 851:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_ASSERT_CORE_LOCKED();
+ 852:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
+ 853:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 854:./lwip-2.1.2/src/core/ipv4/ip4.c ****   MIB2_STATS_INC(mib2.ipoutrequests);
+ 855:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 856:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* Should the IP header be generated or is it already included in p? */
+ 857:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (dest != LWIP_IP_HDRINCL) {
+ 839              		.loc 1 857 6
+ 840 041a 7B68     		ldr	r3, [r7, #4]
+ 841 041c 002B     		cmp	r3, #0
+ 842 041e 55D0     		beq	.L53
+ 843              	.LBB3:
+ 858:./lwip-2.1.2/src/core/ipv4/ip4.c ****     u16_t ip_hlen = IP_HLEN;
+ 844              		.loc 1 858 11
+ 845 0420 1423     		movs	r3, #20
+ 846 0422 7B83     		strh	r3, [r7, #26]	@ movhi
+ 859:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_OPTIONS_SEND
+ 860:./lwip-2.1.2/src/core/ipv4/ip4.c ****     u16_t optlen_aligned = 0;
+ 861:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (optlen != 0) {
+ 862:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 863:./lwip-2.1.2/src/core/ipv4/ip4.c ****       int i;
+ 864:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 865:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (optlen > (IP_HLEN_MAX - IP_HLEN)) {
+ 866:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* optlen too long */
+ 867:./lwip-2.1.2/src/core/ipv4/ip4.c ****         LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_output_if_opt: optlen too long\n"));
+ 868:./lwip-2.1.2/src/core/ipv4/ip4.c ****         IP_STATS_INC(ip.err);
+ 869:./lwip-2.1.2/src/core/ipv4/ip4.c ****         MIB2_STATS_INC(mib2.ipoutdiscards);
+ 870:./lwip-2.1.2/src/core/ipv4/ip4.c ****         return ERR_VAL;
+ 871:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 872:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* round up to a multiple of 4 */
+ 873:./lwip-2.1.2/src/core/ipv4/ip4.c ****       optlen_aligned = (u16_t)((optlen + 3) & ~3);
+ 874:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip_hlen = (u16_t)(ip_hlen + optlen_aligned);
+ 875:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* First write in the IP options */
+ 876:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (pbuf_add_header(p, optlen_aligned)) {
+ 877:./lwip-2.1.2/src/core/ipv4/ip4.c ****         LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_output_if_opt: not enough room for IP 
+ 878:./lwip-2.1.2/src/core/ipv4/ip4.c ****         IP_STATS_INC(ip.err);
+ 879:./lwip-2.1.2/src/core/ipv4/ip4.c ****         MIB2_STATS_INC(mib2.ipoutdiscards);
+ 880:./lwip-2.1.2/src/core/ipv4/ip4.c ****         return ERR_BUF;
+ 881:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 882:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MEMCPY(p->payload, ip_options, optlen);
+ 883:./lwip-2.1.2/src/core/ipv4/ip4.c ****       if (optlen < optlen_aligned) {
+ 884:./lwip-2.1.2/src/core/ipv4/ip4.c ****         /* zero the remaining bytes */
+ 885:./lwip-2.1.2/src/core/ipv4/ip4.c ****         memset(((char *)p->payload) + optlen, 0, (size_t)(optlen_aligned - optlen));
+ 886:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 887:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 888:./lwip-2.1.2/src/core/ipv4/ip4.c ****       for (i = 0; i < optlen_aligned / 2; i++) {
+ 889:./lwip-2.1.2/src/core/ipv4/ip4.c ****         chk_sum += ((u16_t *)p->payload)[i];
+ 890:./lwip-2.1.2/src/core/ipv4/ip4.c ****       }
+ 891:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 892:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 893:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_OPTIONS_SEND */
+ 894:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* generate IP header */
+ 895:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (pbuf_add_header(p, IP_HLEN)) {
+ 847              		.loc 1 895 9
+ 848 0424 1421     		movs	r1, #20
+ 849 0426 F868     		ldr	r0, [r7, #12]
+ 850 0428 FFF7FEFF 		bl	pbuf_add_header
+ 851 042c 0346     		mov	r3, r0
+ 852              		.loc 1 895 8
+ 853 042e 002B     		cmp	r3, #0
+ 854 0430 02D0     		beq	.L54
+ 896:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_output: not enough room for IP header in
+ 897:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 898:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.err);
+ 899:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipoutdiscards);
+ 900:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return ERR_BUF;
+ 855              		.loc 1 900 14
+ 856 0432 6FF00103 		mvn	r3, #1
+ 857 0436 71E0     		b	.L61
+ 858              	.L54:
+ 901:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 902:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 903:./lwip-2.1.2/src/core/ipv4/ip4.c ****     iphdr = (struct ip_hdr *)p->payload;
+ 859              		.loc 1 903 11
+ 860 0438 FB68     		ldr	r3, [r7, #12]
+ 861 043a 5B68     		ldr	r3, [r3, #4]
+ 862 043c FB61     		str	r3, [r7, #28]
+ 904:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_ASSERT("check that first pbuf can hold struct ip_hdr",
+ 905:./lwip-2.1.2/src/core/ipv4/ip4.c ****                 (p->len >= sizeof(struct ip_hdr)));
+ 906:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 907:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_TTL_SET(iphdr, ttl);
+ 863              		.loc 1 907 5
+ 864 043e FB69     		ldr	r3, [r7, #28]
+ 865 0440 FA78     		ldrb	r2, [r7, #3]
+ 866 0442 1A72     		strb	r2, [r3, #8]
+ 908:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_PROTO_SET(iphdr, proto);
+ 867              		.loc 1 908 5
+ 868 0444 FB69     		ldr	r3, [r7, #28]
+ 869 0446 97F82C20 		ldrb	r2, [r7, #44]
+ 870 044a 5A72     		strb	r2, [r3, #9]
+ 909:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 910:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += PP_NTOHS(proto | (ttl << 8));
+ 911:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 912:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 913:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* dest cannot be NULL here */
+ 914:./lwip-2.1.2/src/core/ipv4/ip4.c ****     ip4_addr_copy(iphdr->dest, *dest);
+ 871              		.loc 1 914 5
+ 872 044c 7B68     		ldr	r3, [r7, #4]
+ 873 044e 1A68     		ldr	r2, [r3]
+ 874 0450 FB69     		ldr	r3, [r7, #28]
+ 875 0452 1A61     		str	r2, [r3, #16]	@ unaligned
+ 915:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 916:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += ip4_addr_get_u32(&iphdr->dest) & 0xFFFF;
+ 917:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += ip4_addr_get_u32(&iphdr->dest) >> 16;
+ 918:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 919:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 920:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_VHL_SET(iphdr, 4, ip_hlen / 4);
+ 876              		.loc 1 920 5
+ 877 0454 7B8B     		ldrh	r3, [r7, #26]
+ 878 0456 9B08     		lsrs	r3, r3, #2
+ 879 0458 9BB2     		uxth	r3, r3
+ 880 045a DBB2     		uxtb	r3, r3
+ 881 045c 43F04003 		orr	r3, r3, #64
+ 882 0460 DAB2     		uxtb	r2, r3
+ 883 0462 FB69     		ldr	r3, [r7, #28]
+ 884 0464 1A70     		strb	r2, [r3]
+ 921:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_TOS_SET(iphdr, tos);
+ 885              		.loc 1 921 5
+ 886 0466 FB69     		ldr	r3, [r7, #28]
+ 887 0468 97F82820 		ldrb	r2, [r7, #40]
+ 888 046c 5A70     		strb	r2, [r3, #1]
+ 922:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 923:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += PP_NTOHS(tos | (iphdr->_v_hl << 8));
+ 924:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 925:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_LEN_SET(iphdr, lwip_htons(p->tot_len));
+ 889              		.loc 1 925 5
+ 890 046e FB68     		ldr	r3, [r7, #12]
+ 891 0470 1B89     		ldrh	r3, [r3, #8]
+ 892 0472 1846     		mov	r0, r3
+ 893 0474 FFF7FEFF 		bl	lwip_htons
+ 894 0478 0346     		mov	r3, r0
+ 895 047a 1A46     		mov	r2, r3
+ 896 047c FB69     		ldr	r3, [r7, #28]
+ 897 047e 5A80     		strh	r2, [r3, #2]	@ unaligned
+ 926:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 927:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += iphdr->_len;
+ 928:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 929:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_OFFSET_SET(iphdr, 0);
+ 898              		.loc 1 929 5
+ 899 0480 FB69     		ldr	r3, [r7, #28]
+ 900 0482 0022     		movs	r2, #0
+ 901 0484 9A71     		strb	r2, [r3, #6]
+ 902 0486 0022     		movs	r2, #0
+ 903 0488 DA71     		strb	r2, [r3, #7]
+ 930:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_ID_SET(iphdr, lwip_htons(ip_id));
+ 904              		.loc 1 930 5
+ 905 048a 264B     		ldr	r3, .L62
+ 906 048c 1B88     		ldrh	r3, [r3]
+ 907 048e 1846     		mov	r0, r3
+ 908 0490 FFF7FEFF 		bl	lwip_htons
+ 909 0494 0346     		mov	r3, r0
+ 910 0496 1A46     		mov	r2, r3
+ 911 0498 FB69     		ldr	r3, [r7, #28]
+ 912 049a 9A80     		strh	r2, [r3, #4]	@ unaligned
+ 931:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 932:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += iphdr->_id;
+ 933:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 934:./lwip-2.1.2/src/core/ipv4/ip4.c ****     ++ip_id;
+ 913              		.loc 1 934 5
+ 914 049c 214B     		ldr	r3, .L62
+ 915 049e 1B88     		ldrh	r3, [r3]
+ 916 04a0 0133     		adds	r3, r3, #1
+ 917 04a2 9AB2     		uxth	r2, r3
+ 918 04a4 1F4B     		ldr	r3, .L62
+ 919 04a6 1A80     		strh	r2, [r3]	@ movhi
+ 935:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 936:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (src == NULL) {
+ 920              		.loc 1 936 8
+ 921 04a8 BB68     		ldr	r3, [r7, #8]
+ 922 04aa 002B     		cmp	r3, #0
+ 923 04ac 04D1     		bne	.L56
+ 937:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_addr_copy(iphdr->src, *IP4_ADDR_ANY4);
+ 924              		.loc 1 937 7
+ 925 04ae 1E4B     		ldr	r3, .L62+4
+ 926 04b0 1A68     		ldr	r2, [r3]
+ 927 04b2 FB69     		ldr	r3, [r7, #28]
+ 928 04b4 DA60     		str	r2, [r3, #12]	@ unaligned
+ 929 04b6 03E0     		b	.L57
+ 930              	.L56:
+ 938:./lwip-2.1.2/src/core/ipv4/ip4.c ****     } else {
+ 939:./lwip-2.1.2/src/core/ipv4/ip4.c ****       /* src cannot be NULL here */
+ 940:./lwip-2.1.2/src/core/ipv4/ip4.c ****       ip4_addr_copy(iphdr->src, *src);
+ 931              		.loc 1 940 7
+ 932 04b8 BB68     		ldr	r3, [r7, #8]
+ 933 04ba 1A68     		ldr	r2, [r3]
+ 934 04bc FB69     		ldr	r3, [r7, #28]
+ 935 04be DA60     		str	r2, [r3, #12]	@ unaligned
+ 936              	.L57:
+ 941:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 942:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 943:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP_INLINE
+ 944:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += ip4_addr_get_u32(&iphdr->src) & 0xFFFF;
+ 945:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum += ip4_addr_get_u32(&iphdr->src) >> 16;
+ 946:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum = (chk_sum >> 16) + (chk_sum & 0xFFFF);
+ 947:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum = (chk_sum >> 16) + chk_sum;
+ 948:./lwip-2.1.2/src/core/ipv4/ip4.c ****     chk_sum = ~chk_sum;
+ 949:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+ 950:./lwip-2.1.2/src/core/ipv4/ip4.c ****       iphdr->_chksum = (u16_t)chk_sum; /* network order */
+ 951:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 952:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_CHECKSUM_CTRL_PER_NETIF
+ 953:./lwip-2.1.2/src/core/ipv4/ip4.c ****     else {
+ 954:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IPH_CHKSUM_SET(iphdr, 0);
+ 955:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 956:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_CHECKSUM_CTRL_PER_NETIF*/
+ 957:./lwip-2.1.2/src/core/ipv4/ip4.c **** #else /* CHECKSUM_GEN_IP_INLINE */
+ 958:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IPH_CHKSUM_SET(iphdr, 0);
+ 937              		.loc 1 958 5
+ 938 04c0 FB69     		ldr	r3, [r7, #28]
+ 939 04c2 0022     		movs	r2, #0
+ 940 04c4 9A72     		strb	r2, [r3, #10]
+ 941 04c6 0022     		movs	r2, #0
+ 942 04c8 DA72     		strb	r2, [r3, #11]
+ 943              	.LBE3:
+ 944 04ca 0FE0     		b	.L58
+ 945              	.L53:
+ 959:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if CHECKSUM_GEN_IP
+ 960:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_IP) {
+ 961:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IPH_CHKSUM_SET(iphdr, inet_chksum(iphdr, ip_hlen));
+ 962:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 963:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP */
+ 964:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* CHECKSUM_GEN_IP_INLINE */
+ 965:./lwip-2.1.2/src/core/ipv4/ip4.c ****   } else {
+ 966:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* IP header already included in p */
+ 967:./lwip-2.1.2/src/core/ipv4/ip4.c ****     if (p->len < IP_HLEN) {
+ 946              		.loc 1 967 10
+ 947 04cc FB68     		ldr	r3, [r7, #12]
+ 948 04ce 5B89     		ldrh	r3, [r3, #10]
+ 949              		.loc 1 967 8
+ 950 04d0 132B     		cmp	r3, #19
+ 951 04d2 02D8     		bhi	.L59
+ 968:./lwip-2.1.2/src/core/ipv4/ip4.c ****       LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("ip4_output: LWIP_IP_HDRINCL but pbuf is too 
+ 969:./lwip-2.1.2/src/core/ipv4/ip4.c ****       IP_STATS_INC(ip.err);
+ 970:./lwip-2.1.2/src/core/ipv4/ip4.c ****       MIB2_STATS_INC(mib2.ipoutdiscards);
+ 971:./lwip-2.1.2/src/core/ipv4/ip4.c ****       return ERR_BUF;
+ 952              		.loc 1 971 14
+ 953 04d4 6FF00103 		mvn	r3, #1
+ 954 04d8 20E0     		b	.L61
+ 955              	.L59:
+ 972:./lwip-2.1.2/src/core/ipv4/ip4.c ****     }
+ 973:./lwip-2.1.2/src/core/ipv4/ip4.c ****     iphdr = (struct ip_hdr *)p->payload;
+ 956              		.loc 1 973 11
+ 957 04da FB68     		ldr	r3, [r7, #12]
+ 958 04dc 5B68     		ldr	r3, [r3, #4]
+ 959 04de FB61     		str	r3, [r7, #28]
+ 974:./lwip-2.1.2/src/core/ipv4/ip4.c ****     ip4_addr_copy(dest_addr, iphdr->dest);
+ 960              		.loc 1 974 5
+ 961 04e0 FB69     		ldr	r3, [r7, #28]
+ 962 04e2 1B69     		ldr	r3, [r3, #16]	@ unaligned
+ 963 04e4 7B61     		str	r3, [r7, #20]
+ 975:./lwip-2.1.2/src/core/ipv4/ip4.c ****     dest = &dest_addr;
+ 964              		.loc 1 975 10
+ 965 04e6 07F11403 		add	r3, r7, #20
+ 966 04ea 7B60     		str	r3, [r7, #4]
+ 967              	.L58:
+ 976:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 977:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 978:./lwip-2.1.2/src/core/ipv4/ip4.c ****   IP_STATS_INC(ip.xmit);
+ 979:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 980:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip4_output_if: %c%c%"U16_F"\n", netif->name[0], netif->name[1], (u16_t)ne
+ 981:./lwip-2.1.2/src/core/ipv4/ip4.c ****   ip4_debug_print(p);
+ 982:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+ 983:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if ENABLE_LOOPBACK
+ 984:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (ip4_addr_cmp(dest, netif_ip4_addr(netif))
+ 985:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if !LWIP_HAVE_LOOPIF
+ 986:./lwip-2.1.2/src/core/ipv4/ip4.c ****       || ip4_addr_isloopback(dest)
+ 987:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* !LWIP_HAVE_LOOPIF */
+ 988:./lwip-2.1.2/src/core/ipv4/ip4.c ****      ) {
+ 989:./lwip-2.1.2/src/core/ipv4/ip4.c ****     /* Packet to self, enqueue it for loopback */
+ 990:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("netif_loop_output()"));
+ 991:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return netif_loop_output(netif, p);
+ 992:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 993:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if LWIP_MULTICAST_TX_OPTIONS
+ 994:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((p->flags & PBUF_FLAG_MCASTLOOP) != 0) {
+ 995:./lwip-2.1.2/src/core/ipv4/ip4.c ****     netif_loop_output(netif, p);
+ 996:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+ 997:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* LWIP_MULTICAST_TX_OPTIONS */
+ 998:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* ENABLE_LOOPBACK */
+ 999:./lwip-2.1.2/src/core/ipv4/ip4.c **** #if IP_FRAG
+1000:./lwip-2.1.2/src/core/ipv4/ip4.c ****   /* don't fragment if interface has mtu set to 0 [loopif] */
+1001:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if (netif->mtu && (p->tot_len > netif->mtu)) {
+ 968              		.loc 1 1001 12
+ 969 04ec 3B6B     		ldr	r3, [r7, #48]
+ 970 04ee 9B8C     		ldrh	r3, [r3, #36]
+ 971              		.loc 1 1001 6
+ 972 04f0 002B     		cmp	r3, #0
+ 973 04f2 0CD0     		beq	.L60
+ 974              		.loc 1 1001 23 discriminator 1
+ 975 04f4 FB68     		ldr	r3, [r7, #12]
+ 976 04f6 1A89     		ldrh	r2, [r3, #8]
+ 977              		.loc 1 1001 40 discriminator 1
+ 978 04f8 3B6B     		ldr	r3, [r7, #48]
+ 979 04fa 9B8C     		ldrh	r3, [r3, #36]
+ 980              		.loc 1 1001 18 discriminator 1
+ 981 04fc 9A42     		cmp	r2, r3
+ 982 04fe 06D9     		bls	.L60
+1002:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ip4_frag(p, netif, dest);
+ 983              		.loc 1 1002 12
+ 984 0500 7A68     		ldr	r2, [r7, #4]
+ 985 0502 396B     		ldr	r1, [r7, #48]
+ 986 0504 F868     		ldr	r0, [r7, #12]
+ 987 0506 FFF7FEFF 		bl	ip4_frag
+ 988 050a 0346     		mov	r3, r0
+ 989 050c 06E0     		b	.L61
+ 990              	.L60:
+1003:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+1004:./lwip-2.1.2/src/core/ipv4/ip4.c **** #endif /* IP_FRAG */
+1005:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+1006:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_DEBUGF(IP_DEBUG, ("ip4_output_if: call netif->output()\n"));
+1007:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return netif->output(netif, p, dest);
+ 991              		.loc 1 1007 15
+ 992 050e 3B6B     		ldr	r3, [r7, #48]
+ 993 0510 5B69     		ldr	r3, [r3, #20]
+ 994              		.loc 1 1007 10
+ 995 0512 7A68     		ldr	r2, [r7, #4]
+ 996 0514 F968     		ldr	r1, [r7, #12]
+ 997 0516 386B     		ldr	r0, [r7, #48]
+ 998 0518 9847     		blx	r3
+ 999              	.LVL0:
+ 1000 051a 0346     		mov	r3, r0
+ 1001              	.L61:
+1008:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 1002              		.loc 1 1008 1 discriminator 1
+ 1003 051c 1846     		mov	r0, r3
+ 1004 051e 2037     		adds	r7, r7, #32
+ 1005              	.LCFI24:
+ 1006              		.cfi_def_cfa_offset 8
+ 1007 0520 BD46     		mov	sp, r7
+ 1008              	.LCFI25:
+ 1009              		.cfi_def_cfa_register 13
+ 1010              		@ sp needed
+ 1011 0522 80BD     		pop	{r7, pc}
+ 1012              	.L63:
+ 1013              		.align	2
+ 1014              	.L62:
+ 1015 0524 00000000 		.word	ip_id
+ 1016 0528 00000000 		.word	ip_addr_any
+ 1017              		.cfi_endproc
+ 1018              	.LFE29:
+ 1020              		.align	1
+ 1021              		.global	ip4_output
+ 1022              		.syntax unified
+ 1023              		.thumb
+ 1024              		.thumb_func
+ 1025              		.fpu fpv5-d16
+ 1027              	ip4_output:
+ 1028              	.LFB30:
+1009:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+1010:./lwip-2.1.2/src/core/ipv4/ip4.c **** /**
+1011:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * Simple interface to ip_output_if. It finds the outgoing network
+1012:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * interface and calls upon ip_output_if to do the actual work.
+1013:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+1014:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param p the packet to send (p->payload points to the data, e.g. next
+1015:./lwip-2.1.2/src/core/ipv4/ip4.c ****             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
+1016:./lwip-2.1.2/src/core/ipv4/ip4.c ****             IP header and p->payload points to that IP header)
+1017:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+1018:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         IP  address of the netif used to send is used as source address)
+1019:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param dest the destination IP address to send the packet to
+1020:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param ttl the TTL value to be set in the IP header
+1021:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param tos the TOS value to be set in the IP header
+1022:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @param proto the PROTOCOL to be set in the IP header
+1023:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *
+1024:./lwip-2.1.2/src/core/ipv4/ip4.c ****  * @return ERR_RTE if no route is found
+1025:./lwip-2.1.2/src/core/ipv4/ip4.c ****  *         see ip_output_if() for more return values
+1026:./lwip-2.1.2/src/core/ipv4/ip4.c ****  */
+1027:./lwip-2.1.2/src/core/ipv4/ip4.c **** err_t
+1028:./lwip-2.1.2/src/core/ipv4/ip4.c **** ip4_output(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+1029:./lwip-2.1.2/src/core/ipv4/ip4.c ****            u8_t ttl, u8_t tos, u8_t proto)
+1030:./lwip-2.1.2/src/core/ipv4/ip4.c **** {
+ 1029              		.loc 1 1030 1
+ 1030              		.cfi_startproc
+ 1031              		@ args = 8, pretend = 0, frame = 24
+ 1032              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1033 052c 80B5     		push	{r7, lr}
+ 1034              	.LCFI26:
+ 1035              		.cfi_def_cfa_offset 8
+ 1036              		.cfi_offset 7, -8
+ 1037              		.cfi_offset 14, -4
+ 1038 052e 8AB0     		sub	sp, sp, #40
+ 1039              	.LCFI27:
+ 1040              		.cfi_def_cfa_offset 48
+ 1041 0530 04AF     		add	r7, sp, #16
+ 1042              	.LCFI28:
+ 1043              		.cfi_def_cfa 7, 32
+ 1044 0532 F860     		str	r0, [r7, #12]
+ 1045 0534 B960     		str	r1, [r7, #8]
+ 1046 0536 7A60     		str	r2, [r7, #4]
+ 1047 0538 FB70     		strb	r3, [r7, #3]
+1031:./lwip-2.1.2/src/core/ipv4/ip4.c ****   struct netif *netif;
+1032:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+1033:./lwip-2.1.2/src/core/ipv4/ip4.c ****   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
+1034:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+1035:./lwip-2.1.2/src/core/ipv4/ip4.c ****   if ((netif = ip4_route_src(src, dest)) == NULL) {
+ 1048              		.loc 1 1035 16
+ 1049 053a 7868     		ldr	r0, [r7, #4]
+ 1050 053c FFF7FEFF 		bl	ip4_route
+ 1051 0540 7861     		str	r0, [r7, #20]
+ 1052              		.loc 1 1035 6
+ 1053 0542 7B69     		ldr	r3, [r7, #20]
+ 1054 0544 002B     		cmp	r3, #0
+ 1055 0546 02D1     		bne	.L65
+1036:./lwip-2.1.2/src/core/ipv4/ip4.c ****     LWIP_DEBUGF(IP_DEBUG, ("ip4_output: No route to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
+1037:./lwip-2.1.2/src/core/ipv4/ip4.c ****                            ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16
+1038:./lwip-2.1.2/src/core/ipv4/ip4.c ****     IP_STATS_INC(ip.rterr);
+1039:./lwip-2.1.2/src/core/ipv4/ip4.c ****     return ERR_RTE;
+ 1056              		.loc 1 1039 12
+ 1057 0548 6FF00303 		mvn	r3, #3
+ 1058 054c 0FE0     		b	.L66
+ 1059              	.L65:
+1040:./lwip-2.1.2/src/core/ipv4/ip4.c ****   }
+1041:./lwip-2.1.2/src/core/ipv4/ip4.c **** 
+1042:./lwip-2.1.2/src/core/ipv4/ip4.c ****   return ip4_output_if(p, src, dest, ttl, tos, proto, netif);
+ 1060              		.loc 1 1042 10
+ 1061 054e FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
+ 1062 0550 7B69     		ldr	r3, [r7, #20]
+ 1063 0552 0293     		str	r3, [sp, #8]
+ 1064 0554 97F82430 		ldrb	r3, [r7, #36]	@ zero_extendqisi2
+ 1065 0558 0193     		str	r3, [sp, #4]
+ 1066 055a 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 1067 055e 0093     		str	r3, [sp]
+ 1068 0560 1346     		mov	r3, r2
+ 1069 0562 7A68     		ldr	r2, [r7, #4]
+ 1070 0564 B968     		ldr	r1, [r7, #8]
+ 1071 0566 F868     		ldr	r0, [r7, #12]
+ 1072 0568 FFF7FEFF 		bl	ip4_output_if
+ 1073 056c 0346     		mov	r3, r0
+ 1074              	.L66:
+1043:./lwip-2.1.2/src/core/ipv4/ip4.c **** }
+ 1075              		.loc 1 1043 1
+ 1076 056e 1846     		mov	r0, r3
+ 1077 0570 1837     		adds	r7, r7, #24
+ 1078              	.LCFI29:
+ 1079              		.cfi_def_cfa_offset 8
+ 1080 0572 BD46     		mov	sp, r7
+ 1081              	.LCFI30:
+ 1082              		.cfi_def_cfa_register 13
+ 1083              		@ sp needed
+ 1084 0574 80BD     		pop	{r7, pc}
+ 1085              		.cfi_endproc
+ 1086              	.LFE30:
+ 1088              	.Letext0:
+ 1089              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1090              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1091              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1092              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1093              		.file 6 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 1094              		.file 7 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 1095              		.file 8 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 1096              		.file 9 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1097              		.file 10 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 1098              		.file 11 "./lwip-2.1.2/src/include/lwip/prot/ip4.h"
+ 1099              		.file 12 "./lwip-2.1.2/src/include/lwip/ip.h"
+ 1100              		.file 13 "./lwip-2.1.2/src/include/lwip/icmp.h"
+ 1101              		.file 14 "./lwip-2.1.2/src/include/lwip/prot/udp.h"
+ 1102              		.file 15 "./lwip-2.1.2/src/include/lwip/prot/iana.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ip4.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:17     .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:18     .bss:00000000 ip_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:22     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:30     .text:00000000 ip4_route
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:191    .text:000000d8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:196    .text:000000e0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:202    .text:000000e0 ip4_input_accept
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:276    .text:00000130 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:280    .text:00000134 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:287    .text:00000134 ip4_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:729    .text:000003b0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:734    .text:000003b8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:741    .text:000003b8 ip4_output_if
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:818    .text:0000040c ip4_output_if_src
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:1015   .text:00000524 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:1020   .text:0000052c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc0LGJGh.s:1027   .text:0000052c ip4_output
+
+UNDEFINED SYMBOLS
+netif_list
+netif_default
+ip4_addr_isbroadcast_u32
+ip_data
+pbuf_free
+lwip_htons
+pbuf_realloc
+ip4_reass
+pbuf_remove_header
+udp_input
+tcp_input
+icmp_input
+pbuf_header_force
+icmp_dest_unreach
+pbuf_add_header
+ip4_frag
+ip_addr_any

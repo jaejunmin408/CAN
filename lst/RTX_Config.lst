@@ -1,0 +1,135 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"RTX_Config.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.weak	osRtxIdleThread
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	osRtxIdleThread:
+  26              	.LFB104:
+  27              		.file 1 "./src/RTX_Config.c"
+   1:./src/RTX_Config.c **** /*
+   2:./src/RTX_Config.c ****  * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+   3:./src/RTX_Config.c ****  *
+   4:./src/RTX_Config.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:./src/RTX_Config.c ****  *
+   6:./src/RTX_Config.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:./src/RTX_Config.c ****  * not use this file except in compliance with the License.
+   8:./src/RTX_Config.c ****  * You may obtain a copy of the License at
+   9:./src/RTX_Config.c ****  *
+  10:./src/RTX_Config.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:./src/RTX_Config.c ****  *
+  12:./src/RTX_Config.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:./src/RTX_Config.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:./src/RTX_Config.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:./src/RTX_Config.c ****  * See the License for the specific language governing permissions and
+  16:./src/RTX_Config.c ****  * limitations under the License.
+  17:./src/RTX_Config.c ****  *
+  18:./src/RTX_Config.c ****  * -----------------------------------------------------------------------------
+  19:./src/RTX_Config.c ****  *
+  20:./src/RTX_Config.c ****  * $Revision:   V5.1.0
+  21:./src/RTX_Config.c ****  *
+  22:./src/RTX_Config.c ****  * Project:     CMSIS-RTOS RTX
+  23:./src/RTX_Config.c ****  * Title:       RTX Configuration
+  24:./src/RTX_Config.c ****  *
+  25:./src/RTX_Config.c ****  * -----------------------------------------------------------------------------
+  26:./src/RTX_Config.c ****  */
+  27:./src/RTX_Config.c ****  
+  28:./src/RTX_Config.c **** #include "cmsis_compiler.h"
+  29:./src/RTX_Config.c **** #include "rtx_os.h"
+  30:./src/RTX_Config.c ****  
+  31:./src/RTX_Config.c **** // OS Idle Thread
+  32:./src/RTX_Config.c **** __WEAK __NO_RETURN void osRtxIdleThread (void *argument) {
+  28              		.loc 1 32 58 view -0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+  35              	.L2:
+  33:./src/RTX_Config.c ****   (void)argument;
+  36              		.loc 1 33 3 discriminator 1 view .LVU1
+  34:./src/RTX_Config.c **** 
+  35:./src/RTX_Config.c ****   for (;;) {}
+  37              		.loc 1 35 3 discriminator 1 view .LVU2
+  38              		.loc 1 35 13 discriminator 1 view .LVU3
+  39              		.loc 1 35 9 discriminator 1 view .LVU4
+  40 0000 FEE7     		b	.L2
+  41              		.cfi_endproc
+  42              	.LFE104:
+  44              		.align	1
+  45 0002 00BF     		.p2align 2,,3
+  46              		.weak	osRtxErrorNotify
+  47              		.syntax unified
+  48              		.thumb
+  49              		.thumb_func
+  50              		.fpu fpv5-d16
+  52              	osRtxErrorNotify:
+  53              	.LFB105:
+  36:./src/RTX_Config.c **** }
+  37:./src/RTX_Config.c ****  
+  38:./src/RTX_Config.c **** // OS Error Callback function
+  39:./src/RTX_Config.c **** __WEAK uint32_t osRtxErrorNotify (uint32_t code, void *object_id) {
+  54              		.loc 1 39 67 view -0
+  55              		.cfi_startproc
+  56              		@ args = 0, pretend = 0, frame = 0
+  57              		@ frame_needed = 0, uses_anonymous_args = 0
+  58              		@ link register save eliminated.
+  59              	.LVL1:
+  60              	.L5:
+  40:./src/RTX_Config.c ****   (void)object_id;
+  41:./src/RTX_Config.c **** 
+  42:./src/RTX_Config.c ****   switch (code) {
+  43:./src/RTX_Config.c ****     case osRtxErrorStackUnderflow:
+  44:./src/RTX_Config.c ****       // Stack overflow detected for thread (thread_id=object_id)
+  45:./src/RTX_Config.c ****       break;
+  46:./src/RTX_Config.c ****     case osRtxErrorISRQueueOverflow:
+  47:./src/RTX_Config.c ****       // ISR Queue overflow detected when inserting object (object_id)
+  48:./src/RTX_Config.c ****       break;
+  49:./src/RTX_Config.c ****     case osRtxErrorTimerQueueOverflow:
+  50:./src/RTX_Config.c ****       // User Timer Callback Queue overflow detected for timer (timer_id=object_id)
+  51:./src/RTX_Config.c ****       break;
+  52:./src/RTX_Config.c ****     case osRtxErrorClibSpace:
+  53:./src/RTX_Config.c ****       // Standard C/C++ library libspace not available: increase OS_THREAD_LIBSPACE_NUM
+  54:./src/RTX_Config.c ****       break;
+  55:./src/RTX_Config.c ****     case osRtxErrorClibMutex:
+  56:./src/RTX_Config.c ****       // Standard C/C++ library mutex initialization failed
+  57:./src/RTX_Config.c ****       break;
+  58:./src/RTX_Config.c ****     default:
+  59:./src/RTX_Config.c ****       // Reserved
+  60:./src/RTX_Config.c ****       break;
+  61:./src/RTX_Config.c ****   }
+  62:./src/RTX_Config.c ****   for (;;) {}
+  61              		.loc 1 62 3 discriminator 1 view .LVU6
+  62              		.loc 1 62 13 discriminator 1 view .LVU7
+  63              		.loc 1 62 9 discriminator 1 view .LVU8
+  64 0004 FEE7     		b	.L5
+  65              		.cfi_endproc
+  66              	.LFE105:
+  68              	.Letext0:
+  69              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+  70              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+DEFINED SYMBOLS
+                            *ABS*:00000000 RTX_Config.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccaSB6cf.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccaSB6cf.s:25     .text:00000000 osRtxIdleThread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccaSB6cf.s:52     .text:00000004 osRtxErrorNotify
+
+NO UNDEFINED SYMBOLS

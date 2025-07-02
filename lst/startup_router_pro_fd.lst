@@ -1,0 +1,2032 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"startup_router_pro_fd.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	Default_Handler
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	Default_Handler:
+  26              	.LFB145:
+  27              		.file 1 "./src/startup_router_pro_fd.c"
+   1:./src/startup_router_pro_fd.c **** /******************************************************************************
+   2:./src/startup_router_pro_fd.c ****  * @file     startup_ARMCM4.c
+   3:./src/startup_router_pro_fd.c ****  * @brief    CMSIS-Core(M) Device Startup File for a Cortex-M7 Device
+   4:./src/startup_router_pro_fd.c ****  * @version  V2.0.0
+   5:./src/startup_router_pro_fd.c ****  * @date     04. June 2019
+   6:./src/startup_router_pro_fd.c ****  ******************************************************************************/
+   7:./src/startup_router_pro_fd.c **** /*
+   8:./src/startup_router_pro_fd.c ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+   9:./src/startup_router_pro_fd.c ****  *
+  10:./src/startup_router_pro_fd.c ****  * SPDX-License-Identifier: Apache-2.0
+  11:./src/startup_router_pro_fd.c ****  *
+  12:./src/startup_router_pro_fd.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:./src/startup_router_pro_fd.c ****  * not use this file except in compliance with the License.
+  14:./src/startup_router_pro_fd.c ****  * You may obtain a copy of the License at
+  15:./src/startup_router_pro_fd.c ****  *
+  16:./src/startup_router_pro_fd.c ****  * www.apache.org/licenses/LICENSE-2.0
+  17:./src/startup_router_pro_fd.c ****  *
+  18:./src/startup_router_pro_fd.c ****  * Unless required by applicable law or agreed to in writing, software
+  19:./src/startup_router_pro_fd.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:./src/startup_router_pro_fd.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:./src/startup_router_pro_fd.c ****  * See the License for the specific language governing permissions and
+  22:./src/startup_router_pro_fd.c ****  * limitations under the License.
+  23:./src/startup_router_pro_fd.c ****  */
+  24:./src/startup_router_pro_fd.c **** //#define ARMCM7_DP
+  25:./src/startup_router_pro_fd.c **** #undef ARMCM7_SP
+  26:./src/startup_router_pro_fd.c **** #undef ARMCM7
+  27:./src/startup_router_pro_fd.c **** 
+  28:./src/startup_router_pro_fd.c **** #if defined (ARMCM7)
+  29:./src/startup_router_pro_fd.c ****   #include "ARMCM7.h"
+  30:./src/startup_router_pro_fd.c **** #elif defined (ARMCM7_SP)
+  31:./src/startup_router_pro_fd.c ****   #include "ARMCM7_SP.h"
+  32:./src/startup_router_pro_fd.c **** #elif defined (ARMCM7_DP)
+  33:./src/startup_router_pro_fd.c ****   #include "ARMCM7_DP.h"
+  34:./src/startup_router_pro_fd.c **** #else
+  35:./src/startup_router_pro_fd.c ****   #error device not specified!
+  36:./src/startup_router_pro_fd.c **** #endif
+  37:./src/startup_router_pro_fd.c **** 
+  38:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+  39:./src/startup_router_pro_fd.c ****   Exception / Interrupt Handler Function Prototype
+  40:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+  41:./src/startup_router_pro_fd.c **** typedef void( *pFunc )( void );
+  42:./src/startup_router_pro_fd.c **** 
+  43:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+  44:./src/startup_router_pro_fd.c ****   External References
+  45:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+  46:./src/startup_router_pro_fd.c **** void SystemInit (void);
+  47:./src/startup_router_pro_fd.c **** 
+  48:./src/startup_router_pro_fd.c **** extern uint32_t __INITIAL_SP;
+  49:./src/startup_router_pro_fd.c **** 
+  50:./src/startup_router_pro_fd.c **** extern __NO_RETURN void __PROGRAM_START(void);
+  51:./src/startup_router_pro_fd.c **** 
+  52:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+  53:./src/startup_router_pro_fd.c ****   Internal References
+  54:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+  55:./src/startup_router_pro_fd.c **** void __NO_RETURN Default_Handler(void);
+  56:./src/startup_router_pro_fd.c **** void __NO_RETURN __attribute__((naked)) Reset_Handler  (void);
+  57:./src/startup_router_pro_fd.c **** 
+  58:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+  59:./src/startup_router_pro_fd.c ****   Exception / Interrupt Handler
+  60:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+  61:./src/startup_router_pro_fd.c **** /* Exceptions */
+  62:./src/startup_router_pro_fd.c **** __NO_RETURN void NMI_Handler            (void) __attribute__ ((noreturn, weak, alias("Default_Handl
+  63:./src/startup_router_pro_fd.c **** __NO_RETURN void HardFault_Handler      (void) __attribute__ ((weak, alias("Default_Handler")));
+  64:./src/startup_router_pro_fd.c **** __NO_RETURN void MemManage_Handler      (void) __attribute__ ((weak, alias("Default_Handler")));
+  65:./src/startup_router_pro_fd.c **** __NO_RETURN void BusFault_Handler       (void) __attribute__ ((weak, alias("Default_Handler")));
+  66:./src/startup_router_pro_fd.c **** __NO_RETURN void UsageFault_Handler     (void) __attribute__ ((weak, alias("Default_Handler")));
+  67:./src/startup_router_pro_fd.c **** __NO_RETURN void SVC_Handler            (void) __attribute__ ((weak, alias("Default_Handler")));
+  68:./src/startup_router_pro_fd.c **** __NO_RETURN void DebugMon_Handler       (void) __attribute__ ((weak, alias("Default_Handler")));
+  69:./src/startup_router_pro_fd.c **** __NO_RETURN void PendSV_Handler         (void) __attribute__ ((weak, alias("Default_Handler")));
+  70:./src/startup_router_pro_fd.c **** __NO_RETURN void SysTick_Handler        (void) __attribute__ ((weak, alias("Default_Handler")));
+  71:./src/startup_router_pro_fd.c **** 
+  72:./src/startup_router_pro_fd.c **** __NO_RETURN void WWDG_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+  73:./src/startup_router_pro_fd.c **** __NO_RETURN void PVD_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+  74:./src/startup_router_pro_fd.c **** __NO_RETURN void TAMP_STAMP_IRQHandler         (void) __attribute__ ((weak, alias("Default_Handler"
+  75:./src/startup_router_pro_fd.c **** __NO_RETURN void RTC_WKUP_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+  76:./src/startup_router_pro_fd.c **** __NO_RETURN void FLASH_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  77:./src/startup_router_pro_fd.c **** __NO_RETURN void RCC_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+  78:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI0_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  79:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI1_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  80:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI2_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  81:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI3_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  82:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI4_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+  83:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream0_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  84:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream1_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  85:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream2_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  86:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream3_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  87:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream4_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  88:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream5_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  89:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream6_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+  90:./src/startup_router_pro_fd.c **** __NO_RETURN void ADC_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+  91:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN1_TX_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+  92:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN1_RX0_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+  93:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN1_RX1_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+  94:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN1_SCE_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+  95:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI9_5_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+  96:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM1_BRK_TIM9_IRQHandler      (void) __attribute__ ((weak, alias("Default_Handler"
+  97:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM1_UP_TIM10_IRQHandler      (void) __attribute__ ((weak, alias("Default_Handler"
+  98:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM1_TRG_COM_TIM11_IRQHandler (void) __attribute__ ((weak, alias("Default_Handler"
+  99:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM1_CC_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 100:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM2_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 101:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM3_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 102:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM4_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 103:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C1_EV_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 104:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C1_ER_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 105:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C2_EV_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 106:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C2_ER_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 107:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI1_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 108:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI2_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 109:./src/startup_router_pro_fd.c **** __NO_RETURN void USART1_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 110:./src/startup_router_pro_fd.c **** __NO_RETURN void USART2_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 111:./src/startup_router_pro_fd.c **** __NO_RETURN void USART3_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 112:./src/startup_router_pro_fd.c **** __NO_RETURN void EXTI15_10_IRQHandler          (void) __attribute__ ((weak, alias("Default_Handler"
+ 113:./src/startup_router_pro_fd.c **** __NO_RETURN void RTC_Alarm_IRQHandler          (void) __attribute__ ((weak, alias("Default_Handler"
+ 114:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_FS_WKUP_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 115:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM8_BRK_TIM12_IRQHandler     (void) __attribute__ ((weak, alias("Default_Handler"
+ 116:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM8_UP_TIM13_IRQHandler      (void) __attribute__ ((weak, alias("Default_Handler"
+ 117:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM8_TRG_COM_TIM14_IRQHandler (void) __attribute__ ((weak, alias("Default_Handler"
+ 118:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM8_CC_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 119:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA1_Stream7_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 120:./src/startup_router_pro_fd.c **** __NO_RETURN void FMC_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+ 121:./src/startup_router_pro_fd.c **** __NO_RETURN void SDMMC1_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 122:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM5_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 123:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI3_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 124:./src/startup_router_pro_fd.c **** __NO_RETURN void UART4_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 125:./src/startup_router_pro_fd.c **** __NO_RETURN void UART5_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 126:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM6_DAC_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 127:./src/startup_router_pro_fd.c **** __NO_RETURN void TIM7_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 128:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream0_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 129:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream1_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 130:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream2_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 131:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream3_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 132:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream4_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 133:./src/startup_router_pro_fd.c **** __NO_RETURN void ETH_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+ 134:./src/startup_router_pro_fd.c **** __NO_RETURN void ETH_WKUP_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 135:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN2_TX_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 136:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN2_RX0_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 137:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN2_RX1_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 138:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN2_SCE_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 139:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_FS_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 140:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream5_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 141:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream6_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 142:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2_Stream7_IRQHandler       (void) __attribute__ ((weak, alias("Default_Handler"
+ 143:./src/startup_router_pro_fd.c **** __NO_RETURN void USART6_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 144:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C3_EV_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 145:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C3_ER_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 146:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_HS_EP1_OUT_IRQHandler     (void) __attribute__ ((weak, alias("Default_Handler"
+ 147:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_HS_EP1_IN_IRQHandler      (void) __attribute__ ((weak, alias("Default_Handler"
+ 148:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_HS_WKUP_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 149:./src/startup_router_pro_fd.c **** __NO_RETURN void OTG_HS_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 150:./src/startup_router_pro_fd.c **** __NO_RETURN void DCMI_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 151:./src/startup_router_pro_fd.c **** __NO_RETURN void RNG_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+ 152:./src/startup_router_pro_fd.c **** __NO_RETURN void FPU_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+ 153:./src/startup_router_pro_fd.c **** __NO_RETURN void UART7_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 154:./src/startup_router_pro_fd.c **** __NO_RETURN void UART8_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 155:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI4_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 156:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI5_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 157:./src/startup_router_pro_fd.c **** __NO_RETURN void SPI6_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 158:./src/startup_router_pro_fd.c **** __NO_RETURN void SAI1_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 159:./src/startup_router_pro_fd.c **** __NO_RETURN void DMA2D_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 160:./src/startup_router_pro_fd.c **** __NO_RETURN void SAI2_IRQHandler               (void) __attribute__ ((weak, alias("Default_Handler"
+ 161:./src/startup_router_pro_fd.c **** __NO_RETURN void QUADSPI_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 162:./src/startup_router_pro_fd.c **** __NO_RETURN void LPTIM1_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 163:./src/startup_router_pro_fd.c **** __NO_RETURN void CEC_IRQHandler                (void) __attribute__ ((weak, alias("Default_Handler"
+ 164:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C4_EV_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 165:./src/startup_router_pro_fd.c **** __NO_RETURN void I2C4_ER_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 166:./src/startup_router_pro_fd.c **** __NO_RETURN void SPDIF_RX_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 167:./src/startup_router_pro_fd.c **** __NO_RETURN void DFSDM1_FLT0_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 168:./src/startup_router_pro_fd.c **** __NO_RETURN void DFSDM1_FLT1_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 169:./src/startup_router_pro_fd.c **** __NO_RETURN void DFSDM1_FLT2_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 170:./src/startup_router_pro_fd.c **** __NO_RETURN void DFSDM1_FLT3_IRQHandler        (void) __attribute__ ((weak, alias("Default_Handler"
+ 171:./src/startup_router_pro_fd.c **** __NO_RETURN void SDMMC2_IRQHandler             (void) __attribute__ ((weak, alias("Default_Handler"
+ 172:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN3_TX_IRQHandler            (void) __attribute__ ((weak, alias("Default_Handler"
+ 173:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN3_RX0_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 174:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN3_RX1_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 175:./src/startup_router_pro_fd.c **** __NO_RETURN void CAN3_SCE_IRQHandler           (void) __attribute__ ((weak, alias("Default_Handler"
+ 176:./src/startup_router_pro_fd.c **** __NO_RETURN void MDIOS_IRQHandler              (void) __attribute__ ((weak, alias("Default_Handler"
+ 177:./src/startup_router_pro_fd.c **** 
+ 178:./src/startup_router_pro_fd.c **** 
+ 179:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+ 180:./src/startup_router_pro_fd.c ****   Exception / Interrupt Vector table
+ 181:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+ 182:./src/startup_router_pro_fd.c **** 
+ 183:./src/startup_router_pro_fd.c **** #if defined ( __GNUC__ )
+ 184:./src/startup_router_pro_fd.c **** #pragma GCC diagnostic push
+ 185:./src/startup_router_pro_fd.c **** #pragma GCC diagnostic ignored "-Wpedantic"
+ 186:./src/startup_router_pro_fd.c **** #endif
+ 187:./src/startup_router_pro_fd.c **** 
+ 188:./src/startup_router_pro_fd.c **** extern const pFunc __VECTOR_TABLE[];
+ 189:./src/startup_router_pro_fd.c ****        const pFunc __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE = {
+ 190:./src/startup_router_pro_fd.c ****   (pFunc)(&__INITIAL_SP),                   /*     Initial Stack Pointer */
+ 191:./src/startup_router_pro_fd.c ****   Reset_Handler,                            /*     Reset Handler */
+ 192:./src/startup_router_pro_fd.c ****   NMI_Handler,                              /* -14 NMI Handler */
+ 193:./src/startup_router_pro_fd.c ****   HardFault_Handler,                        /* -13 Hard Fault Handler */
+ 194:./src/startup_router_pro_fd.c ****   MemManage_Handler,                        /* -12 MPU Fault Handler */
+ 195:./src/startup_router_pro_fd.c ****   BusFault_Handler,                         /* -11 Bus Fault Handler */
+ 196:./src/startup_router_pro_fd.c ****   UsageFault_Handler,                       /* -10 Usage Fault Handler */
+ 197:./src/startup_router_pro_fd.c ****   0,                                        /*     Reserved */
+ 198:./src/startup_router_pro_fd.c ****   0,                                        /*     Reserved */
+ 199:./src/startup_router_pro_fd.c ****   0,                                        /*     Reserved */
+ 200:./src/startup_router_pro_fd.c ****   0,                                        /*     Reserved */
+ 201:./src/startup_router_pro_fd.c ****   SVC_Handler,                              /*  -5 SVCall Handler */
+ 202:./src/startup_router_pro_fd.c ****   DebugMon_Handler,                         /*  -4 Debug Monitor Handler */
+ 203:./src/startup_router_pro_fd.c ****   0,                                        /*     Reserved */
+ 204:./src/startup_router_pro_fd.c ****   PendSV_Handler,                           /*  -2 PendSV Handler */
+ 205:./src/startup_router_pro_fd.c ****   SysTick_Handler,                          /*  -1 SysTick Handler */
+ 206:./src/startup_router_pro_fd.c **** 
+ 207:./src/startup_router_pro_fd.c ****   /* Interrupts */
+ 208:./src/startup_router_pro_fd.c ****   WWDG_IRQHandler,
+ 209:./src/startup_router_pro_fd.c ****   PVD_IRQHandler,
+ 210:./src/startup_router_pro_fd.c ****   TAMP_STAMP_IRQHandler,
+ 211:./src/startup_router_pro_fd.c ****   RTC_WKUP_IRQHandler,
+ 212:./src/startup_router_pro_fd.c ****   FLASH_IRQHandler,
+ 213:./src/startup_router_pro_fd.c ****   RCC_IRQHandler,
+ 214:./src/startup_router_pro_fd.c ****   EXTI0_IRQHandler,
+ 215:./src/startup_router_pro_fd.c ****   EXTI1_IRQHandler,
+ 216:./src/startup_router_pro_fd.c ****   EXTI2_IRQHandler,
+ 217:./src/startup_router_pro_fd.c ****   EXTI3_IRQHandler,
+ 218:./src/startup_router_pro_fd.c ****   EXTI4_IRQHandler,
+ 219:./src/startup_router_pro_fd.c ****   DMA1_Stream0_IRQHandler,
+ 220:./src/startup_router_pro_fd.c ****   DMA1_Stream1_IRQHandler,
+ 221:./src/startup_router_pro_fd.c ****   DMA1_Stream2_IRQHandler,
+ 222:./src/startup_router_pro_fd.c ****   DMA1_Stream3_IRQHandler,
+ 223:./src/startup_router_pro_fd.c ****   DMA1_Stream4_IRQHandler,
+ 224:./src/startup_router_pro_fd.c ****   DMA1_Stream5_IRQHandler,
+ 225:./src/startup_router_pro_fd.c ****   DMA1_Stream6_IRQHandler,
+ 226:./src/startup_router_pro_fd.c ****   ADC_IRQHandler,
+ 227:./src/startup_router_pro_fd.c ****   CAN1_TX_IRQHandler,
+ 228:./src/startup_router_pro_fd.c ****   CAN1_RX0_IRQHandler,
+ 229:./src/startup_router_pro_fd.c ****   CAN1_RX1_IRQHandler,
+ 230:./src/startup_router_pro_fd.c ****   CAN1_SCE_IRQHandler,
+ 231:./src/startup_router_pro_fd.c ****   EXTI9_5_IRQHandler,
+ 232:./src/startup_router_pro_fd.c ****   TIM1_BRK_TIM9_IRQHandler,
+ 233:./src/startup_router_pro_fd.c ****   TIM1_UP_TIM10_IRQHandler,
+ 234:./src/startup_router_pro_fd.c ****   TIM1_TRG_COM_TIM11_IRQHandler,
+ 235:./src/startup_router_pro_fd.c ****   TIM1_CC_IRQHandler,
+ 236:./src/startup_router_pro_fd.c ****   TIM2_IRQHandler,
+ 237:./src/startup_router_pro_fd.c ****   TIM3_IRQHandler,
+ 238:./src/startup_router_pro_fd.c ****   TIM4_IRQHandler,
+ 239:./src/startup_router_pro_fd.c ****   I2C1_EV_IRQHandler,
+ 240:./src/startup_router_pro_fd.c ****   I2C1_ER_IRQHandler,
+ 241:./src/startup_router_pro_fd.c ****   I2C2_EV_IRQHandler,
+ 242:./src/startup_router_pro_fd.c ****   I2C2_ER_IRQHandler,
+ 243:./src/startup_router_pro_fd.c ****   SPI1_IRQHandler,
+ 244:./src/startup_router_pro_fd.c ****   SPI2_IRQHandler,
+ 245:./src/startup_router_pro_fd.c ****   USART1_IRQHandler,
+ 246:./src/startup_router_pro_fd.c ****   USART2_IRQHandler,
+ 247:./src/startup_router_pro_fd.c ****   USART3_IRQHandler,
+ 248:./src/startup_router_pro_fd.c ****   EXTI15_10_IRQHandler,
+ 249:./src/startup_router_pro_fd.c ****   RTC_Alarm_IRQHandler,
+ 250:./src/startup_router_pro_fd.c ****   OTG_FS_WKUP_IRQHandler,
+ 251:./src/startup_router_pro_fd.c ****   TIM8_BRK_TIM12_IRQHandler,
+ 252:./src/startup_router_pro_fd.c ****   TIM8_UP_TIM13_IRQHandler,
+ 253:./src/startup_router_pro_fd.c ****   TIM8_TRG_COM_TIM14_IRQHandler,
+ 254:./src/startup_router_pro_fd.c ****   TIM8_CC_IRQHandler,
+ 255:./src/startup_router_pro_fd.c ****   DMA1_Stream7_IRQHandler,
+ 256:./src/startup_router_pro_fd.c ****   FMC_IRQHandler,
+ 257:./src/startup_router_pro_fd.c ****   SDMMC1_IRQHandler,
+ 258:./src/startup_router_pro_fd.c ****   TIM5_IRQHandler,
+ 259:./src/startup_router_pro_fd.c ****   SPI3_IRQHandler,
+ 260:./src/startup_router_pro_fd.c ****   UART4_IRQHandler,
+ 261:./src/startup_router_pro_fd.c ****   UART5_IRQHandler,
+ 262:./src/startup_router_pro_fd.c ****   TIM6_DAC_IRQHandler,
+ 263:./src/startup_router_pro_fd.c ****   TIM7_IRQHandler,
+ 264:./src/startup_router_pro_fd.c ****   DMA2_Stream0_IRQHandler,
+ 265:./src/startup_router_pro_fd.c ****   DMA2_Stream1_IRQHandler,
+ 266:./src/startup_router_pro_fd.c ****   DMA2_Stream2_IRQHandler,
+ 267:./src/startup_router_pro_fd.c ****   DMA2_Stream3_IRQHandler,
+ 268:./src/startup_router_pro_fd.c ****   DMA2_Stream4_IRQHandler,
+ 269:./src/startup_router_pro_fd.c ****   ETH_IRQHandler,
+ 270:./src/startup_router_pro_fd.c ****   ETH_WKUP_IRQHandler,
+ 271:./src/startup_router_pro_fd.c ****   CAN2_TX_IRQHandler,
+ 272:./src/startup_router_pro_fd.c ****   CAN2_RX0_IRQHandler,
+ 273:./src/startup_router_pro_fd.c ****   CAN2_RX1_IRQHandler,
+ 274:./src/startup_router_pro_fd.c ****   CAN2_SCE_IRQHandler,
+ 275:./src/startup_router_pro_fd.c ****   OTG_FS_IRQHandler,
+ 276:./src/startup_router_pro_fd.c ****   DMA2_Stream5_IRQHandler,
+ 277:./src/startup_router_pro_fd.c ****   DMA2_Stream6_IRQHandler,
+ 278:./src/startup_router_pro_fd.c ****   DMA2_Stream7_IRQHandler,
+ 279:./src/startup_router_pro_fd.c ****   USART6_IRQHandler,
+ 280:./src/startup_router_pro_fd.c ****   I2C3_EV_IRQHandler,
+ 281:./src/startup_router_pro_fd.c ****   I2C3_ER_IRQHandler,
+ 282:./src/startup_router_pro_fd.c ****   OTG_HS_EP1_OUT_IRQHandler,
+ 283:./src/startup_router_pro_fd.c ****   OTG_HS_EP1_IN_IRQHandler,
+ 284:./src/startup_router_pro_fd.c ****   OTG_HS_WKUP_IRQHandler,
+ 285:./src/startup_router_pro_fd.c ****   OTG_HS_IRQHandler,
+ 286:./src/startup_router_pro_fd.c ****   DCMI_IRQHandler,
+ 287:./src/startup_router_pro_fd.c ****   0,
+ 288:./src/startup_router_pro_fd.c ****   RNG_IRQHandler,
+ 289:./src/startup_router_pro_fd.c ****   FPU_IRQHandler,
+ 290:./src/startup_router_pro_fd.c ****   UART7_IRQHandler,
+ 291:./src/startup_router_pro_fd.c ****   UART8_IRQHandler,
+ 292:./src/startup_router_pro_fd.c ****   SPI4_IRQHandler,
+ 293:./src/startup_router_pro_fd.c ****   SPI5_IRQHandler,
+ 294:./src/startup_router_pro_fd.c ****   SPI6_IRQHandler,
+ 295:./src/startup_router_pro_fd.c ****   SAI1_IRQHandler,
+ 296:./src/startup_router_pro_fd.c ****   0,
+ 297:./src/startup_router_pro_fd.c ****   0,
+ 298:./src/startup_router_pro_fd.c ****   DMA2D_IRQHandler,
+ 299:./src/startup_router_pro_fd.c ****   SAI2_IRQHandler,
+ 300:./src/startup_router_pro_fd.c ****   QUADSPI_IRQHandler,
+ 301:./src/startup_router_pro_fd.c ****   LPTIM1_IRQHandler,
+ 302:./src/startup_router_pro_fd.c ****   CEC_IRQHandler,
+ 303:./src/startup_router_pro_fd.c ****   I2C4_EV_IRQHandler,
+ 304:./src/startup_router_pro_fd.c ****   I2C4_ER_IRQHandler,
+ 305:./src/startup_router_pro_fd.c ****   SPDIF_RX_IRQHandler,
+ 306:./src/startup_router_pro_fd.c ****   0,
+ 307:./src/startup_router_pro_fd.c ****   DFSDM1_FLT0_IRQHandler,
+ 308:./src/startup_router_pro_fd.c ****   DFSDM1_FLT1_IRQHandler,
+ 309:./src/startup_router_pro_fd.c ****   DFSDM1_FLT2_IRQHandler,
+ 310:./src/startup_router_pro_fd.c ****   DFSDM1_FLT3_IRQHandler,
+ 311:./src/startup_router_pro_fd.c ****   SDMMC2_IRQHandler,
+ 312:./src/startup_router_pro_fd.c ****   CAN3_TX_IRQHandler,
+ 313:./src/startup_router_pro_fd.c ****   CAN3_RX0_IRQHandler,
+ 314:./src/startup_router_pro_fd.c ****   CAN3_RX1_IRQHandler,
+ 315:./src/startup_router_pro_fd.c ****   CAN3_SCE_IRQHandler,
+ 316:./src/startup_router_pro_fd.c ****   0,
+ 317:./src/startup_router_pro_fd.c ****   MDIOS_IRQHandler
+ 318:./src/startup_router_pro_fd.c **** };
+ 319:./src/startup_router_pro_fd.c **** 
+ 320:./src/startup_router_pro_fd.c **** #if defined ( __GNUC__ )
+ 321:./src/startup_router_pro_fd.c **** #pragma GCC diagnostic pop
+ 322:./src/startup_router_pro_fd.c **** #endif
+ 323:./src/startup_router_pro_fd.c **** 
+ 324:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+ 325:./src/startup_router_pro_fd.c ****   Reset Handler called on controller reset
+ 326:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+ 327:./src/startup_router_pro_fd.c **** void Reset_Handler(void)
+ 328:./src/startup_router_pro_fd.c **** {
+ 329:./src/startup_router_pro_fd.c ****   __set_MSP ( (unsigned int)&__INITIAL_SP); /* added PEAK-System */
+ 330:./src/startup_router_pro_fd.c ****   __ISB();
+ 331:./src/startup_router_pro_fd.c **** 
+ 332:./src/startup_router_pro_fd.c ****   SystemInit();                             /* CMSIS System Initialization */
+ 333:./src/startup_router_pro_fd.c ****   __PROGRAM_START();                        /* Enter PreMain (C library entry point) */
+ 334:./src/startup_router_pro_fd.c **** }
+ 335:./src/startup_router_pro_fd.c **** 
+ 336:./src/startup_router_pro_fd.c **** /*----------------------------------------------------------------------------
+ 337:./src/startup_router_pro_fd.c ****   Default Handler for Exceptions / Interrupts
+ 338:./src/startup_router_pro_fd.c ****  *----------------------------------------------------------------------------*/
+ 339:./src/startup_router_pro_fd.c **** void Default_Handler(void)
+ 340:./src/startup_router_pro_fd.c **** {
+  28              		.loc 1 340 1 view -0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.L2:
+ 341:./src/startup_router_pro_fd.c ****   while(1);
+  35              		.loc 1 341 3 discriminator 1 view .LVU1
+  36              		.loc 1 341 11 discriminator 1 view .LVU2
+  37              		.loc 1 341 8 discriminator 1 view .LVU3
+  38 0000 FEE7     		b	.L2
+  39              		.cfi_endproc
+  40              	.LFE145:
+  42              		.weak	MDIOS_IRQHandler
+  43              		.thumb_set MDIOS_IRQHandler,Default_Handler
+  44              		.weak	CAN3_SCE_IRQHandler
+  45              		.thumb_set CAN3_SCE_IRQHandler,Default_Handler
+  46              		.weak	CAN3_RX1_IRQHandler
+  47              		.thumb_set CAN3_RX1_IRQHandler,Default_Handler
+  48              		.weak	CAN3_RX0_IRQHandler
+  49              		.thumb_set CAN3_RX0_IRQHandler,Default_Handler
+  50              		.weak	CAN3_TX_IRQHandler
+  51              		.thumb_set CAN3_TX_IRQHandler,Default_Handler
+  52              		.weak	SDMMC2_IRQHandler
+  53              		.thumb_set SDMMC2_IRQHandler,Default_Handler
+  54              		.weak	DFSDM1_FLT3_IRQHandler
+  55              		.thumb_set DFSDM1_FLT3_IRQHandler,Default_Handler
+  56              		.weak	DFSDM1_FLT2_IRQHandler
+  57              		.thumb_set DFSDM1_FLT2_IRQHandler,Default_Handler
+  58              		.weak	DFSDM1_FLT1_IRQHandler
+  59              		.thumb_set DFSDM1_FLT1_IRQHandler,Default_Handler
+  60              		.weak	DFSDM1_FLT0_IRQHandler
+  61              		.thumb_set DFSDM1_FLT0_IRQHandler,Default_Handler
+  62              		.weak	SPDIF_RX_IRQHandler
+  63              		.thumb_set SPDIF_RX_IRQHandler,Default_Handler
+  64              		.weak	I2C4_ER_IRQHandler
+  65              		.thumb_set I2C4_ER_IRQHandler,Default_Handler
+  66              		.weak	I2C4_EV_IRQHandler
+  67              		.thumb_set I2C4_EV_IRQHandler,Default_Handler
+  68              		.weak	CEC_IRQHandler
+  69              		.thumb_set CEC_IRQHandler,Default_Handler
+  70              		.weak	LPTIM1_IRQHandler
+  71              		.thumb_set LPTIM1_IRQHandler,Default_Handler
+  72              		.weak	QUADSPI_IRQHandler
+  73              		.thumb_set QUADSPI_IRQHandler,Default_Handler
+  74              		.weak	SAI2_IRQHandler
+  75              		.thumb_set SAI2_IRQHandler,Default_Handler
+  76              		.weak	DMA2D_IRQHandler
+  77              		.thumb_set DMA2D_IRQHandler,Default_Handler
+  78              		.weak	SAI1_IRQHandler
+  79              		.thumb_set SAI1_IRQHandler,Default_Handler
+  80              		.weak	SPI6_IRQHandler
+  81              		.thumb_set SPI6_IRQHandler,Default_Handler
+  82              		.weak	SPI5_IRQHandler
+  83              		.thumb_set SPI5_IRQHandler,Default_Handler
+  84              		.weak	SPI4_IRQHandler
+  85              		.thumb_set SPI4_IRQHandler,Default_Handler
+  86              		.weak	UART8_IRQHandler
+  87              		.thumb_set UART8_IRQHandler,Default_Handler
+  88              		.weak	UART7_IRQHandler
+  89              		.thumb_set UART7_IRQHandler,Default_Handler
+  90              		.weak	FPU_IRQHandler
+  91              		.thumb_set FPU_IRQHandler,Default_Handler
+  92              		.weak	RNG_IRQHandler
+  93              		.thumb_set RNG_IRQHandler,Default_Handler
+  94              		.weak	DCMI_IRQHandler
+  95              		.thumb_set DCMI_IRQHandler,Default_Handler
+  96              		.weak	OTG_HS_IRQHandler
+  97              		.thumb_set OTG_HS_IRQHandler,Default_Handler
+  98              		.weak	OTG_HS_WKUP_IRQHandler
+  99              		.thumb_set OTG_HS_WKUP_IRQHandler,Default_Handler
+ 100              		.weak	OTG_HS_EP1_IN_IRQHandler
+ 101              		.thumb_set OTG_HS_EP1_IN_IRQHandler,Default_Handler
+ 102              		.weak	OTG_HS_EP1_OUT_IRQHandler
+ 103              		.thumb_set OTG_HS_EP1_OUT_IRQHandler,Default_Handler
+ 104              		.weak	I2C3_ER_IRQHandler
+ 105              		.thumb_set I2C3_ER_IRQHandler,Default_Handler
+ 106              		.weak	I2C3_EV_IRQHandler
+ 107              		.thumb_set I2C3_EV_IRQHandler,Default_Handler
+ 108              		.weak	USART6_IRQHandler
+ 109              		.thumb_set USART6_IRQHandler,Default_Handler
+ 110              		.weak	DMA2_Stream7_IRQHandler
+ 111              		.thumb_set DMA2_Stream7_IRQHandler,Default_Handler
+ 112              		.weak	DMA2_Stream6_IRQHandler
+ 113              		.thumb_set DMA2_Stream6_IRQHandler,Default_Handler
+ 114              		.weak	DMA2_Stream5_IRQHandler
+ 115              		.thumb_set DMA2_Stream5_IRQHandler,Default_Handler
+ 116              		.weak	OTG_FS_IRQHandler
+ 117              		.thumb_set OTG_FS_IRQHandler,Default_Handler
+ 118              		.weak	CAN2_SCE_IRQHandler
+ 119              		.thumb_set CAN2_SCE_IRQHandler,Default_Handler
+ 120              		.weak	CAN2_RX1_IRQHandler
+ 121              		.thumb_set CAN2_RX1_IRQHandler,Default_Handler
+ 122              		.weak	CAN2_RX0_IRQHandler
+ 123              		.thumb_set CAN2_RX0_IRQHandler,Default_Handler
+ 124              		.weak	CAN2_TX_IRQHandler
+ 125              		.thumb_set CAN2_TX_IRQHandler,Default_Handler
+ 126              		.weak	ETH_WKUP_IRQHandler
+ 127              		.thumb_set ETH_WKUP_IRQHandler,Default_Handler
+ 128              		.weak	ETH_IRQHandler
+ 129              		.thumb_set ETH_IRQHandler,Default_Handler
+ 130              		.weak	DMA2_Stream4_IRQHandler
+ 131              		.thumb_set DMA2_Stream4_IRQHandler,Default_Handler
+ 132              		.weak	DMA2_Stream3_IRQHandler
+ 133              		.thumb_set DMA2_Stream3_IRQHandler,Default_Handler
+ 134              		.weak	DMA2_Stream2_IRQHandler
+ 135              		.thumb_set DMA2_Stream2_IRQHandler,Default_Handler
+ 136              		.weak	DMA2_Stream1_IRQHandler
+ 137              		.thumb_set DMA2_Stream1_IRQHandler,Default_Handler
+ 138              		.weak	DMA2_Stream0_IRQHandler
+ 139              		.thumb_set DMA2_Stream0_IRQHandler,Default_Handler
+ 140              		.weak	TIM7_IRQHandler
+ 141              		.thumb_set TIM7_IRQHandler,Default_Handler
+ 142              		.weak	TIM6_DAC_IRQHandler
+ 143              		.thumb_set TIM6_DAC_IRQHandler,Default_Handler
+ 144              		.weak	UART5_IRQHandler
+ 145              		.thumb_set UART5_IRQHandler,Default_Handler
+ 146              		.weak	UART4_IRQHandler
+ 147              		.thumb_set UART4_IRQHandler,Default_Handler
+ 148              		.weak	SPI3_IRQHandler
+ 149              		.thumb_set SPI3_IRQHandler,Default_Handler
+ 150              		.weak	TIM5_IRQHandler
+ 151              		.thumb_set TIM5_IRQHandler,Default_Handler
+ 152              		.weak	SDMMC1_IRQHandler
+ 153              		.thumb_set SDMMC1_IRQHandler,Default_Handler
+ 154              		.weak	FMC_IRQHandler
+ 155              		.thumb_set FMC_IRQHandler,Default_Handler
+ 156              		.weak	DMA1_Stream7_IRQHandler
+ 157              		.thumb_set DMA1_Stream7_IRQHandler,Default_Handler
+ 158              		.weak	TIM8_CC_IRQHandler
+ 159              		.thumb_set TIM8_CC_IRQHandler,Default_Handler
+ 160              		.weak	TIM8_TRG_COM_TIM14_IRQHandler
+ 161              		.thumb_set TIM8_TRG_COM_TIM14_IRQHandler,Default_Handler
+ 162              		.weak	TIM8_UP_TIM13_IRQHandler
+ 163              		.thumb_set TIM8_UP_TIM13_IRQHandler,Default_Handler
+ 164              		.weak	TIM8_BRK_TIM12_IRQHandler
+ 165              		.thumb_set TIM8_BRK_TIM12_IRQHandler,Default_Handler
+ 166              		.weak	OTG_FS_WKUP_IRQHandler
+ 167              		.thumb_set OTG_FS_WKUP_IRQHandler,Default_Handler
+ 168              		.weak	RTC_Alarm_IRQHandler
+ 169              		.thumb_set RTC_Alarm_IRQHandler,Default_Handler
+ 170              		.weak	EXTI15_10_IRQHandler
+ 171              		.thumb_set EXTI15_10_IRQHandler,Default_Handler
+ 172              		.weak	USART3_IRQHandler
+ 173              		.thumb_set USART3_IRQHandler,Default_Handler
+ 174              		.weak	USART2_IRQHandler
+ 175              		.thumb_set USART2_IRQHandler,Default_Handler
+ 176              		.weak	USART1_IRQHandler
+ 177              		.thumb_set USART1_IRQHandler,Default_Handler
+ 178              		.weak	SPI2_IRQHandler
+ 179              		.thumb_set SPI2_IRQHandler,Default_Handler
+ 180              		.weak	SPI1_IRQHandler
+ 181              		.thumb_set SPI1_IRQHandler,Default_Handler
+ 182              		.weak	I2C2_ER_IRQHandler
+ 183              		.thumb_set I2C2_ER_IRQHandler,Default_Handler
+ 184              		.weak	I2C2_EV_IRQHandler
+ 185              		.thumb_set I2C2_EV_IRQHandler,Default_Handler
+ 186              		.weak	I2C1_ER_IRQHandler
+ 187              		.thumb_set I2C1_ER_IRQHandler,Default_Handler
+ 188              		.weak	I2C1_EV_IRQHandler
+ 189              		.thumb_set I2C1_EV_IRQHandler,Default_Handler
+ 190              		.weak	TIM4_IRQHandler
+ 191              		.thumb_set TIM4_IRQHandler,Default_Handler
+ 192              		.weak	TIM3_IRQHandler
+ 193              		.thumb_set TIM3_IRQHandler,Default_Handler
+ 194              		.weak	TIM2_IRQHandler
+ 195              		.thumb_set TIM2_IRQHandler,Default_Handler
+ 196              		.weak	TIM1_CC_IRQHandler
+ 197              		.thumb_set TIM1_CC_IRQHandler,Default_Handler
+ 198              		.weak	TIM1_TRG_COM_TIM11_IRQHandler
+ 199              		.thumb_set TIM1_TRG_COM_TIM11_IRQHandler,Default_Handler
+ 200              		.weak	TIM1_UP_TIM10_IRQHandler
+ 201              		.thumb_set TIM1_UP_TIM10_IRQHandler,Default_Handler
+ 202              		.weak	TIM1_BRK_TIM9_IRQHandler
+ 203              		.thumb_set TIM1_BRK_TIM9_IRQHandler,Default_Handler
+ 204              		.weak	EXTI9_5_IRQHandler
+ 205              		.thumb_set EXTI9_5_IRQHandler,Default_Handler
+ 206              		.weak	CAN1_SCE_IRQHandler
+ 207              		.thumb_set CAN1_SCE_IRQHandler,Default_Handler
+ 208              		.weak	CAN1_RX1_IRQHandler
+ 209              		.thumb_set CAN1_RX1_IRQHandler,Default_Handler
+ 210              		.weak	CAN1_RX0_IRQHandler
+ 211              		.thumb_set CAN1_RX0_IRQHandler,Default_Handler
+ 212              		.weak	CAN1_TX_IRQHandler
+ 213              		.thumb_set CAN1_TX_IRQHandler,Default_Handler
+ 214              		.weak	ADC_IRQHandler
+ 215              		.thumb_set ADC_IRQHandler,Default_Handler
+ 216              		.weak	DMA1_Stream6_IRQHandler
+ 217              		.thumb_set DMA1_Stream6_IRQHandler,Default_Handler
+ 218              		.weak	DMA1_Stream5_IRQHandler
+ 219              		.thumb_set DMA1_Stream5_IRQHandler,Default_Handler
+ 220              		.weak	DMA1_Stream4_IRQHandler
+ 221              		.thumb_set DMA1_Stream4_IRQHandler,Default_Handler
+ 222              		.weak	DMA1_Stream3_IRQHandler
+ 223              		.thumb_set DMA1_Stream3_IRQHandler,Default_Handler
+ 224              		.weak	DMA1_Stream2_IRQHandler
+ 225              		.thumb_set DMA1_Stream2_IRQHandler,Default_Handler
+ 226              		.weak	DMA1_Stream1_IRQHandler
+ 227              		.thumb_set DMA1_Stream1_IRQHandler,Default_Handler
+ 228              		.weak	DMA1_Stream0_IRQHandler
+ 229              		.thumb_set DMA1_Stream0_IRQHandler,Default_Handler
+ 230              		.weak	EXTI4_IRQHandler
+ 231              		.thumb_set EXTI4_IRQHandler,Default_Handler
+ 232              		.weak	EXTI3_IRQHandler
+ 233              		.thumb_set EXTI3_IRQHandler,Default_Handler
+ 234              		.weak	EXTI2_IRQHandler
+ 235              		.thumb_set EXTI2_IRQHandler,Default_Handler
+ 236              		.weak	EXTI1_IRQHandler
+ 237              		.thumb_set EXTI1_IRQHandler,Default_Handler
+ 238              		.weak	EXTI0_IRQHandler
+ 239              		.thumb_set EXTI0_IRQHandler,Default_Handler
+ 240              		.weak	RCC_IRQHandler
+ 241              		.thumb_set RCC_IRQHandler,Default_Handler
+ 242              		.weak	FLASH_IRQHandler
+ 243              		.thumb_set FLASH_IRQHandler,Default_Handler
+ 244              		.weak	RTC_WKUP_IRQHandler
+ 245              		.thumb_set RTC_WKUP_IRQHandler,Default_Handler
+ 246              		.weak	TAMP_STAMP_IRQHandler
+ 247              		.thumb_set TAMP_STAMP_IRQHandler,Default_Handler
+ 248              		.weak	PVD_IRQHandler
+ 249              		.thumb_set PVD_IRQHandler,Default_Handler
+ 250              		.weak	WWDG_IRQHandler
+ 251              		.thumb_set WWDG_IRQHandler,Default_Handler
+ 252              		.weak	SysTick_Handler
+ 253              		.thumb_set SysTick_Handler,Default_Handler
+ 254              		.weak	PendSV_Handler
+ 255              		.thumb_set PendSV_Handler,Default_Handler
+ 256              		.weak	DebugMon_Handler
+ 257              		.thumb_set DebugMon_Handler,Default_Handler
+ 258              		.weak	SVC_Handler
+ 259              		.thumb_set SVC_Handler,Default_Handler
+ 260              		.weak	UsageFault_Handler
+ 261              		.thumb_set UsageFault_Handler,Default_Handler
+ 262              		.weak	BusFault_Handler
+ 263              		.thumb_set BusFault_Handler,Default_Handler
+ 264              		.weak	MemManage_Handler
+ 265              		.thumb_set MemManage_Handler,Default_Handler
+ 266              		.weak	HardFault_Handler
+ 267              		.thumb_set HardFault_Handler,Default_Handler
+ 268              		.weak	NMI_Handler
+ 269              		.thumb_set NMI_Handler,Default_Handler
+ 270              		.align	1
+ 271 0002 00BF     		.p2align 2,,3
+ 272              		.global	Reset_Handler
+ 273              		.syntax unified
+ 274              		.thumb
+ 275              		.thumb_func
+ 276              		.fpu fpv5-d16
+ 278              	Reset_Handler:
+ 279              	.LFB144:
+ 328:./src/startup_router_pro_fd.c ****   __set_MSP ( (unsigned int)&__INITIAL_SP); /* added PEAK-System */
+ 280              		.loc 1 328 1 view -0
+ 281              		.cfi_startproc
+ 282              		@ Naked Function: prologue and epilogue provided by programmer.
+ 283              		@ Volatile: function does not return.
+ 284              		@ args = 0, pretend = 0, frame = 0
+ 285              		@ frame_needed = 0, uses_anonymous_args = 0
+ 329:./src/startup_router_pro_fd.c ****   __ISB();
+ 286              		.loc 1 329 3 view .LVU5
+ 287              	.LVL0:
+ 288              	.LBB12:
+ 289              	.LBI12:
+ 290              		.file 2 "./inc/cmsis_gcc.h"
+   1:./inc/cmsis_gcc.h **** /**************************************************************************//**
+   2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:./inc/cmsis_gcc.h ****  * @version  V5.2.0
+   5:./inc/cmsis_gcc.h ****  * @date     08. May 2019
+   6:./inc/cmsis_gcc.h ****  ******************************************************************************/
+   7:./inc/cmsis_gcc.h **** /*
+   8:./inc/cmsis_gcc.h ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+   9:./inc/cmsis_gcc.h ****  *
+  10:./inc/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:./inc/cmsis_gcc.h ****  *
+  12:./inc/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:./inc/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:./inc/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:./inc/cmsis_gcc.h ****  *
+  16:./inc/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:./inc/cmsis_gcc.h ****  *
+  18:./inc/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:./inc/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:./inc/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:./inc/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:./inc/cmsis_gcc.h ****  * limitations under the License.
+  23:./inc/cmsis_gcc.h ****  */
+  24:./inc/cmsis_gcc.h **** 
+  25:./inc/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:./inc/cmsis_gcc.h **** 
+  28:./inc/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:./inc/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:./inc/cmsis_gcc.h **** 
+  34:./inc/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:./inc/cmsis_gcc.h **** #ifndef __has_builtin
+  36:./inc/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:./inc/cmsis_gcc.h **** #endif
+  38:./inc/cmsis_gcc.h **** 
+  39:./inc/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:./inc/cmsis_gcc.h **** #ifndef   __ASM
+  41:./inc/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:./inc/cmsis_gcc.h **** #endif
+  43:./inc/cmsis_gcc.h **** #ifndef   __INLINE
+  44:./inc/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:./inc/cmsis_gcc.h **** #endif
+  46:./inc/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:./inc/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:./inc/cmsis_gcc.h **** #endif
+  49:./inc/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:./inc/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:./inc/cmsis_gcc.h **** #endif                                           
+  52:./inc/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:./inc/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:./inc/cmsis_gcc.h **** #endif
+  55:./inc/cmsis_gcc.h **** #ifndef   __USED
+  56:./inc/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:./inc/cmsis_gcc.h **** #endif
+  58:./inc/cmsis_gcc.h **** #ifndef   __WEAK
+  59:./inc/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:./inc/cmsis_gcc.h **** #endif
+  61:./inc/cmsis_gcc.h **** #ifndef   __PACKED
+  62:./inc/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:./inc/cmsis_gcc.h **** #endif
+  64:./inc/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:./inc/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:./inc/cmsis_gcc.h **** #endif
+  67:./inc/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:./inc/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:./inc/cmsis_gcc.h **** #endif
+  70:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:./inc/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:./inc/cmsis_gcc.h **** #endif
+  78:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:./inc/cmsis_gcc.h **** #endif
+  86:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:./inc/cmsis_gcc.h **** #endif
+  94:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:./inc/cmsis_gcc.h **** #endif
+ 102:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:./inc/cmsis_gcc.h **** #endif
+ 110:./inc/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:./inc/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:./inc/cmsis_gcc.h **** #endif
+ 113:./inc/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:./inc/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:./inc/cmsis_gcc.h **** #endif
+ 116:./inc/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:./inc/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:./inc/cmsis_gcc.h **** #endif
+ 119:./inc/cmsis_gcc.h **** 
+ 120:./inc/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:./inc/cmsis_gcc.h **** 
+ 122:./inc/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ 123:./inc/cmsis_gcc.h **** 
+ 124:./inc/cmsis_gcc.h **** /**
+ 125:./inc/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:./inc/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:./inc/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:./inc/cmsis_gcc.h ****            in the used linker script.
+ 129:./inc/cmsis_gcc.h ****   
+ 130:./inc/cmsis_gcc.h ****  */
+ 131:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:./inc/cmsis_gcc.h **** {
+ 133:./inc/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:./inc/cmsis_gcc.h ****   
+ 135:./inc/cmsis_gcc.h ****   typedef struct {
+ 136:./inc/cmsis_gcc.h ****     uint32_t const* src;
+ 137:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 138:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:./inc/cmsis_gcc.h ****   } __copy_table_t;
+ 140:./inc/cmsis_gcc.h ****   
+ 141:./inc/cmsis_gcc.h ****   typedef struct {
+ 142:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 143:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:./inc/cmsis_gcc.h ****   } __zero_table_t;
+ 145:./inc/cmsis_gcc.h ****   
+ 146:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:./inc/cmsis_gcc.h **** 
+ 151:./inc/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:./inc/cmsis_gcc.h ****     }
+ 155:./inc/cmsis_gcc.h ****   }
+ 156:./inc/cmsis_gcc.h ****  
+ 157:./inc/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:./inc/cmsis_gcc.h ****     }
+ 161:./inc/cmsis_gcc.h ****   }
+ 162:./inc/cmsis_gcc.h ****  
+ 163:./inc/cmsis_gcc.h ****   _start();
+ 164:./inc/cmsis_gcc.h **** }
+ 165:./inc/cmsis_gcc.h ****   
+ 166:./inc/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:./inc/cmsis_gcc.h **** #endif
+ 168:./inc/cmsis_gcc.h **** 
+ 169:./inc/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:./inc/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:./inc/cmsis_gcc.h **** #endif
+ 172:./inc/cmsis_gcc.h **** 
+ 173:./inc/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:./inc/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:./inc/cmsis_gcc.h **** #endif
+ 176:./inc/cmsis_gcc.h **** 
+ 177:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:./inc/cmsis_gcc.h **** #endif
+ 180:./inc/cmsis_gcc.h **** 
+ 181:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute((used, section(".vectors")))
+ 183:./inc/cmsis_gcc.h **** #endif
+ 184:./inc/cmsis_gcc.h **** 
+ 185:./inc/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 186:./inc/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 187:./inc/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 188:./inc/cmsis_gcc.h ****   @{
+ 189:./inc/cmsis_gcc.h ****  */
+ 190:./inc/cmsis_gcc.h **** 
+ 191:./inc/cmsis_gcc.h **** /**
+ 192:./inc/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 193:./inc/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 194:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 195:./inc/cmsis_gcc.h ****  */
+ 196:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 197:./inc/cmsis_gcc.h **** {
+ 198:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 199:./inc/cmsis_gcc.h **** }
+ 200:./inc/cmsis_gcc.h **** 
+ 201:./inc/cmsis_gcc.h **** 
+ 202:./inc/cmsis_gcc.h **** /**
+ 203:./inc/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 204:./inc/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 205:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 206:./inc/cmsis_gcc.h ****  */
+ 207:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 208:./inc/cmsis_gcc.h **** {
+ 209:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 210:./inc/cmsis_gcc.h **** }
+ 211:./inc/cmsis_gcc.h **** 
+ 212:./inc/cmsis_gcc.h **** 
+ 213:./inc/cmsis_gcc.h **** /**
+ 214:./inc/cmsis_gcc.h ****   \brief   Get Control Register
+ 215:./inc/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 216:./inc/cmsis_gcc.h ****   \return               Control Register value
+ 217:./inc/cmsis_gcc.h ****  */
+ 218:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 219:./inc/cmsis_gcc.h **** {
+ 220:./inc/cmsis_gcc.h ****   uint32_t result;
+ 221:./inc/cmsis_gcc.h **** 
+ 222:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 223:./inc/cmsis_gcc.h ****   return(result);
+ 224:./inc/cmsis_gcc.h **** }
+ 225:./inc/cmsis_gcc.h **** 
+ 226:./inc/cmsis_gcc.h **** 
+ 227:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 228:./inc/cmsis_gcc.h **** /**
+ 229:./inc/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 230:./inc/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 231:./inc/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 232:./inc/cmsis_gcc.h ****  */
+ 233:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 234:./inc/cmsis_gcc.h **** {
+ 235:./inc/cmsis_gcc.h ****   uint32_t result;
+ 236:./inc/cmsis_gcc.h **** 
+ 237:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 238:./inc/cmsis_gcc.h ****   return(result);
+ 239:./inc/cmsis_gcc.h **** }
+ 240:./inc/cmsis_gcc.h **** #endif
+ 241:./inc/cmsis_gcc.h **** 
+ 242:./inc/cmsis_gcc.h **** 
+ 243:./inc/cmsis_gcc.h **** /**
+ 244:./inc/cmsis_gcc.h ****   \brief   Set Control Register
+ 245:./inc/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 246:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 247:./inc/cmsis_gcc.h ****  */
+ 248:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 249:./inc/cmsis_gcc.h **** {
+ 250:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 251:./inc/cmsis_gcc.h **** }
+ 252:./inc/cmsis_gcc.h **** 
+ 253:./inc/cmsis_gcc.h **** 
+ 254:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 255:./inc/cmsis_gcc.h **** /**
+ 256:./inc/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 257:./inc/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 258:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 259:./inc/cmsis_gcc.h ****  */
+ 260:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 261:./inc/cmsis_gcc.h **** {
+ 262:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 263:./inc/cmsis_gcc.h **** }
+ 264:./inc/cmsis_gcc.h **** #endif
+ 265:./inc/cmsis_gcc.h **** 
+ 266:./inc/cmsis_gcc.h **** 
+ 267:./inc/cmsis_gcc.h **** /**
+ 268:./inc/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 269:./inc/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 270:./inc/cmsis_gcc.h ****   \return               IPSR Register value
+ 271:./inc/cmsis_gcc.h ****  */
+ 272:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 273:./inc/cmsis_gcc.h **** {
+ 274:./inc/cmsis_gcc.h ****   uint32_t result;
+ 275:./inc/cmsis_gcc.h **** 
+ 276:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 277:./inc/cmsis_gcc.h ****   return(result);
+ 278:./inc/cmsis_gcc.h **** }
+ 279:./inc/cmsis_gcc.h **** 
+ 280:./inc/cmsis_gcc.h **** 
+ 281:./inc/cmsis_gcc.h **** /**
+ 282:./inc/cmsis_gcc.h ****   \brief   Get APSR Register
+ 283:./inc/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 284:./inc/cmsis_gcc.h ****   \return               APSR Register value
+ 285:./inc/cmsis_gcc.h ****  */
+ 286:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 287:./inc/cmsis_gcc.h **** {
+ 288:./inc/cmsis_gcc.h ****   uint32_t result;
+ 289:./inc/cmsis_gcc.h **** 
+ 290:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 291:./inc/cmsis_gcc.h ****   return(result);
+ 292:./inc/cmsis_gcc.h **** }
+ 293:./inc/cmsis_gcc.h **** 
+ 294:./inc/cmsis_gcc.h **** 
+ 295:./inc/cmsis_gcc.h **** /**
+ 296:./inc/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 297:./inc/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 298:./inc/cmsis_gcc.h ****   \return               xPSR Register value
+ 299:./inc/cmsis_gcc.h ****  */
+ 300:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 301:./inc/cmsis_gcc.h **** {
+ 302:./inc/cmsis_gcc.h ****   uint32_t result;
+ 303:./inc/cmsis_gcc.h **** 
+ 304:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 305:./inc/cmsis_gcc.h ****   return(result);
+ 306:./inc/cmsis_gcc.h **** }
+ 307:./inc/cmsis_gcc.h **** 
+ 308:./inc/cmsis_gcc.h **** 
+ 309:./inc/cmsis_gcc.h **** /**
+ 310:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 311:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 312:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 313:./inc/cmsis_gcc.h ****  */
+ 314:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 315:./inc/cmsis_gcc.h **** {
+ 316:./inc/cmsis_gcc.h ****   uint32_t result;
+ 317:./inc/cmsis_gcc.h **** 
+ 318:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 319:./inc/cmsis_gcc.h ****   return(result);
+ 320:./inc/cmsis_gcc.h **** }
+ 321:./inc/cmsis_gcc.h **** 
+ 322:./inc/cmsis_gcc.h **** 
+ 323:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 324:./inc/cmsis_gcc.h **** /**
+ 325:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 326:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 327:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 328:./inc/cmsis_gcc.h ****  */
+ 329:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 330:./inc/cmsis_gcc.h **** {
+ 331:./inc/cmsis_gcc.h ****   uint32_t result;
+ 332:./inc/cmsis_gcc.h **** 
+ 333:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 334:./inc/cmsis_gcc.h ****   return(result);
+ 335:./inc/cmsis_gcc.h **** }
+ 336:./inc/cmsis_gcc.h **** #endif
+ 337:./inc/cmsis_gcc.h **** 
+ 338:./inc/cmsis_gcc.h **** 
+ 339:./inc/cmsis_gcc.h **** /**
+ 340:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 341:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 342:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 343:./inc/cmsis_gcc.h ****  */
+ 344:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 345:./inc/cmsis_gcc.h **** {
+ 346:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 347:./inc/cmsis_gcc.h **** }
+ 348:./inc/cmsis_gcc.h **** 
+ 349:./inc/cmsis_gcc.h **** 
+ 350:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:./inc/cmsis_gcc.h **** /**
+ 352:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 353:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 354:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 355:./inc/cmsis_gcc.h ****  */
+ 356:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 357:./inc/cmsis_gcc.h **** {
+ 358:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 359:./inc/cmsis_gcc.h **** }
+ 360:./inc/cmsis_gcc.h **** #endif
+ 361:./inc/cmsis_gcc.h **** 
+ 362:./inc/cmsis_gcc.h **** 
+ 363:./inc/cmsis_gcc.h **** /**
+ 364:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 365:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 366:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 367:./inc/cmsis_gcc.h ****  */
+ 368:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 369:./inc/cmsis_gcc.h **** {
+ 370:./inc/cmsis_gcc.h ****   uint32_t result;
+ 371:./inc/cmsis_gcc.h **** 
+ 372:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 373:./inc/cmsis_gcc.h ****   return(result);
+ 374:./inc/cmsis_gcc.h **** }
+ 375:./inc/cmsis_gcc.h **** 
+ 376:./inc/cmsis_gcc.h **** 
+ 377:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 378:./inc/cmsis_gcc.h **** /**
+ 379:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 380:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 381:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 382:./inc/cmsis_gcc.h ****  */
+ 383:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 384:./inc/cmsis_gcc.h **** {
+ 385:./inc/cmsis_gcc.h ****   uint32_t result;
+ 386:./inc/cmsis_gcc.h **** 
+ 387:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 388:./inc/cmsis_gcc.h ****   return(result);
+ 389:./inc/cmsis_gcc.h **** }
+ 390:./inc/cmsis_gcc.h **** #endif
+ 391:./inc/cmsis_gcc.h **** 
+ 392:./inc/cmsis_gcc.h **** 
+ 393:./inc/cmsis_gcc.h **** /**
+ 394:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 395:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 396:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 397:./inc/cmsis_gcc.h ****  */
+ 398:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 291              		.loc 2 398 27 view .LVU6
+ 292              	.LBB13:
+ 399:./inc/cmsis_gcc.h **** {
+ 400:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 293              		.loc 2 400 3 view .LVU7
+ 294 0004 214B     		ldr	r3, .L18
+ 295              		.syntax unified
+ 296              	@ 400 "./inc/cmsis_gcc.h" 1
+ 297 0006 83F30888 		MSR msp, r3
+ 298              	@ 0 "" 2
+ 299              	.LVL1:
+ 300              		.loc 2 400 3 is_stmt 0 view .LVU8
+ 301              		.thumb
+ 302              		.syntax unified
+ 303              	.LBE13:
+ 304              	.LBE12:
+ 330:./src/startup_router_pro_fd.c **** 
+ 305              		.loc 1 330 3 is_stmt 1 view .LVU9
+ 306              	.LBB14:
+ 307              	.LBI14:
+ 401:./inc/cmsis_gcc.h **** }
+ 402:./inc/cmsis_gcc.h **** 
+ 403:./inc/cmsis_gcc.h **** 
+ 404:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 405:./inc/cmsis_gcc.h **** /**
+ 406:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 407:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 408:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 409:./inc/cmsis_gcc.h ****  */
+ 410:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 411:./inc/cmsis_gcc.h **** {
+ 412:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 413:./inc/cmsis_gcc.h **** }
+ 414:./inc/cmsis_gcc.h **** #endif
+ 415:./inc/cmsis_gcc.h **** 
+ 416:./inc/cmsis_gcc.h **** 
+ 417:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 418:./inc/cmsis_gcc.h **** /**
+ 419:./inc/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 420:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 421:./inc/cmsis_gcc.h ****   \return               SP Register value
+ 422:./inc/cmsis_gcc.h ****  */
+ 423:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 424:./inc/cmsis_gcc.h **** {
+ 425:./inc/cmsis_gcc.h ****   uint32_t result;
+ 426:./inc/cmsis_gcc.h **** 
+ 427:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 428:./inc/cmsis_gcc.h ****   return(result);
+ 429:./inc/cmsis_gcc.h **** }
+ 430:./inc/cmsis_gcc.h **** 
+ 431:./inc/cmsis_gcc.h **** 
+ 432:./inc/cmsis_gcc.h **** /**
+ 433:./inc/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 434:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 435:./inc/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 436:./inc/cmsis_gcc.h ****  */
+ 437:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 438:./inc/cmsis_gcc.h **** {
+ 439:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 440:./inc/cmsis_gcc.h **** }
+ 441:./inc/cmsis_gcc.h **** #endif
+ 442:./inc/cmsis_gcc.h **** 
+ 443:./inc/cmsis_gcc.h **** 
+ 444:./inc/cmsis_gcc.h **** /**
+ 445:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 446:./inc/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 447:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 448:./inc/cmsis_gcc.h ****  */
+ 449:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 450:./inc/cmsis_gcc.h **** {
+ 451:./inc/cmsis_gcc.h ****   uint32_t result;
+ 452:./inc/cmsis_gcc.h **** 
+ 453:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 454:./inc/cmsis_gcc.h ****   return(result);
+ 455:./inc/cmsis_gcc.h **** }
+ 456:./inc/cmsis_gcc.h **** 
+ 457:./inc/cmsis_gcc.h **** 
+ 458:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 459:./inc/cmsis_gcc.h **** /**
+ 460:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 461:./inc/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 462:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 463:./inc/cmsis_gcc.h ****  */
+ 464:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 465:./inc/cmsis_gcc.h **** {
+ 466:./inc/cmsis_gcc.h ****   uint32_t result;
+ 467:./inc/cmsis_gcc.h **** 
+ 468:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 469:./inc/cmsis_gcc.h ****   return(result);
+ 470:./inc/cmsis_gcc.h **** }
+ 471:./inc/cmsis_gcc.h **** #endif
+ 472:./inc/cmsis_gcc.h **** 
+ 473:./inc/cmsis_gcc.h **** 
+ 474:./inc/cmsis_gcc.h **** /**
+ 475:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 476:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 477:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 478:./inc/cmsis_gcc.h ****  */
+ 479:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 480:./inc/cmsis_gcc.h **** {
+ 481:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 482:./inc/cmsis_gcc.h **** }
+ 483:./inc/cmsis_gcc.h **** 
+ 484:./inc/cmsis_gcc.h **** 
+ 485:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 486:./inc/cmsis_gcc.h **** /**
+ 487:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask (non-secure)
+ 488:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Priority Mask Register when in secure state.
+ 489:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 490:./inc/cmsis_gcc.h ****  */
+ 491:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
+ 492:./inc/cmsis_gcc.h **** {
+ 493:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask_ns, %0" : : "r" (priMask) : "memory");
+ 494:./inc/cmsis_gcc.h **** }
+ 495:./inc/cmsis_gcc.h **** #endif
+ 496:./inc/cmsis_gcc.h **** 
+ 497:./inc/cmsis_gcc.h **** 
+ 498:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 499:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 500:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
+ 501:./inc/cmsis_gcc.h **** /**
+ 502:./inc/cmsis_gcc.h ****   \brief   Enable FIQ
+ 503:./inc/cmsis_gcc.h ****   \details Enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 504:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 505:./inc/cmsis_gcc.h ****  */
+ 506:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_fault_irq(void)
+ 507:./inc/cmsis_gcc.h **** {
+ 508:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie f" : : : "memory");
+ 509:./inc/cmsis_gcc.h **** }
+ 510:./inc/cmsis_gcc.h **** 
+ 511:./inc/cmsis_gcc.h **** 
+ 512:./inc/cmsis_gcc.h **** /**
+ 513:./inc/cmsis_gcc.h ****   \brief   Disable FIQ
+ 514:./inc/cmsis_gcc.h ****   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
+ 515:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 516:./inc/cmsis_gcc.h ****  */
+ 517:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_fault_irq(void)
+ 518:./inc/cmsis_gcc.h **** {
+ 519:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
+ 520:./inc/cmsis_gcc.h **** }
+ 521:./inc/cmsis_gcc.h **** 
+ 522:./inc/cmsis_gcc.h **** 
+ 523:./inc/cmsis_gcc.h **** /**
+ 524:./inc/cmsis_gcc.h ****   \brief   Get Base Priority
+ 525:./inc/cmsis_gcc.h ****   \details Returns the current value of the Base Priority register.
+ 526:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 527:./inc/cmsis_gcc.h ****  */
+ 528:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
+ 529:./inc/cmsis_gcc.h **** {
+ 530:./inc/cmsis_gcc.h ****   uint32_t result;
+ 531:./inc/cmsis_gcc.h **** 
+ 532:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri" : "=r" (result) );
+ 533:./inc/cmsis_gcc.h ****   return(result);
+ 534:./inc/cmsis_gcc.h **** }
+ 535:./inc/cmsis_gcc.h **** 
+ 536:./inc/cmsis_gcc.h **** 
+ 537:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 538:./inc/cmsis_gcc.h **** /**
+ 539:./inc/cmsis_gcc.h ****   \brief   Get Base Priority (non-secure)
+ 540:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Base Priority register when in secure state.
+ 541:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 542:./inc/cmsis_gcc.h ****  */
+ 543:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
+ 544:./inc/cmsis_gcc.h **** {
+ 545:./inc/cmsis_gcc.h ****   uint32_t result;
+ 546:./inc/cmsis_gcc.h **** 
+ 547:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri_ns" : "=r" (result) );
+ 548:./inc/cmsis_gcc.h ****   return(result);
+ 549:./inc/cmsis_gcc.h **** }
+ 550:./inc/cmsis_gcc.h **** #endif
+ 551:./inc/cmsis_gcc.h **** 
+ 552:./inc/cmsis_gcc.h **** 
+ 553:./inc/cmsis_gcc.h **** /**
+ 554:./inc/cmsis_gcc.h ****   \brief   Set Base Priority
+ 555:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register.
+ 556:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 557:./inc/cmsis_gcc.h ****  */
+ 558:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
+ 559:./inc/cmsis_gcc.h **** {
+ 560:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri, %0" : : "r" (basePri) : "memory");
+ 561:./inc/cmsis_gcc.h **** }
+ 562:./inc/cmsis_gcc.h **** 
+ 563:./inc/cmsis_gcc.h **** 
+ 564:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 565:./inc/cmsis_gcc.h **** /**
+ 566:./inc/cmsis_gcc.h ****   \brief   Set Base Priority (non-secure)
+ 567:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Base Priority register when in secure state.
+ 568:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 569:./inc/cmsis_gcc.h ****  */
+ 570:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
+ 571:./inc/cmsis_gcc.h **** {
+ 572:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_ns, %0" : : "r" (basePri) : "memory");
+ 573:./inc/cmsis_gcc.h **** }
+ 574:./inc/cmsis_gcc.h **** #endif
+ 575:./inc/cmsis_gcc.h **** 
+ 576:./inc/cmsis_gcc.h **** 
+ 577:./inc/cmsis_gcc.h **** /**
+ 578:./inc/cmsis_gcc.h ****   \brief   Set Base Priority with condition
+ 579:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register only if BASEPRI masking is disable
+ 580:./inc/cmsis_gcc.h ****            or the new value increases the BASEPRI priority level.
+ 581:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 582:./inc/cmsis_gcc.h ****  */
+ 583:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
+ 584:./inc/cmsis_gcc.h **** {
+ 585:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_max, %0" : : "r" (basePri) : "memory");
+ 586:./inc/cmsis_gcc.h **** }
+ 587:./inc/cmsis_gcc.h **** 
+ 588:./inc/cmsis_gcc.h **** 
+ 589:./inc/cmsis_gcc.h **** /**
+ 590:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask
+ 591:./inc/cmsis_gcc.h ****   \details Returns the current value of the Fault Mask register.
+ 592:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 593:./inc/cmsis_gcc.h ****  */
+ 594:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
+ 595:./inc/cmsis_gcc.h **** {
+ 596:./inc/cmsis_gcc.h ****   uint32_t result;
+ 597:./inc/cmsis_gcc.h **** 
+ 598:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
+ 599:./inc/cmsis_gcc.h ****   return(result);
+ 600:./inc/cmsis_gcc.h **** }
+ 601:./inc/cmsis_gcc.h **** 
+ 602:./inc/cmsis_gcc.h **** 
+ 603:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 604:./inc/cmsis_gcc.h **** /**
+ 605:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask (non-secure)
+ 606:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Fault Mask register when in secure state.
+ 607:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 608:./inc/cmsis_gcc.h ****  */
+ 609:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
+ 610:./inc/cmsis_gcc.h **** {
+ 611:./inc/cmsis_gcc.h ****   uint32_t result;
+ 612:./inc/cmsis_gcc.h **** 
+ 613:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask_ns" : "=r" (result) );
+ 614:./inc/cmsis_gcc.h ****   return(result);
+ 615:./inc/cmsis_gcc.h **** }
+ 616:./inc/cmsis_gcc.h **** #endif
+ 617:./inc/cmsis_gcc.h **** 
+ 618:./inc/cmsis_gcc.h **** 
+ 619:./inc/cmsis_gcc.h **** /**
+ 620:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask
+ 621:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Fault Mask register.
+ 622:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 623:./inc/cmsis_gcc.h ****  */
+ 624:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
+ 625:./inc/cmsis_gcc.h **** {
+ 626:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) : "memory");
+ 627:./inc/cmsis_gcc.h **** }
+ 628:./inc/cmsis_gcc.h **** 
+ 629:./inc/cmsis_gcc.h **** 
+ 630:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 631:./inc/cmsis_gcc.h **** /**
+ 632:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask (non-secure)
+ 633:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Fault Mask register when in secure state.
+ 634:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 635:./inc/cmsis_gcc.h ****  */
+ 636:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
+ 637:./inc/cmsis_gcc.h **** {
+ 638:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask_ns, %0" : : "r" (faultMask) : "memory");
+ 639:./inc/cmsis_gcc.h **** }
+ 640:./inc/cmsis_gcc.h **** #endif
+ 641:./inc/cmsis_gcc.h **** 
+ 642:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 643:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 644:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
+ 645:./inc/cmsis_gcc.h **** 
+ 646:./inc/cmsis_gcc.h **** 
+ 647:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 648:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
+ 649:./inc/cmsis_gcc.h **** 
+ 650:./inc/cmsis_gcc.h **** /**
+ 651:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit
+ 652:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 653:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 654:./inc/cmsis_gcc.h ****   mode.
+ 655:./inc/cmsis_gcc.h ****   
+ 656:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer Limit (PSPLIM).
+ 657:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 658:./inc/cmsis_gcc.h ****  */
+ 659:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSPLIM(void)
+ 660:./inc/cmsis_gcc.h **** {
+ 661:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 662:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 663:./inc/cmsis_gcc.h ****     // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 664:./inc/cmsis_gcc.h ****   return 0U;
+ 665:./inc/cmsis_gcc.h **** #else
+ 666:./inc/cmsis_gcc.h ****   uint32_t result;
+ 667:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim"  : "=r" (result) );
+ 668:./inc/cmsis_gcc.h ****   return result;
+ 669:./inc/cmsis_gcc.h **** #endif
+ 670:./inc/cmsis_gcc.h **** }
+ 671:./inc/cmsis_gcc.h **** 
+ 672:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3))
+ 673:./inc/cmsis_gcc.h **** /**
+ 674:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit (non-secure)
+ 675:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 676:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 677:./inc/cmsis_gcc.h **** 
+ 678:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer Limit (PSPLIM) when in
+ 679:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 680:./inc/cmsis_gcc.h ****  */
+ 681:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
+ 682:./inc/cmsis_gcc.h **** {
+ 683:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 684:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 685:./inc/cmsis_gcc.h ****   return 0U;
+ 686:./inc/cmsis_gcc.h **** #else
+ 687:./inc/cmsis_gcc.h ****   uint32_t result;
+ 688:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
+ 689:./inc/cmsis_gcc.h ****   return result;
+ 690:./inc/cmsis_gcc.h **** #endif
+ 691:./inc/cmsis_gcc.h **** }
+ 692:./inc/cmsis_gcc.h **** #endif
+ 693:./inc/cmsis_gcc.h **** 
+ 694:./inc/cmsis_gcc.h **** 
+ 695:./inc/cmsis_gcc.h **** /**
+ 696:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer Limit
+ 697:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 698:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 699:./inc/cmsis_gcc.h ****   mode.
+ 700:./inc/cmsis_gcc.h ****   
+ 701:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer Limit (PSPLIM).
+ 702:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 703:./inc/cmsis_gcc.h ****  */
+ 704:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
+ 705:./inc/cmsis_gcc.h **** {
+ 706:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 707:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 708:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 709:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 710:./inc/cmsis_gcc.h **** #else
+ 711:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim, %0" : : "r" (ProcStackPtrLimit));
+ 712:./inc/cmsis_gcc.h **** #endif
+ 713:./inc/cmsis_gcc.h **** }
+ 714:./inc/cmsis_gcc.h **** 
+ 715:./inc/cmsis_gcc.h **** 
+ 716:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 717:./inc/cmsis_gcc.h **** /**
+ 718:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 719:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 720:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 721:./inc/cmsis_gcc.h **** 
+ 722:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer Limit (PSPLIM) when in s
+ 723:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 724:./inc/cmsis_gcc.h ****  */
+ 725:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
+ 726:./inc/cmsis_gcc.h **** {
+ 727:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 728:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 729:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 730:./inc/cmsis_gcc.h **** #else
+ 731:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim_ns, %0\n" : : "r" (ProcStackPtrLimit));
+ 732:./inc/cmsis_gcc.h **** #endif
+ 733:./inc/cmsis_gcc.h **** }
+ 734:./inc/cmsis_gcc.h **** #endif
+ 735:./inc/cmsis_gcc.h **** 
+ 736:./inc/cmsis_gcc.h **** 
+ 737:./inc/cmsis_gcc.h **** /**
+ 738:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit
+ 739:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 740:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 741:./inc/cmsis_gcc.h ****   mode.
+ 742:./inc/cmsis_gcc.h **** 
+ 743:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer Limit (MSPLIM).
+ 744:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 745:./inc/cmsis_gcc.h ****  */
+ 746:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
+ 747:./inc/cmsis_gcc.h **** {
+ 748:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 749:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 750:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 751:./inc/cmsis_gcc.h ****   return 0U;
+ 752:./inc/cmsis_gcc.h **** #else
+ 753:./inc/cmsis_gcc.h ****   uint32_t result;
+ 754:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim" : "=r" (result) );
+ 755:./inc/cmsis_gcc.h ****   return result;
+ 756:./inc/cmsis_gcc.h **** #endif
+ 757:./inc/cmsis_gcc.h **** }
+ 758:./inc/cmsis_gcc.h **** 
+ 759:./inc/cmsis_gcc.h **** 
+ 760:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 761:./inc/cmsis_gcc.h **** /**
+ 762:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit (non-secure)
+ 763:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 764:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 765:./inc/cmsis_gcc.h **** 
+ 766:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer Limit(MSPLIM) when in sec
+ 767:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 768:./inc/cmsis_gcc.h ****  */
+ 769:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
+ 770:./inc/cmsis_gcc.h **** {
+ 771:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 772:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 773:./inc/cmsis_gcc.h ****   return 0U;
+ 774:./inc/cmsis_gcc.h **** #else
+ 775:./inc/cmsis_gcc.h ****   uint32_t result;
+ 776:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim_ns" : "=r" (result) );
+ 777:./inc/cmsis_gcc.h ****   return result;
+ 778:./inc/cmsis_gcc.h **** #endif
+ 779:./inc/cmsis_gcc.h **** }
+ 780:./inc/cmsis_gcc.h **** #endif
+ 781:./inc/cmsis_gcc.h **** 
+ 782:./inc/cmsis_gcc.h **** 
+ 783:./inc/cmsis_gcc.h **** /**
+ 784:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit
+ 785:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 786:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 787:./inc/cmsis_gcc.h ****   mode.
+ 788:./inc/cmsis_gcc.h **** 
+ 789:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer Limit (MSPLIM).
+ 790:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer Limit value to set
+ 791:./inc/cmsis_gcc.h ****  */
+ 792:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
+ 793:./inc/cmsis_gcc.h **** {
+ 794:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 795:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 796:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 797:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 798:./inc/cmsis_gcc.h **** #else
+ 799:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim, %0" : : "r" (MainStackPtrLimit));
+ 800:./inc/cmsis_gcc.h **** #endif
+ 801:./inc/cmsis_gcc.h **** }
+ 802:./inc/cmsis_gcc.h **** 
+ 803:./inc/cmsis_gcc.h **** 
+ 804:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 805:./inc/cmsis_gcc.h **** /**
+ 806:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit (non-secure)
+ 807:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 808:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 809:./inc/cmsis_gcc.h **** 
+ 810:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer Limit (MSPLIM) when in secu
+ 811:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer value to set
+ 812:./inc/cmsis_gcc.h ****  */
+ 813:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
+ 814:./inc/cmsis_gcc.h **** {
+ 815:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 816:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 817:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 818:./inc/cmsis_gcc.h **** #else
+ 819:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim_ns, %0" : : "r" (MainStackPtrLimit));
+ 820:./inc/cmsis_gcc.h **** #endif
+ 821:./inc/cmsis_gcc.h **** }
+ 822:./inc/cmsis_gcc.h **** #endif
+ 823:./inc/cmsis_gcc.h **** 
+ 824:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 825:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
+ 826:./inc/cmsis_gcc.h **** 
+ 827:./inc/cmsis_gcc.h **** 
+ 828:./inc/cmsis_gcc.h **** /**
+ 829:./inc/cmsis_gcc.h ****   \brief   Get FPSCR
+ 830:./inc/cmsis_gcc.h ****   \details Returns the current value of the Floating Point Status/Control register.
+ 831:./inc/cmsis_gcc.h ****   \return               Floating Point Status/Control register value
+ 832:./inc/cmsis_gcc.h ****  */
+ 833:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
+ 834:./inc/cmsis_gcc.h **** {
+ 835:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 836:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 837:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_get_fpscr) 
+ 838:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 839:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 840:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 841:./inc/cmsis_gcc.h ****   return __builtin_arm_get_fpscr();
+ 842:./inc/cmsis_gcc.h **** #else
+ 843:./inc/cmsis_gcc.h ****   uint32_t result;
+ 844:./inc/cmsis_gcc.h **** 
+ 845:./inc/cmsis_gcc.h ****   __ASM volatile ("VMRS %0, fpscr" : "=r" (result) );
+ 846:./inc/cmsis_gcc.h ****   return(result);
+ 847:./inc/cmsis_gcc.h **** #endif
+ 848:./inc/cmsis_gcc.h **** #else
+ 849:./inc/cmsis_gcc.h ****   return(0U);
+ 850:./inc/cmsis_gcc.h **** #endif
+ 851:./inc/cmsis_gcc.h **** }
+ 852:./inc/cmsis_gcc.h **** 
+ 853:./inc/cmsis_gcc.h **** 
+ 854:./inc/cmsis_gcc.h **** /**
+ 855:./inc/cmsis_gcc.h ****   \brief   Set FPSCR
+ 856:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Floating Point Status/Control register.
+ 857:./inc/cmsis_gcc.h ****   \param [in]    fpscr  Floating Point Status/Control value to set
+ 858:./inc/cmsis_gcc.h ****  */
+ 859:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
+ 860:./inc/cmsis_gcc.h **** {
+ 861:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 862:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 863:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_set_fpscr)
+ 864:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 865:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 866:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 867:./inc/cmsis_gcc.h ****   __builtin_arm_set_fpscr(fpscr);
+ 868:./inc/cmsis_gcc.h **** #else
+ 869:./inc/cmsis_gcc.h ****   __ASM volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc", "memory");
+ 870:./inc/cmsis_gcc.h **** #endif
+ 871:./inc/cmsis_gcc.h **** #else
+ 872:./inc/cmsis_gcc.h ****   (void)fpscr;
+ 873:./inc/cmsis_gcc.h **** #endif
+ 874:./inc/cmsis_gcc.h **** }
+ 875:./inc/cmsis_gcc.h **** 
+ 876:./inc/cmsis_gcc.h **** 
+ 877:./inc/cmsis_gcc.h **** /*@} end of CMSIS_Core_RegAccFunctions */
+ 878:./inc/cmsis_gcc.h **** 
+ 879:./inc/cmsis_gcc.h **** 
+ 880:./inc/cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 881:./inc/cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 882:./inc/cmsis_gcc.h ****   Access to dedicated instructions
+ 883:./inc/cmsis_gcc.h ****   @{
+ 884:./inc/cmsis_gcc.h **** */
+ 885:./inc/cmsis_gcc.h **** 
+ 886:./inc/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 887:./inc/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 888:./inc/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 889:./inc/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 890:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 891:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
+ 892:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 893:./inc/cmsis_gcc.h **** #else
+ 894:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 895:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+r" (r)
+ 896:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 897:./inc/cmsis_gcc.h **** #endif
+ 898:./inc/cmsis_gcc.h **** 
+ 899:./inc/cmsis_gcc.h **** /**
+ 900:./inc/cmsis_gcc.h ****   \brief   No Operation
+ 901:./inc/cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 902:./inc/cmsis_gcc.h ****  */
+ 903:./inc/cmsis_gcc.h **** #define __NOP()                             __ASM volatile ("nop")
+ 904:./inc/cmsis_gcc.h **** 
+ 905:./inc/cmsis_gcc.h **** /**
+ 906:./inc/cmsis_gcc.h ****   \brief   Wait For Interrupt
+ 907:./inc/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
+ 908:./inc/cmsis_gcc.h ****  */
+ 909:./inc/cmsis_gcc.h **** #define __WFI()                             __ASM volatile ("wfi")
+ 910:./inc/cmsis_gcc.h **** 
+ 911:./inc/cmsis_gcc.h **** 
+ 912:./inc/cmsis_gcc.h **** /**
+ 913:./inc/cmsis_gcc.h ****   \brief   Wait For Event
+ 914:./inc/cmsis_gcc.h ****   \details Wait For Event is a hint instruction that permits the processor to enter
+ 915:./inc/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
+ 916:./inc/cmsis_gcc.h ****  */
+ 917:./inc/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe")
+ 918:./inc/cmsis_gcc.h **** 
+ 919:./inc/cmsis_gcc.h **** 
+ 920:./inc/cmsis_gcc.h **** /**
+ 921:./inc/cmsis_gcc.h ****   \brief   Send Event
+ 922:./inc/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 923:./inc/cmsis_gcc.h ****  */
+ 924:./inc/cmsis_gcc.h **** #define __SEV()                             __ASM volatile ("sev")
+ 925:./inc/cmsis_gcc.h **** 
+ 926:./inc/cmsis_gcc.h **** 
+ 927:./inc/cmsis_gcc.h **** /**
+ 928:./inc/cmsis_gcc.h ****   \brief   Instruction Synchronization Barrier
+ 929:./inc/cmsis_gcc.h ****   \details Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 930:./inc/cmsis_gcc.h ****            so that all instructions following the ISB are fetched from cache or memory,
+ 931:./inc/cmsis_gcc.h ****            after the instruction has been completed.
+ 932:./inc/cmsis_gcc.h ****  */
+ 933:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __ISB(void)
+ 308              		.loc 2 933 27 view .LVU10
+ 309              	.LBB15:
+ 934:./inc/cmsis_gcc.h **** {
+ 935:./inc/cmsis_gcc.h ****   __ASM volatile ("isb 0xF":::"memory");
+ 310              		.loc 2 935 3 view .LVU11
+ 311              		.syntax unified
+ 312              	@ 935 "./inc/cmsis_gcc.h" 1
+ 313 000a BFF36F8F 		isb 0xF
+ 314              	@ 0 "" 2
+ 315              		.thumb
+ 316              		.syntax unified
+ 317              	.LBE15:
+ 318              	.LBE14:
+ 332:./src/startup_router_pro_fd.c ****   __PROGRAM_START();                        /* Enter PreMain (C library entry point) */
+ 319              		.loc 1 332 3 view .LVU12
+ 320 000e FFF7FEFF 		bl	SystemInit
+ 321              	.LVL2:
+ 333:./src/startup_router_pro_fd.c **** }
+ 322              		.loc 1 333 3 view .LVU13
+ 323              	.LBB16:
+ 324              	.LBI16:
+ 131:./inc/cmsis_gcc.h **** {
+ 325              		.loc 2 131 39 view .LVU14
+ 326              	.LBB17:
+ 327              	.LBB18:
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 328              		.loc 2 151 62 view .LVU15
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 329              		.loc 2 151 3 is_stmt 0 view .LVU16
+ 330 0012 1F4C     		ldr	r4, .L18+4
+ 331 0014 1F4B     		ldr	r3, .L18+8
+ 332 0016 A342     		cmp	r3, r4
+ 333 0018 15D2     		bcs	.L6
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 334              		.loc 2 151 30 view .LVU17
+ 335 001a 9C46     		mov	ip, r3
+ 336              	.LVL3:
+ 337              	.L5:
+ 338              	.LBB19:
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 339              		.loc 2 152 24 is_stmt 1 view .LVU18
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 340              		.loc 2 152 5 is_stmt 0 view .LVU19
+ 341 001c DCF80830 		ldr	r3, [ip, #8]
+ 342 0020 6BB1     		cbz	r3, .L9
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 343              		.loc 2 152 18 view .LVU20
+ 344 0022 0023     		movs	r3, #0
+ 345 0024 DCE90012 		ldrd	r1, r2, [ip]
+ 346 0028 0439     		subs	r1, r1, #4
+ 347 002a 043A     		subs	r2, r2, #4
+ 348              	.LVL4:
+ 349              	.L7:
+ 153:./inc/cmsis_gcc.h ****     }
+ 350              		.loc 2 153 7 is_stmt 1 view .LVU21
+ 153:./inc/cmsis_gcc.h ****     }
+ 351              		.loc 2 153 36 is_stmt 0 view .LVU22
+ 352 002c 51F8040F 		ldr	r0, [r1, #4]!
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 353              		.loc 2 152 40 view .LVU23
+ 354 0030 0133     		adds	r3, r3, #1
+ 355              	.LVL5:
+ 153:./inc/cmsis_gcc.h ****     }
+ 356              		.loc 2 153 23 view .LVU24
+ 357 0032 42F8040F 		str	r0, [r2, #4]!
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 358              		.loc 2 152 40 is_stmt 1 view .LVU25
+ 359              	.LVL6:
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 360              		.loc 2 152 24 view .LVU26
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 361              		.loc 2 152 5 is_stmt 0 view .LVU27
+ 362 0036 DCF80800 		ldr	r0, [ip, #8]
+ 363 003a 8342     		cmp	r3, r0
+ 364 003c F6D3     		bcc	.L7
+ 365              	.LVL7:
+ 366              	.L9:
+ 152:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 367              		.loc 2 152 5 view .LVU28
+ 368              	.LBE19:
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 369              		.loc 2 151 92 is_stmt 1 view .LVU29
+ 370 003e 0CF10C0C 		add	ip, ip, #12
+ 371              	.LVL8:
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 372              		.loc 2 151 62 view .LVU30
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 373              		.loc 2 151 3 is_stmt 0 view .LVU31
+ 374 0042 A445     		cmp	ip, r4
+ 375 0044 EAD3     		bcc	.L5
+ 376              	.LVL9:
+ 377              	.L6:
+ 151:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 378              		.loc 2 151 3 view .LVU32
+ 379              	.LBE18:
+ 380              	.LBB20:
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 381              		.loc 2 157 62 is_stmt 1 view .LVU33
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 382              		.loc 2 157 3 is_stmt 0 view .LVU34
+ 383 0046 144A     		ldr	r2, .L18+12
+ 384 0048 144B     		ldr	r3, .L18+16
+ 385 004a 9A42     		cmp	r2, r3
+ 386 004c 1CD2     		bcs	.L10
+ 387 004e 03F1FF3C 		add	ip, r3, #-1
+ 388 0052 02F11003 		add	r3, r2, #16
+ 389 0056 02F10800 		add	r0, r2, #8
+ 390              	.LBB21:
+ 159:./inc/cmsis_gcc.h ****     }
+ 391              		.loc 2 159 23 view .LVU35
+ 392 005a 0024     		movs	r4, #0
+ 393 005c ACEB020C 		sub	ip, ip, r2
+ 394 0060 2CF0070C 		bic	ip, ip, #7
+ 395 0064 9C44     		add	ip, ip, r3
+ 396              	.LVL10:
+ 397              	.L11:
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 398              		.loc 2 158 24 is_stmt 1 view .LVU36
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 399              		.loc 2 158 5 is_stmt 0 view .LVU37
+ 400 0066 50F8043C 		ldr	r3, [r0, #-4]
+ 401 006a 53B1     		cbz	r3, .L14
+ 402 006c 50F8082C 		ldr	r2, [r0, #-8]
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 403              		.loc 2 158 18 view .LVU38
+ 404 0070 0023     		movs	r3, #0
+ 405 0072 043A     		subs	r2, r2, #4
+ 406              	.LVL11:
+ 407              	.L12:
+ 159:./inc/cmsis_gcc.h ****     }
+ 408              		.loc 2 159 7 is_stmt 1 view .LVU39
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 409              		.loc 2 158 40 is_stmt 0 view .LVU40
+ 410 0074 0133     		adds	r3, r3, #1
+ 411              	.LVL12:
+ 159:./inc/cmsis_gcc.h ****     }
+ 412              		.loc 2 159 23 view .LVU41
+ 413 0076 42F8044F 		str	r4, [r2, #4]!
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 414              		.loc 2 158 40 is_stmt 1 view .LVU42
+ 415              	.LVL13:
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 416              		.loc 2 158 24 view .LVU43
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 417              		.loc 2 158 5 is_stmt 0 view .LVU44
+ 418 007a 50F8041C 		ldr	r1, [r0, #-4]
+ 419 007e 8B42     		cmp	r3, r1
+ 420 0080 F8D3     		bcc	.L12
+ 421              	.LVL14:
+ 422              	.L14:
+ 158:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 423              		.loc 2 158 5 view .LVU45
+ 424              	.LBE21:
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 425              		.loc 2 157 92 is_stmt 1 view .LVU46
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 426              		.loc 2 157 62 view .LVU47
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 427              		.loc 2 157 3 is_stmt 0 view .LVU48
+ 428 0082 0830     		adds	r0, r0, #8
+ 429              	.LVL15:
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 430              		.loc 2 157 3 view .LVU49
+ 431 0084 6045     		cmp	r0, ip
+ 432 0086 EED1     		bne	.L11
+ 433              	.LVL16:
+ 434              	.L10:
+ 157:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 435              		.loc 2 157 3 view .LVU50
+ 436              	.LBE20:
+ 163:./inc/cmsis_gcc.h **** }
+ 437              		.loc 2 163 3 is_stmt 1 view .LVU51
+ 438 0088 FFF7FEFF 		bl	_start
+ 439              	.LVL17:
+ 440              	.L19:
+ 441              		.align	2
+ 442              	.L18:
+ 443 008c 00000000 		.word	__StackTop
+ 444 0090 00000000 		.word	__copy_table_end__
+ 445 0094 00000000 		.word	__copy_table_start__
+ 446 0098 00000000 		.word	__zero_table_start__
+ 447 009c 00000000 		.word	__zero_table_end__
+ 448              	.LBE17:
+ 449              	.LBE16:
+ 450              		.cfi_endproc
+ 451              	.LFE144:
+ 453              		.global	__Vectors
+ 454              		.section	.vectors,"a"
+ 455              		.align	2
+ 458              	__Vectors:
+ 459 0000 00000000 		.word	__StackTop
+ 460 0004 00000000 		.word	Reset_Handler
+ 461 0008 00000000 		.word	NMI_Handler
+ 462 000c 00000000 		.word	HardFault_Handler
+ 463 0010 00000000 		.word	MemManage_Handler
+ 464 0014 00000000 		.word	BusFault_Handler
+ 465 0018 00000000 		.word	UsageFault_Handler
+ 466 001c 00000000 		.word	0
+ 467 0020 00000000 		.word	0
+ 468 0024 00000000 		.word	0
+ 469 0028 00000000 		.word	0
+ 470 002c 00000000 		.word	SVC_Handler
+ 471 0030 00000000 		.word	DebugMon_Handler
+ 472 0034 00000000 		.word	0
+ 473 0038 00000000 		.word	PendSV_Handler
+ 474 003c 00000000 		.word	SysTick_Handler
+ 475 0040 00000000 		.word	WWDG_IRQHandler
+ 476 0044 00000000 		.word	PVD_IRQHandler
+ 477 0048 00000000 		.word	TAMP_STAMP_IRQHandler
+ 478 004c 00000000 		.word	RTC_WKUP_IRQHandler
+ 479 0050 00000000 		.word	FLASH_IRQHandler
+ 480 0054 00000000 		.word	RCC_IRQHandler
+ 481 0058 00000000 		.word	EXTI0_IRQHandler
+ 482 005c 00000000 		.word	EXTI1_IRQHandler
+ 483 0060 00000000 		.word	EXTI2_IRQHandler
+ 484 0064 00000000 		.word	EXTI3_IRQHandler
+ 485 0068 00000000 		.word	EXTI4_IRQHandler
+ 486 006c 00000000 		.word	DMA1_Stream0_IRQHandler
+ 487 0070 00000000 		.word	DMA1_Stream1_IRQHandler
+ 488 0074 00000000 		.word	DMA1_Stream2_IRQHandler
+ 489 0078 00000000 		.word	DMA1_Stream3_IRQHandler
+ 490 007c 00000000 		.word	DMA1_Stream4_IRQHandler
+ 491 0080 00000000 		.word	DMA1_Stream5_IRQHandler
+ 492 0084 00000000 		.word	DMA1_Stream6_IRQHandler
+ 493 0088 00000000 		.word	ADC_IRQHandler
+ 494 008c 00000000 		.word	CAN1_TX_IRQHandler
+ 495 0090 00000000 		.word	CAN1_RX0_IRQHandler
+ 496 0094 00000000 		.word	CAN1_RX1_IRQHandler
+ 497 0098 00000000 		.word	CAN1_SCE_IRQHandler
+ 498 009c 00000000 		.word	EXTI9_5_IRQHandler
+ 499 00a0 00000000 		.word	TIM1_BRK_TIM9_IRQHandler
+ 500 00a4 00000000 		.word	TIM1_UP_TIM10_IRQHandler
+ 501 00a8 00000000 		.word	TIM1_TRG_COM_TIM11_IRQHandler
+ 502 00ac 00000000 		.word	TIM1_CC_IRQHandler
+ 503 00b0 00000000 		.word	TIM2_IRQHandler
+ 504 00b4 00000000 		.word	TIM3_IRQHandler
+ 505 00b8 00000000 		.word	TIM4_IRQHandler
+ 506 00bc 00000000 		.word	I2C1_EV_IRQHandler
+ 507 00c0 00000000 		.word	I2C1_ER_IRQHandler
+ 508 00c4 00000000 		.word	I2C2_EV_IRQHandler
+ 509 00c8 00000000 		.word	I2C2_ER_IRQHandler
+ 510 00cc 00000000 		.word	SPI1_IRQHandler
+ 511 00d0 00000000 		.word	SPI2_IRQHandler
+ 512 00d4 00000000 		.word	USART1_IRQHandler
+ 513 00d8 00000000 		.word	USART2_IRQHandler
+ 514 00dc 00000000 		.word	USART3_IRQHandler
+ 515 00e0 00000000 		.word	EXTI15_10_IRQHandler
+ 516 00e4 00000000 		.word	RTC_Alarm_IRQHandler
+ 517 00e8 00000000 		.word	OTG_FS_WKUP_IRQHandler
+ 518 00ec 00000000 		.word	TIM8_BRK_TIM12_IRQHandler
+ 519 00f0 00000000 		.word	TIM8_UP_TIM13_IRQHandler
+ 520 00f4 00000000 		.word	TIM8_TRG_COM_TIM14_IRQHandler
+ 521 00f8 00000000 		.word	TIM8_CC_IRQHandler
+ 522 00fc 00000000 		.word	DMA1_Stream7_IRQHandler
+ 523 0100 00000000 		.word	FMC_IRQHandler
+ 524 0104 00000000 		.word	SDMMC1_IRQHandler
+ 525 0108 00000000 		.word	TIM5_IRQHandler
+ 526 010c 00000000 		.word	SPI3_IRQHandler
+ 527 0110 00000000 		.word	UART4_IRQHandler
+ 528 0114 00000000 		.word	UART5_IRQHandler
+ 529 0118 00000000 		.word	TIM6_DAC_IRQHandler
+ 530 011c 00000000 		.word	TIM7_IRQHandler
+ 531 0120 00000000 		.word	DMA2_Stream0_IRQHandler
+ 532 0124 00000000 		.word	DMA2_Stream1_IRQHandler
+ 533 0128 00000000 		.word	DMA2_Stream2_IRQHandler
+ 534 012c 00000000 		.word	DMA2_Stream3_IRQHandler
+ 535 0130 00000000 		.word	DMA2_Stream4_IRQHandler
+ 536 0134 00000000 		.word	ETH_IRQHandler
+ 537 0138 00000000 		.word	ETH_WKUP_IRQHandler
+ 538 013c 00000000 		.word	CAN2_TX_IRQHandler
+ 539 0140 00000000 		.word	CAN2_RX0_IRQHandler
+ 540 0144 00000000 		.word	CAN2_RX1_IRQHandler
+ 541 0148 00000000 		.word	CAN2_SCE_IRQHandler
+ 542 014c 00000000 		.word	OTG_FS_IRQHandler
+ 543 0150 00000000 		.word	DMA2_Stream5_IRQHandler
+ 544 0154 00000000 		.word	DMA2_Stream6_IRQHandler
+ 545 0158 00000000 		.word	DMA2_Stream7_IRQHandler
+ 546 015c 00000000 		.word	USART6_IRQHandler
+ 547 0160 00000000 		.word	I2C3_EV_IRQHandler
+ 548 0164 00000000 		.word	I2C3_ER_IRQHandler
+ 549 0168 00000000 		.word	OTG_HS_EP1_OUT_IRQHandler
+ 550 016c 00000000 		.word	OTG_HS_EP1_IN_IRQHandler
+ 551 0170 00000000 		.word	OTG_HS_WKUP_IRQHandler
+ 552 0174 00000000 		.word	OTG_HS_IRQHandler
+ 553 0178 00000000 		.word	DCMI_IRQHandler
+ 554 017c 00000000 		.word	0
+ 555 0180 00000000 		.word	RNG_IRQHandler
+ 556 0184 00000000 		.word	FPU_IRQHandler
+ 557 0188 00000000 		.word	UART7_IRQHandler
+ 558 018c 00000000 		.word	UART8_IRQHandler
+ 559 0190 00000000 		.word	SPI4_IRQHandler
+ 560 0194 00000000 		.word	SPI5_IRQHandler
+ 561 0198 00000000 		.word	SPI6_IRQHandler
+ 562 019c 00000000 		.word	SAI1_IRQHandler
+ 563 01a0 00000000 		.word	0
+ 564 01a4 00000000 		.word	0
+ 565 01a8 00000000 		.word	DMA2D_IRQHandler
+ 566 01ac 00000000 		.word	SAI2_IRQHandler
+ 567 01b0 00000000 		.word	QUADSPI_IRQHandler
+ 568 01b4 00000000 		.word	LPTIM1_IRQHandler
+ 569 01b8 00000000 		.word	CEC_IRQHandler
+ 570 01bc 00000000 		.word	I2C4_EV_IRQHandler
+ 571 01c0 00000000 		.word	I2C4_ER_IRQHandler
+ 572 01c4 00000000 		.word	SPDIF_RX_IRQHandler
+ 573 01c8 00000000 		.word	0
+ 574 01cc 00000000 		.word	DFSDM1_FLT0_IRQHandler
+ 575 01d0 00000000 		.word	DFSDM1_FLT1_IRQHandler
+ 576 01d4 00000000 		.word	DFSDM1_FLT2_IRQHandler
+ 577 01d8 00000000 		.word	DFSDM1_FLT3_IRQHandler
+ 578 01dc 00000000 		.word	SDMMC2_IRQHandler
+ 579 01e0 00000000 		.word	CAN3_TX_IRQHandler
+ 580 01e4 00000000 		.word	CAN3_RX0_IRQHandler
+ 581 01e8 00000000 		.word	CAN3_RX1_IRQHandler
+ 582 01ec 00000000 		.word	CAN3_SCE_IRQHandler
+ 583 01f0 00000000 		.word	0
+ 584 01f4 00000000 		.word	MDIOS_IRQHandler
+ 585              		.text
+ 586              	.Letext0:
+ 587              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 588              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+DEFINED SYMBOLS
+                            *ABS*:00000000 startup_router_pro_fd.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 Default_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 MDIOS_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN3_SCE_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN3_RX1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN3_RX0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN3_TX_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SDMMC2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DFSDM1_FLT3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DFSDM1_FLT2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DFSDM1_FLT1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DFSDM1_FLT0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPDIF_RX_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C4_ER_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C4_EV_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CEC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 LPTIM1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 QUADSPI_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SAI2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2D_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SAI1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI6_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 UART8_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 UART7_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 FPU_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 RNG_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DCMI_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_HS_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_HS_WKUP_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_HS_EP1_IN_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_HS_EP1_OUT_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C3_ER_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C3_EV_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 USART6_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream7_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream6_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_FS_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN2_SCE_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN2_RX1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN2_RX0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN2_TX_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 ETH_WKUP_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 ETH_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA2_Stream0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM7_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM6_DAC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 UART5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 UART4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SDMMC1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 FMC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream7_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM8_CC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM8_TRG_COM_TIM14_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM8_UP_TIM13_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM8_BRK_TIM12_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 OTG_FS_WKUP_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 RTC_Alarm_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI15_10_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 USART3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 USART2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 USART1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SPI1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C2_ER_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C2_EV_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C1_ER_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 I2C1_EV_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM1_CC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM1_TRG_COM_TIM11_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM1_UP_TIM10_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TIM1_BRK_TIM9_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI9_5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN1_SCE_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN1_RX1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN1_RX0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 CAN1_TX_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 ADC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream6_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream5_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DMA1_Stream0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI4_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI3_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI2_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI1_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 EXTI0_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 RCC_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 FLASH_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 RTC_WKUP_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 TAMP_STAMP_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 PVD_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 WWDG_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SysTick_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 PendSV_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 DebugMon_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 SVC_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 UsageFault_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 BusFault_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 MemManage_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 HardFault_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:25     .text:00000000 NMI_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:278    .text:00000004 Reset_Handler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:443    .text:0000008c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:458    .vectors:00000000 __Vectors
+C:\Users\JAEJUN~1\AppData\Local\Temp\cch5mRpG.s:455    .vectors:00000000 $d
+
+UNDEFINED SYMBOLS
+SystemInit
+_start
+__StackTop
+__copy_table_end__
+__copy_table_start__
+__zero_table_start__
+__zero_table_end__

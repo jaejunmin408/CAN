@@ -1,0 +1,2449 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"memp.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.global	memp_memory_UDP_PCB_base
+  17              		.bss
+  18              		.align	2
+  21              	memp_memory_UDP_PCB_base:
+  22 0000 00000000 		.space	131
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23 0083 00       		.align	2
+  24              	memp_tab_UDP_PCB:
+  25 0084 00000000 		.space	4
+  27              		.global	memp_UDP_PCB
+  28              		.section	.rodata
+  29              		.align	2
+  32              	memp_UDP_PCB:
+  33 0000 2000     		.short	32
+  34 0002 0400     		.short	4
+  35 0004 00000000 		.word	memp_memory_UDP_PCB_base
+  36 0008 84000000 		.word	memp_tab_UDP_PCB
+  37              		.global	memp_memory_TCP_PCB_base
+  38              		.bss
+  39              		.align	2
+  42              	memp_memory_TCP_PCB_base:
+  43 0088 00000000 		.space	783
+  43      00000000 
+  43      00000000 
+  43      00000000 
+  43      00000000 
+  44 0397 00       		.align	2
+  45              	memp_tab_TCP_PCB:
+  46 0398 00000000 		.space	4
+  48              		.global	memp_TCP_PCB
+  49              		.section	.rodata
+  50              		.align	2
+  53              	memp_TCP_PCB:
+  54 000c 9C00     		.short	156
+  55 000e 0500     		.short	5
+  56 0010 00000000 		.word	memp_memory_TCP_PCB_base
+  57 0014 98030000 		.word	memp_tab_TCP_PCB
+  58              		.global	memp_memory_TCP_PCB_LISTEN_base
+  59              		.bss
+  60              		.align	2
+  63              	memp_memory_TCP_PCB_LISTEN_base:
+  64 039c 00000000 		.space	227
+  64      00000000 
+  64      00000000 
+  64      00000000 
+  64      00000000 
+  65 047f 00       		.align	2
+  66              	memp_tab_TCP_PCB_LISTEN:
+  67 0480 00000000 		.space	4
+  69              		.global	memp_TCP_PCB_LISTEN
+  70              		.section	.rodata
+  71              		.align	2
+  74              	memp_TCP_PCB_LISTEN:
+  75 0018 1C00     		.short	28
+  76 001a 0800     		.short	8
+  77 001c 00000000 		.word	memp_memory_TCP_PCB_LISTEN_base
+  78 0020 80040000 		.word	memp_tab_TCP_PCB_LISTEN
+  79              		.global	memp_memory_TCP_SEG_base
+  80              		.bss
+  81              		.align	2
+  84              	memp_memory_TCP_SEG_base:
+  85 0484 00000000 		.space	259
+  85      00000000 
+  85      00000000 
+  85      00000000 
+  85      00000000 
+  86 0587 00       		.align	2
+  87              	memp_tab_TCP_SEG:
+  88 0588 00000000 		.space	4
+  90              		.global	memp_TCP_SEG
+  91              		.section	.rodata
+  92              		.align	2
+  95              	memp_TCP_SEG:
+  96 0024 1000     		.short	16
+  97 0026 1000     		.short	16
+  98 0028 00000000 		.word	memp_memory_TCP_SEG_base
+  99 002c 88050000 		.word	memp_tab_TCP_SEG
+ 100              		.global	memp_memory_REASSDATA_base
+ 101              		.bss
+ 102              		.align	2
+ 105              	memp_memory_REASSDATA_base:
+ 106 058c 00000000 		.space	163
+ 106      00000000 
+ 106      00000000 
+ 106      00000000 
+ 106      00000000 
+ 107 062f 00       		.align	2
+ 108              	memp_tab_REASSDATA:
+ 109 0630 00000000 		.space	4
+ 111              		.global	memp_REASSDATA
+ 112              		.section	.rodata
+ 113              		.align	2
+ 116              	memp_REASSDATA:
+ 117 0030 2000     		.short	32
+ 118 0032 0500     		.short	5
+ 119 0034 00000000 		.word	memp_memory_REASSDATA_base
+ 120 0038 30060000 		.word	memp_tab_REASSDATA
+ 121              		.global	memp_memory_FRAG_PBUF_base
+ 122              		.bss
+ 123              		.align	2
+ 126              	memp_memory_FRAG_PBUF_base:
+ 127 0634 00000000 		.space	363
+ 127      00000000 
+ 127      00000000 
+ 127      00000000 
+ 127      00000000 
+ 128 079f 00       		.align	2
+ 129              	memp_tab_FRAG_PBUF:
+ 130 07a0 00000000 		.space	4
+ 132              		.global	memp_FRAG_PBUF
+ 133              		.section	.rodata
+ 134              		.align	2
+ 137              	memp_FRAG_PBUF:
+ 138 003c 1800     		.short	24
+ 139 003e 0F00     		.short	15
+ 140 0040 00000000 		.word	memp_memory_FRAG_PBUF_base
+ 141 0044 A0070000 		.word	memp_tab_FRAG_PBUF
+ 142              		.global	memp_memory_NETBUF_base
+ 143              		.bss
+ 144              		.align	2
+ 147              	memp_memory_NETBUF_base:
+ 148 07a4 00000000 		.space	35
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 148      00000000 
+ 149 07c7 00       		.align	2
+ 150              	memp_tab_NETBUF:
+ 151 07c8 00000000 		.space	4
+ 153              		.global	memp_NETBUF
+ 154              		.section	.rodata
+ 155              		.align	2
+ 158              	memp_NETBUF:
+ 159 0048 1000     		.short	16
+ 160 004a 0200     		.short	2
+ 161 004c 00000000 		.word	memp_memory_NETBUF_base
+ 162 0050 C8070000 		.word	memp_tab_NETBUF
+ 163              		.global	memp_memory_NETCONN_base
+ 164              		.bss
+ 165              		.align	2
+ 168              	memp_memory_NETCONN_base:
+ 169 07cc 00000000 		.space	163
+ 169      00000000 
+ 169      00000000 
+ 169      00000000 
+ 169      00000000 
+ 170 086f 00       		.align	2
+ 171              	memp_tab_NETCONN:
+ 172 0870 00000000 		.space	4
+ 174              		.global	memp_NETCONN
+ 175              		.section	.rodata
+ 176              		.align	2
+ 179              	memp_NETCONN:
+ 180 0054 2800     		.short	40
+ 181 0056 0400     		.short	4
+ 182 0058 00000000 		.word	memp_memory_NETCONN_base
+ 183 005c 70080000 		.word	memp_tab_NETCONN
+ 184              		.global	memp_memory_TCPIP_MSG_API_base
+ 185              		.bss
+ 186              		.align	2
+ 189              	memp_memory_TCPIP_MSG_API_base:
+ 190 0874 00000000 		.space	131
+ 190      00000000 
+ 190      00000000 
+ 190      00000000 
+ 190      00000000 
+ 191 08f7 00       		.align	2
+ 192              	memp_tab_TCPIP_MSG_API:
+ 193 08f8 00000000 		.space	4
+ 195              		.global	memp_TCPIP_MSG_API
+ 196              		.section	.rodata
+ 197              		.align	2
+ 200              	memp_TCPIP_MSG_API:
+ 201 0060 1000     		.short	16
+ 202 0062 0800     		.short	8
+ 203 0064 00000000 		.word	memp_memory_TCPIP_MSG_API_base
+ 204 0068 F8080000 		.word	memp_tab_TCPIP_MSG_API
+ 205              		.global	memp_memory_TCPIP_MSG_INPKT_base
+ 206              		.bss
+ 207              		.align	2
+ 210              	memp_memory_TCPIP_MSG_INPKT_base:
+ 211 08fc 00000000 		.space	131
+ 211      00000000 
+ 211      00000000 
+ 211      00000000 
+ 211      00000000 
+ 212 097f 00       		.align	2
+ 213              	memp_tab_TCPIP_MSG_INPKT:
+ 214 0980 00000000 		.space	4
+ 216              		.global	memp_TCPIP_MSG_INPKT
+ 217              		.section	.rodata
+ 218              		.align	2
+ 221              	memp_TCPIP_MSG_INPKT:
+ 222 006c 1000     		.short	16
+ 223 006e 0800     		.short	8
+ 224 0070 00000000 		.word	memp_memory_TCPIP_MSG_INPKT_base
+ 225 0074 80090000 		.word	memp_tab_TCPIP_MSG_INPKT
+ 226              		.global	memp_memory_SYS_TIMEOUT_base
+ 227              		.bss
+ 228              		.align	2
+ 231              	memp_memory_SYS_TIMEOUT_base:
+ 232 0984 00000000 		.space	83
+ 232      00000000 
+ 232      00000000 
+ 232      00000000 
+ 232      00000000 
+ 233 09d7 00       		.align	2
+ 234              	memp_tab_SYS_TIMEOUT:
+ 235 09d8 00000000 		.space	4
+ 237              		.global	memp_SYS_TIMEOUT
+ 238              		.section	.rodata
+ 239              		.align	2
+ 242              	memp_SYS_TIMEOUT:
+ 243 0078 1000     		.short	16
+ 244 007a 0500     		.short	5
+ 245 007c 00000000 		.word	memp_memory_SYS_TIMEOUT_base
+ 246 0080 D8090000 		.word	memp_tab_SYS_TIMEOUT
+ 247              		.global	memp_memory_PBUF_base
+ 248              		.bss
+ 249              		.align	2
+ 252              	memp_memory_PBUF_base:
+ 253 09dc 00000000 		.space	259
+ 253      00000000 
+ 253      00000000 
+ 253      00000000 
+ 253      00000000 
+ 254 0adf 00       		.align	2
+ 255              	memp_tab_PBUF:
+ 256 0ae0 00000000 		.space	4
+ 258              		.global	memp_PBUF
+ 259              		.section	.rodata
+ 260              		.align	2
+ 263              	memp_PBUF:
+ 264 0084 1000     		.short	16
+ 265 0086 1000     		.short	16
+ 266 0088 00000000 		.word	memp_memory_PBUF_base
+ 267 008c E00A0000 		.word	memp_tab_PBUF
+ 268              		.global	memp_memory_PBUF_POOL_base
+ 269              		.bss
+ 270              		.align	2
+ 273              	memp_memory_PBUF_POOL_base:
+ 274 0ae4 00000000 		.space	9731
+ 274      00000000 
+ 274      00000000 
+ 274      00000000 
+ 274      00000000 
+ 275 30e7 00       		.align	2
+ 276              	memp_tab_PBUF_POOL:
+ 277 30e8 00000000 		.space	4
+ 279              		.global	memp_PBUF_POOL
+ 280              		.section	.rodata
+ 281              		.align	2
+ 284              	memp_PBUF_POOL:
+ 285 0090 6002     		.short	608
+ 286 0092 1000     		.short	16
+ 287 0094 00000000 		.word	memp_memory_PBUF_POOL_base
+ 288 0098 E8300000 		.word	memp_tab_PBUF_POOL
+ 289              		.global	memp_pools
+ 290              		.align	2
+ 293              	memp_pools:
+ 294 009c 00000000 		.word	memp_UDP_PCB
+ 295 00a0 00000000 		.word	memp_TCP_PCB
+ 296 00a4 00000000 		.word	memp_TCP_PCB_LISTEN
+ 297 00a8 00000000 		.word	memp_TCP_SEG
+ 298 00ac 00000000 		.word	memp_REASSDATA
+ 299 00b0 00000000 		.word	memp_FRAG_PBUF
+ 300 00b4 00000000 		.word	memp_NETBUF
+ 301 00b8 00000000 		.word	memp_NETCONN
+ 302 00bc 00000000 		.word	memp_TCPIP_MSG_API
+ 303 00c0 00000000 		.word	memp_TCPIP_MSG_INPKT
+ 304 00c4 00000000 		.word	memp_SYS_TIMEOUT
+ 305 00c8 00000000 		.word	memp_PBUF
+ 306 00cc 00000000 		.word	memp_PBUF_POOL
+ 307              		.text
+ 308              		.align	1
+ 309              		.global	memp_init_pool
+ 310              		.arch armv7e-m
+ 311              		.syntax unified
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.fpu fpv5-d16
+ 316              	memp_init_pool:
+ 317              	.LFB169:
+ 318              		.file 1 "./lwip-2.1.2/src/core/memp.c"
+   1:./lwip-2.1.2/src/core/memp.c **** /**
+   2:./lwip-2.1.2/src/core/memp.c ****  * @file
+   3:./lwip-2.1.2/src/core/memp.c ****  * Dynamic pool memory manager
+   4:./lwip-2.1.2/src/core/memp.c ****  *
+   5:./lwip-2.1.2/src/core/memp.c ****  * lwIP has dedicated pools for many structures (netconn, protocol control blocks,
+   6:./lwip-2.1.2/src/core/memp.c ****  * packet buffers, ...). All these pools are managed here.
+   7:./lwip-2.1.2/src/core/memp.c ****  *
+   8:./lwip-2.1.2/src/core/memp.c ****  * @defgroup mempool Memory pools
+   9:./lwip-2.1.2/src/core/memp.c ****  * @ingroup infrastructure
+  10:./lwip-2.1.2/src/core/memp.c ****  * Custom memory pools
+  11:./lwip-2.1.2/src/core/memp.c **** 
+  12:./lwip-2.1.2/src/core/memp.c ****  */
+  13:./lwip-2.1.2/src/core/memp.c **** 
+  14:./lwip-2.1.2/src/core/memp.c **** /*
+  15:./lwip-2.1.2/src/core/memp.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+  16:./lwip-2.1.2/src/core/memp.c ****  * All rights reserved.
+  17:./lwip-2.1.2/src/core/memp.c ****  *
+  18:./lwip-2.1.2/src/core/memp.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  19:./lwip-2.1.2/src/core/memp.c ****  * are permitted provided that the following conditions are met:
+  20:./lwip-2.1.2/src/core/memp.c ****  *
+  21:./lwip-2.1.2/src/core/memp.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  22:./lwip-2.1.2/src/core/memp.c ****  *    this list of conditions and the following disclaimer.
+  23:./lwip-2.1.2/src/core/memp.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  24:./lwip-2.1.2/src/core/memp.c ****  *    this list of conditions and the following disclaimer in the documentation
+  25:./lwip-2.1.2/src/core/memp.c ****  *    and/or other materials provided with the distribution.
+  26:./lwip-2.1.2/src/core/memp.c ****  * 3. The name of the author may not be used to endorse or promote products
+  27:./lwip-2.1.2/src/core/memp.c ****  *    derived from this software without specific prior written permission.
+  28:./lwip-2.1.2/src/core/memp.c ****  *
+  29:./lwip-2.1.2/src/core/memp.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  30:./lwip-2.1.2/src/core/memp.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  31:./lwip-2.1.2/src/core/memp.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  32:./lwip-2.1.2/src/core/memp.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  33:./lwip-2.1.2/src/core/memp.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  34:./lwip-2.1.2/src/core/memp.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  35:./lwip-2.1.2/src/core/memp.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  36:./lwip-2.1.2/src/core/memp.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  37:./lwip-2.1.2/src/core/memp.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  38:./lwip-2.1.2/src/core/memp.c ****  * OF SUCH DAMAGE.
+  39:./lwip-2.1.2/src/core/memp.c ****  *
+  40:./lwip-2.1.2/src/core/memp.c ****  * This file is part of the lwIP TCP/IP stack.
+  41:./lwip-2.1.2/src/core/memp.c ****  *
+  42:./lwip-2.1.2/src/core/memp.c ****  * Author: Adam Dunkels <adam@sics.se>
+  43:./lwip-2.1.2/src/core/memp.c ****  *
+  44:./lwip-2.1.2/src/core/memp.c ****  */
+  45:./lwip-2.1.2/src/core/memp.c **** 
+  46:./lwip-2.1.2/src/core/memp.c **** #include "lwip/opt.h"
+  47:./lwip-2.1.2/src/core/memp.c **** 
+  48:./lwip-2.1.2/src/core/memp.c **** #include "lwip/memp.h"
+  49:./lwip-2.1.2/src/core/memp.c **** #include "lwip/sys.h"
+  50:./lwip-2.1.2/src/core/memp.c **** #include "lwip/stats.h"
+  51:./lwip-2.1.2/src/core/memp.c **** 
+  52:./lwip-2.1.2/src/core/memp.c **** #include <string.h>
+  53:./lwip-2.1.2/src/core/memp.c **** 
+  54:./lwip-2.1.2/src/core/memp.c **** /* Make sure we include everything we need for size calculation required by memp_std.h */
+  55:./lwip-2.1.2/src/core/memp.c **** #include "lwip/pbuf.h"
+  56:./lwip-2.1.2/src/core/memp.c **** #include "lwip/raw.h"
+  57:./lwip-2.1.2/src/core/memp.c **** #include "lwip/udp.h"
+  58:./lwip-2.1.2/src/core/memp.c **** #include "lwip/tcp.h"
+  59:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/tcp_priv.h"
+  60:./lwip-2.1.2/src/core/memp.c **** #include "lwip/altcp.h"
+  61:./lwip-2.1.2/src/core/memp.c **** #include "lwip/ip4_frag.h"
+  62:./lwip-2.1.2/src/core/memp.c **** #include "lwip/netbuf.h"
+  63:./lwip-2.1.2/src/core/memp.c **** #include "lwip/api.h"
+  64:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/tcpip_priv.h"
+  65:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/api_msg.h"
+  66:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/sockets_priv.h"
+  67:./lwip-2.1.2/src/core/memp.c **** #include "lwip/etharp.h"
+  68:./lwip-2.1.2/src/core/memp.c **** #include "lwip/igmp.h"
+  69:./lwip-2.1.2/src/core/memp.c **** #include "lwip/timeouts.h"
+  70:./lwip-2.1.2/src/core/memp.c **** /* needed by default MEMP_NUM_SYS_TIMEOUT */
+  71:./lwip-2.1.2/src/core/memp.c **** #include "netif/ppp/ppp_opts.h"
+  72:./lwip-2.1.2/src/core/memp.c **** #include "lwip/netdb.h"
+  73:./lwip-2.1.2/src/core/memp.c **** #include "lwip/dns.h"
+  74:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/nd6_priv.h"
+  75:./lwip-2.1.2/src/core/memp.c **** #include "lwip/ip6_frag.h"
+  76:./lwip-2.1.2/src/core/memp.c **** #include "lwip/mld6.h"
+  77:./lwip-2.1.2/src/core/memp.c **** 
+  78:./lwip-2.1.2/src/core/memp.c **** #define LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc)
+  79:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/memp_std.h"
+  80:./lwip-2.1.2/src/core/memp.c **** 
+  81:./lwip-2.1.2/src/core/memp.c **** const struct memp_desc *const memp_pools[MEMP_MAX] = {
+  82:./lwip-2.1.2/src/core/memp.c **** #define LWIP_MEMPOOL(name,num,size,desc) &memp_ ## name,
+  83:./lwip-2.1.2/src/core/memp.c **** #include "lwip/priv/memp_std.h"
+  84:./lwip-2.1.2/src/core/memp.c **** };
+  85:./lwip-2.1.2/src/core/memp.c **** 
+  86:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_FILENAME
+  87:./lwip-2.1.2/src/core/memp.c **** #include LWIP_HOOK_FILENAME
+  88:./lwip-2.1.2/src/core/memp.c **** #endif
+  89:./lwip-2.1.2/src/core/memp.c **** 
+  90:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC && MEMP_OVERFLOW_CHECK >= 2
+  91:./lwip-2.1.2/src/core/memp.c **** #undef MEMP_OVERFLOW_CHECK
+  92:./lwip-2.1.2/src/core/memp.c **** /* MEMP_OVERFLOW_CHECK >= 2 does not work with MEMP_MEM_MALLOC, use 1 instead */
+  93:./lwip-2.1.2/src/core/memp.c **** #define MEMP_OVERFLOW_CHECK 1
+  94:./lwip-2.1.2/src/core/memp.c **** #endif
+  95:./lwip-2.1.2/src/core/memp.c **** 
+  96:./lwip-2.1.2/src/core/memp.c **** #if MEMP_SANITY_CHECK && !MEMP_MEM_MALLOC
+  97:./lwip-2.1.2/src/core/memp.c **** /**
+  98:./lwip-2.1.2/src/core/memp.c ****  * Check that memp-lists don't form a circle, using "Floyd's cycle-finding algorithm".
+  99:./lwip-2.1.2/src/core/memp.c ****  */
+ 100:./lwip-2.1.2/src/core/memp.c **** static int
+ 101:./lwip-2.1.2/src/core/memp.c **** memp_sanity(const struct memp_desc *desc)
+ 102:./lwip-2.1.2/src/core/memp.c **** {
+ 103:./lwip-2.1.2/src/core/memp.c ****   struct memp *t, *h;
+ 104:./lwip-2.1.2/src/core/memp.c **** 
+ 105:./lwip-2.1.2/src/core/memp.c ****   t = *desc->tab;
+ 106:./lwip-2.1.2/src/core/memp.c ****   if (t != NULL) {
+ 107:./lwip-2.1.2/src/core/memp.c ****     for (h = t->next; (t != NULL) && (h != NULL); t = t->next,
+ 108:./lwip-2.1.2/src/core/memp.c ****          h = ((h->next != NULL) ? h->next->next : NULL)) {
+ 109:./lwip-2.1.2/src/core/memp.c ****       if (t == h) {
+ 110:./lwip-2.1.2/src/core/memp.c ****         return 0;
+ 111:./lwip-2.1.2/src/core/memp.c ****       }
+ 112:./lwip-2.1.2/src/core/memp.c ****     }
+ 113:./lwip-2.1.2/src/core/memp.c ****   }
+ 114:./lwip-2.1.2/src/core/memp.c **** 
+ 115:./lwip-2.1.2/src/core/memp.c ****   return 1;
+ 116:./lwip-2.1.2/src/core/memp.c **** }
+ 117:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_SANITY_CHECK && !MEMP_MEM_MALLOC */
+ 118:./lwip-2.1.2/src/core/memp.c **** 
+ 119:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 120:./lwip-2.1.2/src/core/memp.c **** /**
+ 121:./lwip-2.1.2/src/core/memp.c ****  * Check if a memp element was victim of an overflow or underflow
+ 122:./lwip-2.1.2/src/core/memp.c ****  * (e.g. the restricted area after/before it has been altered)
+ 123:./lwip-2.1.2/src/core/memp.c ****  *
+ 124:./lwip-2.1.2/src/core/memp.c ****  * @param p the memp element to check
+ 125:./lwip-2.1.2/src/core/memp.c ****  * @param desc the pool p comes from
+ 126:./lwip-2.1.2/src/core/memp.c ****  */
+ 127:./lwip-2.1.2/src/core/memp.c **** static void
+ 128:./lwip-2.1.2/src/core/memp.c **** memp_overflow_check_element(struct memp *p, const struct memp_desc *desc)
+ 129:./lwip-2.1.2/src/core/memp.c **** {
+ 130:./lwip-2.1.2/src/core/memp.c ****   mem_overflow_check_raw((u8_t *)p + MEMP_SIZE, desc->size, "pool ", desc->desc);
+ 131:./lwip-2.1.2/src/core/memp.c **** }
+ 132:./lwip-2.1.2/src/core/memp.c **** 
+ 133:./lwip-2.1.2/src/core/memp.c **** /**
+ 134:./lwip-2.1.2/src/core/memp.c ****  * Initialize the restricted area of on memp element.
+ 135:./lwip-2.1.2/src/core/memp.c ****  */
+ 136:./lwip-2.1.2/src/core/memp.c **** static void
+ 137:./lwip-2.1.2/src/core/memp.c **** memp_overflow_init_element(struct memp *p, const struct memp_desc *desc)
+ 138:./lwip-2.1.2/src/core/memp.c **** {
+ 139:./lwip-2.1.2/src/core/memp.c ****   mem_overflow_init_raw((u8_t *)p + MEMP_SIZE, desc->size);
+ 140:./lwip-2.1.2/src/core/memp.c **** }
+ 141:./lwip-2.1.2/src/core/memp.c **** 
+ 142:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK >= 2
+ 143:./lwip-2.1.2/src/core/memp.c **** /**
+ 144:./lwip-2.1.2/src/core/memp.c ****  * Do an overflow check for all elements in every pool.
+ 145:./lwip-2.1.2/src/core/memp.c ****  *
+ 146:./lwip-2.1.2/src/core/memp.c ****  * @see memp_overflow_check_element for a description of the check
+ 147:./lwip-2.1.2/src/core/memp.c ****  */
+ 148:./lwip-2.1.2/src/core/memp.c **** static void
+ 149:./lwip-2.1.2/src/core/memp.c **** memp_overflow_check_all(void)
+ 150:./lwip-2.1.2/src/core/memp.c **** {
+ 151:./lwip-2.1.2/src/core/memp.c ****   u16_t i, j;
+ 152:./lwip-2.1.2/src/core/memp.c ****   struct memp *p;
+ 153:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 154:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 155:./lwip-2.1.2/src/core/memp.c **** 
+ 156:./lwip-2.1.2/src/core/memp.c ****   for (i = 0; i < MEMP_MAX; ++i) {
+ 157:./lwip-2.1.2/src/core/memp.c ****     p = (struct memp *)LWIP_MEM_ALIGN(memp_pools[i]->base);
+ 158:./lwip-2.1.2/src/core/memp.c ****     for (j = 0; j < memp_pools[i]->num; ++j) {
+ 159:./lwip-2.1.2/src/core/memp.c ****       memp_overflow_check_element(p, memp_pools[i]);
+ 160:./lwip-2.1.2/src/core/memp.c ****       p = LWIP_ALIGNMENT_CAST(struct memp *, ((u8_t *)p + MEMP_SIZE + memp_pools[i]->size + MEM_SAN
+ 161:./lwip-2.1.2/src/core/memp.c ****     }
+ 162:./lwip-2.1.2/src/core/memp.c ****   }
+ 163:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_UNPROTECT(old_level);
+ 164:./lwip-2.1.2/src/core/memp.c **** }
+ 165:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK >= 2 */
+ 166:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 167:./lwip-2.1.2/src/core/memp.c **** 
+ 168:./lwip-2.1.2/src/core/memp.c **** /**
+ 169:./lwip-2.1.2/src/core/memp.c ****  * Initialize custom memory pool.
+ 170:./lwip-2.1.2/src/core/memp.c ****  * Related functions: memp_malloc_pool, memp_free_pool
+ 171:./lwip-2.1.2/src/core/memp.c ****  *
+ 172:./lwip-2.1.2/src/core/memp.c ****  * @param desc pool to initialize
+ 173:./lwip-2.1.2/src/core/memp.c ****  */
+ 174:./lwip-2.1.2/src/core/memp.c **** void
+ 175:./lwip-2.1.2/src/core/memp.c **** memp_init_pool(const struct memp_desc *desc)
+ 176:./lwip-2.1.2/src/core/memp.c **** {
+ 319              		.loc 1 176 1
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 16
+ 322              		@ frame_needed = 1, uses_anonymous_args = 0
+ 323              		@ link register save eliminated.
+ 324 0000 80B4     		push	{r7}
+ 325              	.LCFI0:
+ 326              		.cfi_def_cfa_offset 4
+ 327              		.cfi_offset 7, -4
+ 328 0002 85B0     		sub	sp, sp, #20
+ 329              	.LCFI1:
+ 330              		.cfi_def_cfa_offset 24
+ 331 0004 00AF     		add	r7, sp, #0
+ 332              	.LCFI2:
+ 333              		.cfi_def_cfa_register 7
+ 334 0006 7860     		str	r0, [r7, #4]
+ 177:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 178:./lwip-2.1.2/src/core/memp.c ****   LWIP_UNUSED_ARG(desc);
+ 179:./lwip-2.1.2/src/core/memp.c **** #else
+ 180:./lwip-2.1.2/src/core/memp.c ****   int i;
+ 181:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+ 182:./lwip-2.1.2/src/core/memp.c **** 
+ 183:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = NULL;
+ 335              		.loc 1 183 8
+ 336 0008 7B68     		ldr	r3, [r7, #4]
+ 337 000a 9B68     		ldr	r3, [r3, #8]
+ 338              		.loc 1 183 14
+ 339 000c 0022     		movs	r2, #0
+ 340 000e 1A60     		str	r2, [r3]
+ 184:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+ 341              		.loc 1 184 25
+ 342 0010 7B68     		ldr	r3, [r7, #4]
+ 343 0012 5B68     		ldr	r3, [r3, #4]
+ 344 0014 0333     		adds	r3, r3, #3
+ 345 0016 23F00303 		bic	r3, r3, #3
+ 346              		.loc 1 184 8
+ 347 001a BB60     		str	r3, [r7, #8]
+ 185:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
+ 186:./lwip-2.1.2/src/core/memp.c ****   /* force memset on pool memory */
+ 187:./lwip-2.1.2/src/core/memp.c ****   memset(memp, 0, (size_t)desc->num * (MEMP_SIZE + desc->size
+ 188:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 189:./lwip-2.1.2/src/core/memp.c ****                                        + MEM_SANITY_REGION_AFTER_ALIGNED
+ 190:./lwip-2.1.2/src/core/memp.c **** #endif
+ 191:./lwip-2.1.2/src/core/memp.c ****                                       ));
+ 192:./lwip-2.1.2/src/core/memp.c **** #endif
+ 193:./lwip-2.1.2/src/core/memp.c ****   /* create a linked list of memp elements */
+ 194:./lwip-2.1.2/src/core/memp.c ****   for (i = 0; i < desc->num; ++i) {
+ 348              		.loc 1 194 10
+ 349 001c 0023     		movs	r3, #0
+ 350 001e FB60     		str	r3, [r7, #12]
+ 351              		.loc 1 194 3
+ 352 0020 11E0     		b	.L2
+ 353              	.L3:
+ 195:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 354              		.loc 1 195 23 discriminator 3
+ 355 0022 7B68     		ldr	r3, [r7, #4]
+ 356 0024 9B68     		ldr	r3, [r3, #8]
+ 357              		.loc 1 195 18 discriminator 3
+ 358 0026 1A68     		ldr	r2, [r3]
+ 359              		.loc 1 195 16 discriminator 3
+ 360 0028 BB68     		ldr	r3, [r7, #8]
+ 361 002a 1A60     		str	r2, [r3]
+ 196:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp;
+ 362              		.loc 1 196 10 discriminator 3
+ 363 002c 7B68     		ldr	r3, [r7, #4]
+ 364 002e 9B68     		ldr	r3, [r3, #8]
+ 365              		.loc 1 196 16 discriminator 3
+ 366 0030 BA68     		ldr	r2, [r7, #8]
+ 367 0032 1A60     		str	r2, [r3]
+ 197:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 198:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_init_element(memp, desc);
+ 199:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 200:./lwip-2.1.2/src/core/memp.c ****     /* cast through void* to get rid of alignment warnings */
+ 201:./lwip-2.1.2/src/core/memp.c ****     memp = (struct memp *)(void *)((u8_t *)memp + MEMP_SIZE + desc->size
+ 368              		.loc 1 201 67 discriminator 3
+ 369 0034 7B68     		ldr	r3, [r7, #4]
+ 370 0036 1B88     		ldrh	r3, [r3]
+ 371 0038 1A46     		mov	r2, r3
+ 372              		.loc 1 201 10 discriminator 3
+ 373 003a BB68     		ldr	r3, [r7, #8]
+ 374 003c 1344     		add	r3, r3, r2
+ 375 003e BB60     		str	r3, [r7, #8]
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 376              		.loc 1 194 30 discriminator 3
+ 377 0040 FB68     		ldr	r3, [r7, #12]
+ 378 0042 0133     		adds	r3, r3, #1
+ 379 0044 FB60     		str	r3, [r7, #12]
+ 380              	.L2:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 381              		.loc 1 194 23 discriminator 1
+ 382 0046 7B68     		ldr	r3, [r7, #4]
+ 383 0048 5B88     		ldrh	r3, [r3, #2]
+ 384 004a 1A46     		mov	r2, r3
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 385              		.loc 1 194 3 discriminator 1
+ 386 004c FB68     		ldr	r3, [r7, #12]
+ 387 004e 9342     		cmp	r3, r2
+ 388 0050 E7DB     		blt	.L3
+ 202:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 203:./lwip-2.1.2/src/core/memp.c ****                                    + MEM_SANITY_REGION_AFTER_ALIGNED
+ 204:./lwip-2.1.2/src/core/memp.c **** #endif
+ 205:./lwip-2.1.2/src/core/memp.c ****                                   );
+ 206:./lwip-2.1.2/src/core/memp.c ****   }
+ 207:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 208:./lwip-2.1.2/src/core/memp.c ****   desc->stats->avail = desc->num;
+ 209:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_STATS */
+ 210:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 211:./lwip-2.1.2/src/core/memp.c **** 
+ 212:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS && (defined(LWIP_DEBUG) || LWIP_STATS_DISPLAY)
+ 213:./lwip-2.1.2/src/core/memp.c ****   desc->stats->name  = desc->desc;
+ 214:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_STATS && (defined(LWIP_DEBUG) || LWIP_STATS_DISPLAY) */
+ 215:./lwip-2.1.2/src/core/memp.c **** }
+ 389              		.loc 1 215 1
+ 390 0052 00BF     		nop
+ 391 0054 00BF     		nop
+ 392 0056 1437     		adds	r7, r7, #20
+ 393              	.LCFI3:
+ 394              		.cfi_def_cfa_offset 4
+ 395 0058 BD46     		mov	sp, r7
+ 396              	.LCFI4:
+ 397              		.cfi_def_cfa_register 13
+ 398              		@ sp needed
+ 399 005a 5DF8047B 		ldr	r7, [sp], #4
+ 400              	.LCFI5:
+ 401              		.cfi_restore 7
+ 402              		.cfi_def_cfa_offset 0
+ 403 005e 7047     		bx	lr
+ 404              		.cfi_endproc
+ 405              	.LFE169:
+ 407              		.align	1
+ 408              		.global	memp_init
+ 409              		.syntax unified
+ 410              		.thumb
+ 411              		.thumb_func
+ 412              		.fpu fpv5-d16
+ 414              	memp_init:
+ 415              	.LFB170:
+ 216:./lwip-2.1.2/src/core/memp.c **** 
+ 217:./lwip-2.1.2/src/core/memp.c **** /**
+ 218:./lwip-2.1.2/src/core/memp.c ****  * Initializes lwIP built-in pools.
+ 219:./lwip-2.1.2/src/core/memp.c ****  * Related functions: memp_malloc, memp_free
+ 220:./lwip-2.1.2/src/core/memp.c ****  *
+ 221:./lwip-2.1.2/src/core/memp.c ****  * Carves out memp_memory into linked lists for each pool-type.
+ 222:./lwip-2.1.2/src/core/memp.c ****  */
+ 223:./lwip-2.1.2/src/core/memp.c **** void
+ 224:./lwip-2.1.2/src/core/memp.c **** memp_init(void)
+ 225:./lwip-2.1.2/src/core/memp.c **** {
+ 416              		.loc 1 225 1
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 8
+ 419              		@ frame_needed = 1, uses_anonymous_args = 0
+ 420 0060 80B5     		push	{r7, lr}
+ 421              	.LCFI6:
+ 422              		.cfi_def_cfa_offset 8
+ 423              		.cfi_offset 7, -8
+ 424              		.cfi_offset 14, -4
+ 425 0062 82B0     		sub	sp, sp, #8
+ 426              	.LCFI7:
+ 427              		.cfi_def_cfa_offset 16
+ 428 0064 00AF     		add	r7, sp, #0
+ 429              	.LCFI8:
+ 430              		.cfi_def_cfa_register 7
+ 226:./lwip-2.1.2/src/core/memp.c ****   u16_t i;
+ 227:./lwip-2.1.2/src/core/memp.c **** 
+ 228:./lwip-2.1.2/src/core/memp.c ****   /* for every pool: */
+ 229:./lwip-2.1.2/src/core/memp.c ****   for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i++) {
+ 431              		.loc 1 229 10
+ 432 0066 0023     		movs	r3, #0
+ 433 0068 FB80     		strh	r3, [r7, #6]	@ movhi
+ 434              		.loc 1 229 3
+ 435 006a 09E0     		b	.L5
+ 436              	.L6:
+ 230:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
+ 437              		.loc 1 230 5 discriminator 3
+ 438 006c FB88     		ldrh	r3, [r7, #6]
+ 439 006e 084A     		ldr	r2, .L7
+ 440 0070 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 441 0074 1846     		mov	r0, r3
+ 442 0076 FFF7FEFF 		bl	memp_init_pool
+ 229:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
+ 443              		.loc 1 229 48 discriminator 3
+ 444 007a FB88     		ldrh	r3, [r7, #6]
+ 445 007c 0133     		adds	r3, r3, #1
+ 446 007e FB80     		strh	r3, [r7, #6]	@ movhi
+ 447              	.L5:
+ 229:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
+ 448              		.loc 1 229 3 discriminator 1
+ 449 0080 FB88     		ldrh	r3, [r7, #6]
+ 450 0082 0C2B     		cmp	r3, #12
+ 451 0084 F2D9     		bls	.L6
+ 231:./lwip-2.1.2/src/core/memp.c **** 
+ 232:./lwip-2.1.2/src/core/memp.c **** #if LWIP_STATS && MEMP_STATS
+ 233:./lwip-2.1.2/src/core/memp.c ****     lwip_stats.memp[i] = memp_pools[i]->stats;
+ 234:./lwip-2.1.2/src/core/memp.c **** #endif
+ 235:./lwip-2.1.2/src/core/memp.c ****   }
+ 236:./lwip-2.1.2/src/core/memp.c **** 
+ 237:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK >= 2
+ 238:./lwip-2.1.2/src/core/memp.c ****   /* check everything a first time to see if it worked */
+ 239:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_all();
+ 240:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK >= 2 */
+ 241:./lwip-2.1.2/src/core/memp.c **** }
+ 452              		.loc 1 241 1
+ 453 0086 00BF     		nop
+ 454 0088 00BF     		nop
+ 455 008a 0837     		adds	r7, r7, #8
+ 456              	.LCFI9:
+ 457              		.cfi_def_cfa_offset 8
+ 458 008c BD46     		mov	sp, r7
+ 459              	.LCFI10:
+ 460              		.cfi_def_cfa_register 13
+ 461              		@ sp needed
+ 462 008e 80BD     		pop	{r7, pc}
+ 463              	.L8:
+ 464              		.align	2
+ 465              	.L7:
+ 466 0090 00000000 		.word	memp_pools
+ 467              		.cfi_endproc
+ 468              	.LFE170:
+ 470              		.align	1
+ 471              		.syntax unified
+ 472              		.thumb
+ 473              		.thumb_func
+ 474              		.fpu fpv5-d16
+ 476              	do_memp_malloc_pool:
+ 477              	.LFB171:
+ 242:./lwip-2.1.2/src/core/memp.c **** 
+ 243:./lwip-2.1.2/src/core/memp.c **** static void *
+ 244:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 245:./lwip-2.1.2/src/core/memp.c **** do_memp_malloc_pool(const struct memp_desc *desc)
+ 246:./lwip-2.1.2/src/core/memp.c **** #else
+ 247:./lwip-2.1.2/src/core/memp.c **** do_memp_malloc_pool_fn(const struct memp_desc *desc, const char *file, const int line)
+ 248:./lwip-2.1.2/src/core/memp.c **** #endif
+ 249:./lwip-2.1.2/src/core/memp.c **** {
+ 478              		.loc 1 249 1
+ 479              		.cfi_startproc
+ 480              		@ args = 0, pretend = 0, frame = 24
+ 481              		@ frame_needed = 1, uses_anonymous_args = 0
+ 482              		@ link register save eliminated.
+ 483 0094 80B4     		push	{r7}
+ 484              	.LCFI11:
+ 485              		.cfi_def_cfa_offset 4
+ 486              		.cfi_offset 7, -4
+ 487 0096 87B0     		sub	sp, sp, #28
+ 488              	.LCFI12:
+ 489              		.cfi_def_cfa_offset 32
+ 490 0098 00AF     		add	r7, sp, #0
+ 491              	.LCFI13:
+ 492              		.cfi_def_cfa_register 7
+ 493 009a 7860     		str	r0, [r7, #4]
+ 494              	.LBB24:
+ 495              	.LBB25:
+ 496              		.file 2 "./inc/cmsis_gcc.h"
+   1:./inc/cmsis_gcc.h **** /**************************************************************************//**
+   2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:./inc/cmsis_gcc.h ****  * @version  V5.2.0
+   5:./inc/cmsis_gcc.h ****  * @date     08. May 2019
+   6:./inc/cmsis_gcc.h ****  ******************************************************************************/
+   7:./inc/cmsis_gcc.h **** /*
+   8:./inc/cmsis_gcc.h ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+   9:./inc/cmsis_gcc.h ****  *
+  10:./inc/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:./inc/cmsis_gcc.h ****  *
+  12:./inc/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:./inc/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:./inc/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:./inc/cmsis_gcc.h ****  *
+  16:./inc/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:./inc/cmsis_gcc.h ****  *
+  18:./inc/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:./inc/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:./inc/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:./inc/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:./inc/cmsis_gcc.h ****  * limitations under the License.
+  23:./inc/cmsis_gcc.h ****  */
+  24:./inc/cmsis_gcc.h **** 
+  25:./inc/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:./inc/cmsis_gcc.h **** 
+  28:./inc/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:./inc/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:./inc/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:./inc/cmsis_gcc.h **** 
+  34:./inc/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:./inc/cmsis_gcc.h **** #ifndef __has_builtin
+  36:./inc/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:./inc/cmsis_gcc.h **** #endif
+  38:./inc/cmsis_gcc.h **** 
+  39:./inc/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:./inc/cmsis_gcc.h **** #ifndef   __ASM
+  41:./inc/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:./inc/cmsis_gcc.h **** #endif
+  43:./inc/cmsis_gcc.h **** #ifndef   __INLINE
+  44:./inc/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:./inc/cmsis_gcc.h **** #endif
+  46:./inc/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:./inc/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:./inc/cmsis_gcc.h **** #endif
+  49:./inc/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:./inc/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:./inc/cmsis_gcc.h **** #endif                                           
+  52:./inc/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:./inc/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:./inc/cmsis_gcc.h **** #endif
+  55:./inc/cmsis_gcc.h **** #ifndef   __USED
+  56:./inc/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:./inc/cmsis_gcc.h **** #endif
+  58:./inc/cmsis_gcc.h **** #ifndef   __WEAK
+  59:./inc/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:./inc/cmsis_gcc.h **** #endif
+  61:./inc/cmsis_gcc.h **** #ifndef   __PACKED
+  62:./inc/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:./inc/cmsis_gcc.h **** #endif
+  64:./inc/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:./inc/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:./inc/cmsis_gcc.h **** #endif
+  67:./inc/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:./inc/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:./inc/cmsis_gcc.h **** #endif
+  70:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:./inc/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:./inc/cmsis_gcc.h **** #endif
+  78:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:./inc/cmsis_gcc.h **** #endif
+  86:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:./inc/cmsis_gcc.h **** #endif
+  94:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:./inc/cmsis_gcc.h **** #endif
+ 102:./inc/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:./inc/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:./inc/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:./inc/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:./inc/cmsis_gcc.h **** #endif
+ 110:./inc/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:./inc/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:./inc/cmsis_gcc.h **** #endif
+ 113:./inc/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:./inc/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:./inc/cmsis_gcc.h **** #endif
+ 116:./inc/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:./inc/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:./inc/cmsis_gcc.h **** #endif
+ 119:./inc/cmsis_gcc.h **** 
+ 120:./inc/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:./inc/cmsis_gcc.h **** 
+ 122:./inc/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ 123:./inc/cmsis_gcc.h **** 
+ 124:./inc/cmsis_gcc.h **** /**
+ 125:./inc/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:./inc/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:./inc/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:./inc/cmsis_gcc.h ****            in the used linker script.
+ 129:./inc/cmsis_gcc.h ****   
+ 130:./inc/cmsis_gcc.h ****  */
+ 131:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:./inc/cmsis_gcc.h **** {
+ 133:./inc/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:./inc/cmsis_gcc.h ****   
+ 135:./inc/cmsis_gcc.h ****   typedef struct {
+ 136:./inc/cmsis_gcc.h ****     uint32_t const* src;
+ 137:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 138:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:./inc/cmsis_gcc.h ****   } __copy_table_t;
+ 140:./inc/cmsis_gcc.h ****   
+ 141:./inc/cmsis_gcc.h ****   typedef struct {
+ 142:./inc/cmsis_gcc.h ****     uint32_t* dest;
+ 143:./inc/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:./inc/cmsis_gcc.h ****   } __zero_table_t;
+ 145:./inc/cmsis_gcc.h ****   
+ 146:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:./inc/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:./inc/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:./inc/cmsis_gcc.h **** 
+ 151:./inc/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:./inc/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:./inc/cmsis_gcc.h ****     }
+ 155:./inc/cmsis_gcc.h ****   }
+ 156:./inc/cmsis_gcc.h ****  
+ 157:./inc/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:./inc/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:./inc/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:./inc/cmsis_gcc.h ****     }
+ 161:./inc/cmsis_gcc.h ****   }
+ 162:./inc/cmsis_gcc.h ****  
+ 163:./inc/cmsis_gcc.h ****   _start();
+ 164:./inc/cmsis_gcc.h **** }
+ 165:./inc/cmsis_gcc.h ****   
+ 166:./inc/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:./inc/cmsis_gcc.h **** #endif
+ 168:./inc/cmsis_gcc.h **** 
+ 169:./inc/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:./inc/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:./inc/cmsis_gcc.h **** #endif
+ 172:./inc/cmsis_gcc.h **** 
+ 173:./inc/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:./inc/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:./inc/cmsis_gcc.h **** #endif
+ 176:./inc/cmsis_gcc.h **** 
+ 177:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:./inc/cmsis_gcc.h **** #endif
+ 180:./inc/cmsis_gcc.h **** 
+ 181:./inc/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:./inc/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute((used, section(".vectors")))
+ 183:./inc/cmsis_gcc.h **** #endif
+ 184:./inc/cmsis_gcc.h **** 
+ 185:./inc/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 186:./inc/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 187:./inc/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 188:./inc/cmsis_gcc.h ****   @{
+ 189:./inc/cmsis_gcc.h ****  */
+ 190:./inc/cmsis_gcc.h **** 
+ 191:./inc/cmsis_gcc.h **** /**
+ 192:./inc/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 193:./inc/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 194:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 195:./inc/cmsis_gcc.h ****  */
+ 196:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 197:./inc/cmsis_gcc.h **** {
+ 198:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 199:./inc/cmsis_gcc.h **** }
+ 200:./inc/cmsis_gcc.h **** 
+ 201:./inc/cmsis_gcc.h **** 
+ 202:./inc/cmsis_gcc.h **** /**
+ 203:./inc/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 204:./inc/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 205:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 206:./inc/cmsis_gcc.h ****  */
+ 207:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 208:./inc/cmsis_gcc.h **** {
+ 209:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 210:./inc/cmsis_gcc.h **** }
+ 211:./inc/cmsis_gcc.h **** 
+ 212:./inc/cmsis_gcc.h **** 
+ 213:./inc/cmsis_gcc.h **** /**
+ 214:./inc/cmsis_gcc.h ****   \brief   Get Control Register
+ 215:./inc/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 216:./inc/cmsis_gcc.h ****   \return               Control Register value
+ 217:./inc/cmsis_gcc.h ****  */
+ 218:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 219:./inc/cmsis_gcc.h **** {
+ 220:./inc/cmsis_gcc.h ****   uint32_t result;
+ 221:./inc/cmsis_gcc.h **** 
+ 222:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 223:./inc/cmsis_gcc.h ****   return(result);
+ 224:./inc/cmsis_gcc.h **** }
+ 225:./inc/cmsis_gcc.h **** 
+ 226:./inc/cmsis_gcc.h **** 
+ 227:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 228:./inc/cmsis_gcc.h **** /**
+ 229:./inc/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 230:./inc/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 231:./inc/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 232:./inc/cmsis_gcc.h ****  */
+ 233:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 234:./inc/cmsis_gcc.h **** {
+ 235:./inc/cmsis_gcc.h ****   uint32_t result;
+ 236:./inc/cmsis_gcc.h **** 
+ 237:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 238:./inc/cmsis_gcc.h ****   return(result);
+ 239:./inc/cmsis_gcc.h **** }
+ 240:./inc/cmsis_gcc.h **** #endif
+ 241:./inc/cmsis_gcc.h **** 
+ 242:./inc/cmsis_gcc.h **** 
+ 243:./inc/cmsis_gcc.h **** /**
+ 244:./inc/cmsis_gcc.h ****   \brief   Set Control Register
+ 245:./inc/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 246:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 247:./inc/cmsis_gcc.h ****  */
+ 248:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 249:./inc/cmsis_gcc.h **** {
+ 250:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 251:./inc/cmsis_gcc.h **** }
+ 252:./inc/cmsis_gcc.h **** 
+ 253:./inc/cmsis_gcc.h **** 
+ 254:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 255:./inc/cmsis_gcc.h **** /**
+ 256:./inc/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 257:./inc/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 258:./inc/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 259:./inc/cmsis_gcc.h ****  */
+ 260:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 261:./inc/cmsis_gcc.h **** {
+ 262:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 263:./inc/cmsis_gcc.h **** }
+ 264:./inc/cmsis_gcc.h **** #endif
+ 265:./inc/cmsis_gcc.h **** 
+ 266:./inc/cmsis_gcc.h **** 
+ 267:./inc/cmsis_gcc.h **** /**
+ 268:./inc/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 269:./inc/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 270:./inc/cmsis_gcc.h ****   \return               IPSR Register value
+ 271:./inc/cmsis_gcc.h ****  */
+ 272:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 273:./inc/cmsis_gcc.h **** {
+ 274:./inc/cmsis_gcc.h ****   uint32_t result;
+ 275:./inc/cmsis_gcc.h **** 
+ 276:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 277:./inc/cmsis_gcc.h ****   return(result);
+ 278:./inc/cmsis_gcc.h **** }
+ 279:./inc/cmsis_gcc.h **** 
+ 280:./inc/cmsis_gcc.h **** 
+ 281:./inc/cmsis_gcc.h **** /**
+ 282:./inc/cmsis_gcc.h ****   \brief   Get APSR Register
+ 283:./inc/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 284:./inc/cmsis_gcc.h ****   \return               APSR Register value
+ 285:./inc/cmsis_gcc.h ****  */
+ 286:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 287:./inc/cmsis_gcc.h **** {
+ 288:./inc/cmsis_gcc.h ****   uint32_t result;
+ 289:./inc/cmsis_gcc.h **** 
+ 290:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 291:./inc/cmsis_gcc.h ****   return(result);
+ 292:./inc/cmsis_gcc.h **** }
+ 293:./inc/cmsis_gcc.h **** 
+ 294:./inc/cmsis_gcc.h **** 
+ 295:./inc/cmsis_gcc.h **** /**
+ 296:./inc/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 297:./inc/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 298:./inc/cmsis_gcc.h ****   \return               xPSR Register value
+ 299:./inc/cmsis_gcc.h ****  */
+ 300:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 301:./inc/cmsis_gcc.h **** {
+ 302:./inc/cmsis_gcc.h ****   uint32_t result;
+ 303:./inc/cmsis_gcc.h **** 
+ 304:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 305:./inc/cmsis_gcc.h ****   return(result);
+ 306:./inc/cmsis_gcc.h **** }
+ 307:./inc/cmsis_gcc.h **** 
+ 308:./inc/cmsis_gcc.h **** 
+ 309:./inc/cmsis_gcc.h **** /**
+ 310:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 311:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 312:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 313:./inc/cmsis_gcc.h ****  */
+ 314:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 315:./inc/cmsis_gcc.h **** {
+ 316:./inc/cmsis_gcc.h ****   uint32_t result;
+ 317:./inc/cmsis_gcc.h **** 
+ 318:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 319:./inc/cmsis_gcc.h ****   return(result);
+ 320:./inc/cmsis_gcc.h **** }
+ 321:./inc/cmsis_gcc.h **** 
+ 322:./inc/cmsis_gcc.h **** 
+ 323:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 324:./inc/cmsis_gcc.h **** /**
+ 325:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 326:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 327:./inc/cmsis_gcc.h ****   \return               PSP Register value
+ 328:./inc/cmsis_gcc.h ****  */
+ 329:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 330:./inc/cmsis_gcc.h **** {
+ 331:./inc/cmsis_gcc.h ****   uint32_t result;
+ 332:./inc/cmsis_gcc.h **** 
+ 333:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 334:./inc/cmsis_gcc.h ****   return(result);
+ 335:./inc/cmsis_gcc.h **** }
+ 336:./inc/cmsis_gcc.h **** #endif
+ 337:./inc/cmsis_gcc.h **** 
+ 338:./inc/cmsis_gcc.h **** 
+ 339:./inc/cmsis_gcc.h **** /**
+ 340:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 341:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 342:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 343:./inc/cmsis_gcc.h ****  */
+ 344:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 345:./inc/cmsis_gcc.h **** {
+ 346:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 347:./inc/cmsis_gcc.h **** }
+ 348:./inc/cmsis_gcc.h **** 
+ 349:./inc/cmsis_gcc.h **** 
+ 350:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:./inc/cmsis_gcc.h **** /**
+ 352:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 353:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 354:./inc/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 355:./inc/cmsis_gcc.h ****  */
+ 356:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 357:./inc/cmsis_gcc.h **** {
+ 358:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 359:./inc/cmsis_gcc.h **** }
+ 360:./inc/cmsis_gcc.h **** #endif
+ 361:./inc/cmsis_gcc.h **** 
+ 362:./inc/cmsis_gcc.h **** 
+ 363:./inc/cmsis_gcc.h **** /**
+ 364:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 365:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 366:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 367:./inc/cmsis_gcc.h ****  */
+ 368:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 369:./inc/cmsis_gcc.h **** {
+ 370:./inc/cmsis_gcc.h ****   uint32_t result;
+ 371:./inc/cmsis_gcc.h **** 
+ 372:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 373:./inc/cmsis_gcc.h ****   return(result);
+ 374:./inc/cmsis_gcc.h **** }
+ 375:./inc/cmsis_gcc.h **** 
+ 376:./inc/cmsis_gcc.h **** 
+ 377:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 378:./inc/cmsis_gcc.h **** /**
+ 379:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 380:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 381:./inc/cmsis_gcc.h ****   \return               MSP Register value
+ 382:./inc/cmsis_gcc.h ****  */
+ 383:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 384:./inc/cmsis_gcc.h **** {
+ 385:./inc/cmsis_gcc.h ****   uint32_t result;
+ 386:./inc/cmsis_gcc.h **** 
+ 387:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 388:./inc/cmsis_gcc.h ****   return(result);
+ 389:./inc/cmsis_gcc.h **** }
+ 390:./inc/cmsis_gcc.h **** #endif
+ 391:./inc/cmsis_gcc.h **** 
+ 392:./inc/cmsis_gcc.h **** 
+ 393:./inc/cmsis_gcc.h **** /**
+ 394:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 395:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 396:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 397:./inc/cmsis_gcc.h ****  */
+ 398:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 399:./inc/cmsis_gcc.h **** {
+ 400:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 401:./inc/cmsis_gcc.h **** }
+ 402:./inc/cmsis_gcc.h **** 
+ 403:./inc/cmsis_gcc.h **** 
+ 404:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 405:./inc/cmsis_gcc.h **** /**
+ 406:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 407:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 408:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 409:./inc/cmsis_gcc.h ****  */
+ 410:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 411:./inc/cmsis_gcc.h **** {
+ 412:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 413:./inc/cmsis_gcc.h **** }
+ 414:./inc/cmsis_gcc.h **** #endif
+ 415:./inc/cmsis_gcc.h **** 
+ 416:./inc/cmsis_gcc.h **** 
+ 417:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 418:./inc/cmsis_gcc.h **** /**
+ 419:./inc/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 420:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 421:./inc/cmsis_gcc.h ****   \return               SP Register value
+ 422:./inc/cmsis_gcc.h ****  */
+ 423:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 424:./inc/cmsis_gcc.h **** {
+ 425:./inc/cmsis_gcc.h ****   uint32_t result;
+ 426:./inc/cmsis_gcc.h **** 
+ 427:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 428:./inc/cmsis_gcc.h ****   return(result);
+ 429:./inc/cmsis_gcc.h **** }
+ 430:./inc/cmsis_gcc.h **** 
+ 431:./inc/cmsis_gcc.h **** 
+ 432:./inc/cmsis_gcc.h **** /**
+ 433:./inc/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 434:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 435:./inc/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 436:./inc/cmsis_gcc.h ****  */
+ 437:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 438:./inc/cmsis_gcc.h **** {
+ 439:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 440:./inc/cmsis_gcc.h **** }
+ 441:./inc/cmsis_gcc.h **** #endif
+ 442:./inc/cmsis_gcc.h **** 
+ 443:./inc/cmsis_gcc.h **** 
+ 444:./inc/cmsis_gcc.h **** /**
+ 445:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 446:./inc/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 447:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 448:./inc/cmsis_gcc.h ****  */
+ 449:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 450:./inc/cmsis_gcc.h **** {
+ 451:./inc/cmsis_gcc.h ****   uint32_t result;
+ 452:./inc/cmsis_gcc.h **** 
+ 453:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 497              		.loc 2 453 3
+ 498              		.syntax unified
+ 499              	@ 453 "./inc/cmsis_gcc.h" 1
+ 500 009c EFF31083 		MRS r3, primask
+ 501              	@ 0 "" 2
+ 502              		.thumb
+ 503              		.syntax unified
+ 504 00a0 FB60     		str	r3, [r7, #12]
+ 454:./inc/cmsis_gcc.h ****   return(result);
+ 505              		.loc 2 454 9
+ 506 00a2 FB68     		ldr	r3, [r7, #12]
+ 507              	.LBE25:
+ 508              	.LBE24:
+ 250:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+ 251:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 252:./lwip-2.1.2/src/core/memp.c **** 
+ 253:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 254:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc->size));
+ 255:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 256:./lwip-2.1.2/src/core/memp.c **** #else /* MEMP_MEM_MALLOC */
+ 257:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 509              		.loc 1 257 3
+ 510 00a4 7B61     		str	r3, [r7, #20]
+ 511              	.LBB26:
+ 512              	.LBB27:
+ 209:./inc/cmsis_gcc.h **** }
+ 513              		.loc 2 209 3
+ 514              		.syntax unified
+ 515              	@ 209 "./inc/cmsis_gcc.h" 1
+ 516 00a6 72B6     		cpsid i
+ 517              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 518              		.loc 2 210 1
+ 519              		.thumb
+ 520              		.syntax unified
+ 521 00a8 00BF     		nop
+ 522              	.LBE27:
+ 523              	.LBE26:
+ 524              	.LBB28:
+ 525              	.LBB29:
+ 455:./inc/cmsis_gcc.h **** }
+ 456:./inc/cmsis_gcc.h **** 
+ 457:./inc/cmsis_gcc.h **** 
+ 458:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 459:./inc/cmsis_gcc.h **** /**
+ 460:./inc/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 461:./inc/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 462:./inc/cmsis_gcc.h ****   \return               Priority Mask value
+ 463:./inc/cmsis_gcc.h ****  */
+ 464:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 465:./inc/cmsis_gcc.h **** {
+ 466:./inc/cmsis_gcc.h ****   uint32_t result;
+ 467:./inc/cmsis_gcc.h **** 
+ 468:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 469:./inc/cmsis_gcc.h ****   return(result);
+ 470:./inc/cmsis_gcc.h **** }
+ 471:./inc/cmsis_gcc.h **** #endif
+ 472:./inc/cmsis_gcc.h **** 
+ 473:./inc/cmsis_gcc.h **** 
+ 474:./inc/cmsis_gcc.h **** /**
+ 475:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 476:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 477:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 478:./inc/cmsis_gcc.h ****  */
+ 479:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 480:./inc/cmsis_gcc.h **** {
+ 481:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 482:./inc/cmsis_gcc.h **** }
+ 483:./inc/cmsis_gcc.h **** 
+ 484:./inc/cmsis_gcc.h **** 
+ 485:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 486:./inc/cmsis_gcc.h **** /**
+ 487:./inc/cmsis_gcc.h ****   \brief   Set Priority Mask (non-secure)
+ 488:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Priority Mask Register when in secure state.
+ 489:./inc/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 490:./inc/cmsis_gcc.h ****  */
+ 491:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
+ 492:./inc/cmsis_gcc.h **** {
+ 493:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR primask_ns, %0" : : "r" (priMask) : "memory");
+ 494:./inc/cmsis_gcc.h **** }
+ 495:./inc/cmsis_gcc.h **** #endif
+ 496:./inc/cmsis_gcc.h **** 
+ 497:./inc/cmsis_gcc.h **** 
+ 498:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 499:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 500:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
+ 501:./inc/cmsis_gcc.h **** /**
+ 502:./inc/cmsis_gcc.h ****   \brief   Enable FIQ
+ 503:./inc/cmsis_gcc.h ****   \details Enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 504:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 505:./inc/cmsis_gcc.h ****  */
+ 506:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_fault_irq(void)
+ 507:./inc/cmsis_gcc.h **** {
+ 508:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsie f" : : : "memory");
+ 509:./inc/cmsis_gcc.h **** }
+ 510:./inc/cmsis_gcc.h **** 
+ 511:./inc/cmsis_gcc.h **** 
+ 512:./inc/cmsis_gcc.h **** /**
+ 513:./inc/cmsis_gcc.h ****   \brief   Disable FIQ
+ 514:./inc/cmsis_gcc.h ****   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
+ 515:./inc/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 516:./inc/cmsis_gcc.h ****  */
+ 517:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_fault_irq(void)
+ 518:./inc/cmsis_gcc.h **** {
+ 519:./inc/cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
+ 520:./inc/cmsis_gcc.h **** }
+ 521:./inc/cmsis_gcc.h **** 
+ 522:./inc/cmsis_gcc.h **** 
+ 523:./inc/cmsis_gcc.h **** /**
+ 524:./inc/cmsis_gcc.h ****   \brief   Get Base Priority
+ 525:./inc/cmsis_gcc.h ****   \details Returns the current value of the Base Priority register.
+ 526:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 527:./inc/cmsis_gcc.h ****  */
+ 528:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
+ 529:./inc/cmsis_gcc.h **** {
+ 530:./inc/cmsis_gcc.h ****   uint32_t result;
+ 531:./inc/cmsis_gcc.h **** 
+ 532:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri" : "=r" (result) );
+ 533:./inc/cmsis_gcc.h ****   return(result);
+ 534:./inc/cmsis_gcc.h **** }
+ 535:./inc/cmsis_gcc.h **** 
+ 536:./inc/cmsis_gcc.h **** 
+ 537:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 538:./inc/cmsis_gcc.h **** /**
+ 539:./inc/cmsis_gcc.h ****   \brief   Get Base Priority (non-secure)
+ 540:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Base Priority register when in secure state.
+ 541:./inc/cmsis_gcc.h ****   \return               Base Priority register value
+ 542:./inc/cmsis_gcc.h ****  */
+ 543:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
+ 544:./inc/cmsis_gcc.h **** {
+ 545:./inc/cmsis_gcc.h ****   uint32_t result;
+ 546:./inc/cmsis_gcc.h **** 
+ 547:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, basepri_ns" : "=r" (result) );
+ 548:./inc/cmsis_gcc.h ****   return(result);
+ 549:./inc/cmsis_gcc.h **** }
+ 550:./inc/cmsis_gcc.h **** #endif
+ 551:./inc/cmsis_gcc.h **** 
+ 552:./inc/cmsis_gcc.h **** 
+ 553:./inc/cmsis_gcc.h **** /**
+ 554:./inc/cmsis_gcc.h ****   \brief   Set Base Priority
+ 555:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register.
+ 556:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 557:./inc/cmsis_gcc.h ****  */
+ 558:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
+ 559:./inc/cmsis_gcc.h **** {
+ 560:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri, %0" : : "r" (basePri) : "memory");
+ 561:./inc/cmsis_gcc.h **** }
+ 562:./inc/cmsis_gcc.h **** 
+ 563:./inc/cmsis_gcc.h **** 
+ 564:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 565:./inc/cmsis_gcc.h **** /**
+ 566:./inc/cmsis_gcc.h ****   \brief   Set Base Priority (non-secure)
+ 567:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Base Priority register when in secure state.
+ 568:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 569:./inc/cmsis_gcc.h ****  */
+ 570:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
+ 571:./inc/cmsis_gcc.h **** {
+ 572:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_ns, %0" : : "r" (basePri) : "memory");
+ 573:./inc/cmsis_gcc.h **** }
+ 574:./inc/cmsis_gcc.h **** #endif
+ 575:./inc/cmsis_gcc.h **** 
+ 576:./inc/cmsis_gcc.h **** 
+ 577:./inc/cmsis_gcc.h **** /**
+ 578:./inc/cmsis_gcc.h ****   \brief   Set Base Priority with condition
+ 579:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Base Priority register only if BASEPRI masking is disable
+ 580:./inc/cmsis_gcc.h ****            or the new value increases the BASEPRI priority level.
+ 581:./inc/cmsis_gcc.h ****   \param [in]    basePri  Base Priority value to set
+ 582:./inc/cmsis_gcc.h ****  */
+ 583:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
+ 584:./inc/cmsis_gcc.h **** {
+ 585:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR basepri_max, %0" : : "r" (basePri) : "memory");
+ 586:./inc/cmsis_gcc.h **** }
+ 587:./inc/cmsis_gcc.h **** 
+ 588:./inc/cmsis_gcc.h **** 
+ 589:./inc/cmsis_gcc.h **** /**
+ 590:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask
+ 591:./inc/cmsis_gcc.h ****   \details Returns the current value of the Fault Mask register.
+ 592:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 593:./inc/cmsis_gcc.h ****  */
+ 594:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
+ 595:./inc/cmsis_gcc.h **** {
+ 596:./inc/cmsis_gcc.h ****   uint32_t result;
+ 597:./inc/cmsis_gcc.h **** 
+ 598:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
+ 599:./inc/cmsis_gcc.h ****   return(result);
+ 600:./inc/cmsis_gcc.h **** }
+ 601:./inc/cmsis_gcc.h **** 
+ 602:./inc/cmsis_gcc.h **** 
+ 603:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 604:./inc/cmsis_gcc.h **** /**
+ 605:./inc/cmsis_gcc.h ****   \brief   Get Fault Mask (non-secure)
+ 606:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Fault Mask register when in secure state.
+ 607:./inc/cmsis_gcc.h ****   \return               Fault Mask register value
+ 608:./inc/cmsis_gcc.h ****  */
+ 609:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
+ 610:./inc/cmsis_gcc.h **** {
+ 611:./inc/cmsis_gcc.h ****   uint32_t result;
+ 612:./inc/cmsis_gcc.h **** 
+ 613:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask_ns" : "=r" (result) );
+ 614:./inc/cmsis_gcc.h ****   return(result);
+ 615:./inc/cmsis_gcc.h **** }
+ 616:./inc/cmsis_gcc.h **** #endif
+ 617:./inc/cmsis_gcc.h **** 
+ 618:./inc/cmsis_gcc.h **** 
+ 619:./inc/cmsis_gcc.h **** /**
+ 620:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask
+ 621:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Fault Mask register.
+ 622:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 623:./inc/cmsis_gcc.h ****  */
+ 624:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
+ 625:./inc/cmsis_gcc.h **** {
+ 626:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) : "memory");
+ 627:./inc/cmsis_gcc.h **** }
+ 628:./inc/cmsis_gcc.h **** 
+ 629:./inc/cmsis_gcc.h **** 
+ 630:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 631:./inc/cmsis_gcc.h **** /**
+ 632:./inc/cmsis_gcc.h ****   \brief   Set Fault Mask (non-secure)
+ 633:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Fault Mask register when in secure state.
+ 634:./inc/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
+ 635:./inc/cmsis_gcc.h ****  */
+ 636:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
+ 637:./inc/cmsis_gcc.h **** {
+ 638:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR faultmask_ns, %0" : : "r" (faultMask) : "memory");
+ 639:./inc/cmsis_gcc.h **** }
+ 640:./inc/cmsis_gcc.h **** #endif
+ 641:./inc/cmsis_gcc.h **** 
+ 642:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 643:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 644:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
+ 645:./inc/cmsis_gcc.h **** 
+ 646:./inc/cmsis_gcc.h **** 
+ 647:./inc/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 648:./inc/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
+ 649:./inc/cmsis_gcc.h **** 
+ 650:./inc/cmsis_gcc.h **** /**
+ 651:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit
+ 652:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 653:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 654:./inc/cmsis_gcc.h ****   mode.
+ 655:./inc/cmsis_gcc.h ****   
+ 656:./inc/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer Limit (PSPLIM).
+ 657:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 658:./inc/cmsis_gcc.h ****  */
+ 659:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSPLIM(void)
+ 660:./inc/cmsis_gcc.h **** {
+ 661:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 662:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 663:./inc/cmsis_gcc.h ****     // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 664:./inc/cmsis_gcc.h ****   return 0U;
+ 665:./inc/cmsis_gcc.h **** #else
+ 666:./inc/cmsis_gcc.h ****   uint32_t result;
+ 667:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim"  : "=r" (result) );
+ 668:./inc/cmsis_gcc.h ****   return result;
+ 669:./inc/cmsis_gcc.h **** #endif
+ 670:./inc/cmsis_gcc.h **** }
+ 671:./inc/cmsis_gcc.h **** 
+ 672:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3))
+ 673:./inc/cmsis_gcc.h **** /**
+ 674:./inc/cmsis_gcc.h ****   \brief   Get Process Stack Pointer Limit (non-secure)
+ 675:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 676:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 677:./inc/cmsis_gcc.h **** 
+ 678:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer Limit (PSPLIM) when in
+ 679:./inc/cmsis_gcc.h ****   \return               PSPLIM Register value
+ 680:./inc/cmsis_gcc.h ****  */
+ 681:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
+ 682:./inc/cmsis_gcc.h **** {
+ 683:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 684:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 685:./inc/cmsis_gcc.h ****   return 0U;
+ 686:./inc/cmsis_gcc.h **** #else
+ 687:./inc/cmsis_gcc.h ****   uint32_t result;
+ 688:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
+ 689:./inc/cmsis_gcc.h ****   return result;
+ 690:./inc/cmsis_gcc.h **** #endif
+ 691:./inc/cmsis_gcc.h **** }
+ 692:./inc/cmsis_gcc.h **** #endif
+ 693:./inc/cmsis_gcc.h **** 
+ 694:./inc/cmsis_gcc.h **** 
+ 695:./inc/cmsis_gcc.h **** /**
+ 696:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer Limit
+ 697:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 698:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 699:./inc/cmsis_gcc.h ****   mode.
+ 700:./inc/cmsis_gcc.h ****   
+ 701:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer Limit (PSPLIM).
+ 702:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 703:./inc/cmsis_gcc.h ****  */
+ 704:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
+ 705:./inc/cmsis_gcc.h **** {
+ 706:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 707:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 708:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 709:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 710:./inc/cmsis_gcc.h **** #else
+ 711:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim, %0" : : "r" (ProcStackPtrLimit));
+ 712:./inc/cmsis_gcc.h **** #endif
+ 713:./inc/cmsis_gcc.h **** }
+ 714:./inc/cmsis_gcc.h **** 
+ 715:./inc/cmsis_gcc.h **** 
+ 716:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 717:./inc/cmsis_gcc.h **** /**
+ 718:./inc/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 719:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 720:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 721:./inc/cmsis_gcc.h **** 
+ 722:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer Limit (PSPLIM) when in s
+ 723:./inc/cmsis_gcc.h ****   \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+ 724:./inc/cmsis_gcc.h ****  */
+ 725:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
+ 726:./inc/cmsis_gcc.h **** {
+ 727:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 728:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure PSPLIM is RAZ/WI
+ 729:./inc/cmsis_gcc.h ****   (void)ProcStackPtrLimit;
+ 730:./inc/cmsis_gcc.h **** #else
+ 731:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR psplim_ns, %0\n" : : "r" (ProcStackPtrLimit));
+ 732:./inc/cmsis_gcc.h **** #endif
+ 733:./inc/cmsis_gcc.h **** }
+ 734:./inc/cmsis_gcc.h **** #endif
+ 735:./inc/cmsis_gcc.h **** 
+ 736:./inc/cmsis_gcc.h **** 
+ 737:./inc/cmsis_gcc.h **** /**
+ 738:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit
+ 739:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 740:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always in non-secure
+ 741:./inc/cmsis_gcc.h ****   mode.
+ 742:./inc/cmsis_gcc.h **** 
+ 743:./inc/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer Limit (MSPLIM).
+ 744:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 745:./inc/cmsis_gcc.h ****  */
+ 746:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
+ 747:./inc/cmsis_gcc.h **** {
+ 748:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 749:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 750:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 751:./inc/cmsis_gcc.h ****   return 0U;
+ 752:./inc/cmsis_gcc.h **** #else
+ 753:./inc/cmsis_gcc.h ****   uint32_t result;
+ 754:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim" : "=r" (result) );
+ 755:./inc/cmsis_gcc.h ****   return result;
+ 756:./inc/cmsis_gcc.h **** #endif
+ 757:./inc/cmsis_gcc.h **** }
+ 758:./inc/cmsis_gcc.h **** 
+ 759:./inc/cmsis_gcc.h **** 
+ 760:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 761:./inc/cmsis_gcc.h **** /**
+ 762:./inc/cmsis_gcc.h ****   \brief   Get Main Stack Pointer Limit (non-secure)
+ 763:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 764:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence zero is returned always.
+ 765:./inc/cmsis_gcc.h **** 
+ 766:./inc/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer Limit(MSPLIM) when in sec
+ 767:./inc/cmsis_gcc.h ****   \return               MSPLIM Register value
+ 768:./inc/cmsis_gcc.h ****  */
+ 769:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
+ 770:./inc/cmsis_gcc.h **** {
+ 771:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 772:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 773:./inc/cmsis_gcc.h ****   return 0U;
+ 774:./inc/cmsis_gcc.h **** #else
+ 775:./inc/cmsis_gcc.h ****   uint32_t result;
+ 776:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msplim_ns" : "=r" (result) );
+ 777:./inc/cmsis_gcc.h ****   return result;
+ 778:./inc/cmsis_gcc.h **** #endif
+ 779:./inc/cmsis_gcc.h **** }
+ 780:./inc/cmsis_gcc.h **** #endif
+ 781:./inc/cmsis_gcc.h **** 
+ 782:./inc/cmsis_gcc.h **** 
+ 783:./inc/cmsis_gcc.h **** /**
+ 784:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit
+ 785:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 786:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored in non-secure
+ 787:./inc/cmsis_gcc.h ****   mode.
+ 788:./inc/cmsis_gcc.h **** 
+ 789:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer Limit (MSPLIM).
+ 790:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer Limit value to set
+ 791:./inc/cmsis_gcc.h ****  */
+ 792:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
+ 793:./inc/cmsis_gcc.h **** {
+ 794:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
+ 795:./inc/cmsis_gcc.h ****     (!defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE < 3)))
+ 796:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 797:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 798:./inc/cmsis_gcc.h **** #else
+ 799:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim, %0" : : "r" (MainStackPtrLimit));
+ 800:./inc/cmsis_gcc.h **** #endif
+ 801:./inc/cmsis_gcc.h **** }
+ 802:./inc/cmsis_gcc.h **** 
+ 803:./inc/cmsis_gcc.h **** 
+ 804:./inc/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
+ 805:./inc/cmsis_gcc.h **** /**
+ 806:./inc/cmsis_gcc.h ****   \brief   Set Main Stack Pointer Limit (non-secure)
+ 807:./inc/cmsis_gcc.h ****   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
+ 808:./inc/cmsis_gcc.h ****   Stack Pointer Limit register hence the write is silently ignored.
+ 809:./inc/cmsis_gcc.h **** 
+ 810:./inc/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer Limit (MSPLIM) when in secu
+ 811:./inc/cmsis_gcc.h ****   \param [in]    MainStackPtrLimit  Main Stack Pointer value to set
+ 812:./inc/cmsis_gcc.h ****  */
+ 813:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
+ 814:./inc/cmsis_gcc.h **** {
+ 815:./inc/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)))
+ 816:./inc/cmsis_gcc.h ****   // without main extensions, the non-secure MSPLIM is RAZ/WI
+ 817:./inc/cmsis_gcc.h ****   (void)MainStackPtrLimit;
+ 818:./inc/cmsis_gcc.h **** #else
+ 819:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msplim_ns, %0" : : "r" (MainStackPtrLimit));
+ 820:./inc/cmsis_gcc.h **** #endif
+ 821:./inc/cmsis_gcc.h **** }
+ 822:./inc/cmsis_gcc.h **** #endif
+ 823:./inc/cmsis_gcc.h **** 
+ 824:./inc/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 825:./inc/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
+ 826:./inc/cmsis_gcc.h **** 
+ 827:./inc/cmsis_gcc.h **** 
+ 828:./inc/cmsis_gcc.h **** /**
+ 829:./inc/cmsis_gcc.h ****   \brief   Get FPSCR
+ 830:./inc/cmsis_gcc.h ****   \details Returns the current value of the Floating Point Status/Control register.
+ 831:./inc/cmsis_gcc.h ****   \return               Floating Point Status/Control register value
+ 832:./inc/cmsis_gcc.h ****  */
+ 833:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
+ 834:./inc/cmsis_gcc.h **** {
+ 835:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 836:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 837:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_get_fpscr) 
+ 838:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 839:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 840:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 841:./inc/cmsis_gcc.h ****   return __builtin_arm_get_fpscr();
+ 842:./inc/cmsis_gcc.h **** #else
+ 843:./inc/cmsis_gcc.h ****   uint32_t result;
+ 844:./inc/cmsis_gcc.h **** 
+ 845:./inc/cmsis_gcc.h ****   __ASM volatile ("VMRS %0, fpscr" : "=r" (result) );
+ 846:./inc/cmsis_gcc.h ****   return(result);
+ 847:./inc/cmsis_gcc.h **** #endif
+ 848:./inc/cmsis_gcc.h **** #else
+ 849:./inc/cmsis_gcc.h ****   return(0U);
+ 850:./inc/cmsis_gcc.h **** #endif
+ 851:./inc/cmsis_gcc.h **** }
+ 852:./inc/cmsis_gcc.h **** 
+ 853:./inc/cmsis_gcc.h **** 
+ 854:./inc/cmsis_gcc.h **** /**
+ 855:./inc/cmsis_gcc.h ****   \brief   Set FPSCR
+ 856:./inc/cmsis_gcc.h ****   \details Assigns the given value to the Floating Point Status/Control register.
+ 857:./inc/cmsis_gcc.h ****   \param [in]    fpscr  Floating Point Status/Control value to set
+ 858:./inc/cmsis_gcc.h ****  */
+ 859:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
+ 860:./inc/cmsis_gcc.h **** {
+ 861:./inc/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+ 862:./inc/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
+ 863:./inc/cmsis_gcc.h **** #if __has_builtin(__builtin_arm_set_fpscr)
+ 864:./inc/cmsis_gcc.h **** // Re-enable using built-in when GCC has been fixed
+ 865:./inc/cmsis_gcc.h **** // || (__GNUC__ > 7) || (__GNUC__ == 7 && __GNUC_MINOR__ >= 2)
+ 866:./inc/cmsis_gcc.h ****   /* see https://gcc.gnu.org/ml/gcc-patches/2017-04/msg00443.html */
+ 867:./inc/cmsis_gcc.h ****   __builtin_arm_set_fpscr(fpscr);
+ 868:./inc/cmsis_gcc.h **** #else
+ 869:./inc/cmsis_gcc.h ****   __ASM volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc", "memory");
+ 870:./inc/cmsis_gcc.h **** #endif
+ 871:./inc/cmsis_gcc.h **** #else
+ 872:./inc/cmsis_gcc.h ****   (void)fpscr;
+ 873:./inc/cmsis_gcc.h **** #endif
+ 874:./inc/cmsis_gcc.h **** }
+ 875:./inc/cmsis_gcc.h **** 
+ 876:./inc/cmsis_gcc.h **** 
+ 877:./inc/cmsis_gcc.h **** /*@} end of CMSIS_Core_RegAccFunctions */
+ 878:./inc/cmsis_gcc.h **** 
+ 879:./inc/cmsis_gcc.h **** 
+ 880:./inc/cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 881:./inc/cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 882:./inc/cmsis_gcc.h ****   Access to dedicated instructions
+ 883:./inc/cmsis_gcc.h ****   @{
+ 884:./inc/cmsis_gcc.h **** */
+ 885:./inc/cmsis_gcc.h **** 
+ 886:./inc/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 887:./inc/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 888:./inc/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 889:./inc/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 890:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 891:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
+ 892:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 893:./inc/cmsis_gcc.h **** #else
+ 894:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 895:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+r" (r)
+ 896:./inc/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 897:./inc/cmsis_gcc.h **** #endif
+ 898:./inc/cmsis_gcc.h **** 
+ 899:./inc/cmsis_gcc.h **** /**
+ 900:./inc/cmsis_gcc.h ****   \brief   No Operation
+ 901:./inc/cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 902:./inc/cmsis_gcc.h ****  */
+ 903:./inc/cmsis_gcc.h **** #define __NOP()                             __ASM volatile ("nop")
+ 904:./inc/cmsis_gcc.h **** 
+ 905:./inc/cmsis_gcc.h **** /**
+ 906:./inc/cmsis_gcc.h ****   \brief   Wait For Interrupt
+ 907:./inc/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
+ 908:./inc/cmsis_gcc.h ****  */
+ 909:./inc/cmsis_gcc.h **** #define __WFI()                             __ASM volatile ("wfi")
+ 910:./inc/cmsis_gcc.h **** 
+ 911:./inc/cmsis_gcc.h **** 
+ 912:./inc/cmsis_gcc.h **** /**
+ 913:./inc/cmsis_gcc.h ****   \brief   Wait For Event
+ 914:./inc/cmsis_gcc.h ****   \details Wait For Event is a hint instruction that permits the processor to enter
+ 915:./inc/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
+ 916:./inc/cmsis_gcc.h ****  */
+ 917:./inc/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe")
+ 918:./inc/cmsis_gcc.h **** 
+ 919:./inc/cmsis_gcc.h **** 
+ 920:./inc/cmsis_gcc.h **** /**
+ 921:./inc/cmsis_gcc.h ****   \brief   Send Event
+ 922:./inc/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 923:./inc/cmsis_gcc.h ****  */
+ 924:./inc/cmsis_gcc.h **** #define __SEV()                             __ASM volatile ("sev")
+ 925:./inc/cmsis_gcc.h **** 
+ 926:./inc/cmsis_gcc.h **** 
+ 927:./inc/cmsis_gcc.h **** /**
+ 928:./inc/cmsis_gcc.h ****   \brief   Instruction Synchronization Barrier
+ 929:./inc/cmsis_gcc.h ****   \details Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 930:./inc/cmsis_gcc.h ****            so that all instructions following the ISB are fetched from cache or memory,
+ 931:./inc/cmsis_gcc.h ****            after the instruction has been completed.
+ 932:./inc/cmsis_gcc.h ****  */
+ 933:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __ISB(void)
+ 934:./inc/cmsis_gcc.h **** {
+ 935:./inc/cmsis_gcc.h ****   __ASM volatile ("isb 0xF":::"memory");
+ 936:./inc/cmsis_gcc.h **** }
+ 937:./inc/cmsis_gcc.h **** 
+ 938:./inc/cmsis_gcc.h **** 
+ 939:./inc/cmsis_gcc.h **** /**
+ 940:./inc/cmsis_gcc.h ****   \brief   Data Synchronization Barrier
+ 941:./inc/cmsis_gcc.h ****   \details Acts as a special kind of Data Memory Barrier.
+ 942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
+ 943:./inc/cmsis_gcc.h ****  */
+ 944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 945:./inc/cmsis_gcc.h **** {
+ 946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
+ 526              		.loc 2 946 3
+ 527              		.syntax unified
+ 528              	@ 946 "./inc/cmsis_gcc.h" 1
+ 529 00aa BFF34F8F 		dsb 0xF
+ 530              	@ 0 "" 2
+ 947:./inc/cmsis_gcc.h **** }
+ 531              		.loc 2 947 1
+ 532              		.thumb
+ 533              		.syntax unified
+ 534 00ae 00BF     		nop
+ 535              	.LBE29:
+ 536              	.LBE28:
+ 537              	.LBB30:
+ 538              	.LBB31:
+ 935:./inc/cmsis_gcc.h **** }
+ 539              		.loc 2 935 3
+ 540              		.syntax unified
+ 541              	@ 935 "./inc/cmsis_gcc.h" 1
+ 542 00b0 BFF36F8F 		isb 0xF
+ 543              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 544              		.loc 2 936 1
+ 545              		.thumb
+ 546              		.syntax unified
+ 547 00b4 00BF     		nop
+ 548              	.LBE31:
+ 549              	.LBE30:
+ 258:./lwip-2.1.2/src/core/memp.c **** 
+ 259:./lwip-2.1.2/src/core/memp.c ****   memp = *desc->tab;
+ 550              		.loc 1 259 15
+ 551 00b6 7B68     		ldr	r3, [r7, #4]
+ 552 00b8 9B68     		ldr	r3, [r3, #8]
+ 553              		.loc 1 259 8
+ 554 00ba 1B68     		ldr	r3, [r3]
+ 555 00bc 3B61     		str	r3, [r7, #16]
+ 260:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 261:./lwip-2.1.2/src/core/memp.c **** 
+ 262:./lwip-2.1.2/src/core/memp.c ****   if (memp != NULL) {
+ 556              		.loc 1 262 6
+ 557 00be 3B69     		ldr	r3, [r7, #16]
+ 558 00c0 002B     		cmp	r3, #0
+ 559 00c2 0BD0     		beq	.L11
+ 263:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 264:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK == 1
+ 265:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_check_element(memp, desc);
+ 266:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 267:./lwip-2.1.2/src/core/memp.c **** 
+ 268:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp->next;
+ 560              		.loc 1 268 10
+ 561 00c4 7B68     		ldr	r3, [r7, #4]
+ 562 00c6 9B68     		ldr	r3, [r3, #8]
+ 563              		.loc 1 268 22
+ 564 00c8 3A69     		ldr	r2, [r7, #16]
+ 565 00ca 1268     		ldr	r2, [r2]
+ 566              		.loc 1 268 16
+ 567 00cc 1A60     		str	r2, [r3]
+ 269:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 270:./lwip-2.1.2/src/core/memp.c ****     memp->next = NULL;
+ 271:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 272:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 273:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 274:./lwip-2.1.2/src/core/memp.c ****     memp->file = file;
+ 275:./lwip-2.1.2/src/core/memp.c ****     memp->line = line;
+ 276:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 277:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_init_element(memp, desc);
+ 278:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 279:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 280:./lwip-2.1.2/src/core/memp.c ****     LWIP_ASSERT("memp_malloc: memp properly aligned",
+ 281:./lwip-2.1.2/src/core/memp.c ****                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
+ 282:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 283:./lwip-2.1.2/src/core/memp.c ****     desc->stats->used++;
+ 284:./lwip-2.1.2/src/core/memp.c ****     if (desc->stats->used > desc->stats->max) {
+ 285:./lwip-2.1.2/src/core/memp.c ****       desc->stats->max = desc->stats->used;
+ 286:./lwip-2.1.2/src/core/memp.c ****     }
+ 287:./lwip-2.1.2/src/core/memp.c **** #endif
+ 288:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
+ 568              		.loc 1 288 5
+ 569 00ce 7B69     		ldr	r3, [r7, #20]
+ 570 00d0 002B     		cmp	r3, #0
+ 571 00d2 01D1     		bne	.L12
+ 572              	.LBB32:
+ 573              	.LBB33:
+ 198:./inc/cmsis_gcc.h **** }
+ 574              		.loc 2 198 3
+ 575              		.syntax unified
+ 576              	@ 198 "./inc/cmsis_gcc.h" 1
+ 577 00d4 62B6     		cpsie i
+ 578              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 579              		.loc 2 199 1
+ 580              		.thumb
+ 581              		.syntax unified
+ 582 00d6 00BF     		nop
+ 583              	.L12:
+ 584              	.LBE33:
+ 585              	.LBE32:
+ 289:./lwip-2.1.2/src/core/memp.c ****     /* cast through u8_t* to get rid of alignment warnings */
+ 290:./lwip-2.1.2/src/core/memp.c ****     return ((u8_t *)memp + MEMP_SIZE);
+ 586              		.loc 1 290 26
+ 587 00d8 3B69     		ldr	r3, [r7, #16]
+ 588 00da 05E0     		b	.L13
+ 589              	.L11:
+ 291:./lwip-2.1.2/src/core/memp.c ****   } else {
+ 292:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 293:./lwip-2.1.2/src/core/memp.c ****     desc->stats->err++;
+ 294:./lwip-2.1.2/src/core/memp.c **** #endif
+ 295:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
+ 590              		.loc 1 295 5
+ 591 00dc 7B69     		ldr	r3, [r7, #20]
+ 592 00de 002B     		cmp	r3, #0
+ 593 00e0 01D1     		bne	.L14
+ 594              	.LBB34:
+ 595              	.LBB35:
+ 198:./inc/cmsis_gcc.h **** }
+ 596              		.loc 2 198 3
+ 597              		.syntax unified
+ 598              	@ 198 "./inc/cmsis_gcc.h" 1
+ 599 00e2 62B6     		cpsie i
+ 600              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 601              		.loc 2 199 1
+ 602              		.thumb
+ 603              		.syntax unified
+ 604 00e4 00BF     		nop
+ 605              	.L14:
+ 606              	.LBE35:
+ 607              	.LBE34:
+ 296:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 297:./lwip-2.1.2/src/core/memp.c ****   }
+ 298:./lwip-2.1.2/src/core/memp.c **** 
+ 299:./lwip-2.1.2/src/core/memp.c ****   return NULL;
+ 608              		.loc 1 299 10
+ 609 00e6 0023     		movs	r3, #0
+ 610              	.L13:
+ 300:./lwip-2.1.2/src/core/memp.c **** }
+ 611              		.loc 1 300 1
+ 612 00e8 1846     		mov	r0, r3
+ 613 00ea 1C37     		adds	r7, r7, #28
+ 614              	.LCFI14:
+ 615              		.cfi_def_cfa_offset 4
+ 616 00ec BD46     		mov	sp, r7
+ 617              	.LCFI15:
+ 618              		.cfi_def_cfa_register 13
+ 619              		@ sp needed
+ 620 00ee 5DF8047B 		ldr	r7, [sp], #4
+ 621              	.LCFI16:
+ 622              		.cfi_restore 7
+ 623              		.cfi_def_cfa_offset 0
+ 624 00f2 7047     		bx	lr
+ 625              		.cfi_endproc
+ 626              	.LFE171:
+ 628              		.align	1
+ 629              		.global	memp_malloc_pool
+ 630              		.syntax unified
+ 631              		.thumb
+ 632              		.thumb_func
+ 633              		.fpu fpv5-d16
+ 635              	memp_malloc_pool:
+ 636              	.LFB172:
+ 301:./lwip-2.1.2/src/core/memp.c **** 
+ 302:./lwip-2.1.2/src/core/memp.c **** /**
+ 303:./lwip-2.1.2/src/core/memp.c ****  * Get an element from a custom pool.
+ 304:./lwip-2.1.2/src/core/memp.c ****  *
+ 305:./lwip-2.1.2/src/core/memp.c ****  * @param desc the pool to get an element from
+ 306:./lwip-2.1.2/src/core/memp.c ****  *
+ 307:./lwip-2.1.2/src/core/memp.c ****  * @return a pointer to the allocated memory or a NULL pointer on error
+ 308:./lwip-2.1.2/src/core/memp.c ****  */
+ 309:./lwip-2.1.2/src/core/memp.c **** void *
+ 310:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 311:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool(const struct memp_desc *desc)
+ 312:./lwip-2.1.2/src/core/memp.c **** #else
+ 313:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool_fn(const struct memp_desc *desc, const char *file, const int line)
+ 314:./lwip-2.1.2/src/core/memp.c **** #endif
+ 315:./lwip-2.1.2/src/core/memp.c **** {
+ 637              		.loc 1 315 1
+ 638              		.cfi_startproc
+ 639              		@ args = 0, pretend = 0, frame = 8
+ 640              		@ frame_needed = 1, uses_anonymous_args = 0
+ 641 00f4 80B5     		push	{r7, lr}
+ 642              	.LCFI17:
+ 643              		.cfi_def_cfa_offset 8
+ 644              		.cfi_offset 7, -8
+ 645              		.cfi_offset 14, -4
+ 646 00f6 82B0     		sub	sp, sp, #8
+ 647              	.LCFI18:
+ 648              		.cfi_def_cfa_offset 16
+ 649 00f8 00AF     		add	r7, sp, #0
+ 650              	.LCFI19:
+ 651              		.cfi_def_cfa_register 7
+ 652 00fa 7860     		str	r0, [r7, #4]
+ 316:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("invalid pool desc", desc != NULL);
+ 317:./lwip-2.1.2/src/core/memp.c ****   if (desc == NULL) {
+ 653              		.loc 1 317 6
+ 654 00fc 7B68     		ldr	r3, [r7, #4]
+ 655 00fe 002B     		cmp	r3, #0
+ 656 0100 01D1     		bne	.L16
+ 318:./lwip-2.1.2/src/core/memp.c ****     return NULL;
+ 657              		.loc 1 318 12
+ 658 0102 0023     		movs	r3, #0
+ 659 0104 03E0     		b	.L17
+ 660              	.L16:
+ 319:./lwip-2.1.2/src/core/memp.c ****   }
+ 320:./lwip-2.1.2/src/core/memp.c **** 
+ 321:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 322:./lwip-2.1.2/src/core/memp.c ****   return do_memp_malloc_pool(desc);
+ 661              		.loc 1 322 10
+ 662 0106 7868     		ldr	r0, [r7, #4]
+ 663 0108 FFF7C4FF 		bl	do_memp_malloc_pool
+ 664 010c 0346     		mov	r3, r0
+ 665              	.L17:
+ 323:./lwip-2.1.2/src/core/memp.c **** #else
+ 324:./lwip-2.1.2/src/core/memp.c ****   return do_memp_malloc_pool_fn(desc, file, line);
+ 325:./lwip-2.1.2/src/core/memp.c **** #endif
+ 326:./lwip-2.1.2/src/core/memp.c **** }
+ 666              		.loc 1 326 1
+ 667 010e 1846     		mov	r0, r3
+ 668 0110 0837     		adds	r7, r7, #8
+ 669              	.LCFI20:
+ 670              		.cfi_def_cfa_offset 8
+ 671 0112 BD46     		mov	sp, r7
+ 672              	.LCFI21:
+ 673              		.cfi_def_cfa_register 13
+ 674              		@ sp needed
+ 675 0114 80BD     		pop	{r7, pc}
+ 676              		.cfi_endproc
+ 677              	.LFE172:
+ 679              		.align	1
+ 680              		.global	memp_malloc
+ 681              		.syntax unified
+ 682              		.thumb
+ 683              		.thumb_func
+ 684              		.fpu fpv5-d16
+ 686              	memp_malloc:
+ 687              	.LFB173:
+ 327:./lwip-2.1.2/src/core/memp.c **** 
+ 328:./lwip-2.1.2/src/core/memp.c **** /**
+ 329:./lwip-2.1.2/src/core/memp.c ****  * Get an element from a specific pool.
+ 330:./lwip-2.1.2/src/core/memp.c ****  *
+ 331:./lwip-2.1.2/src/core/memp.c ****  * @param type the pool to get an element from
+ 332:./lwip-2.1.2/src/core/memp.c ****  *
+ 333:./lwip-2.1.2/src/core/memp.c ****  * @return a pointer to the allocated memory or a NULL pointer on error
+ 334:./lwip-2.1.2/src/core/memp.c ****  */
+ 335:./lwip-2.1.2/src/core/memp.c **** void *
+ 336:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 337:./lwip-2.1.2/src/core/memp.c **** memp_malloc(memp_t type)
+ 338:./lwip-2.1.2/src/core/memp.c **** #else
+ 339:./lwip-2.1.2/src/core/memp.c **** memp_malloc_fn(memp_t type, const char *file, const int line)
+ 340:./lwip-2.1.2/src/core/memp.c **** #endif
+ 341:./lwip-2.1.2/src/core/memp.c **** {
+ 688              		.loc 1 341 1
+ 689              		.cfi_startproc
+ 690              		@ args = 0, pretend = 0, frame = 16
+ 691              		@ frame_needed = 1, uses_anonymous_args = 0
+ 692 0116 80B5     		push	{r7, lr}
+ 693              	.LCFI22:
+ 694              		.cfi_def_cfa_offset 8
+ 695              		.cfi_offset 7, -8
+ 696              		.cfi_offset 14, -4
+ 697 0118 84B0     		sub	sp, sp, #16
+ 698              	.LCFI23:
+ 699              		.cfi_def_cfa_offset 24
+ 700 011a 00AF     		add	r7, sp, #0
+ 701              	.LCFI24:
+ 702              		.cfi_def_cfa_register 7
+ 703 011c 0346     		mov	r3, r0
+ 704 011e FB71     		strb	r3, [r7, #7]
+ 342:./lwip-2.1.2/src/core/memp.c ****   void *memp;
+ 343:./lwip-2.1.2/src/core/memp.c ****   LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return NULL;);
+ 705              		.loc 1 343 3
+ 706 0120 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 707 0122 0C2B     		cmp	r3, #12
+ 708 0124 01D9     		bls	.L19
+ 709              		.loc 1 343 3 is_stmt 0 discriminator 1
+ 710 0126 0023     		movs	r3, #0
+ 711 0128 08E0     		b	.L20
+ 712              	.L19:
+ 344:./lwip-2.1.2/src/core/memp.c **** 
+ 345:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK >= 2
+ 346:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_all();
+ 347:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK >= 2 */
+ 348:./lwip-2.1.2/src/core/memp.c **** 
+ 349:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 350:./lwip-2.1.2/src/core/memp.c ****   memp = do_memp_malloc_pool(memp_pools[type]);
+ 713              		.loc 1 350 10 is_stmt 1
+ 714 012a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 715 012c 054A     		ldr	r2, .L21
+ 716 012e 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 717 0132 1846     		mov	r0, r3
+ 718 0134 FFF7AEFF 		bl	do_memp_malloc_pool
+ 719 0138 F860     		str	r0, [r7, #12]
+ 351:./lwip-2.1.2/src/core/memp.c **** #else
+ 352:./lwip-2.1.2/src/core/memp.c ****   memp = do_memp_malloc_pool_fn(memp_pools[type], file, line);
+ 353:./lwip-2.1.2/src/core/memp.c **** #endif
+ 354:./lwip-2.1.2/src/core/memp.c **** 
+ 355:./lwip-2.1.2/src/core/memp.c ****   return memp;
+ 720              		.loc 1 355 10
+ 721 013a FB68     		ldr	r3, [r7, #12]
+ 722              	.L20:
+ 356:./lwip-2.1.2/src/core/memp.c **** }
+ 723              		.loc 1 356 1
+ 724 013c 1846     		mov	r0, r3
+ 725 013e 1037     		adds	r7, r7, #16
+ 726              	.LCFI25:
+ 727              		.cfi_def_cfa_offset 8
+ 728 0140 BD46     		mov	sp, r7
+ 729              	.LCFI26:
+ 730              		.cfi_def_cfa_register 13
+ 731              		@ sp needed
+ 732 0142 80BD     		pop	{r7, pc}
+ 733              	.L22:
+ 734              		.align	2
+ 735              	.L21:
+ 736 0144 00000000 		.word	memp_pools
+ 737              		.cfi_endproc
+ 738              	.LFE173:
+ 740              		.align	1
+ 741              		.syntax unified
+ 742              		.thumb
+ 743              		.thumb_func
+ 744              		.fpu fpv5-d16
+ 746              	do_memp_free_pool:
+ 747              	.LFB174:
+ 357:./lwip-2.1.2/src/core/memp.c **** 
+ 358:./lwip-2.1.2/src/core/memp.c **** static void
+ 359:./lwip-2.1.2/src/core/memp.c **** do_memp_free_pool(const struct memp_desc *desc, void *mem)
+ 360:./lwip-2.1.2/src/core/memp.c **** {
+ 748              		.loc 1 360 1
+ 749              		.cfi_startproc
+ 750              		@ args = 0, pretend = 0, frame = 24
+ 751              		@ frame_needed = 1, uses_anonymous_args = 0
+ 752              		@ link register save eliminated.
+ 753 0148 80B4     		push	{r7}
+ 754              	.LCFI27:
+ 755              		.cfi_def_cfa_offset 4
+ 756              		.cfi_offset 7, -4
+ 757 014a 87B0     		sub	sp, sp, #28
+ 758              	.LCFI28:
+ 759              		.cfi_def_cfa_offset 32
+ 760 014c 00AF     		add	r7, sp, #0
+ 761              	.LCFI29:
+ 762              		.cfi_def_cfa_register 7
+ 763 014e 7860     		str	r0, [r7, #4]
+ 764 0150 3960     		str	r1, [r7]
+ 361:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+ 362:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 363:./lwip-2.1.2/src/core/memp.c **** 
+ 364:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("memp_free: mem properly aligned",
+ 365:./lwip-2.1.2/src/core/memp.c ****               ((mem_ptr_t)mem % MEM_ALIGNMENT) == 0);
+ 366:./lwip-2.1.2/src/core/memp.c **** 
+ 367:./lwip-2.1.2/src/core/memp.c ****   /* cast through void* to get rid of alignment warnings */
+ 368:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)(void *)((u8_t *)mem - MEMP_SIZE);
+ 765              		.loc 1 368 8
+ 766 0152 3B68     		ldr	r3, [r7]
+ 767 0154 7B61     		str	r3, [r7, #20]
+ 768              	.LBB36:
+ 769              	.LBB37:
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 770              		.loc 2 453 3
+ 771              		.syntax unified
+ 772              	@ 453 "./inc/cmsis_gcc.h" 1
+ 773 0156 EFF31083 		MRS r3, primask
+ 774              	@ 0 "" 2
+ 775              		.thumb
+ 776              		.syntax unified
+ 777 015a FB60     		str	r3, [r7, #12]
+ 454:./inc/cmsis_gcc.h **** }
+ 778              		.loc 2 454 9
+ 779 015c FB68     		ldr	r3, [r7, #12]
+ 780              	.LBE37:
+ 781              	.LBE36:
+ 369:./lwip-2.1.2/src/core/memp.c **** 
+ 370:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 782              		.loc 1 370 3
+ 783 015e 3B61     		str	r3, [r7, #16]
+ 784              	.LBB38:
+ 785              	.LBB39:
+ 209:./inc/cmsis_gcc.h **** }
+ 786              		.loc 2 209 3
+ 787              		.syntax unified
+ 788              	@ 209 "./inc/cmsis_gcc.h" 1
+ 789 0160 72B6     		cpsid i
+ 790              	@ 0 "" 2
+ 210:./inc/cmsis_gcc.h **** 
+ 791              		.loc 2 210 1
+ 792              		.thumb
+ 793              		.syntax unified
+ 794 0162 00BF     		nop
+ 795              	.LBE39:
+ 796              	.LBE38:
+ 797              	.LBB40:
+ 798              	.LBB41:
+ 946:./inc/cmsis_gcc.h **** }
+ 799              		.loc 2 946 3
+ 800              		.syntax unified
+ 801              	@ 946 "./inc/cmsis_gcc.h" 1
+ 802 0164 BFF34F8F 		dsb 0xF
+ 803              	@ 0 "" 2
+ 804              		.loc 2 947 1
+ 805              		.thumb
+ 806              		.syntax unified
+ 807 0168 00BF     		nop
+ 808              	.LBE41:
+ 809              	.LBE40:
+ 810              	.LBB42:
+ 811              	.LBB43:
+ 935:./inc/cmsis_gcc.h **** }
+ 812              		.loc 2 935 3
+ 813              		.syntax unified
+ 814              	@ 935 "./inc/cmsis_gcc.h" 1
+ 815 016a BFF36F8F 		isb 0xF
+ 816              	@ 0 "" 2
+ 936:./inc/cmsis_gcc.h **** 
+ 817              		.loc 2 936 1
+ 818              		.thumb
+ 819              		.syntax unified
+ 820 016e 00BF     		nop
+ 821              	.LBE43:
+ 822              	.LBE42:
+ 371:./lwip-2.1.2/src/core/memp.c **** 
+ 372:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK == 1
+ 373:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_element(memp, desc);
+ 374:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 375:./lwip-2.1.2/src/core/memp.c **** 
+ 376:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 377:./lwip-2.1.2/src/core/memp.c ****   desc->stats->used--;
+ 378:./lwip-2.1.2/src/core/memp.c **** #endif
+ 379:./lwip-2.1.2/src/core/memp.c **** 
+ 380:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 381:./lwip-2.1.2/src/core/memp.c ****   LWIP_UNUSED_ARG(desc);
+ 382:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_UNPROTECT(old_level);
+ 383:./lwip-2.1.2/src/core/memp.c ****   mem_free(memp);
+ 384:./lwip-2.1.2/src/core/memp.c **** #else /* MEMP_MEM_MALLOC */
+ 385:./lwip-2.1.2/src/core/memp.c ****   memp->next = *desc->tab;
+ 823              		.loc 1 385 21
+ 824 0170 7B68     		ldr	r3, [r7, #4]
+ 825 0172 9B68     		ldr	r3, [r3, #8]
+ 826              		.loc 1 385 16
+ 827 0174 1A68     		ldr	r2, [r3]
+ 828              		.loc 1 385 14
+ 829 0176 7B69     		ldr	r3, [r7, #20]
+ 830 0178 1A60     		str	r2, [r3]
+ 386:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 831              		.loc 1 386 8
+ 832 017a 7B68     		ldr	r3, [r7, #4]
+ 833 017c 9B68     		ldr	r3, [r3, #8]
+ 834              		.loc 1 386 14
+ 835 017e 7A69     		ldr	r2, [r7, #20]
+ 836 0180 1A60     		str	r2, [r3]
+ 387:./lwip-2.1.2/src/core/memp.c **** 
+ 388:./lwip-2.1.2/src/core/memp.c **** #if MEMP_SANITY_CHECK
+ 389:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("memp sanity", memp_sanity(desc));
+ 390:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_SANITY_CHECK */
+ 391:./lwip-2.1.2/src/core/memp.c **** 
+ 392:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_UNPROTECT(old_level);
+ 837              		.loc 1 392 3
+ 838 0182 3B69     		ldr	r3, [r7, #16]
+ 839 0184 002B     		cmp	r3, #0
+ 840 0186 01D1     		bne	.L26
+ 841              	.LBB44:
+ 842              	.LBB45:
+ 198:./inc/cmsis_gcc.h **** }
+ 843              		.loc 2 198 3
+ 844              		.syntax unified
+ 845              	@ 198 "./inc/cmsis_gcc.h" 1
+ 846 0188 62B6     		cpsie i
+ 847              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 848              		.loc 2 199 1
+ 849              		.thumb
+ 850              		.syntax unified
+ 851 018a 00BF     		nop
+ 852              	.L26:
+ 853              	.LBE45:
+ 854              	.LBE44:
+ 393:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 394:./lwip-2.1.2/src/core/memp.c **** }
+ 855              		.loc 1 394 1
+ 856 018c 00BF     		nop
+ 857 018e 1C37     		adds	r7, r7, #28
+ 858              	.LCFI30:
+ 859              		.cfi_def_cfa_offset 4
+ 860 0190 BD46     		mov	sp, r7
+ 861              	.LCFI31:
+ 862              		.cfi_def_cfa_register 13
+ 863              		@ sp needed
+ 864 0192 5DF8047B 		ldr	r7, [sp], #4
+ 865              	.LCFI32:
+ 866              		.cfi_restore 7
+ 867              		.cfi_def_cfa_offset 0
+ 868 0196 7047     		bx	lr
+ 869              		.cfi_endproc
+ 870              	.LFE174:
+ 872              		.align	1
+ 873              		.global	memp_free_pool
+ 874              		.syntax unified
+ 875              		.thumb
+ 876              		.thumb_func
+ 877              		.fpu fpv5-d16
+ 879              	memp_free_pool:
+ 880              	.LFB175:
+ 395:./lwip-2.1.2/src/core/memp.c **** 
+ 396:./lwip-2.1.2/src/core/memp.c **** /**
+ 397:./lwip-2.1.2/src/core/memp.c ****  * Put a custom pool element back into its pool.
+ 398:./lwip-2.1.2/src/core/memp.c ****  *
+ 399:./lwip-2.1.2/src/core/memp.c ****  * @param desc the pool where to put mem
+ 400:./lwip-2.1.2/src/core/memp.c ****  * @param mem the memp element to free
+ 401:./lwip-2.1.2/src/core/memp.c ****  */
+ 402:./lwip-2.1.2/src/core/memp.c **** void
+ 403:./lwip-2.1.2/src/core/memp.c **** memp_free_pool(const struct memp_desc *desc, void *mem)
+ 404:./lwip-2.1.2/src/core/memp.c **** {
+ 881              		.loc 1 404 1
+ 882              		.cfi_startproc
+ 883              		@ args = 0, pretend = 0, frame = 8
+ 884              		@ frame_needed = 1, uses_anonymous_args = 0
+ 885 0198 80B5     		push	{r7, lr}
+ 886              	.LCFI33:
+ 887              		.cfi_def_cfa_offset 8
+ 888              		.cfi_offset 7, -8
+ 889              		.cfi_offset 14, -4
+ 890 019a 82B0     		sub	sp, sp, #8
+ 891              	.LCFI34:
+ 892              		.cfi_def_cfa_offset 16
+ 893 019c 00AF     		add	r7, sp, #0
+ 894              	.LCFI35:
+ 895              		.cfi_def_cfa_register 7
+ 896 019e 7860     		str	r0, [r7, #4]
+ 897 01a0 3960     		str	r1, [r7]
+ 405:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("invalid pool desc", desc != NULL);
+ 406:./lwip-2.1.2/src/core/memp.c ****   if ((desc == NULL) || (mem == NULL)) {
+ 898              		.loc 1 406 6
+ 899 01a2 7B68     		ldr	r3, [r7, #4]
+ 900 01a4 002B     		cmp	r3, #0
+ 901 01a6 07D0     		beq	.L31
+ 902              		.loc 1 406 22 discriminator 1
+ 903 01a8 3B68     		ldr	r3, [r7]
+ 904 01aa 002B     		cmp	r3, #0
+ 905 01ac 04D0     		beq	.L31
+ 407:./lwip-2.1.2/src/core/memp.c ****     return;
+ 408:./lwip-2.1.2/src/core/memp.c ****   }
+ 409:./lwip-2.1.2/src/core/memp.c **** 
+ 410:./lwip-2.1.2/src/core/memp.c ****   do_memp_free_pool(desc, mem);
+ 906              		.loc 1 410 3
+ 907 01ae 3968     		ldr	r1, [r7]
+ 908 01b0 7868     		ldr	r0, [r7, #4]
+ 909 01b2 FFF7C9FF 		bl	do_memp_free_pool
+ 910 01b6 00E0     		b	.L27
+ 911              	.L31:
+ 407:./lwip-2.1.2/src/core/memp.c ****     return;
+ 912              		.loc 1 407 5
+ 913 01b8 00BF     		nop
+ 914              	.L27:
+ 411:./lwip-2.1.2/src/core/memp.c **** }
+ 915              		.loc 1 411 1
+ 916 01ba 0837     		adds	r7, r7, #8
+ 917              	.LCFI36:
+ 918              		.cfi_def_cfa_offset 8
+ 919 01bc BD46     		mov	sp, r7
+ 920              	.LCFI37:
+ 921              		.cfi_def_cfa_register 13
+ 922              		@ sp needed
+ 923 01be 80BD     		pop	{r7, pc}
+ 924              		.cfi_endproc
+ 925              	.LFE175:
+ 927              		.align	1
+ 928              		.global	memp_free
+ 929              		.syntax unified
+ 930              		.thumb
+ 931              		.thumb_func
+ 932              		.fpu fpv5-d16
+ 934              	memp_free:
+ 935              	.LFB176:
+ 412:./lwip-2.1.2/src/core/memp.c **** 
+ 413:./lwip-2.1.2/src/core/memp.c **** /**
+ 414:./lwip-2.1.2/src/core/memp.c ****  * Put an element back into its pool.
+ 415:./lwip-2.1.2/src/core/memp.c ****  *
+ 416:./lwip-2.1.2/src/core/memp.c ****  * @param type the pool where to put mem
+ 417:./lwip-2.1.2/src/core/memp.c ****  * @param mem the memp element to free
+ 418:./lwip-2.1.2/src/core/memp.c ****  */
+ 419:./lwip-2.1.2/src/core/memp.c **** void
+ 420:./lwip-2.1.2/src/core/memp.c **** memp_free(memp_t type, void *mem)
+ 421:./lwip-2.1.2/src/core/memp.c **** {
+ 936              		.loc 1 421 1
+ 937              		.cfi_startproc
+ 938              		@ args = 0, pretend = 0, frame = 8
+ 939              		@ frame_needed = 1, uses_anonymous_args = 0
+ 940 01c0 80B5     		push	{r7, lr}
+ 941              	.LCFI38:
+ 942              		.cfi_def_cfa_offset 8
+ 943              		.cfi_offset 7, -8
+ 944              		.cfi_offset 14, -4
+ 945 01c2 82B0     		sub	sp, sp, #8
+ 946              	.LCFI39:
+ 947              		.cfi_def_cfa_offset 16
+ 948 01c4 00AF     		add	r7, sp, #0
+ 949              	.LCFI40:
+ 950              		.cfi_def_cfa_register 7
+ 951 01c6 0346     		mov	r3, r0
+ 952 01c8 3960     		str	r1, [r7]
+ 953 01ca FB71     		strb	r3, [r7, #7]
+ 422:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_MEMP_AVAILABLE
+ 423:./lwip-2.1.2/src/core/memp.c ****   struct memp *old_first;
+ 424:./lwip-2.1.2/src/core/memp.c **** #endif
+ 425:./lwip-2.1.2/src/core/memp.c **** 
+ 426:./lwip-2.1.2/src/core/memp.c ****   LWIP_ERROR("memp_free: type < MEMP_MAX", (type < MEMP_MAX), return;);
+ 954              		.loc 1 426 3
+ 955 01cc FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 956 01ce 0C2B     		cmp	r3, #12
+ 957 01d0 0BD8     		bhi	.L36
+ 427:./lwip-2.1.2/src/core/memp.c **** 
+ 428:./lwip-2.1.2/src/core/memp.c ****   if (mem == NULL) {
+ 958              		.loc 1 428 6
+ 959 01d2 3B68     		ldr	r3, [r7]
+ 960 01d4 002B     		cmp	r3, #0
+ 961 01d6 0AD0     		beq	.L37
+ 429:./lwip-2.1.2/src/core/memp.c ****     return;
+ 430:./lwip-2.1.2/src/core/memp.c ****   }
+ 431:./lwip-2.1.2/src/core/memp.c **** 
+ 432:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK >= 2
+ 433:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_all();
+ 434:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK >= 2 */
+ 435:./lwip-2.1.2/src/core/memp.c **** 
+ 436:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_MEMP_AVAILABLE
+ 437:./lwip-2.1.2/src/core/memp.c ****   old_first = *memp_pools[type]->tab;
+ 438:./lwip-2.1.2/src/core/memp.c **** #endif
+ 439:./lwip-2.1.2/src/core/memp.c **** 
+ 440:./lwip-2.1.2/src/core/memp.c ****   do_memp_free_pool(memp_pools[type], mem);
+ 962              		.loc 1 440 3
+ 963 01d8 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 964 01da 074A     		ldr	r2, .L38
+ 965 01dc 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 966 01e0 3968     		ldr	r1, [r7]
+ 967 01e2 1846     		mov	r0, r3
+ 968 01e4 FFF7B0FF 		bl	do_memp_free_pool
+ 969 01e8 02E0     		b	.L32
+ 970              	.L36:
+ 426:./lwip-2.1.2/src/core/memp.c **** 
+ 971              		.loc 1 426 3
+ 972 01ea 00BF     		nop
+ 973 01ec 00E0     		b	.L32
+ 974              	.L37:
+ 429:./lwip-2.1.2/src/core/memp.c ****     return;
+ 975              		.loc 1 429 5
+ 976 01ee 00BF     		nop
+ 977              	.L32:
+ 441:./lwip-2.1.2/src/core/memp.c **** 
+ 442:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_MEMP_AVAILABLE
+ 443:./lwip-2.1.2/src/core/memp.c ****   if (old_first == NULL) {
+ 444:./lwip-2.1.2/src/core/memp.c ****     LWIP_HOOK_MEMP_AVAILABLE(type);
+ 445:./lwip-2.1.2/src/core/memp.c ****   }
+ 446:./lwip-2.1.2/src/core/memp.c **** #endif
+ 447:./lwip-2.1.2/src/core/memp.c **** }
+ 978              		.loc 1 447 1
+ 979 01f0 0837     		adds	r7, r7, #8
+ 980              	.LCFI41:
+ 981              		.cfi_def_cfa_offset 8
+ 982 01f2 BD46     		mov	sp, r7
+ 983              	.LCFI42:
+ 984              		.cfi_def_cfa_register 13
+ 985              		@ sp needed
+ 986 01f4 80BD     		pop	{r7, pc}
+ 987              	.L39:
+ 988 01f6 00BF     		.align	2
+ 989              	.L38:
+ 990 01f8 00000000 		.word	memp_pools
+ 991              		.cfi_endproc
+ 992              	.LFE176:
+ 994              	.Letext0:
+ 995              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 996              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 997              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 998              		.file 6 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 999              		.file 7 "./lwip-2.1.2/src/include/lwip/priv/memp_priv.h"
+ 1000              		.file 8 "./lwip-2.1.2/src/include/lwip/priv/memp_std.h"
+ 1001              		.file 9 "./lwip-2.1.2/src/include/lwip/netif.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 memp.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:21     .bss:00000000 memp_memory_UDP_PCB_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:18     .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:24     .bss:00000084 memp_tab_UDP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:32     .rodata:00000000 memp_UDP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:29     .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:42     .bss:00000088 memp_memory_TCP_PCB_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:45     .bss:00000398 memp_tab_TCP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:53     .rodata:0000000c memp_TCP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:63     .bss:0000039c memp_memory_TCP_PCB_LISTEN_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:66     .bss:00000480 memp_tab_TCP_PCB_LISTEN
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:74     .rodata:00000018 memp_TCP_PCB_LISTEN
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:84     .bss:00000484 memp_memory_TCP_SEG_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:87     .bss:00000588 memp_tab_TCP_SEG
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:95     .rodata:00000024 memp_TCP_SEG
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:105    .bss:0000058c memp_memory_REASSDATA_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:108    .bss:00000630 memp_tab_REASSDATA
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:116    .rodata:00000030 memp_REASSDATA
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:126    .bss:00000634 memp_memory_FRAG_PBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:129    .bss:000007a0 memp_tab_FRAG_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:137    .rodata:0000003c memp_FRAG_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:147    .bss:000007a4 memp_memory_NETBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:150    .bss:000007c8 memp_tab_NETBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:158    .rodata:00000048 memp_NETBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:168    .bss:000007cc memp_memory_NETCONN_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:171    .bss:00000870 memp_tab_NETCONN
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:179    .rodata:00000054 memp_NETCONN
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:189    .bss:00000874 memp_memory_TCPIP_MSG_API_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:192    .bss:000008f8 memp_tab_TCPIP_MSG_API
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:200    .rodata:00000060 memp_TCPIP_MSG_API
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:210    .bss:000008fc memp_memory_TCPIP_MSG_INPKT_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:213    .bss:00000980 memp_tab_TCPIP_MSG_INPKT
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:221    .rodata:0000006c memp_TCPIP_MSG_INPKT
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:231    .bss:00000984 memp_memory_SYS_TIMEOUT_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:234    .bss:000009d8 memp_tab_SYS_TIMEOUT
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:242    .rodata:00000078 memp_SYS_TIMEOUT
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:252    .bss:000009dc memp_memory_PBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:255    .bss:00000ae0 memp_tab_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:263    .rodata:00000084 memp_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:273    .bss:00000ae4 memp_memory_PBUF_POOL_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:276    .bss:000030e8 memp_tab_PBUF_POOL
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:284    .rodata:00000090 memp_PBUF_POOL
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:293    .rodata:0000009c memp_pools
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:308    .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:316    .text:00000000 memp_init_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:414    .text:00000060 memp_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:466    .text:00000090 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:470    .text:00000094 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:476    .text:00000094 do_memp_malloc_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:635    .text:000000f4 memp_malloc_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:686    .text:00000116 memp_malloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:736    .text:00000144 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:740    .text:00000148 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:746    .text:00000148 do_memp_free_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:879    .text:00000198 memp_free_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:934    .text:000001c0 memp_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:990    .text:000001f8 $d
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,1296 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ip4_addr.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.global	ip_addr_any
+  17              		.section	.rodata
+  18              		.align	2
+  21              	ip_addr_any:
+  22 0000 00000000 		.space	4
+  23              		.global	ip_addr_broadcast
+  24              		.align	2
+  27              	ip_addr_broadcast:
+  28 0004 FFFFFFFF 		.word	-1
+  29              		.text
+  30              		.align	1
+  31              		.global	ip4_addr_isbroadcast_u32
+  32              		.arch armv7e-m
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  36              		.fpu fpv5-d16
+  38              	ip4_addr_isbroadcast_u32:
+  39              	.LFB25:
+  40              		.file 1 "./lwip-2.1.2/src/core/ipv4/ip4_addr.c"
+   1:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+   2:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @file
+   3:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * This is the IPv4 address tools implementation.
+   4:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+   5:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+   6:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+   7:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /*
+   8:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+   9:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * All rights reserved.
+  10:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  11:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  12:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * are permitted provided that the following conditions are met:
+  13:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  14:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  15:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *    this list of conditions and the following disclaimer.
+  16:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  17:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *    this list of conditions and the following disclaimer in the documentation
+  18:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *    and/or other materials provided with the distribution.
+  19:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * 3. The name of the author may not be used to endorse or promote products
+  20:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *    derived from this software without specific prior written permission.
+  21:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  22:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  23:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  24:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  25:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  26:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  27:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  30:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  31:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * OF SUCH DAMAGE.
+  32:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  33:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * This file is part of the lwIP TCP/IP stack.
+  34:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  35:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Author: Adam Dunkels <adam@sics.se>
+  36:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  37:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+  38:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  39:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** #include "lwip/opt.h"
+  40:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  41:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** #if LWIP_IPV4
+  42:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  43:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** #include "lwip/ip_addr.h"
+  44:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** #include "lwip/netif.h"
+  45:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  46:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /* used by IP4_ADDR_ANY and IP_ADDR_BROADCAST in ip_addr.h */
+  47:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** const ip_addr_t ip_addr_any = IPADDR4_INIT(IPADDR_ANY);
+  48:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** const ip_addr_t ip_addr_broadcast = IPADDR4_INIT(IPADDR_BROADCAST);
+  49:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  50:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+  51:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Determine if an address is a broadcast address on a network interface
+  52:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  53:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param addr address to be checked
+  54:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param netif the network interface against which the address is checked
+  55:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return returns non-zero if the address is a broadcast address
+  56:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+  57:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** u8_t
+  58:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ip4_addr_isbroadcast_u32(u32_t addr, const struct netif *netif)
+  59:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+  41              		.loc 1 59 1
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 16
+  44              		@ frame_needed = 1, uses_anonymous_args = 0
+  45              		@ link register save eliminated.
+  46 0000 80B4     		push	{r7}
+  47              	.LCFI0:
+  48              		.cfi_def_cfa_offset 4
+  49              		.cfi_offset 7, -4
+  50 0002 85B0     		sub	sp, sp, #20
+  51              	.LCFI1:
+  52              		.cfi_def_cfa_offset 24
+  53 0004 00AF     		add	r7, sp, #0
+  54              	.LCFI2:
+  55              		.cfi_def_cfa_register 7
+  56 0006 7860     		str	r0, [r7, #4]
+  57 0008 3960     		str	r1, [r7]
+  60:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   ip4_addr_t ipaddr;
+  61:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   ip4_addr_set_u32(&ipaddr, addr);
+  58              		.loc 1 61 3
+  59 000a 7B68     		ldr	r3, [r7, #4]
+  60 000c FB60     		str	r3, [r7, #12]
+  62:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  63:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /* all ones (broadcast) or all zeroes (old skool broadcast) */
+  64:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   if ((~addr == IPADDR_ANY) ||
+  61              		.loc 1 64 6
+  62 000e 7B68     		ldr	r3, [r7, #4]
+  63 0010 B3F1FF3F 		cmp	r3, #-1
+  64 0014 02D0     		beq	.L2
+  65              		.loc 1 64 29 discriminator 1
+  66 0016 7B68     		ldr	r3, [r7, #4]
+  67 0018 002B     		cmp	r3, #0
+  68 001a 01D1     		bne	.L3
+  69              	.L2:
+  65:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       (addr == IPADDR_ANY)) {
+  66:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 1;
+  70              		.loc 1 66 12
+  71 001c 0123     		movs	r3, #1
+  72 001e 2AE0     		b	.L8
+  73              	.L3:
+  67:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /* no broadcast support on this network interface? */
+  68:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   } else if ((netif->flags & NETIF_FLAG_BROADCAST) == 0) {
+  74              		.loc 1 68 20
+  75 0020 3B68     		ldr	r3, [r7]
+  76 0022 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
+  77              		.loc 1 68 28
+  78 0026 03F00203 		and	r3, r3, #2
+  79              		.loc 1 68 13
+  80 002a 002B     		cmp	r3, #0
+  81 002c 01D1     		bne	.L5
+  69:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /* the given address cannot be a broadcast address
+  70:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****      * nor can we check against any broadcast addresses */
+  71:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 0;
+  82              		.loc 1 71 12
+  83 002e 0023     		movs	r3, #0
+  84 0030 21E0     		b	.L8
+  85              	.L5:
+  72:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /* address matches network interface address exactly? => no broadcast */
+  73:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   } else if (addr == ip4_addr_get_u32(netif_ip4_addr(netif))) {
+  86              		.loc 1 73 22
+  87 0032 3B68     		ldr	r3, [r7]
+  88 0034 0433     		adds	r3, r3, #4
+  89 0036 1B68     		ldr	r3, [r3]
+  90              		.loc 1 73 13
+  91 0038 7A68     		ldr	r2, [r7, #4]
+  92 003a 9A42     		cmp	r2, r3
+  93 003c 01D1     		bne	.L6
+  74:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 0;
+  94              		.loc 1 74 12
+  95 003e 0023     		movs	r3, #0
+  96 0040 19E0     		b	.L8
+  97              	.L6:
+  75:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /*  on the same (sub) network... */
+  76:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   } else if (ip4_addr_netcmp(&ipaddr, netif_ip4_addr(netif), netif_ip4_netmask(netif))
+  98              		.loc 1 76 14
+  99 0042 FA68     		ldr	r2, [r7, #12]
+ 100 0044 3B68     		ldr	r3, [r7]
+ 101 0046 0433     		adds	r3, r3, #4
+ 102 0048 1B68     		ldr	r3, [r3]
+ 103 004a 5A40     		eors	r2, r2, r3
+ 104 004c 3B68     		ldr	r3, [r7]
+ 105 004e 0833     		adds	r3, r3, #8
+ 106 0050 1B68     		ldr	r3, [r3]
+ 107 0052 1340     		ands	r3, r3, r2
+ 108              		.loc 1 76 13
+ 109 0054 002B     		cmp	r3, #0
+ 110 0056 0DD1     		bne	.L7
+  77:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****              /* ...and host identifier bits are all ones? =>... */
+  78:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****              && ((addr & ~ip4_addr_get_u32(netif_ip4_netmask(netif))) ==
+ 111              		.loc 1 78 27
+ 112 0058 3B68     		ldr	r3, [r7]
+ 113 005a 0833     		adds	r3, r3, #8
+ 114 005c 1B68     		ldr	r3, [r3]
+ 115              		.loc 1 78 26
+ 116 005e DA43     		mvns	r2, r3
+ 117              		.loc 1 78 24
+ 118 0060 7B68     		ldr	r3, [r7, #4]
+ 119 0062 1A40     		ands	r2, r2, r3
+  79:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****                  (IPADDR_BROADCAST & ~ip4_addr_get_u32(netif_ip4_netmask(netif))))) {
+ 120              		.loc 1 79 39
+ 121 0064 3B68     		ldr	r3, [r7]
+ 122 0066 0833     		adds	r3, r3, #8
+ 123 0068 1B68     		ldr	r3, [r3]
+ 124              		.loc 1 79 38
+ 125 006a DB43     		mvns	r3, r3
+  78:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****                  (IPADDR_BROADCAST & ~ip4_addr_get_u32(netif_ip4_netmask(netif))))) {
+ 126              		.loc 1 78 14
+ 127 006c 9A42     		cmp	r2, r3
+ 128 006e 01D1     		bne	.L7
+  80:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /* => network broadcast address */
+  81:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 1;
+ 129              		.loc 1 81 12
+ 130 0070 0123     		movs	r3, #1
+ 131 0072 00E0     		b	.L8
+ 132              	.L7:
+  82:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   } else {
+  83:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 0;
+ 133              		.loc 1 83 12
+ 134 0074 0023     		movs	r3, #0
+ 135              	.L8:
+  84:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+  85:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 136              		.loc 1 85 1 discriminator 1
+ 137 0076 1846     		mov	r0, r3
+ 138 0078 1437     		adds	r7, r7, #20
+ 139              	.LCFI3:
+ 140              		.cfi_def_cfa_offset 4
+ 141 007a BD46     		mov	sp, r7
+ 142              	.LCFI4:
+ 143              		.cfi_def_cfa_register 13
+ 144              		@ sp needed
+ 145 007c 5DF8047B 		ldr	r7, [sp], #4
+ 146              	.LCFI5:
+ 147              		.cfi_restore 7
+ 148              		.cfi_def_cfa_offset 0
+ 149 0080 7047     		bx	lr
+ 150              		.cfi_endproc
+ 151              	.LFE25:
+ 153              		.align	1
+ 154              		.global	ip4_addr_netmask_valid
+ 155              		.syntax unified
+ 156              		.thumb
+ 157              		.thumb_func
+ 158              		.fpu fpv5-d16
+ 160              	ip4_addr_netmask_valid:
+ 161              	.LFB26:
+  86:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  87:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /** Checks if a netmask is valid (starting with ones, then only zeros)
+  88:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+  89:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param netmask the IPv4 netmask to check (in network byte order!)
+  90:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return 1 if the netmask is valid, 0 if it is not
+  91:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+  92:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** u8_t
+  93:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ip4_addr_netmask_valid(u32_t netmask)
+  94:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+ 162              		.loc 1 94 1
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 16
+ 165              		@ frame_needed = 1, uses_anonymous_args = 0
+ 166 0082 80B5     		push	{r7, lr}
+ 167              	.LCFI6:
+ 168              		.cfi_def_cfa_offset 8
+ 169              		.cfi_offset 7, -8
+ 170              		.cfi_offset 14, -4
+ 171 0084 84B0     		sub	sp, sp, #16
+ 172              	.LCFI7:
+ 173              		.cfi_def_cfa_offset 24
+ 174 0086 00AF     		add	r7, sp, #0
+ 175              	.LCFI8:
+ 176              		.cfi_def_cfa_register 7
+ 177 0088 7860     		str	r0, [r7, #4]
+  95:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t mask;
+  96:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t nm_hostorder = lwip_htonl(netmask);
+ 178              		.loc 1 96 24
+ 179 008a 7868     		ldr	r0, [r7, #4]
+ 180 008c FFF7FEFF 		bl	lwip_htonl
+ 181 0090 B860     		str	r0, [r7, #8]
+  97:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+  98:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /* first, check for the first zero */
+  99:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   for (mask = 1UL << 31 ; mask != 0; mask >>= 1) {
+ 182              		.loc 1 99 13
+ 183 0092 4FF00043 		mov	r3, #-2147483648
+ 184 0096 FB60     		str	r3, [r7, #12]
+ 185              		.loc 1 99 3
+ 186 0098 07E0     		b	.L10
+ 187              	.L13:
+ 100:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) == 0) {
+ 188              		.loc 1 100 23
+ 189 009a BA68     		ldr	r2, [r7, #8]
+ 190 009c FB68     		ldr	r3, [r7, #12]
+ 191 009e 1340     		ands	r3, r3, r2
+ 192              		.loc 1 100 8
+ 193 00a0 002B     		cmp	r3, #0
+ 194 00a2 06D0     		beq	.L18
+  99:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) == 0) {
+ 195              		.loc 1 99 43 discriminator 2
+ 196 00a4 FB68     		ldr	r3, [r7, #12]
+ 197 00a6 5B08     		lsrs	r3, r3, #1
+ 198 00a8 FB60     		str	r3, [r7, #12]
+ 199              	.L10:
+  99:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) == 0) {
+ 200              		.loc 1 99 3 discriminator 1
+ 201 00aa FB68     		ldr	r3, [r7, #12]
+ 202 00ac 002B     		cmp	r3, #0
+ 203 00ae F4D1     		bne	.L13
+ 204 00b0 0BE0     		b	.L14
+ 205              	.L18:
+ 101:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 206              		.loc 1 101 7
+ 207 00b2 00BF     		nop
+ 102:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 103:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 104:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /* then check that there is no one */
+ 105:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   for (; mask != 0; mask >>= 1) {
+ 208              		.loc 1 105 3
+ 209 00b4 09E0     		b	.L14
+ 210              	.L17:
+ 106:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) != 0) {
+ 211              		.loc 1 106 23
+ 212 00b6 BA68     		ldr	r2, [r7, #8]
+ 213 00b8 FB68     		ldr	r3, [r7, #12]
+ 214 00ba 1340     		ands	r3, r3, r2
+ 215              		.loc 1 106 8
+ 216 00bc 002B     		cmp	r3, #0
+ 217 00be 01D0     		beq	.L15
+ 107:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       /* there is a one after the first zero -> invalid */
+ 108:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       return 0;
+ 218              		.loc 1 108 14
+ 219 00c0 0023     		movs	r3, #0
+ 220 00c2 06E0     		b	.L16
+ 221              	.L15:
+ 105:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) != 0) {
+ 222              		.loc 1 105 26
+ 223 00c4 FB68     		ldr	r3, [r7, #12]
+ 224 00c6 5B08     		lsrs	r3, r3, #1
+ 225 00c8 FB60     		str	r3, [r7, #12]
+ 226              	.L14:
+ 105:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if ((nm_hostorder & mask) != 0) {
+ 227              		.loc 1 105 3 discriminator 1
+ 228 00ca FB68     		ldr	r3, [r7, #12]
+ 229 00cc 002B     		cmp	r3, #0
+ 230 00ce F2D1     		bne	.L17
+ 109:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 110:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 111:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /* no one after the first zero -> valid */
+ 112:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   return 1;
+ 231              		.loc 1 112 10
+ 232 00d0 0123     		movs	r3, #1
+ 233              	.L16:
+ 113:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 234              		.loc 1 113 1
+ 235 00d2 1846     		mov	r0, r3
+ 236 00d4 1037     		adds	r7, r7, #16
+ 237              	.LCFI9:
+ 238              		.cfi_def_cfa_offset 8
+ 239 00d6 BD46     		mov	sp, r7
+ 240              	.LCFI10:
+ 241              		.cfi_def_cfa_register 13
+ 242              		@ sp needed
+ 243 00d8 80BD     		pop	{r7, pc}
+ 244              		.cfi_endproc
+ 245              	.LFE26:
+ 247              		.align	1
+ 248              		.global	ipaddr_addr
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 252              		.fpu fpv5-d16
+ 254              	ipaddr_addr:
+ 255              	.LFB27:
+ 114:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 115:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+ 116:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Ascii internet address interpretation routine.
+ 117:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * The value returned is in network order.
+ 118:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+ 119:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param cp IP address in ascii representation (e.g. "127.0.0.1")
+ 120:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return ip address in network order
+ 121:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+ 122:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** u32_t
+ 123:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ipaddr_addr(const char *cp)
+ 124:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+ 256              		.loc 1 124 1
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 16
+ 259              		@ frame_needed = 1, uses_anonymous_args = 0
+ 260 00da 80B5     		push	{r7, lr}
+ 261              	.LCFI11:
+ 262              		.cfi_def_cfa_offset 8
+ 263              		.cfi_offset 7, -8
+ 264              		.cfi_offset 14, -4
+ 265 00dc 84B0     		sub	sp, sp, #16
+ 266              	.LCFI12:
+ 267              		.cfi_def_cfa_offset 24
+ 268 00de 00AF     		add	r7, sp, #0
+ 269              	.LCFI13:
+ 270              		.cfi_def_cfa_register 7
+ 271 00e0 7860     		str	r0, [r7, #4]
+ 125:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   ip4_addr_t val;
+ 126:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 127:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   if (ip4addr_aton(cp, &val)) {
+ 272              		.loc 1 127 7
+ 273 00e2 07F10C03 		add	r3, r7, #12
+ 274 00e6 1946     		mov	r1, r3
+ 275 00e8 7868     		ldr	r0, [r7, #4]
+ 276 00ea FFF7FEFF 		bl	ip4addr_aton
+ 277 00ee 0346     		mov	r3, r0
+ 278              		.loc 1 127 6
+ 279 00f0 002B     		cmp	r3, #0
+ 280 00f2 01D0     		beq	.L20
+ 128:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return ip4_addr_get_u32(&val);
+ 281              		.loc 1 128 12
+ 282 00f4 FB68     		ldr	r3, [r7, #12]
+ 283 00f6 01E0     		b	.L22
+ 284              	.L20:
+ 129:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 130:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   return (IPADDR_NONE);
+ 285              		.loc 1 130 10
+ 286 00f8 4FF0FF33 		mov	r3, #-1
+ 287              	.L22:
+ 131:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 288              		.loc 1 131 1 discriminator 1
+ 289 00fc 1846     		mov	r0, r3
+ 290 00fe 1037     		adds	r7, r7, #16
+ 291              	.LCFI14:
+ 292              		.cfi_def_cfa_offset 8
+ 293 0100 BD46     		mov	sp, r7
+ 294              	.LCFI15:
+ 295              		.cfi_def_cfa_register 13
+ 296              		@ sp needed
+ 297 0102 80BD     		pop	{r7, pc}
+ 298              		.cfi_endproc
+ 299              	.LFE27:
+ 301              		.align	1
+ 302              		.global	ip4addr_aton
+ 303              		.syntax unified
+ 304              		.thumb
+ 305              		.thumb_func
+ 306              		.fpu fpv5-d16
+ 308              	ip4addr_aton:
+ 309              	.LFB28:
+ 132:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 133:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+ 134:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Check whether "cp" is a valid ascii representation
+ 135:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * of an Internet address and convert to a binary address.
+ 136:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Returns 1 if the address is valid, 0 if not.
+ 137:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * This replaces inet_addr, the return value from which
+ 138:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * cannot distinguish between failure and a local broadcast address.
+ 139:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+ 140:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param cp IP address in ascii representation (e.g. "127.0.0.1")
+ 141:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param addr pointer to which to save the ip address in network order
+ 142:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return 1 if cp could be converted to addr, 0 on failure
+ 143:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+ 144:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** int
+ 145:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ip4addr_aton(const char *cp, ip4_addr_t *addr)
+ 146:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+ 310              		.loc 1 146 1
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 40
+ 313              		@ frame_needed = 1, uses_anonymous_args = 0
+ 314 0104 80B5     		push	{r7, lr}
+ 315              	.LCFI16:
+ 316              		.cfi_def_cfa_offset 8
+ 317              		.cfi_offset 7, -8
+ 318              		.cfi_offset 14, -4
+ 319 0106 8AB0     		sub	sp, sp, #40
+ 320              	.LCFI17:
+ 321              		.cfi_def_cfa_offset 48
+ 322 0108 00AF     		add	r7, sp, #0
+ 323              	.LCFI18:
+ 324              		.cfi_def_cfa_register 7
+ 325 010a 7860     		str	r0, [r7, #4]
+ 326 010c 3960     		str	r1, [r7]
+ 147:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t val;
+ 148:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u8_t base;
+ 149:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   char c;
+ 150:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t parts[4];
+ 151:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t *pp = parts;
+ 327              		.loc 1 151 10
+ 328 010e 07F10C03 		add	r3, r7, #12
+ 329 0112 FB61     		str	r3, [r7, #28]
+ 152:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 153:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   c = *cp;
+ 330              		.loc 1 153 5
+ 331 0114 7B68     		ldr	r3, [r7, #4]
+ 332 0116 1B78     		ldrb	r3, [r3]
+ 333 0118 87F82230 		strb	r3, [r7, #34]
+ 334              	.L39:
+ 154:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   for (;;) {
+ 155:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     /*
+ 156:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****      * Collect number up to ``.''.
+ 157:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****      * Values are specified as for C:
+ 158:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****      * 0x=hex, 0=octal, 1-9=decimal.
+ 159:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****      */
+ 160:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if (!lwip_isdigit(c)) {
+ 335              		.loc 1 160 10
+ 336 011c 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 337 0120 0133     		adds	r3, r3, #1
+ 338 0122 864A     		ldr	r2, .L61
+ 339 0124 1344     		add	r3, r3, r2
+ 340 0126 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 341 0128 03F00403 		and	r3, r3, #4
+ 342              		.loc 1 160 8
+ 343 012c 002B     		cmp	r3, #0
+ 344 012e 01D1     		bne	.L24
+ 161:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       return 0;
+ 345              		.loc 1 161 14
+ 346 0130 0023     		movs	r3, #0
+ 347 0132 FEE0     		b	.L58
+ 348              	.L24:
+ 162:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 163:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     val = 0;
+ 349              		.loc 1 163 9
+ 350 0134 0023     		movs	r3, #0
+ 351 0136 7B62     		str	r3, [r7, #36]
+ 164:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     base = 10;
+ 352              		.loc 1 164 10
+ 353 0138 0A23     		movs	r3, #10
+ 354 013a 87F82330 		strb	r3, [r7, #35]
+ 165:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if (c == '0') {
+ 355              		.loc 1 165 8
+ 356 013e 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 357 0142 302B     		cmp	r3, #48
+ 358 0144 1CD1     		bne	.L34
+ 166:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       c = *++cp;
+ 359              		.loc 1 166 9
+ 360 0146 7B68     		ldr	r3, [r7, #4]
+ 361 0148 0133     		adds	r3, r3, #1
+ 362 014a 7B60     		str	r3, [r7, #4]
+ 363 014c 7B68     		ldr	r3, [r7, #4]
+ 364 014e 1B78     		ldrb	r3, [r3]
+ 365 0150 87F82230 		strb	r3, [r7, #34]
+ 167:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (c == 'x' || c == 'X') {
+ 366              		.loc 1 167 10
+ 367 0154 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 368 0158 782B     		cmp	r3, #120
+ 369 015a 03D0     		beq	.L27
+ 370              		.loc 1 167 20 discriminator 1
+ 371 015c 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 372 0160 582B     		cmp	r3, #88
+ 373 0162 0AD1     		bne	.L28
+ 374              	.L27:
+ 168:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         base = 16;
+ 375              		.loc 1 168 14
+ 376 0164 1023     		movs	r3, #16
+ 377 0166 87F82330 		strb	r3, [r7, #35]
+ 169:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         c = *++cp;
+ 378              		.loc 1 169 11
+ 379 016a 7B68     		ldr	r3, [r7, #4]
+ 380 016c 0133     		adds	r3, r3, #1
+ 381 016e 7B60     		str	r3, [r7, #4]
+ 382 0170 7B68     		ldr	r3, [r7, #4]
+ 383 0172 1B78     		ldrb	r3, [r3]
+ 384 0174 87F82230 		strb	r3, [r7, #34]
+ 385 0178 02E0     		b	.L34
+ 386              	.L28:
+ 170:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       } else {
+ 171:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         base = 8;
+ 387              		.loc 1 171 14
+ 388 017a 0823     		movs	r3, #8
+ 389 017c 87F82330 		strb	r3, [r7, #35]
+ 390              	.L34:
+ 172:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 173:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 174:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     for (;;) {
+ 175:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (lwip_isdigit(c)) {
+ 391              		.loc 1 175 11
+ 392 0180 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 393 0184 0133     		adds	r3, r3, #1
+ 394 0186 6D4A     		ldr	r2, .L61
+ 395 0188 1344     		add	r3, r3, r2
+ 396 018a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 397 018c 03F00403 		and	r3, r3, #4
+ 398              		.loc 1 175 10
+ 399 0190 002B     		cmp	r3, #0
+ 400 0192 11D0     		beq	.L29
+ 176:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         val = (val * base) + (u32_t)(c - '0');
+ 401              		.loc 1 176 20
+ 402 0194 97F82330 		ldrb	r3, [r7, #35]	@ zero_extendqisi2
+ 403 0198 7A6A     		ldr	r2, [r7, #36]
+ 404 019a 03FB02F2 		mul	r2, r3, r2
+ 405              		.loc 1 176 28
+ 406 019e 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 407 01a2 1344     		add	r3, r3, r2
+ 408              		.loc 1 176 13
+ 409 01a4 303B     		subs	r3, r3, #48
+ 410 01a6 7B62     		str	r3, [r7, #36]
+ 177:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         c = *++cp;
+ 411              		.loc 1 177 11
+ 412 01a8 7B68     		ldr	r3, [r7, #4]
+ 413 01aa 0133     		adds	r3, r3, #1
+ 414 01ac 7B60     		str	r3, [r7, #4]
+ 415 01ae 7B68     		ldr	r3, [r7, #4]
+ 416 01b0 1B78     		ldrb	r3, [r3]
+ 417 01b2 87F82230 		strb	r3, [r7, #34]
+ 418 01b6 E3E7     		b	.L34
+ 419              	.L29:
+ 178:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       } else if (base == 16 && lwip_isxdigit(c)) {
+ 420              		.loc 1 178 17
+ 421 01b8 97F82330 		ldrb	r3, [r7, #35]	@ zero_extendqisi2
+ 422 01bc 102B     		cmp	r3, #16
+ 423 01be 27D1     		bne	.L31
+ 424              		.loc 1 178 32 discriminator 1
+ 425 01c0 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 426 01c4 0133     		adds	r3, r3, #1
+ 427 01c6 5D4A     		ldr	r2, .L61
+ 428 01c8 1344     		add	r3, r3, r2
+ 429 01ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 430 01cc 03F04403 		and	r3, r3, #68
+ 431              		.loc 1 178 29 discriminator 1
+ 432 01d0 002B     		cmp	r3, #0
+ 433 01d2 1DD0     		beq	.L31
+ 179:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         val = (val << 4) | (u32_t)(c + 10 - (lwip_islower(c) ? 'a' : 'A'));
+ 434              		.loc 1 179 20
+ 435 01d4 7B6A     		ldr	r3, [r7, #36]
+ 436 01d6 1B01     		lsls	r3, r3, #4
+ 437              		.loc 1 179 38
+ 438 01d8 97F82220 		ldrb	r2, [r7, #34]	@ zero_extendqisi2
+ 439 01dc 02F10A01 		add	r1, r2, #10
+ 440              		.loc 1 179 46
+ 441 01e0 97F82220 		ldrb	r2, [r7, #34]	@ zero_extendqisi2
+ 442 01e4 0132     		adds	r2, r2, #1
+ 443 01e6 5548     		ldr	r0, .L61
+ 444 01e8 0244     		add	r2, r2, r0
+ 445 01ea 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 446 01ec 02F00302 		and	r2, r2, #3
+ 447              		.loc 1 179 68
+ 448 01f0 022A     		cmp	r2, #2
+ 449 01f2 01D1     		bne	.L32
+ 450              		.loc 1 179 68 is_stmt 0 discriminator 1
+ 451 01f4 6122     		movs	r2, #97
+ 452 01f6 00E0     		b	.L33
+ 453              	.L32:
+ 454              		.loc 1 179 68 discriminator 2
+ 455 01f8 4122     		movs	r2, #65
+ 456              	.L33:
+ 457              		.loc 1 179 43 is_stmt 1 discriminator 4
+ 458 01fa 8A1A     		subs	r2, r1, r2
+ 459              		.loc 1 179 13 discriminator 4
+ 460 01fc 1343     		orrs	r3, r3, r2
+ 461 01fe 7B62     		str	r3, [r7, #36]
+ 180:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         c = *++cp;
+ 462              		.loc 1 180 11 discriminator 4
+ 463 0200 7B68     		ldr	r3, [r7, #4]
+ 464 0202 0133     		adds	r3, r3, #1
+ 465 0204 7B60     		str	r3, [r7, #4]
+ 466 0206 7B68     		ldr	r3, [r7, #4]
+ 467 0208 1B78     		ldrb	r3, [r3]
+ 468 020a 87F82230 		strb	r3, [r7, #34]
+ 175:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         val = (val * base) + (u32_t)(c - '0');
+ 469              		.loc 1 175 10 discriminator 4
+ 470 020e B7E7     		b	.L34
+ 471              	.L31:
+ 181:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       } else {
+ 182:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         break;
+ 183:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 184:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 185:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if (c == '.') {
+ 472              		.loc 1 185 8
+ 473 0210 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 474 0214 2E2B     		cmp	r3, #46
+ 475 0216 14D1     		bne	.L59
+ 186:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       /*
+ 187:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****        * Internet format:
+ 188:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****        *  a.b.c.d
+ 189:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****        *  a.b.c   (with c treated as 16 bits)
+ 190:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****        *  a.b (with b treated as 24 bits)
+ 191:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****        */
+ 192:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (pp >= parts + 3) {
+ 476              		.loc 1 192 23
+ 477 0218 07F10C03 		add	r3, r7, #12
+ 478 021c 0C33     		adds	r3, r3, #12
+ 479              		.loc 1 192 10
+ 480 021e FA69     		ldr	r2, [r7, #28]
+ 481 0220 9A42     		cmp	r2, r3
+ 482 0222 01D3     		bcc	.L36
+ 193:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 483              		.loc 1 193 16
+ 484 0224 0023     		movs	r3, #0
+ 485 0226 84E0     		b	.L58
+ 486              	.L36:
+ 194:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 195:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       *pp++ = val;
+ 487              		.loc 1 195 10
+ 488 0228 FB69     		ldr	r3, [r7, #28]
+ 489 022a 1A1D     		adds	r2, r3, #4
+ 490 022c FA61     		str	r2, [r7, #28]
+ 491              		.loc 1 195 13
+ 492 022e 7A6A     		ldr	r2, [r7, #36]
+ 493 0230 1A60     		str	r2, [r3]
+ 196:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       c = *++cp;
+ 494              		.loc 1 196 9
+ 495 0232 7B68     		ldr	r3, [r7, #4]
+ 496 0234 0133     		adds	r3, r3, #1
+ 497 0236 7B60     		str	r3, [r7, #4]
+ 498 0238 7B68     		ldr	r3, [r7, #4]
+ 499 023a 1B78     		ldrb	r3, [r3]
+ 500 023c 87F82230 		strb	r3, [r7, #34]
+ 160:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       return 0;
+ 501              		.loc 1 160 8
+ 502 0240 6CE7     		b	.L39
+ 503              	.L59:
+ 197:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     } else {
+ 198:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 504              		.loc 1 198 7
+ 505 0242 00BF     		nop
+ 199:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 200:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 201:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /*
+ 202:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****    * Check for trailing characters.
+ 203:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****    */
+ 204:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   if (c != '\0' && !lwip_isspace(c)) {
+ 506              		.loc 1 204 6
+ 507 0244 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 508 0248 002B     		cmp	r3, #0
+ 509 024a 0BD0     		beq	.L40
+ 510              		.loc 1 204 21 discriminator 1
+ 511 024c 97F82230 		ldrb	r3, [r7, #34]	@ zero_extendqisi2
+ 512 0250 0133     		adds	r3, r3, #1
+ 513 0252 3A4A     		ldr	r2, .L61
+ 514 0254 1344     		add	r3, r3, r2
+ 515 0256 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 516 0258 03F00803 		and	r3, r3, #8
+ 517              		.loc 1 204 17 discriminator 1
+ 518 025c 002B     		cmp	r3, #0
+ 519 025e 01D1     		bne	.L40
+ 205:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     return 0;
+ 520              		.loc 1 205 12
+ 521 0260 0023     		movs	r3, #0
+ 522 0262 66E0     		b	.L58
+ 523              	.L40:
+ 206:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 207:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   /*
+ 208:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****    * Concoct the address according to
+ 209:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****    * the number of parts specified.
+ 210:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****    */
+ 211:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   switch (pp - parts + 1) {
+ 524              		.loc 1 211 14
+ 525 0264 07F10C03 		add	r3, r7, #12
+ 526 0268 FA69     		ldr	r2, [r7, #28]
+ 527 026a D31A     		subs	r3, r2, r3
+ 528 026c 9B10     		asrs	r3, r3, #2
+ 529              		.loc 1 211 22
+ 530 026e 0133     		adds	r3, r3, #1
+ 531 0270 042B     		cmp	r3, #4
+ 532 0272 53D8     		bhi	.L60
+ 533 0274 01A2     		adr	r2, .L43
+ 534 0276 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 535 027a 00BF     		.p2align 2
+ 536              	.L43:
+ 537 027c 91020000 		.word	.L47+1
+ 538 0280 1D030000 		.word	.L60+1
+ 539 0284 95020000 		.word	.L45+1
+ 540 0288 B7020000 		.word	.L44+1
+ 541 028c E5020000 		.word	.L42+1
+ 542              		.p2align 1
+ 543              	.L47:
+ 212:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 213:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     case 0:
+ 214:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       return 0;       /* initial nondigit */
+ 544              		.loc 1 214 14
+ 545 0290 0023     		movs	r3, #0
+ 546 0292 4EE0     		b	.L58
+ 547              	.L45:
+ 215:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 216:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     case 1:             /* a -- 32 bits */
+ 217:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 218:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 219:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     case 2:             /* a.b -- 8.24 bits */
+ 220:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (val > 0xffffffUL) {
+ 548              		.loc 1 220 10
+ 549 0294 7B6A     		ldr	r3, [r7, #36]
+ 550 0296 B3F1807F 		cmp	r3, #16777216
+ 551 029a 01D3     		bcc	.L49
+ 221:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 552              		.loc 1 221 16
+ 553 029c 0023     		movs	r3, #0
+ 554 029e 48E0     		b	.L58
+ 555              	.L49:
+ 222:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 223:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (parts[0] > 0xff) {
+ 556              		.loc 1 223 16
+ 557 02a0 FB68     		ldr	r3, [r7, #12]
+ 558              		.loc 1 223 10
+ 559 02a2 FF2B     		cmp	r3, #255
+ 560 02a4 01D9     		bls	.L50
+ 224:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 561              		.loc 1 224 16
+ 562 02a6 0023     		movs	r3, #0
+ 563 02a8 43E0     		b	.L58
+ 564              	.L50:
+ 225:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 226:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       val |= parts[0] << 24;
+ 565              		.loc 1 226 19
+ 566 02aa FB68     		ldr	r3, [r7, #12]
+ 567              		.loc 1 226 23
+ 568 02ac 1B06     		lsls	r3, r3, #24
+ 569              		.loc 1 226 11
+ 570 02ae 7A6A     		ldr	r2, [r7, #36]
+ 571 02b0 1343     		orrs	r3, r3, r2
+ 572 02b2 7B62     		str	r3, [r7, #36]
+ 227:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 573              		.loc 1 227 7
+ 574 02b4 33E0     		b	.L48
+ 575              	.L44:
+ 228:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 229:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     case 3:             /* a.b.c -- 8.8.16 bits */
+ 230:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (val > 0xffff) {
+ 576              		.loc 1 230 10
+ 577 02b6 7B6A     		ldr	r3, [r7, #36]
+ 578 02b8 B3F5803F 		cmp	r3, #65536
+ 579 02bc 01D3     		bcc	.L51
+ 231:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 580              		.loc 1 231 16
+ 581 02be 0023     		movs	r3, #0
+ 582 02c0 37E0     		b	.L58
+ 583              	.L51:
+ 232:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 233:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if ((parts[0] > 0xff) || (parts[1] > 0xff)) {
+ 584              		.loc 1 233 17
+ 585 02c2 FB68     		ldr	r3, [r7, #12]
+ 586              		.loc 1 233 10
+ 587 02c4 FF2B     		cmp	r3, #255
+ 588 02c6 02D8     		bhi	.L52
+ 589              		.loc 1 233 38 discriminator 1
+ 590 02c8 3B69     		ldr	r3, [r7, #16]
+ 591              		.loc 1 233 29 discriminator 1
+ 592 02ca FF2B     		cmp	r3, #255
+ 593 02cc 01D9     		bls	.L53
+ 594              	.L52:
+ 234:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 595              		.loc 1 234 16
+ 596 02ce 0023     		movs	r3, #0
+ 597 02d0 2FE0     		b	.L58
+ 598              	.L53:
+ 235:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 236:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       val |= (parts[0] << 24) | (parts[1] << 16);
+ 599              		.loc 1 236 20
+ 600 02d2 FB68     		ldr	r3, [r7, #12]
+ 601              		.loc 1 236 24
+ 602 02d4 1A06     		lsls	r2, r3, #24
+ 603              		.loc 1 236 39
+ 604 02d6 3B69     		ldr	r3, [r7, #16]
+ 605              		.loc 1 236 43
+ 606 02d8 1B04     		lsls	r3, r3, #16
+ 607              		.loc 1 236 31
+ 608 02da 1343     		orrs	r3, r3, r2
+ 609              		.loc 1 236 11
+ 610 02dc 7A6A     		ldr	r2, [r7, #36]
+ 611 02de 1343     		orrs	r3, r3, r2
+ 612 02e0 7B62     		str	r3, [r7, #36]
+ 237:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 613              		.loc 1 237 7
+ 614 02e2 1CE0     		b	.L48
+ 615              	.L42:
+ 238:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 239:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     case 4:             /* a.b.c.d -- 8.8.8.8 bits */
+ 240:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (val > 0xff) {
+ 616              		.loc 1 240 10
+ 617 02e4 7B6A     		ldr	r3, [r7, #36]
+ 618 02e6 FF2B     		cmp	r3, #255
+ 619 02e8 01D9     		bls	.L54
+ 241:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 620              		.loc 1 241 16
+ 621 02ea 0023     		movs	r3, #0
+ 622 02ec 21E0     		b	.L58
+ 623              	.L54:
+ 242:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 243:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if ((parts[0] > 0xff) || (parts[1] > 0xff) || (parts[2] > 0xff)) {
+ 624              		.loc 1 243 17
+ 625 02ee FB68     		ldr	r3, [r7, #12]
+ 626              		.loc 1 243 10
+ 627 02f0 FF2B     		cmp	r3, #255
+ 628 02f2 05D8     		bhi	.L55
+ 629              		.loc 1 243 38 discriminator 1
+ 630 02f4 3B69     		ldr	r3, [r7, #16]
+ 631              		.loc 1 243 29 discriminator 1
+ 632 02f6 FF2B     		cmp	r3, #255
+ 633 02f8 02D8     		bhi	.L55
+ 634              		.loc 1 243 59 discriminator 2
+ 635 02fa 7B69     		ldr	r3, [r7, #20]
+ 636              		.loc 1 243 50 discriminator 2
+ 637 02fc FF2B     		cmp	r3, #255
+ 638 02fe 01D9     		bls	.L56
+ 639              	.L55:
+ 244:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return 0;
+ 640              		.loc 1 244 16
+ 641 0300 0023     		movs	r3, #0
+ 642 0302 16E0     		b	.L58
+ 643              	.L56:
+ 245:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 246:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
+ 644              		.loc 1 246 20
+ 645 0304 FB68     		ldr	r3, [r7, #12]
+ 646              		.loc 1 246 24
+ 647 0306 1A06     		lsls	r2, r3, #24
+ 648              		.loc 1 246 39
+ 649 0308 3B69     		ldr	r3, [r7, #16]
+ 650              		.loc 1 246 43
+ 651 030a 1B04     		lsls	r3, r3, #16
+ 652              		.loc 1 246 31
+ 653 030c 1A43     		orrs	r2, r2, r3
+ 654              		.loc 1 246 58
+ 655 030e 7B69     		ldr	r3, [r7, #20]
+ 656              		.loc 1 246 62
+ 657 0310 1B02     		lsls	r3, r3, #8
+ 658              		.loc 1 246 50
+ 659 0312 1343     		orrs	r3, r3, r2
+ 660              		.loc 1 246 11
+ 661 0314 7A6A     		ldr	r2, [r7, #36]
+ 662 0316 1343     		orrs	r3, r3, r2
+ 663 0318 7B62     		str	r3, [r7, #36]
+ 247:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 664              		.loc 1 247 7
+ 665 031a 00E0     		b	.L48
+ 666              	.L60:
+ 248:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     default:
+ 249:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       LWIP_ASSERT("unhandled", 0);
+ 250:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       break;
+ 667              		.loc 1 250 7
+ 668 031c 00BF     		nop
+ 669              	.L48:
+ 251:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 252:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   if (addr) {
+ 670              		.loc 1 252 6
+ 671 031e 3B68     		ldr	r3, [r7]
+ 672 0320 002B     		cmp	r3, #0
+ 673 0322 05D0     		beq	.L57
+ 253:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     ip4_addr_set_u32(addr, lwip_htonl(val));
+ 674              		.loc 1 253 5
+ 675 0324 786A     		ldr	r0, [r7, #36]
+ 676 0326 FFF7FEFF 		bl	lwip_htonl
+ 677 032a 0246     		mov	r2, r0
+ 678 032c 3B68     		ldr	r3, [r7]
+ 679 032e 1A60     		str	r2, [r3]
+ 680              	.L57:
+ 254:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 255:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   return 1;
+ 681              		.loc 1 255 10
+ 682 0330 0123     		movs	r3, #1
+ 683              	.L58:
+ 256:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 684              		.loc 1 256 1 discriminator 1
+ 685 0332 1846     		mov	r0, r3
+ 686 0334 2837     		adds	r7, r7, #40
+ 687              	.LCFI19:
+ 688              		.cfi_def_cfa_offset 8
+ 689 0336 BD46     		mov	sp, r7
+ 690              	.LCFI20:
+ 691              		.cfi_def_cfa_register 13
+ 692              		@ sp needed
+ 693 0338 80BD     		pop	{r7, pc}
+ 694              	.L62:
+ 695 033a 00BF     		.align	2
+ 696              	.L61:
+ 697 033c 00000000 		.word	_ctype_
+ 698              		.cfi_endproc
+ 699              	.LFE28:
+ 701              		.align	1
+ 702              		.global	ip4addr_ntoa
+ 703              		.syntax unified
+ 704              		.thumb
+ 705              		.thumb_func
+ 706              		.fpu fpv5-d16
+ 708              	ip4addr_ntoa:
+ 709              	.LFB29:
+ 257:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 258:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+ 259:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Convert numeric IP address into decimal dotted ASCII representation.
+ 260:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * returns ptr to static buffer; not reentrant!
+ 261:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+ 262:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param addr ip address in network order to convert
+ 263:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return pointer to a global static (!) buffer that holds the ASCII
+ 264:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *         representation of addr
+ 265:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+ 266:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** char *
+ 267:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ip4addr_ntoa(const ip4_addr_t *addr)
+ 268:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+ 710              		.loc 1 268 1
+ 711              		.cfi_startproc
+ 712              		@ args = 0, pretend = 0, frame = 8
+ 713              		@ frame_needed = 1, uses_anonymous_args = 0
+ 714 0340 80B5     		push	{r7, lr}
+ 715              	.LCFI21:
+ 716              		.cfi_def_cfa_offset 8
+ 717              		.cfi_offset 7, -8
+ 718              		.cfi_offset 14, -4
+ 719 0342 82B0     		sub	sp, sp, #8
+ 720              	.LCFI22:
+ 721              		.cfi_def_cfa_offset 16
+ 722 0344 00AF     		add	r7, sp, #0
+ 723              	.LCFI23:
+ 724              		.cfi_def_cfa_register 7
+ 725 0346 7860     		str	r0, [r7, #4]
+ 269:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   static char str[IP4ADDR_STRLEN_MAX];
+ 270:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   return ip4addr_ntoa_r(addr, str, IP4ADDR_STRLEN_MAX);
+ 726              		.loc 1 270 10
+ 727 0348 1022     		movs	r2, #16
+ 728 034a 0449     		ldr	r1, .L65
+ 729 034c 7868     		ldr	r0, [r7, #4]
+ 730 034e FFF7FEFF 		bl	ip4addr_ntoa_r
+ 731 0352 0346     		mov	r3, r0
+ 271:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 732              		.loc 1 271 1
+ 733 0354 1846     		mov	r0, r3
+ 734 0356 0837     		adds	r7, r7, #8
+ 735              	.LCFI24:
+ 736              		.cfi_def_cfa_offset 8
+ 737 0358 BD46     		mov	sp, r7
+ 738              	.LCFI25:
+ 739              		.cfi_def_cfa_register 13
+ 740              		@ sp needed
+ 741 035a 80BD     		pop	{r7, pc}
+ 742              	.L66:
+ 743              		.align	2
+ 744              	.L65:
+ 745 035c 00000000 		.word	str.0
+ 746              		.cfi_endproc
+ 747              	.LFE29:
+ 749              		.align	1
+ 750              		.global	ip4addr_ntoa_r
+ 751              		.syntax unified
+ 752              		.thumb
+ 753              		.thumb_func
+ 754              		.fpu fpv5-d16
+ 756              	ip4addr_ntoa_r:
+ 757              	.LFB30:
+ 272:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 273:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** /**
+ 274:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * Same as ip4addr_ntoa, but reentrant since a user-supplied buffer is used.
+ 275:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *
+ 276:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param addr ip address in network order to convert
+ 277:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param buf target buffer where the string is stored
+ 278:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @param buflen length of buf
+ 279:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  * @return either pointer to buf which now holds the ASCII
+ 280:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  *         representation of addr or NULL if buf was too small
+ 281:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****  */
+ 282:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** char *
+ 283:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
+ 284:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** {
+ 758              		.loc 1 284 1
+ 759              		.cfi_startproc
+ 760              		@ args = 0, pretend = 0, frame = 48
+ 761              		@ frame_needed = 1, uses_anonymous_args = 0
+ 762              		@ link register save eliminated.
+ 763 0360 80B4     		push	{r7}
+ 764              	.LCFI26:
+ 765              		.cfi_def_cfa_offset 4
+ 766              		.cfi_offset 7, -4
+ 767 0362 8DB0     		sub	sp, sp, #52
+ 768              	.LCFI27:
+ 769              		.cfi_def_cfa_offset 56
+ 770 0364 00AF     		add	r7, sp, #0
+ 771              	.LCFI28:
+ 772              		.cfi_def_cfa_register 7
+ 773 0366 F860     		str	r0, [r7, #12]
+ 774 0368 B960     		str	r1, [r7, #8]
+ 775 036a 7A60     		str	r2, [r7, #4]
+ 285:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u32_t s_addr;
+ 286:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   char inv[3];
+ 287:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   char *rp;
+ 288:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u8_t *ap;
+ 289:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u8_t rem;
+ 290:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u8_t n;
+ 291:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   u8_t i;
+ 292:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   int len = 0;
+ 776              		.loc 1 292 7
+ 777 036c 0023     		movs	r3, #0
+ 778 036e 3B62     		str	r3, [r7, #32]
+ 293:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 294:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   s_addr = ip4_addr_get_u32(addr);
+ 779              		.loc 1 294 12
+ 780 0370 FB68     		ldr	r3, [r7, #12]
+ 781 0372 1B68     		ldr	r3, [r3]
+ 782              		.loc 1 294 10
+ 783 0374 BB61     		str	r3, [r7, #24]
+ 295:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** 
+ 296:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   rp = buf;
+ 784              		.loc 1 296 6
+ 785 0376 BB68     		ldr	r3, [r7, #8]
+ 786 0378 FB62     		str	r3, [r7, #44]
+ 297:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   ap = (u8_t *)&s_addr;
+ 787              		.loc 1 297 6
+ 788 037a 07F11803 		add	r3, r7, #24
+ 789 037e BB62     		str	r3, [r7, #40]
+ 298:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   for (n = 0; n < 4; n++) {
+ 790              		.loc 1 298 10
+ 791 0380 0023     		movs	r3, #0
+ 792 0382 87F82730 		strb	r3, [r7, #39]
+ 793              		.loc 1 298 3
+ 794 0386 59E0     		b	.L68
+ 795              	.L75:
+ 299:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     i = 0;
+ 796              		.loc 1 299 7
+ 797 0388 0023     		movs	r3, #0
+ 798 038a 87F82630 		strb	r3, [r7, #38]
+ 799              	.L69:
+ 300:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     do {
+ 301:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       rem = *ap % (u8_t)10;
+ 800              		.loc 1 301 13 discriminator 1
+ 801 038e BB6A     		ldr	r3, [r7, #40]
+ 802 0390 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 803              		.loc 1 301 11 discriminator 1
+ 804 0392 334B     		ldr	r3, .L77
+ 805 0394 A3FB0213 		umull	r1, r3, r3, r2
+ 806 0398 D908     		lsrs	r1, r3, #3
+ 807 039a 0B46     		mov	r3, r1
+ 808 039c 9B00     		lsls	r3, r3, #2
+ 809 039e 0B44     		add	r3, r3, r1
+ 810 03a0 5B00     		lsls	r3, r3, #1
+ 811 03a2 D31A     		subs	r3, r2, r3
+ 812 03a4 FB77     		strb	r3, [r7, #31]
+ 302:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       *ap /= (u8_t)10;
+ 813              		.loc 1 302 11 discriminator 1
+ 814 03a6 BB6A     		ldr	r3, [r7, #40]
+ 815 03a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 816 03aa 2D4A     		ldr	r2, .L77
+ 817 03ac A2FB0323 		umull	r2, r3, r2, r3
+ 818 03b0 DB08     		lsrs	r3, r3, #3
+ 819 03b2 DAB2     		uxtb	r2, r3
+ 820 03b4 BB6A     		ldr	r3, [r7, #40]
+ 821 03b6 1A70     		strb	r2, [r3]
+ 303:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       inv[i++] = (char)('0' + rem);
+ 822              		.loc 1 303 12 discriminator 1
+ 823 03b8 97F82630 		ldrb	r3, [r7, #38]	@ zero_extendqisi2
+ 824 03bc 5A1C     		adds	r2, r3, #1
+ 825 03be 87F82620 		strb	r2, [r7, #38]
+ 826 03c2 1946     		mov	r1, r3
+ 827              		.loc 1 303 18 discriminator 1
+ 828 03c4 FB7F     		ldrb	r3, [r7, #31]
+ 829 03c6 3033     		adds	r3, r3, #48
+ 830 03c8 DAB2     		uxtb	r2, r3
+ 831              		.loc 1 303 16 discriminator 1
+ 832 03ca 07F13003 		add	r3, r7, #48
+ 833 03ce 0B44     		add	r3, r3, r1
+ 834 03d0 03F81C2C 		strb	r2, [r3, #-28]
+ 304:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     } while (*ap);
+ 835              		.loc 1 304 14 discriminator 1
+ 836 03d4 BB6A     		ldr	r3, [r7, #40]
+ 837 03d6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 838              		.loc 1 304 5 discriminator 1
+ 839 03d8 002B     		cmp	r3, #0
+ 840 03da D8D1     		bne	.L69
+ 305:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     while (i--) {
+ 841              		.loc 1 305 11
+ 842 03dc 12E0     		b	.L70
+ 843              	.L73:
+ 306:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (len++ >= buflen) {
+ 844              		.loc 1 306 14
+ 845 03de 3B6A     		ldr	r3, [r7, #32]
+ 846 03e0 5A1C     		adds	r2, r3, #1
+ 847 03e2 3A62     		str	r2, [r7, #32]
+ 848              		.loc 1 306 10
+ 849 03e4 7A68     		ldr	r2, [r7, #4]
+ 850 03e6 9A42     		cmp	r2, r3
+ 851 03e8 01DC     		bgt	.L71
+ 307:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****         return NULL;
+ 852              		.loc 1 307 16
+ 853 03ea 0023     		movs	r3, #0
+ 854 03ec 31E0     		b	.L76
+ 855              	.L71:
+ 308:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       }
+ 309:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       *rp++ = inv[i];
+ 856              		.loc 1 309 18
+ 857 03ee 97F82620 		ldrb	r2, [r7, #38]	@ zero_extendqisi2
+ 858              		.loc 1 309 10
+ 859 03f2 FB6A     		ldr	r3, [r7, #44]
+ 860 03f4 591C     		adds	r1, r3, #1
+ 861 03f6 F962     		str	r1, [r7, #44]
+ 862              		.loc 1 309 18
+ 863 03f8 07F13001 		add	r1, r7, #48
+ 864 03fc 0A44     		add	r2, r2, r1
+ 865 03fe 12F81C2C 		ldrb	r2, [r2, #-28]	@ zero_extendqisi2
+ 866              		.loc 1 309 13
+ 867 0402 1A70     		strb	r2, [r3]
+ 868              	.L70:
+ 305:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (len++ >= buflen) {
+ 869              		.loc 1 305 13
+ 870 0404 97F82630 		ldrb	r3, [r7, #38]	@ zero_extendqisi2
+ 871 0408 5A1E     		subs	r2, r3, #1
+ 872 040a 87F82620 		strb	r2, [r7, #38]
+ 305:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       if (len++ >= buflen) {
+ 873              		.loc 1 305 11
+ 874 040e 002B     		cmp	r3, #0
+ 875 0410 E5D1     		bne	.L73
+ 310:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 311:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     if (len++ >= buflen) {
+ 876              		.loc 1 311 12
+ 877 0412 3B6A     		ldr	r3, [r7, #32]
+ 878 0414 5A1C     		adds	r2, r3, #1
+ 879 0416 3A62     		str	r2, [r7, #32]
+ 880              		.loc 1 311 8
+ 881 0418 7A68     		ldr	r2, [r7, #4]
+ 882 041a 9A42     		cmp	r2, r3
+ 883 041c 01DC     		bgt	.L74
+ 312:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****       return NULL;
+ 884              		.loc 1 312 14
+ 885 041e 0023     		movs	r3, #0
+ 886 0420 17E0     		b	.L76
+ 887              	.L74:
+ 313:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     }
+ 314:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     *rp++ = '.';
+ 888              		.loc 1 314 8 discriminator 2
+ 889 0422 FB6A     		ldr	r3, [r7, #44]
+ 890 0424 5A1C     		adds	r2, r3, #1
+ 891 0426 FA62     		str	r2, [r7, #44]
+ 892              		.loc 1 314 11 discriminator 2
+ 893 0428 2E22     		movs	r2, #46
+ 894 042a 1A70     		strb	r2, [r3]
+ 315:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     ap++;
+ 895              		.loc 1 315 7 discriminator 2
+ 896 042c BB6A     		ldr	r3, [r7, #40]
+ 897 042e 0133     		adds	r3, r3, #1
+ 898 0430 BB62     		str	r3, [r7, #40]
+ 298:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     i = 0;
+ 899              		.loc 1 298 23 discriminator 2
+ 900 0432 97F82730 		ldrb	r3, [r7, #39]	@ zero_extendqisi2
+ 901 0436 0133     		adds	r3, r3, #1
+ 902 0438 87F82730 		strb	r3, [r7, #39]
+ 903              	.L68:
+ 298:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****     i = 0;
+ 904              		.loc 1 298 3 discriminator 1
+ 905 043c 97F82730 		ldrb	r3, [r7, #39]	@ zero_extendqisi2
+ 906 0440 032B     		cmp	r3, #3
+ 907 0442 A1D9     		bls	.L75
+ 316:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   }
+ 317:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   *--rp = 0;
+ 908              		.loc 1 317 9
+ 909 0444 FB6A     		ldr	r3, [r7, #44]
+ 910 0446 013B     		subs	r3, r3, #1
+ 911 0448 FB62     		str	r3, [r7, #44]
+ 912 044a FB6A     		ldr	r3, [r7, #44]
+ 913 044c 0022     		movs	r2, #0
+ 914 044e 1A70     		strb	r2, [r3]
+ 318:./lwip-2.1.2/src/core/ipv4/ip4_addr.c ****   return buf;
+ 915              		.loc 1 318 10
+ 916 0450 BB68     		ldr	r3, [r7, #8]
+ 917              	.L76:
+ 319:./lwip-2.1.2/src/core/ipv4/ip4_addr.c **** }
+ 918              		.loc 1 319 1 discriminator 1
+ 919 0452 1846     		mov	r0, r3
+ 920 0454 3437     		adds	r7, r7, #52
+ 921              	.LCFI29:
+ 922              		.cfi_def_cfa_offset 4
+ 923 0456 BD46     		mov	sp, r7
+ 924              	.LCFI30:
+ 925              		.cfi_def_cfa_register 13
+ 926              		@ sp needed
+ 927 0458 5DF8047B 		ldr	r7, [sp], #4
+ 928              	.LCFI31:
+ 929              		.cfi_restore 7
+ 930              		.cfi_def_cfa_offset 0
+ 931 045c 7047     		bx	lr
+ 932              	.L78:
+ 933 045e 00BF     		.align	2
+ 934              	.L77:
+ 935 0460 CDCCCCCC 		.word	-858993459
+ 936              		.cfi_endproc
+ 937              	.LFE30:
+ 939              		.bss
+ 940              		.align	2
+ 941              	str.0:
+ 942 0000 00000000 		.space	16
+ 942      00000000 
+ 942      00000000 
+ 942      00000000 
+ 944              		.text
+ 945              	.Letext0:
+ 946              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 947              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 948              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 949              		.file 5 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 950              		.file 6 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 951              		.file 7 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 952              		.file 8 "./lwip-2.1.2/src/include/lwip/err.h"
+ 953              		.file 9 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 954              		.file 10 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 955              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ip4_addr.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:21     .rodata:00000000 ip_addr_any
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:18     .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:27     .rodata:00000004 ip_addr_broadcast
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:30     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:38     .text:00000000 ip4_addr_isbroadcast_u32
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:160    .text:00000082 ip4_addr_netmask_valid
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:254    .text:000000da ipaddr_addr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:308    .text:00000104 ip4addr_aton
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:537    .text:0000027c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:542    .text:00000290 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:697    .text:0000033c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:701    .text:00000340 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:708    .text:00000340 ip4addr_ntoa
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:756    .text:00000360 ip4addr_ntoa_r
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:745    .text:0000035c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:941    .bss:00000000 str.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:749    .text:00000360 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:935    .text:00000460 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVgwB2w.s:940    .bss:00000000 $d
+
+UNDEFINED SYMBOLS
+lwip_htonl
+_ctype_
