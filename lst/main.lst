@@ -135,14 +135,30 @@
   89:./src/main.c  **** {
   50              		.loc 1 89 1 is_stmt 1 view -0
   51              		.cfi_startproc
-  52              		@ Volatile: function does not return.
-  53              		@ args = 0, pretend = 0, frame = 88
-  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  52              		@ args = 0, pretend = 0, frame = 88
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
   90:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
   91:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));
-  55              		.loc 1 91 2 view .LVU4
-  56 0004 444C     		ldr	r4, .L8
-  57 0006 0521     		movs	r1, #5
+  54              		.loc 1 91 2 view .LVU4
+  89:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
+  55              		.loc 1 89 1 is_stmt 0 view .LVU5
+  56 0004 F0B5     		push	{r4, r5, r6, r7, lr}
+  57              	.LCFI0:
+  58              		.cfi_def_cfa_offset 20
+  59              		.cfi_offset 4, -20
+  60              		.cfi_offset 5, -16
+  61              		.cfi_offset 6, -12
+  62              		.cfi_offset 7, -8
+  63              		.cfi_offset 14, -4
+  64              		.loc 1 91 2 view .LVU6
+  65 0006 A74D     		ldr	r5, .L36
+  89:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
+  66              		.loc 1 89 1 view .LVU7
+  67 0008 9BB0     		sub	sp, sp, #108
+  68              	.LCFI1:
+  69              		.cfi_def_cfa_offset 128
+  70              		.loc 1 91 2 view .LVU8
+  71 000a 0521     		movs	r1, #5
   92:./src/main.c  **** 	
   93:./src/main.c  **** 	// init CAN
   94:./src/main.c  **** 	CAN_UserInit();
@@ -192,184 +208,175 @@
  138:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
  139:./src/main.c  **** 	// add the network interface
  140:./src/main.c  **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
-  58              		.loc 1 140 2 is_stmt 0 view .LVU5
-  59 0008 444D     		ldr	r5, .L8+4
+  72              		.loc 1 140 2 view .LVU9
+  73 000c A64C     		ldr	r4, .L36+4
   91:./src/main.c  **** 	
-  60              		.loc 1 91 2 view .LVU6
-  61 000a 2068     		ldr	r0, [r4]
-  62              	.LVL3:
-  89:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  63              		.loc 1 89 1 view .LVU7
-  64 000c 00B5     		push	{lr}
-  65              	.LCFI0:
-  66              		.cfi_def_cfa_offset 4
-  67              		.cfi_offset 14, -4
-  68 000e 9BB0     		sub	sp, sp, #108
-  69              	.LCFI1:
-  70              		.cfi_def_cfa_offset 112
+  74              		.loc 1 91 2 view .LVU10
+  75 000e 2868     		ldr	r0, [r5]
+  76              	.LVL3:
   91:./src/main.c  **** 	
-  71              		.loc 1 91 2 view .LVU8
-  72 0010 FFF7FEFF 		bl	osTimerStart
-  73              	.LVL4:
+  77              		.loc 1 91 2 view .LVU11
+  78 0010 FFF7FEFF 		bl	osTimerStart
+  79              	.LVL4:
   94:./src/main.c  **** 	
-  74              		.loc 1 94 2 is_stmt 1 view .LVU9
-  75 0014 FFF7FEFF 		bl	CAN_UserInit
-  76              	.LVL5:
+  80              		.loc 1 94 2 is_stmt 1 view .LVU12
+  81 0014 FFF7FEFF 		bl	CAN_UserInit
+  82              	.LVL5:
   97:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
-  77              		.loc 1 97 2 view .LVU10
-  78 0018 0221     		movs	r1, #2
-  79 001a 0120     		movs	r0, #1
-  80 001c FFF7FEFF 		bl	HW_SetLED
-  81              	.LVL6:
+  83              		.loc 1 97 2 view .LVU13
+  84 0018 0221     		movs	r1, #2
+  85 001a 0120     		movs	r0, #1
+  86 001c FFF7FEFF 		bl	HW_SetLED
+  87              	.LVL6:
   98:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
-  82              		.loc 1 98 2 view .LVU11
-  83 0020 0221     		movs	r1, #2
-  84 0022 0846     		mov	r0, r1
-  85 0024 FFF7FEFF 		bl	HW_SetLED
-  86              	.LVL7:
+  88              		.loc 1 98 2 view .LVU14
+  89 0020 0221     		movs	r1, #2
+  90 0022 0846     		mov	r0, r1
+  91 0024 FFF7FEFF 		bl	HW_SetLED
+  92              	.LVL7:
   99:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
-  87              		.loc 1 99 2 view .LVU12
-  88 0028 0221     		movs	r1, #2
-  89 002a 0320     		movs	r0, #3
-  90 002c FFF7FEFF 		bl	HW_SetLED
-  91              	.LVL8:
+  93              		.loc 1 99 2 view .LVU15
+  94 0028 0221     		movs	r1, #2
+  95 002a 0320     		movs	r0, #3
+  96 002c FFF7FEFF 		bl	HW_SetLED
+  97              	.LVL8:
  100:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
-  92              		.loc 1 100 2 view .LVU13
-  93 0030 0221     		movs	r1, #2
-  94 0032 0420     		movs	r0, #4
-  95 0034 FFF7FEFF 		bl	HW_SetLED
-  96              	.LVL9:
+  98              		.loc 1 100 2 view .LVU16
+  99 0030 0221     		movs	r1, #2
+ 100 0032 0420     		movs	r0, #4
+ 101 0034 FFF7FEFF 		bl	HW_SetLED
+ 102              	.LVL9:
  101:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
-  97              		.loc 1 101 2 view .LVU14
-  98 0038 0221     		movs	r1, #2
-  99 003a 0520     		movs	r0, #5
- 100 003c FFF7FEFF 		bl	HW_SetLED
- 101              	.LVL10:
+ 103              		.loc 1 101 2 view .LVU17
+ 104 0038 0221     		movs	r1, #2
+ 105 003a 0520     		movs	r0, #5
+ 106 003c FFF7FEFF 		bl	HW_SetLED
+ 107              	.LVL10:
  102:./src/main.c  **** 
- 102              		.loc 1 102 2 view .LVU15
- 103 0040 0221     		movs	r1, #2
- 104 0042 0620     		movs	r0, #6
- 105 0044 FFF7FEFF 		bl	HW_SetLED
- 106              	.LVL11:
+ 108              		.loc 1 102 2 view .LVU18
+ 109 0040 0221     		movs	r1, #2
+ 110 0042 0620     		movs	r0, #6
+ 111 0044 FFF7FEFF 		bl	HW_SetLED
+ 112              	.LVL11:
  113:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
- 107              		.loc 1 113 2 view .LVU16
- 108 0048 354B     		ldr	r3, .L8+8
- 109 004a 4FF44052 		mov	r2, #12288
+ 113              		.loc 1 113 2 view .LVU19
+ 114 0048 984B     		ldr	r3, .L36+8
+ 115 004a 4FF44052 		mov	r2, #12288
  114:./src/main.c  **** 	
- 110              		.loc 1 114 2 is_stmt 0 view .LVU17
- 111 004e 40F27710 		movw	r0, #375
+ 116              		.loc 1 114 2 is_stmt 0 view .LVU20
+ 117 004e 40F27710 		movw	r0, #375
  113:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
- 112              		.loc 1 113 2 view .LVU18
- 113 0052 9A61     		str	r2, [r3, #24]
+ 118              		.loc 1 113 2 view .LVU21
+ 119 0052 9A61     		str	r2, [r3, #24]
  114:./src/main.c  **** 	
- 114              		.loc 1 114 2 is_stmt 1 view .LVU19
- 115 0054 FFF7FEFF 		bl	osDelay
- 116              	.LVL12:
+ 120              		.loc 1 114 2 is_stmt 1 view .LVU22
+ 121 0054 FFF7FEFF 		bl	osDelay
+ 122              	.LVL12:
  118:./src/main.c  **** 
- 117              		.loc 1 118 2 view .LVU20
- 118 0058 0021     		movs	r1, #0
- 119 005a 0846     		mov	r0, r1
- 120 005c FFF7FEFF 		bl	tcpip_init
- 121              	.LVL13:
+ 123              		.loc 1 118 2 view .LVU23
+ 124 0058 0021     		movs	r1, #0
+ 125 005a 0846     		mov	r0, r1
+ 126 005c FFF7FEFF 		bl	tcpip_init
+ 127              	.LVL13:
  122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 122              		.loc 1 122 4 view .LVU21
+ 128              		.loc 1 122 4 view .LVU24
  123:./src/main.c  ****   	IP_ADDRESS[2] = 20;
- 123              		.loc 1 123 4 view .LVU22
+ 129              		.loc 1 123 4 view .LVU25
  124:./src/main.c  ****   	IP_ADDRESS[3] = 70;
- 124              		.loc 1 124 4 view .LVU23
+ 130              		.loc 1 124 4 view .LVU26
  125:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
- 125              		.loc 1 125 4 view .LVU24
+ 131              		.loc 1 125 4 view .LVU27
  138:./src/main.c  **** 	// add the network interface
- 126              		.loc 1 138 4 is_stmt 0 view .LVU25
- 127 0060 2346     		mov	r3, r4
+ 132              		.loc 1 138 4 is_stmt 0 view .LVU28
+ 133 0060 2B46     		mov	r3, r5
  130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 128              		.loc 1 130 23 view .LVU26
- 129 0062 304A     		ldr	r2, .L8+12
- 130              		.loc 1 140 2 view .LVU27
- 131 0064 3048     		ldr	r0, .L8+16
- 138:./src/main.c  **** 	// add the network interface
- 132              		.loc 1 138 4 view .LVU28
- 133 0066 43F8182F 		str	r2, [r3, #24]!
- 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 134              		.loc 1 122 18 view .LVU29
- 135 006a 3049     		ldr	r1, .L8+20
+ 134              		.loc 1 130 23 view .LVU29
+ 135 0062 934A     		ldr	r2, .L36+12
  136              		.loc 1 140 2 view .LVU30
- 137 006c 0295     		str	r5, [sp, #8]
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 138              		.loc 1 126 23 view .LVU31
- 139 006e 6FF07F45 		mvn	r5, #-16777216
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 140              		.loc 1 130 23 view .LVU32
- 141 0072 E260     		str	r2, [r4, #12]
- 142              		.loc 1 140 2 view .LVU33
- 143 0074 04F11402 		add	r2, r4, #20
- 144 0078 0190     		str	r0, [sp, #4]
- 145 007a 0020     		movs	r0, #0
- 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 146              		.loc 1 122 18 view .LVU34
- 147 007c 6160     		str	r1, [r4, #4]
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 148              		.loc 1 126 4 is_stmt 1 view .LVU35
- 127:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
- 149              		.loc 1 127 4 view .LVU36
- 128:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
- 150              		.loc 1 128 4 view .LVU37
- 129:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
- 151              		.loc 1 129 4 view .LVU38
- 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 152              		.loc 1 136 2 is_stmt 0 view .LVU39
- 153 007e 2161     		str	r1, [r4, #16]
- 154              		.loc 1 140 2 view .LVU40
- 155 0080 04F11001 		add	r1, r4, #16
- 156 0084 0090     		str	r0, [sp]
- 157 0086 04F11C00 		add	r0, r4, #28
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 158              		.loc 1 126 23 view .LVU41
- 159 008a A560     		str	r5, [r4, #8]
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 160              		.loc 1 130 4 is_stmt 1 view .LVU42
- 131:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
- 161              		.loc 1 131 4 view .LVU43
- 132:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
- 162              		.loc 1 132 4 view .LVU44
- 133:./src/main.c  **** 
- 163              		.loc 1 133 4 view .LVU45
- 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 164              		.loc 1 136 2 view .LVU46
- 137:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 165              		.loc 1 137 4 view .LVU47
- 166 008c 6561     		str	r5, [r4, #20]
+ 137 0064 9348     		ldr	r0, .L36+16
  138:./src/main.c  **** 	// add the network interface
- 167              		.loc 1 138 4 view .LVU48
- 168              		.loc 1 140 2 view .LVU49
- 169 008e FFF7FEFF 		bl	netif_add
- 170              	.LVL14:
+ 138              		.loc 1 138 4 view .LVU31
+ 139 0066 43F8182F 		str	r2, [r3, #24]!
+ 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+ 140              		.loc 1 122 18 view .LVU32
+ 141 006a 9349     		ldr	r1, .L36+20
+ 142              		.loc 1 140 2 view .LVU33
+ 143 006c 0190     		str	r0, [sp, #4]
+ 144 006e 0020     		movs	r0, #0
+ 145 0070 0294     		str	r4, [sp, #8]
+ 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 146              		.loc 1 126 23 view .LVU34
+ 147 0072 6FF07F44 		mvn	r4, #-16777216
+ 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 148              		.loc 1 130 23 view .LVU35
+ 149 0076 EA60     		str	r2, [r5, #12]
+ 150              		.loc 1 140 2 view .LVU36
+ 151 0078 05F11402 		add	r2, r5, #20
+ 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+ 152              		.loc 1 122 18 view .LVU37
+ 153 007c 6960     		str	r1, [r5, #4]
+ 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 154              		.loc 1 126 4 is_stmt 1 view .LVU38
+ 127:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
+ 155              		.loc 1 127 4 view .LVU39
+ 128:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
+ 156              		.loc 1 128 4 view .LVU40
+ 129:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
+ 157              		.loc 1 129 4 view .LVU41
+ 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 158              		.loc 1 136 2 is_stmt 0 view .LVU42
+ 159 007e 2961     		str	r1, [r5, #16]
+ 160              		.loc 1 140 2 view .LVU43
+ 161 0080 05F11001 		add	r1, r5, #16
+ 162 0084 0090     		str	r0, [sp]
+ 163 0086 05F11C00 		add	r0, r5, #28
+ 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 164              		.loc 1 126 23 view .LVU44
+ 165 008a AC60     		str	r4, [r5, #8]
+ 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 166              		.loc 1 130 4 is_stmt 1 view .LVU45
+ 131:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
+ 167              		.loc 1 131 4 view .LVU46
+ 132:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
+ 168              		.loc 1 132 4 view .LVU47
+ 133:./src/main.c  **** 
+ 169              		.loc 1 133 4 view .LVU48
+ 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 170              		.loc 1 136 2 view .LVU49
+ 137:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+ 171              		.loc 1 137 4 view .LVU50
+ 172 008c 6C61     		str	r4, [r5, #20]
+ 138:./src/main.c  **** 	// add the network interface
+ 173              		.loc 1 138 4 view .LVU51
+ 174              		.loc 1 140 2 view .LVU52
+ 175 008e FFF7FEFF 		bl	netif_add
+ 176              	.LVL14:
  141:./src/main.c  **** 
  142:./src/main.c  **** 
  143:./src/main.c  **** 	// set default netif
  144:./src/main.c  **** 	netif_set_default ( &gnetif);
- 171              		.loc 1 144 2 view .LVU50
- 172 0092 04F11C00 		add	r0, r4, #28
- 173 0096 FFF7FEFF 		bl	netif_set_default
- 174              	.LVL15:
+ 177              		.loc 1 144 2 view .LVU53
+ 178 0092 05F11C00 		add	r0, r5, #28
+ 179 0096 FFF7FEFF 		bl	netif_set_default
+ 180              	.LVL15:
  145:./src/main.c  **** 
  146:./src/main.c  **** 	if ( netif_is_link_up ( &gnetif))
- 175              		.loc 1 146 2 view .LVU51
- 176              		.loc 1 146 7 is_stmt 0 view .LVU52
- 177 009a 94F84930 		ldrb	r3, [r4, #73]	@ zero_extendqisi2
+ 181              		.loc 1 146 2 view .LVU54
+ 182              		.loc 1 146 7 is_stmt 0 view .LVU55
+ 183 009a 95F84930 		ldrb	r3, [r5, #73]	@ zero_extendqisi2
  147:./src/main.c  **** 	{
  148:./src/main.c  **** 		/* When the netif is fully configured this function must be called */
  149:./src/main.c  **** 		netif_set_up ( &gnetif);
- 178              		.loc 1 149 3 view .LVU53
- 179 009e 04F11C00 		add	r0, r4, #28
+ 184              		.loc 1 149 3 view .LVU56
+ 185 009e 05F11C00 		add	r0, r5, #28
  146:./src/main.c  **** 	{
- 180              		.loc 1 146 5 view .LVU54
- 181 00a2 5B07     		lsls	r3, r3, #29
- 182 00a4 35D5     		bpl	.L4
- 183              		.loc 1 149 3 is_stmt 1 view .LVU55
- 184 00a6 FFF7FEFF 		bl	netif_set_up
- 185              	.LVL16:
- 186              	.L5:
+ 186              		.loc 1 146 5 view .LVU57
+ 187 00a2 5B07     		lsls	r3, r3, #29
+ 188 00a4 40F1FB80 		bpl	.L4
+ 189              		.loc 1 149 3 is_stmt 1 view .LVU58
+ 190 00a8 FFF7FEFF 		bl	netif_set_up
+ 191              	.LVL16:
+ 192              	.L5:
  150:./src/main.c  **** 	}
  151:./src/main.c  **** 
  152:./src/main.c  **** 	else
@@ -382,325 +389,766 @@
  159:./src/main.c  **** 	// // start dhcp
  160:./src/main.c  **** 	// dhcp_start ( &gnetif);
  161:./src/main.c  **** 	startDebug(NULL);
- 187              		.loc 1 161 2 view .LVU56
- 188 00aa 0020     		movs	r0, #0
- 189              	.LBB23:
- 190              	.LBB24:
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 191              		.loc 1 71 15 is_stmt 0 view .LVU57
- 192 00ac 0825     		movs	r5, #8
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 193              		.loc 1 72 15 view .LVU58
- 194 00ae 0446     		mov	r4, r0
- 195              	.LBE24:
- 196              	.LBE23:
- 197              		.loc 1 161 2 view .LVU59
- 198 00b0 FFF7FEFF 		bl	startDebug
- 199              	.LVL17:
+ 193              		.loc 1 161 2 view .LVU59
+ 194 00ac 0020     		movs	r0, #0
+ 195 00ae 834C     		ldr	r4, .L36+24
+ 196              	.LBB26:
  162:./src/main.c  **** 	main_greeting();
- 200              		.loc 1 162 2 is_stmt 1 view .LVU60
- 201              	.LBB26:
- 202              	.LBI23:
-  65:./src/main.c  **** {
- 203              		.loc 1 65 14 view .LVU61
- 204              	.LBB25:
-  67:./src/main.c  **** 	
- 205              		.loc 1 67 2 view .LVU62
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 206              		.loc 1 70 2 view .LVU63
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 207              		.loc 1 70 15 is_stmt 0 view .LVU64
- 208 00b4 4FF48051 		mov	r1, #4096
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 209              		.loc 1 71 15 view .LVU65
- 210 00b8 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 211              		.loc 1 75 16 view .LVU66
- 212 00bc 1C4A     		ldr	r2, .L8+24
-  73:./src/main.c  **** 	
- 213              		.loc 1 73 15 view .LVU67
- 214 00be 40F22310 		movw	r0, #291
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 215              		.loc 1 70 15 view .LVU68
- 216 00c2 ADF81610 		strh	r1, [sp, #22]	@ movhi
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 217              		.loc 1 71 2 is_stmt 1 view .LVU69
-  76:./src/main.c  **** 	
- 218              		.loc 1 76 16 is_stmt 0 view .LVU70
- 219 00c6 A1F18151 		sub	r1, r1, #270532608
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 220              		.loc 1 75 16 view .LVU71
- 221 00ca 0A92     		str	r2, [sp, #40]
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 222              		.loc 1 71 15 view .LVU72
- 223 00cc 65F30713 		bfi	r3, r5, #4, #4
-  76:./src/main.c  **** 	
- 224              		.loc 1 76 16 view .LVU73
- 225 00d0 A1F59311 		sub	r1, r1, #1204224
-  79:./src/main.c  **** 	
- 226              		.loc 1 79 17 view .LVU74
- 227 00d4 4FF0C842 		mov	r2, #1677721600
-  73:./src/main.c  **** 	
- 228              		.loc 1 73 15 view .LVU75
- 229 00d8 0990     		str	r0, [sp, #36]
-  82:./src/main.c  **** }
- 230              		.loc 1 82 2 view .LVU76
- 231 00da 2046     		mov	r0, r4
-  76:./src/main.c  **** 	
- 232              		.loc 1 76 16 view .LVU77
- 233 00dc A1F27741 		subw	r1, r1, #1143
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 234              		.loc 1 71 15 view .LVU78
- 235 00e0 8DF82030 		strb	r3, [sp, #32]
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 236              		.loc 1 72 2 is_stmt 1 view .LVU79
-  76:./src/main.c  **** 	
- 237              		.loc 1 76 16 is_stmt 0 view .LVU80
- 238 00e4 0B91     		str	r1, [sp, #44]
-  82:./src/main.c  **** }
- 239              		.loc 1 82 2 view .LVU81
- 240 00e6 05A9     		add	r1, sp, #20
-  79:./src/main.c  **** 	
- 241              		.loc 1 79 17 view .LVU82
- 242 00e8 1368     		ldr	r3, [r2]
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 243              		.loc 1 72 15 view .LVU83
- 244 00ea ADF82240 		strh	r4, [sp, #34]	@ movhi
-  73:./src/main.c  **** 	
- 245              		.loc 1 73 2 is_stmt 1 view .LVU84
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 246              		.loc 1 75 2 view .LVU85
-  76:./src/main.c  **** 	
- 247              		.loc 1 76 2 view .LVU86
-  79:./src/main.c  **** 	
- 248              		.loc 1 79 2 view .LVU87
-  79:./src/main.c  **** 	
- 249              		.loc 1 79 15 is_stmt 0 view .LVU88
- 250 00ee 8DF82830 		strb	r3, [sp, #40]
-  82:./src/main.c  **** }
- 251              		.loc 1 82 2 is_stmt 1 view .LVU89
- 252 00f2 FFF7FEFF 		bl	CAN_Write
- 253              	.LVL18:
- 254              	.LBE25:
- 255              	.LBE26:
  163:./src/main.c  **** 
  164:./src/main.c  **** 	task01_init(NULL);
- 256              		.loc 1 164 2 view .LVU90
- 257 00f6 2046     		mov	r0, r4
- 258 00f8 FFF7FEFF 		bl	task01_init
- 259              	.LVL19:
  165:./src/main.c  ****   	task02_init(NULL);
- 260              		.loc 1 165 4 view .LVU91
- 261 00fc 2046     		mov	r0, r4
- 262 00fe FFF7FEFF 		bl	task02_init
- 263              	.LVL20:
  166:./src/main.c  ****   	UDP_task(NULL);
- 264              		.loc 1 166 4 view .LVU92
- 265 0102 2046     		mov	r0, r4
- 266 0104 FFF7FEFF 		bl	UDP_task
- 267              	.LVL21:
- 268              	.L6:
  167:./src/main.c  **** 
  168:./src/main.c  **** 	while ( 1)
- 269              		.loc 1 168 2 discriminator 1 view .LVU93
  169:./src/main.c  **** 	{
  170:./src/main.c  **** 		osThreadSuspend(osThreadGetId());
- 270              		.loc 1 170 3 discriminator 1 view .LVU94
- 271 0108 FFF7FEFF 		bl	osThreadGetId
- 272              	.LVL22:
- 273 010c FFF7FEFF 		bl	osThreadSuspend
- 274              	.LVL23:
- 168:./src/main.c  **** 	{
- 275              		.loc 1 168 8 discriminator 1 view .LVU95
- 276 0110 FAE7     		b	.L6
- 277              	.L4:
- 155:./src/main.c  **** 	}
- 278              		.loc 1 155 3 view .LVU96
- 279 0112 FFF7FEFF 		bl	netif_set_down
- 280              	.LVL24:
- 281 0116 C8E7     		b	.L5
- 282              	.L9:
- 283              		.align	2
- 284              	.L8:
- 285 0118 00000000 		.word	.LANCHOR0
- 286 011c 00000000 		.word	tcpip_input
- 287 0120 00040240 		.word	1073873920
- 288 0124 C0A81401 		.word	18131136
- 289 0128 00000000 		.word	ethernetif_init
- 290 012c C0A81446 		.word	1175759040
- 291 0130 01234567 		.word	1732584193
- 292              		.cfi_endproc
- 293              	.LFE171:
- 295              		.section	.text.startup,"ax",%progbits
- 296              		.align	1
- 297              		.p2align 2,,3
- 298              		.global	main
- 299              		.syntax unified
- 300              		.thumb
- 301              		.thumb_func
- 302              		.fpu fpv5-d16
- 304              	main:
- 305              	.LFB172:
- 171:./src/main.c  **** 		// CANTxMsg_t  msg;
+ 171:./src/main.c  **** 		CANTxMsg_t  msg;
  172:./src/main.c  **** 
  173:./src/main.c  **** 
- 174:./src/main.c  **** 		// msg.bufftype = CAN_BUFFER_TX_MSG;
- 175:./src/main.c  **** 		// msg.dlc      = CAN_LEN4_DLC;
- 176:./src/main.c  **** 		// msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 177:./src/main.c  **** 		// msg.id       = 0x456;
+ 174:./src/main.c  **** 		msg.bufftype = CAN_BUFFER_TX_MSG;
+ 175:./src/main.c  **** 		msg.dlc      = CAN_LEN4_DLC;
+ 176:./src/main.c  **** 		msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 177:./src/main.c  **** 		msg.id       = 0x456;
  178:./src/main.c  **** 
- 179:./src/main.c  **** 		// msg.data32[0] = 0x0;
+ 179:./src/main.c  **** 		msg.data32[0] = 0x0;
  180:./src/main.c  **** 
- 181:./src/main.c  ****     // static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
- 182:./src/main.c  ****     // 		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
- 183:./src/main.c  **** 	// 	{
- 184:./src/main.c  **** 	// 		switch ( RxMsg.hBus)
- 185:./src/main.c  **** 	// 		{
- 186:./src/main.c  **** 	// 			case CAN_BUS1:
- 187:./src/main.c  **** 	// 				// message received from CAN1
- 188:./src/main.c  **** 	// 				LED_toggleCAN1 ^= 1;
+ 181:./src/main.c  ****     static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
+ 182:./src/main.c  ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+ 183:./src/main.c  **** 		{
+ 184:./src/main.c  **** 			switch ( RxMsg.hBus)
+ 185:./src/main.c  **** 			{
+ 186:./src/main.c  **** 				case CAN_BUS1:
+ 187:./src/main.c  **** 					// message received from CAN1
+ 188:./src/main.c  **** 					LED_toggleCAN1 ^= 1;
  189:./src/main.c  **** 
- 190:./src/main.c  **** 	// 				if ( LED_toggleCAN1)
- 191:./src/main.c  **** 	// 				{
- 192:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN1, HW_LED_ORANGE);
- 193:./src/main.c  **** 	// 				}
+ 190:./src/main.c  **** 					if ( LED_toggleCAN1)
+ 191:./src/main.c  **** 					{
+ 192:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_ORANGE);
+ 193:./src/main.c  **** 					}
  194:./src/main.c  **** 					
- 195:./src/main.c  **** 	// 				else
- 196:./src/main.c  **** 	// 				{
- 197:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
- 198:./src/main.c  **** 	// 				}
+ 195:./src/main.c  **** 					else
+ 196:./src/main.c  **** 					{
+ 197:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
+ 198:./src/main.c  **** 					}
  199:./src/main.c  **** 
- 200:./src/main.c  **** 	// 				// catch ID 123h and convert it from classical CAN to CAN-FD
- 201:./src/main.c  **** 	// 				if ( RxMsg.id == 0x123  &&  RxMsg.msgtype == CAN_MSGTYPE_STANDARD)
- 202:./src/main.c  **** 	// 				{
- 203:./src/main.c  **** 	// 					// overwrite msgtype
- 204:./src/main.c  **** 	// 					RxMsg.msgtype = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
+ 200:./src/main.c  **** 					// catch ID 123h and convert it from classical CAN to CAN-FD
+ 201:./src/main.c  **** 					if ( RxMsg.id == 0x123  &&  RxMsg.msgtype == CAN_MSGTYPE_STANDARD)
+ 202:./src/main.c  **** 					{
+ 203:./src/main.c  **** 						// overwrite msgtype
+ 204:./src/main.c  **** 						RxMsg.msgtype = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
  205:./src/main.c  **** 
- 206:./src/main.c  **** 	// 					// set dlc to 12 data bytes
- 207:./src/main.c  **** 	// 					RxMsg.dlc = CAN_LEN12_DLC;
+ 206:./src/main.c  **** 						// set dlc to 12 data bytes
+ 207:./src/main.c  **** 						RxMsg.dlc = CAN_LEN12_DLC;
  208:./src/main.c  **** 
- 209:./src/main.c  **** 	// 					// add some other data
- 210:./src/main.c  **** 	// 					RxMsg.data8[8] = 0x11;
- 211:./src/main.c  **** 	// 					RxMsg.data8[9] = 0x22;
- 212:./src/main.c  **** 	// 					RxMsg.data8[10] = 0x33;
- 213:./src/main.c  **** 	// 					RxMsg.data8[11] = 0x44;
- 214:./src/main.c  **** 	// 				}
+ 209:./src/main.c  **** 						// add some other data
+ 210:./src/main.c  **** 						RxMsg.data8[8] = 0x11;
+ 197              		.loc 1 210 22 is_stmt 0 view .LVU60
+ 198 00b0 834E     		ldr	r6, .L36+28
+ 199              	.LBE26:
+ 200              	.LBB27:
+ 201              	.LBB28:
+  72:./src/main.c  **** 	msg.id       = 0x123;
+ 202              		.loc 1 72 15 view .LVU61
+ 203 00b2 0746     		mov	r7, r0
+ 204              	.LBE28:
+ 205              	.LBE27:
+ 161:./src/main.c  **** 	main_greeting();
+ 206              		.loc 1 161 2 view .LVU62
+ 207 00b4 FFF7FEFF 		bl	startDebug
+ 208              	.LVL17:
+ 162:./src/main.c  **** 	main_greeting();
+ 209              		.loc 1 162 2 is_stmt 1 view .LVU63
+ 210              	.LBB30:
+ 211              	.LBI27:
+  65:./src/main.c  **** {
+ 212              		.loc 1 65 14 view .LVU64
+ 213              	.LBB29:
+  67:./src/main.c  **** 	
+ 214              		.loc 1 67 2 view .LVU65
+  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
+ 215              		.loc 1 70 2 view .LVU66
+  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 216              		.loc 1 71 15 is_stmt 0 view .LVU67
+ 217 00b8 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
+ 218 00bc 0820     		movs	r0, #8
+  73:./src/main.c  **** 	
+ 219              		.loc 1 73 15 view .LVU68
+ 220 00be 40F22312 		movw	r2, #291
+  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
+ 221              		.loc 1 70 15 view .LVU69
+ 222 00c2 4FF48051 		mov	r1, #4096
+  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 223              		.loc 1 71 15 view .LVU70
+ 224 00c6 60F30713 		bfi	r3, r0, #4, #4
+  82:./src/main.c  **** }
+ 225              		.loc 1 82 2 view .LVU71
+ 226 00ca 3846     		mov	r0, r7
+  73:./src/main.c  **** 	
+ 227              		.loc 1 73 15 view .LVU72
+ 228 00cc 0992     		str	r2, [sp, #36]
+  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 229              		.loc 1 71 15 view .LVU73
+ 230 00ce 8DF82030 		strb	r3, [sp, #32]
+  79:./src/main.c  **** 	
+ 231              		.loc 1 79 17 view .LVU74
+ 232 00d2 4FF0C843 		mov	r3, #1677721600
+  76:./src/main.c  **** 	
+ 233              		.loc 1 76 16 view .LVU75
+ 234 00d6 7B4A     		ldr	r2, .L36+32
+  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
+ 235              		.loc 1 70 15 view .LVU76
+ 236 00d8 ADF81610 		strh	r1, [sp, #22]	@ movhi
+  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 237              		.loc 1 71 2 is_stmt 1 view .LVU77
+  72:./src/main.c  **** 	msg.id       = 0x123;
+ 238              		.loc 1 72 2 view .LVU78
+  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
+ 239              		.loc 1 75 16 is_stmt 0 view .LVU79
+ 240 00dc 7A49     		ldr	r1, .L36+36
+  76:./src/main.c  **** 	
+ 241              		.loc 1 76 16 view .LVU80
+ 242 00de 0B92     		str	r2, [sp, #44]
+  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
+ 243              		.loc 1 75 16 view .LVU81
+ 244 00e0 0A91     		str	r1, [sp, #40]
+  82:./src/main.c  **** }
+ 245              		.loc 1 82 2 view .LVU82
+ 246 00e2 05A9     		add	r1, sp, #20
+  79:./src/main.c  **** 	
+ 247              		.loc 1 79 17 view .LVU83
+ 248 00e4 1B68     		ldr	r3, [r3]
+  72:./src/main.c  **** 	msg.id       = 0x123;
+ 249              		.loc 1 72 15 view .LVU84
+ 250 00e6 ADF82270 		strh	r7, [sp, #34]	@ movhi
+  73:./src/main.c  **** 	
+ 251              		.loc 1 73 2 is_stmt 1 view .LVU85
+  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
+ 252              		.loc 1 75 2 view .LVU86
+  76:./src/main.c  **** 	
+ 253              		.loc 1 76 2 view .LVU87
+  79:./src/main.c  **** 	
+ 254              		.loc 1 79 2 view .LVU88
+  79:./src/main.c  **** 	
+ 255              		.loc 1 79 15 is_stmt 0 view .LVU89
+ 256 00ea 8DF82830 		strb	r3, [sp, #40]
+  82:./src/main.c  **** }
+ 257              		.loc 1 82 2 is_stmt 1 view .LVU90
+ 258 00ee FFF7FEFF 		bl	CAN_Write
+ 259              	.LVL18:
+ 260              	.LBE29:
+ 261              	.LBE30:
+ 164:./src/main.c  ****   	task02_init(NULL);
+ 262              		.loc 1 164 2 view .LVU91
+ 263 00f2 3846     		mov	r0, r7
+ 264 00f4 FFF7FEFF 		bl	task01_init
+ 265              	.LVL19:
+ 165:./src/main.c  ****   	UDP_task(NULL);
+ 266              		.loc 1 165 4 view .LVU92
+ 267 00f8 3846     		mov	r0, r7
+ 268 00fa FFF7FEFF 		bl	task02_init
+ 269              	.LVL20:
+ 166:./src/main.c  **** 
+ 270              		.loc 1 166 4 view .LVU93
+ 271 00fe 3846     		mov	r0, r7
+ 272 0100 FFF7FEFF 		bl	UDP_task
+ 273              	.LVL21:
+ 274              	.L29:
+ 168:./src/main.c  **** 	{
+ 275              		.loc 1 168 2 view .LVU94
+ 276              	.LBB31:
+ 170:./src/main.c  **** 		CANTxMsg_t  msg;
+ 277              		.loc 1 170 3 view .LVU95
+ 278 0104 FFF7FEFF 		bl	osThreadGetId
+ 279              	.LVL22:
+ 280 0108 FFF7FEFF 		bl	osThreadSuspend
+ 281              	.LVL23:
+ 171:./src/main.c  **** 
+ 282              		.loc 1 171 3 view .LVU96
+ 174:./src/main.c  **** 		msg.dlc      = CAN_LEN4_DLC;
+ 283              		.loc 1 174 3 view .LVU97
+ 175:./src/main.c  **** 		msg.msgtype  = CAN_MSGTYPE_STANDARD;
+ 284              		.loc 1 175 3 view .LVU98
+ 176:./src/main.c  **** 		msg.id       = 0x456;
+ 285              		.loc 1 176 3 view .LVU99
+ 177:./src/main.c  **** 
+ 286              		.loc 1 177 3 view .LVU100
+ 179:./src/main.c  **** 
+ 287              		.loc 1 179 3 view .LVU101
+ 181:./src/main.c  ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+ 288              		.loc 1 181 5 view .LVU102
+ 182:./src/main.c  **** 		{
+ 289              		.loc 1 182 7 view .LVU103
+ 182:./src/main.c  **** 		{
+ 290              		.loc 1 182 12 is_stmt 0 view .LVU104
+ 291 010c 2146     		mov	r1, r4
+ 292 010e FF20     		movs	r0, #255
+ 293 0110 FFF7FEFF 		bl	CAN_UserRead
+ 294              	.LVL24:
+ 182:./src/main.c  **** 		{
+ 295              		.loc 1 182 10 view .LVU105
+ 296 0114 C8B9     		cbnz	r0, .L6
+ 184:./src/main.c  **** 			{
+ 297              		.loc 1 184 4 is_stmt 1 view .LVU106
+ 184:./src/main.c  **** 			{
+ 298              		.loc 1 184 18 is_stmt 0 view .LVU107
+ 299 0116 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 300 0118 1B09     		lsrs	r3, r3, #4
+ 301 011a 052B     		cmp	r3, #5
+ 302 011c 15D8     		bhi	.L6
+ 303 011e DFE803F0 		tbb	[pc, r3]
+ 304              	.L8:
+ 305 0122 3E       		.byte	(.L13-.L8)/2
+ 306 0123 24       		.byte	(.L12-.L8)/2
+ 307 0124 66       		.byte	(.L11-.L8)/2
+ 308 0125 54       		.byte	(.L10-.L8)/2
+ 309 0126 77       		.byte	(.L9-.L8)/2
+ 310 0127 03       		.byte	(.L7-.L8)/2
+ 311              		.p2align 1
+ 312              	.L7:
+ 211:./src/main.c  **** 						RxMsg.data8[9] = 0x22;
+ 212:./src/main.c  **** 						RxMsg.data8[10] = 0x33;
+ 213:./src/main.c  **** 						RxMsg.data8[11] = 0x44;
+ 214:./src/main.c  **** 					}
  215:./src/main.c  **** 
- 216:./src/main.c  **** 	// 				// forward message to CAN2
- 217:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS2, &RxMsg);
- 218:./src/main.c  **** 	// 				break;
+ 216:./src/main.c  **** 					// forward message to CAN2
+ 217:./src/main.c  **** 					CAN_Write ( CAN_BUS2, &RxMsg);
+ 218:./src/main.c  **** 					break;
  219:./src/main.c  **** 					
  220:./src/main.c  **** 					
- 221:./src/main.c  **** 	// 			case CAN_BUS2:
- 222:./src/main.c  **** 	// 				// message received from CAN2
- 223:./src/main.c  **** 	// 				LED_toggleCAN2 ^= 1;
+ 221:./src/main.c  **** 				case CAN_BUS2:
+ 222:./src/main.c  **** 					// message received from CAN2
+ 223:./src/main.c  **** 					LED_toggleCAN2 ^= 1;
  224:./src/main.c  **** 
- 225:./src/main.c  **** 	// 				if ( LED_toggleCAN2)
- 226:./src/main.c  **** 	// 				{
- 227:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
- 228:./src/main.c  **** 	// 				}
+ 225:./src/main.c  **** 					if ( LED_toggleCAN2)
+ 226:./src/main.c  **** 					{
+ 227:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
+ 228:./src/main.c  **** 					}
  229:./src/main.c  **** 					
- 230:./src/main.c  **** 	// 				else
- 231:./src/main.c  **** 	// 				{
- 232:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
- 233:./src/main.c  **** 	// 				}
+ 230:./src/main.c  **** 					else
+ 231:./src/main.c  **** 					{
+ 232:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+ 233:./src/main.c  **** 					}
  234:./src/main.c  **** 					
- 235:./src/main.c  ****     //             	if (RxMsg.id == 0x123 && RxMsg.dlc >= 1 && RxMsg.data8[0] == HW_FPGA_VERSION)
- 236:./src/main.c  ****     //             	{
- 237:./src/main.c  ****     //                		HW_SetLED(HW_LED_CAN2, HW_LED_ORANGE);
- 238:./src/main.c  ****     //                 	lastGreetingTick_CAN2 = HAL_GetTick();
- 239:./src/main.c  ****     //             	}
+ 235:./src/main.c  ****                 	if (RxMsg.id == 0x123 && RxMsg.dlc >= 1 && RxMsg.data8[0] == HW_FPGA_VERSION)
+ 236:./src/main.c  ****                 	{
+ 237:./src/main.c  ****                    		HW_SetLED(HW_LED_CAN2, HW_LED_ORANGE);
+ 238:./src/main.c  ****                     	lastGreetingTick_CAN2 = HAL_GetTick();
+ 239:./src/main.c  ****                 	}
  240:./src/main.c  **** 
- 241:./src/main.c  **** 	// 				// CAN1 will be classic CAN only. If msgs will have more than
- 242:./src/main.c  **** 	// 				// eight bytes you have to fragment them manually.
- 243:./src/main.c  **** 	// 				RxMsg.msgtype &= ~( CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS);
+ 241:./src/main.c  **** 					// CAN1 will be classic CAN only. If msgs will have more than
+ 242:./src/main.c  **** 					// eight bytes you have to fragment them manually.
+ 243:./src/main.c  **** 					RxMsg.msgtype &= ~( CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS);
  244:./src/main.c  **** 
- 245:./src/main.c  **** 	// 				// forward message to CAN1
- 246:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS1, &RxMsg);
- 247:./src/main.c  **** 	// 				break;
+ 245:./src/main.c  **** 					// forward message to CAN1
+ 246:./src/main.c  **** 					CAN_Write ( CAN_BUS1, &RxMsg);
+ 247:./src/main.c  **** 					break;
  248:./src/main.c  **** 					
  249:./src/main.c  **** 					
- 250:./src/main.c  **** 	// 			case CAN_BUS3:
- 251:./src/main.c  **** 	// 				// message received from CAN3
- 252:./src/main.c  **** 	// 				LED_toggleCAN3 ^= 1;
+ 250:./src/main.c  **** 				case CAN_BUS3:
+ 251:./src/main.c  **** 					// message received from CAN3
+ 252:./src/main.c  **** 					LED_toggleCAN3 ^= 1;
  253:./src/main.c  **** 
- 254:./src/main.c  **** 	// 				if ( LED_toggleCAN3)
- 255:./src/main.c  **** 	// 				{
- 256:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
- 257:./src/main.c  **** 	// 				}
+ 254:./src/main.c  **** 					if ( LED_toggleCAN3)
+ 255:./src/main.c  **** 					{
+ 256:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
+ 257:./src/main.c  **** 					}
  258:./src/main.c  **** 					
- 259:./src/main.c  **** 	// 				else
- 260:./src/main.c  **** 	// 				{
- 261:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
- 262:./src/main.c  **** 	// 				}
+ 259:./src/main.c  **** 					else
+ 260:./src/main.c  **** 					{
+ 261:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+ 262:./src/main.c  **** 					}
  263:./src/main.c  **** 					
- 264:./src/main.c  **** 	// 				// forward message to CAN4
- 265:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS4, &RxMsg);
- 266:./src/main.c  **** 	// 				break;
+ 264:./src/main.c  **** 					// forward message to CAN4
+ 265:./src/main.c  **** 					CAN_Write ( CAN_BUS4, &RxMsg);
+ 266:./src/main.c  **** 					break;
  267:./src/main.c  **** 					
  268:./src/main.c  **** 					
- 269:./src/main.c  **** 	// 			case CAN_BUS4:
- 270:./src/main.c  **** 	// 				// message received from CAN4
- 271:./src/main.c  **** 	// 				LED_toggleCAN4 ^= 1;
+ 269:./src/main.c  **** 				case CAN_BUS4:
+ 270:./src/main.c  **** 					// message received from CAN4
+ 271:./src/main.c  **** 					LED_toggleCAN4 ^= 1;
  272:./src/main.c  **** 
- 273:./src/main.c  **** 	// 				if ( LED_toggleCAN4)
- 274:./src/main.c  **** 	// 				{
- 275:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
- 276:./src/main.c  **** 	// 				}
+ 273:./src/main.c  **** 					if ( LED_toggleCAN4)
+ 274:./src/main.c  **** 					{
+ 275:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
+ 276:./src/main.c  **** 					}
  277:./src/main.c  **** 					
- 278:./src/main.c  **** 	// 				else
- 279:./src/main.c  **** 	// 				{
- 280:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
- 281:./src/main.c  **** 	// 				}
+ 278:./src/main.c  **** 					else
+ 279:./src/main.c  **** 					{
+ 280:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
+ 281:./src/main.c  **** 					}
  282:./src/main.c  **** 					
- 283:./src/main.c  **** 	// 				// forward message to CAN3
- 284:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS3, &RxMsg);
- 285:./src/main.c  **** 	// 				break;
+ 283:./src/main.c  **** 					// forward message to CAN3
+ 284:./src/main.c  **** 					CAN_Write ( CAN_BUS3, &RxMsg);
+ 285:./src/main.c  **** 					break;
  286:./src/main.c  **** 					
  287:./src/main.c  **** 					
- 288:./src/main.c  **** 	// 			case CAN_BUS5:
- 289:./src/main.c  **** 	// 				// message received from CAN5
- 290:./src/main.c  **** 	// 				LED_toggleCAN5 ^= 1;
+ 288:./src/main.c  **** 				case CAN_BUS5:
+ 289:./src/main.c  **** 					// message received from CAN5
+ 290:./src/main.c  **** 					LED_toggleCAN5 ^= 1;
  291:./src/main.c  **** 
- 292:./src/main.c  **** 	// 				if ( LED_toggleCAN5)
- 293:./src/main.c  **** 	// 				{
- 294:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
- 295:./src/main.c  **** 	// 				}
+ 292:./src/main.c  **** 					if ( LED_toggleCAN5)
+ 293:./src/main.c  **** 					{
+ 294:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
+ 295:./src/main.c  **** 					}
  296:./src/main.c  **** 					
- 297:./src/main.c  **** 	// 				else
- 298:./src/main.c  **** 	// 				{
- 299:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
- 300:./src/main.c  **** 	// 				}
+ 297:./src/main.c  **** 					else
+ 298:./src/main.c  **** 					{
+ 299:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
+ 300:./src/main.c  **** 					}
  301:./src/main.c  **** 					
- 302:./src/main.c  **** 	// 				// forward message to CAN6
- 303:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS6, &RxMsg);
- 304:./src/main.c  **** 	// 				break;
+ 302:./src/main.c  **** 					// forward message to CAN6
+ 303:./src/main.c  **** 					CAN_Write ( CAN_BUS6, &RxMsg);
+ 304:./src/main.c  **** 					break;
  305:./src/main.c  **** 					
  306:./src/main.c  **** 					
- 307:./src/main.c  **** 	// 			case CAN_BUS6:
- 308:./src/main.c  **** 	// 				// message received from CAN6
- 309:./src/main.c  **** 	// 				LED_toggleCAN6 ^= 1;
+ 307:./src/main.c  **** 				case CAN_BUS6:
+ 308:./src/main.c  **** 					// message received from CAN6
+ 309:./src/main.c  **** 					LED_toggleCAN6 ^= 1;
+ 313              		.loc 1 309 6 is_stmt 1 view .LVU108
+ 314              		.loc 1 309 21 is_stmt 0 view .LVU109
+ 315 0128 95F85B30 		ldrb	r3, [r5, #91]	@ zero_extendqisi2
  310:./src/main.c  **** 
- 311:./src/main.c  **** 	// 				if ( LED_toggleCAN6)
- 312:./src/main.c  **** 	// 				{
- 313:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
- 314:./src/main.c  **** 	// 				}
+ 311:./src/main.c  **** 					if ( LED_toggleCAN6)
+ 312:./src/main.c  **** 					{
+ 313:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
+ 314:./src/main.c  **** 					}
  315:./src/main.c  **** 					
- 316:./src/main.c  **** 	// 				else
- 317:./src/main.c  **** 	// 				{
- 318:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
- 319:./src/main.c  **** 	// 				}
+ 316:./src/main.c  **** 					else
+ 317:./src/main.c  **** 					{
+ 318:./src/main.c  **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
+ 316              		.loc 1 318 7 view .LVU110
+ 317 012c 0620     		movs	r0, #6
+ 311:./src/main.c  **** 					{
+ 318              		.loc 1 311 9 view .LVU111
+ 319 012e 012B     		cmp	r3, #1
+ 309:./src/main.c  **** 
+ 320              		.loc 1 309 21 view .LVU112
+ 321 0130 83F00102 		eor	r2, r3, #1
+ 313:./src/main.c  **** 					}
+ 322              		.loc 1 313 7 view .LVU113
+ 323 0134 14BF     		ite	ne
+ 324 0136 0321     		movne	r1, #3
+ 325              		.loc 1 318 7 view .LVU114
+ 326 0138 0221     		moveq	r1, #2
+ 309:./src/main.c  **** 
+ 327              		.loc 1 309 21 view .LVU115
+ 328 013a 85F85B20 		strb	r2, [r5, #91]
+ 311:./src/main.c  **** 					{
+ 329              		.loc 1 311 6 is_stmt 1 view .LVU116
+ 313:./src/main.c  **** 					}
+ 330              		.loc 1 313 7 view .LVU117
+ 331              		.loc 1 318 7 view .LVU118
+ 332 013e FFF7FEFF 		bl	HW_SetLED
+ 333              	.LVL25:
+ 319:./src/main.c  **** 					}
  320:./src/main.c  **** 					
- 321:./src/main.c  **** 	// 				// forward message to CAN5
- 322:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS5, &RxMsg);
- 323:./src/main.c  **** 	// 				break;
- 324:./src/main.c  **** 	// 		}
- 325:./src/main.c  **** 	// 	}
+ 321:./src/main.c  **** 					// forward message to CAN5
+ 322:./src/main.c  **** 					CAN_Write ( CAN_BUS5, &RxMsg);
+ 334              		.loc 1 322 6 view .LVU119
+ 335 0142 2146     		mov	r1, r4
+ 336 0144 0420     		movs	r0, #4
+ 337 0146 FFF7FEFF 		bl	CAN_Write
+ 338              	.LVL26:
+ 323:./src/main.c  **** 					break;
+ 339              		.loc 1 323 6 view .LVU120
+ 340              	.L6:
+ 324:./src/main.c  **** 			}
+ 325:./src/main.c  **** 		}
  326:./src/main.c  **** 
- 327:./src/main.c  **** 	// 	uint32_t now = HAL_GetTick();
- 328:./src/main.c  **** 	// 	if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
+ 327:./src/main.c  **** 		uint32_t now = HAL_GetTick();
+ 341              		.loc 1 327 3 view .LVU121
+ 342              		.loc 1 327 18 is_stmt 0 view .LVU122
+ 343 014a FFF7FEFF 		bl	HAL_GetTick
+ 344              	.LVL27:
+ 328:./src/main.c  **** 		if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
+ 345              		.loc 1 328 3 is_stmt 1 view .LVU123
+ 346              		.loc 1 328 11 is_stmt 0 view .LVU124
+ 347 014e 6B6D     		ldr	r3, [r5, #84]
+ 348 0150 C01A     		subs	r0, r0, r3
+ 349              	.LVL28:
+ 350              		.loc 1 328 6 view .LVU125
+ 351 0152 B0F5FA6F 		cmp	r0, #2000
+ 352 0156 03D9     		bls	.L28
+ 353              		.loc 1 328 43 is_stmt 1 discriminator 1 view .LVU126
+ 354 0158 0221     		movs	r1, #2
+ 355 015a 0846     		mov	r0, r1
+ 356 015c FFF7FEFF 		bl	HW_SetLED
+ 357              	.LVL29:
+ 358              	.L28:
  329:./src/main.c  **** 
- 330:./src/main.c  **** 	// 	osDelay ( DLY_MS(5000));
+ 330:./src/main.c  **** 		osDelay ( DLY_MS(5000));
+ 359              		.loc 1 330 3 view .LVU127
+ 360 0160 46F2A810 		movw	r0, #25000
+ 361 0164 FFF7FEFF 		bl	osDelay
+ 362              	.LVL30:
+ 363              	.LBE31:
+ 168:./src/main.c  **** 	{
+ 364              		.loc 1 168 8 view .LVU128
+ 169:./src/main.c  **** 		osThreadSuspend(osThreadGetId());
+ 365              		.loc 1 169 2 is_stmt 0 view .LVU129
+ 366 0168 CCE7     		b	.L29
+ 367              	.L12:
+ 368              	.LBB32:
+ 223:./src/main.c  **** 
+ 369              		.loc 1 223 6 is_stmt 1 view .LVU130
+ 223:./src/main.c  **** 
+ 370              		.loc 1 223 21 is_stmt 0 view .LVU131
+ 371 016a 95F85130 		ldrb	r3, [r5, #81]	@ zero_extendqisi2
+ 372 016e 83F00102 		eor	r2, r3, #1
+ 225:./src/main.c  **** 					{
+ 373              		.loc 1 225 9 view .LVU132
+ 374 0172 012B     		cmp	r3, #1
+ 223:./src/main.c  **** 
+ 375              		.loc 1 223 21 view .LVU133
+ 376 0174 85F85120 		strb	r2, [r5, #81]
+ 225:./src/main.c  **** 					{
+ 377              		.loc 1 225 6 is_stmt 1 view .LVU134
+ 225:./src/main.c  **** 					{
+ 378              		.loc 1 225 9 is_stmt 0 view .LVU135
+ 379 0178 5CD0     		beq	.L17
+ 227:./src/main.c  **** 					}
+ 380              		.loc 1 227 7 is_stmt 1 view .LVU136
+ 381 017a 0321     		movs	r1, #3
+ 382 017c 0220     		movs	r0, #2
+ 383 017e FFF7FEFF 		bl	HW_SetLED
+ 384              	.LVL31:
+ 235:./src/main.c  ****                 	{
+ 385              		.loc 1 235 18 view .LVU137
+ 235:./src/main.c  ****                 	{
+ 386              		.loc 1 235 21 is_stmt 0 view .LVU138
+ 387 0182 A269     		ldr	r2, [r4, #24]
+ 388 0184 40F22313 		movw	r3, #291
+ 389 0188 9A42     		cmp	r2, r3
+ 390 018a 5CD0     		beq	.L34
+ 391              	.L19:
+ 243:./src/main.c  **** 
+ 392              		.loc 1 243 6 is_stmt 1 view .LVU139
+ 243:./src/main.c  **** 
+ 393              		.loc 1 243 20 is_stmt 0 view .LVU140
+ 394 018c E38A     		ldrh	r3, [r4, #22]
+ 246:./src/main.c  **** 					break;
+ 395              		.loc 1 246 6 view .LVU141
+ 396 018e 2146     		mov	r1, r4
+ 397 0190 0020     		movs	r0, #0
+ 243:./src/main.c  **** 
+ 398              		.loc 1 243 20 view .LVU142
+ 399 0192 23F03003 		bic	r3, r3, #48
+ 400 0196 E382     		strh	r3, [r4, #22]	@ movhi
+ 246:./src/main.c  **** 					break;
+ 401              		.loc 1 246 6 is_stmt 1 view .LVU143
+ 402 0198 FFF7FEFF 		bl	CAN_Write
+ 403              	.LVL32:
+ 247:./src/main.c  **** 					
+ 404              		.loc 1 247 6 view .LVU144
+ 405 019c D5E7     		b	.L6
+ 406              	.L13:
+ 188:./src/main.c  **** 
+ 407              		.loc 1 188 6 view .LVU145
+ 188:./src/main.c  **** 
+ 408              		.loc 1 188 21 is_stmt 0 view .LVU146
+ 409 019e 95F85000 		ldrb	r0, [r5, #80]	@ zero_extendqisi2
+ 410 01a2 80F00103 		eor	r3, r0, #1
+ 190:./src/main.c  **** 					{
+ 411              		.loc 1 190 9 view .LVU147
+ 412 01a6 0128     		cmp	r0, #1
+ 188:./src/main.c  **** 
+ 413              		.loc 1 188 21 view .LVU148
+ 414 01a8 85F85030 		strb	r3, [r5, #80]
+ 190:./src/main.c  **** 					{
+ 415              		.loc 1 190 6 is_stmt 1 view .LVU149
+ 190:./src/main.c  **** 					{
+ 416              		.loc 1 190 9 is_stmt 0 view .LVU150
+ 417 01ac 5ED0     		beq	.L14
+ 192:./src/main.c  **** 					}
+ 418              		.loc 1 192 7 is_stmt 1 view .LVU151
+ 419 01ae 0321     		movs	r1, #3
+ 420 01b0 0120     		movs	r0, #1
+ 421 01b2 FFF7FEFF 		bl	HW_SetLED
+ 422              	.LVL33:
+ 201:./src/main.c  **** 					{
+ 423              		.loc 1 201 6 view .LVU152
+ 201:./src/main.c  **** 					{
+ 424              		.loc 1 201 9 is_stmt 0 view .LVU153
+ 425 01b6 A269     		ldr	r2, [r4, #24]
+ 426 01b8 40F22313 		movw	r3, #291
+ 427 01bc 9A42     		cmp	r2, r3
+ 428 01be 5DD0     		beq	.L35
+ 429              	.L16:
+ 217:./src/main.c  **** 					break;
+ 430              		.loc 1 217 6 is_stmt 1 view .LVU154
+ 431 01c0 2146     		mov	r1, r4
+ 432 01c2 0120     		movs	r0, #1
+ 433 01c4 FFF7FEFF 		bl	CAN_Write
+ 434              	.LVL34:
+ 218:./src/main.c  **** 					
+ 435              		.loc 1 218 6 view .LVU155
+ 436 01c8 BFE7     		b	.L6
+ 437              	.L10:
+ 271:./src/main.c  **** 
+ 438              		.loc 1 271 6 view .LVU156
+ 271:./src/main.c  **** 
+ 439              		.loc 1 271 21 is_stmt 0 view .LVU157
+ 440 01ca 95F85930 		ldrb	r3, [r5, #89]	@ zero_extendqisi2
+ 280:./src/main.c  **** 					}
+ 441              		.loc 1 280 7 view .LVU158
+ 442 01ce 0420     		movs	r0, #4
+ 273:./src/main.c  **** 					{
+ 443              		.loc 1 273 9 view .LVU159
+ 444 01d0 012B     		cmp	r3, #1
+ 271:./src/main.c  **** 
+ 445              		.loc 1 271 21 view .LVU160
+ 446 01d2 83F00102 		eor	r2, r3, #1
+ 275:./src/main.c  **** 					}
+ 447              		.loc 1 275 7 view .LVU161
+ 448 01d6 14BF     		ite	ne
+ 449 01d8 0321     		movne	r1, #3
+ 280:./src/main.c  **** 					}
+ 450              		.loc 1 280 7 view .LVU162
+ 451 01da 0221     		moveq	r1, #2
+ 271:./src/main.c  **** 
+ 452              		.loc 1 271 21 view .LVU163
+ 453 01dc 85F85920 		strb	r2, [r5, #89]
+ 273:./src/main.c  **** 					{
+ 454              		.loc 1 273 6 is_stmt 1 view .LVU164
+ 275:./src/main.c  **** 					}
+ 455              		.loc 1 275 7 view .LVU165
+ 280:./src/main.c  **** 					}
+ 456              		.loc 1 280 7 view .LVU166
+ 457 01e0 FFF7FEFF 		bl	HW_SetLED
+ 458              	.LVL35:
+ 284:./src/main.c  **** 					break;
+ 459              		.loc 1 284 6 view .LVU167
+ 460 01e4 2146     		mov	r1, r4
+ 461 01e6 0220     		movs	r0, #2
+ 462 01e8 FFF7FEFF 		bl	CAN_Write
+ 463              	.LVL36:
+ 285:./src/main.c  **** 					
+ 464              		.loc 1 285 6 view .LVU168
+ 465 01ec ADE7     		b	.L6
+ 466              	.L11:
+ 252:./src/main.c  **** 
+ 467              		.loc 1 252 6 view .LVU169
+ 252:./src/main.c  **** 
+ 468              		.loc 1 252 21 is_stmt 0 view .LVU170
+ 469 01ee 95F85830 		ldrb	r3, [r5, #88]	@ zero_extendqisi2
+ 470 01f2 83F00102 		eor	r2, r3, #1
+ 254:./src/main.c  **** 					{
+ 471              		.loc 1 254 9 view .LVU171
+ 472 01f6 012B     		cmp	r3, #1
+ 252:./src/main.c  **** 
+ 473              		.loc 1 252 21 view .LVU172
+ 474 01f8 85F85820 		strb	r2, [r5, #88]
+ 254:./src/main.c  **** 					{
+ 475              		.loc 1 254 6 is_stmt 1 view .LVU173
+ 254:./src/main.c  **** 					{
+ 476              		.loc 1 254 9 is_stmt 0 view .LVU174
+ 477 01fc 4AD0     		beq	.L20
+ 256:./src/main.c  **** 					}
+ 478              		.loc 1 256 7 is_stmt 1 view .LVU175
+ 479 01fe 0321     		movs	r1, #3
+ 480 0200 0846     		mov	r0, r1
+ 481 0202 FFF7FEFF 		bl	HW_SetLED
+ 482              	.LVL37:
+ 483              	.L21:
+ 265:./src/main.c  **** 					break;
+ 484              		.loc 1 265 6 view .LVU176
+ 485 0206 2146     		mov	r1, r4
+ 486 0208 0320     		movs	r0, #3
+ 487 020a FFF7FEFF 		bl	CAN_Write
+ 488              	.LVL38:
+ 266:./src/main.c  **** 					
+ 489              		.loc 1 266 6 view .LVU177
+ 490 020e 9CE7     		b	.L6
+ 491              	.L9:
+ 290:./src/main.c  **** 
+ 492              		.loc 1 290 6 view .LVU178
+ 290:./src/main.c  **** 
+ 493              		.loc 1 290 21 is_stmt 0 view .LVU179
+ 494 0210 95F85A30 		ldrb	r3, [r5, #90]	@ zero_extendqisi2
+ 299:./src/main.c  **** 					}
+ 495              		.loc 1 299 7 view .LVU180
+ 496 0214 0520     		movs	r0, #5
+ 292:./src/main.c  **** 					{
+ 497              		.loc 1 292 9 view .LVU181
+ 498 0216 012B     		cmp	r3, #1
+ 290:./src/main.c  **** 
+ 499              		.loc 1 290 21 view .LVU182
+ 500 0218 83F00102 		eor	r2, r3, #1
+ 294:./src/main.c  **** 					}
+ 501              		.loc 1 294 7 view .LVU183
+ 502 021c 14BF     		ite	ne
+ 503 021e 0321     		movne	r1, #3
+ 299:./src/main.c  **** 					}
+ 504              		.loc 1 299 7 view .LVU184
+ 505 0220 0221     		moveq	r1, #2
+ 290:./src/main.c  **** 
+ 506              		.loc 1 290 21 view .LVU185
+ 507 0222 85F85A20 		strb	r2, [r5, #90]
+ 292:./src/main.c  **** 					{
+ 508              		.loc 1 292 6 is_stmt 1 view .LVU186
+ 294:./src/main.c  **** 					}
+ 509              		.loc 1 294 7 view .LVU187
+ 299:./src/main.c  **** 					}
+ 510              		.loc 1 299 7 view .LVU188
+ 511 0226 FFF7FEFF 		bl	HW_SetLED
+ 512              	.LVL39:
+ 303:./src/main.c  **** 					break;
+ 513              		.loc 1 303 6 view .LVU189
+ 514 022a 2146     		mov	r1, r4
+ 515 022c 0520     		movs	r0, #5
+ 516 022e FFF7FEFF 		bl	CAN_Write
+ 517              	.LVL40:
+ 304:./src/main.c  **** 					
+ 518              		.loc 1 304 6 view .LVU190
+ 519 0232 8AE7     		b	.L6
+ 520              	.L17:
+ 232:./src/main.c  **** 					}
+ 521              		.loc 1 232 7 view .LVU191
+ 522 0234 0221     		movs	r1, #2
+ 523 0236 0846     		mov	r0, r1
+ 524 0238 FFF7FEFF 		bl	HW_SetLED
+ 525              	.LVL41:
+ 235:./src/main.c  ****                 	{
+ 526              		.loc 1 235 18 view .LVU192
+ 235:./src/main.c  ****                 	{
+ 527              		.loc 1 235 21 is_stmt 0 view .LVU193
+ 528 023c A269     		ldr	r2, [r4, #24]
+ 529 023e 40F22313 		movw	r3, #291
+ 530 0242 9A42     		cmp	r2, r3
+ 531 0244 A2D1     		bne	.L19
+ 532              	.L34:
+ 235:./src/main.c  ****                 	{
+ 533              		.loc 1 235 53 discriminator 1 view .LVU194
+ 534 0246 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 235:./src/main.c  ****                 	{
+ 535              		.loc 1 235 40 discriminator 1 view .LVU195
+ 536 0248 13F0F00F 		tst	r3, #240
+ 537 024c 9ED0     		beq	.L19
+ 235:./src/main.c  ****                 	{
+ 538              		.loc 1 235 79 discriminator 2 view .LVU196
+ 539 024e 4FF0C843 		mov	r3, #1677721600
+ 235:./src/main.c  ****                 	{
+ 540              		.loc 1 235 72 discriminator 2 view .LVU197
+ 541 0252 227F     		ldrb	r2, [r4, #28]	@ zero_extendqisi2
+ 235:./src/main.c  ****                 	{
+ 542              		.loc 1 235 79 discriminator 2 view .LVU198
+ 543 0254 1B68     		ldr	r3, [r3]
+ 544 0256 DBB2     		uxtb	r3, r3
+ 235:./src/main.c  ****                 	{
+ 545              		.loc 1 235 58 discriminator 2 view .LVU199
+ 546 0258 9A42     		cmp	r2, r3
+ 547 025a 97D1     		bne	.L19
+ 237:./src/main.c  ****                     	lastGreetingTick_CAN2 = HAL_GetTick();
+ 548              		.loc 1 237 22 is_stmt 1 view .LVU200
+ 549 025c 0321     		movs	r1, #3
+ 550 025e 0220     		movs	r0, #2
+ 551 0260 FFF7FEFF 		bl	HW_SetLED
+ 552              	.LVL42:
+ 238:./src/main.c  ****                 	}
+ 553              		.loc 1 238 22 view .LVU201
+ 238:./src/main.c  ****                 	}
+ 554              		.loc 1 238 46 is_stmt 0 view .LVU202
+ 555 0264 FFF7FEFF 		bl	HAL_GetTick
+ 556              	.LVL43:
+ 238:./src/main.c  ****                 	}
+ 557              		.loc 1 238 44 view .LVU203
+ 558 0268 6865     		str	r0, [r5, #84]
+ 559 026a 8FE7     		b	.L19
+ 560              	.L14:
+ 197:./src/main.c  **** 					}
+ 561              		.loc 1 197 7 is_stmt 1 view .LVU204
+ 562 026c 0221     		movs	r1, #2
+ 563 026e FFF7FEFF 		bl	HW_SetLED
+ 564              	.LVL44:
+ 201:./src/main.c  **** 					{
+ 565              		.loc 1 201 6 view .LVU205
+ 201:./src/main.c  **** 					{
+ 566              		.loc 1 201 9 is_stmt 0 view .LVU206
+ 567 0272 A269     		ldr	r2, [r4, #24]
+ 568 0274 40F22313 		movw	r3, #291
+ 569 0278 9A42     		cmp	r2, r3
+ 570 027a A1D1     		bne	.L16
+ 571              	.L35:
+ 201:./src/main.c  **** 					{
+ 572              		.loc 1 201 30 discriminator 1 view .LVU207
+ 573 027c E38A     		ldrh	r3, [r4, #22]
+ 574 027e 002B     		cmp	r3, #0
+ 575 0280 9ED1     		bne	.L16
+ 204:./src/main.c  **** 
+ 576              		.loc 1 204 7 is_stmt 1 view .LVU208
+ 207:./src/main.c  **** 
+ 577              		.loc 1 207 17 is_stmt 0 view .LVU209
+ 578 0282 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 579 0284 0921     		movs	r1, #9
+ 204:./src/main.c  **** 
+ 580              		.loc 1 204 21 view .LVU210
+ 581 0286 3022     		movs	r2, #48
+ 210:./src/main.c  **** 						RxMsg.data8[9] = 0x22;
+ 582              		.loc 1 210 22 view .LVU211
+ 583 0288 6662     		str	r6, [r4, #36]
+ 207:./src/main.c  **** 
+ 584              		.loc 1 207 17 view .LVU212
+ 585 028a 61F30713 		bfi	r3, r1, #4, #4
+ 204:./src/main.c  **** 
+ 586              		.loc 1 204 21 view .LVU213
+ 587 028e E282     		strh	r2, [r4, #22]	@ movhi
+ 207:./src/main.c  **** 
+ 588              		.loc 1 207 7 is_stmt 1 view .LVU214
+ 207:./src/main.c  **** 
+ 589              		.loc 1 207 17 is_stmt 0 view .LVU215
+ 590 0290 2375     		strb	r3, [r4, #20]
+ 210:./src/main.c  **** 						RxMsg.data8[9] = 0x22;
+ 591              		.loc 1 210 7 is_stmt 1 view .LVU216
+ 211:./src/main.c  **** 						RxMsg.data8[10] = 0x33;
+ 592              		.loc 1 211 7 view .LVU217
+ 212:./src/main.c  **** 						RxMsg.data8[11] = 0x44;
+ 593              		.loc 1 212 7 view .LVU218
+ 213:./src/main.c  **** 					}
+ 594              		.loc 1 213 7 view .LVU219
+ 595 0292 95E7     		b	.L16
+ 596              	.L20:
+ 261:./src/main.c  **** 					}
+ 597              		.loc 1 261 7 view .LVU220
+ 598 0294 0221     		movs	r1, #2
+ 599 0296 0320     		movs	r0, #3
+ 600 0298 FFF7FEFF 		bl	HW_SetLED
+ 601              	.LVL45:
+ 602 029c B3E7     		b	.L21
+ 603              	.LVL46:
+ 604              	.L4:
+ 261:./src/main.c  **** 					}
+ 605              		.loc 1 261 7 is_stmt 0 view .LVU221
+ 606              	.LBE32:
+ 155:./src/main.c  **** 	}
+ 607              		.loc 1 155 3 is_stmt 1 view .LVU222
+ 608 029e FFF7FEFF 		bl	netif_set_down
+ 609              	.LVL47:
+ 610 02a2 03E7     		b	.L5
+ 611              	.L37:
+ 612              		.align	2
+ 613              	.L36:
+ 614 02a4 00000000 		.word	.LANCHOR0
+ 615 02a8 00000000 		.word	tcpip_input
+ 616 02ac 00040240 		.word	1073873920
+ 617 02b0 C0A81401 		.word	18131136
+ 618 02b4 00000000 		.word	ethernetif_init
+ 619 02b8 C0A81446 		.word	1175759040
+ 620 02bc 00000000 		.word	.LANCHOR1
+ 621 02c0 11223344 		.word	1144201745
+ 622 02c4 89ABCDEF 		.word	-271733879
+ 623 02c8 01234567 		.word	1732584193
+ 624              		.cfi_endproc
+ 625              	.LFE171:
+ 627              		.section	.text.startup,"ax",%progbits
+ 628              		.align	1
+ 629              		.p2align 2,,3
+ 630              		.global	main
+ 631              		.syntax unified
+ 632              		.thumb
+ 633              		.thumb_func
+ 634              		.fpu fpv5-d16
+ 636              	main:
+ 637              	.LFB172:
  331:./src/main.c  **** 
  332:./src/main.c  **** 		// if ( dhcp_supplied_address ( &gnetif))
  333:./src/main.c  **** 		// {
@@ -724,10 +1172,10 @@
  351:./src/main.c  **** 	// httpd_init();
  352:./src/main.c  **** 
  353:./src/main.c  **** 
- 354:./src/main.c  **** 	// while(1)
- 355:./src/main.c  **** 	// {	
- 356:./src/main.c  **** 	// 	osDelay ( DLY_MS(1000));
- 357:./src/main.c  **** 	// }
+ 354:./src/main.c  **** 	while(1)
+ 355:./src/main.c  **** 	{	
+ 356:./src/main.c  **** 		osDelay ( DLY_MS(1000));
+ 357:./src/main.c  **** 	}
  358:./src/main.c  **** 
  359:./src/main.c  **** }
  360:./src/main.c  **** 
@@ -738,18 +1186,18 @@
  365:./src/main.c  **** //! @brief      entry point
  366:./src/main.c  **** int  main ( void)
  367:./src/main.c  **** {
- 306              		.loc 1 367 1 view -0
- 307              		.cfi_startproc
- 308              		@ Volatile: function does not return.
- 309              		@ args = 0, pretend = 0, frame = 40
- 310              		@ frame_needed = 0, uses_anonymous_args = 0
+ 638              		.loc 1 367 1 view -0
+ 639              		.cfi_startproc
+ 640              		@ Volatile: function does not return.
+ 641              		@ args = 0, pretend = 0, frame = 40
+ 642              		@ frame_needed = 0, uses_anonymous_args = 0
  368:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
  369:./src/main.c  **** 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
  370:./src/main.c  **** 	SCB_DisableDCache();
- 311              		.loc 1 370 2 view .LVU98
- 312              	.LBB27:
- 313              	.LBI27:
- 314              		.file 2 "./inc/core_cm7.h"
+ 643              		.loc 1 370 2 view .LVU224
+ 644              	.LBB33:
+ 645              	.LBI33:
+ 646              		.file 2 "./inc/core_cm7.h"
    1:./inc/core_cm7.h **** /**************************************************************************//**
    2:./inc/core_cm7.h ****  * @file     core_cm7.h
    3:./inc/core_cm7.h ****  * @brief    CMSIS Cortex-M7 Core Peripheral Access Layer Header File
@@ -3115,39 +3563,39 @@
 2363:./inc/core_cm7.h ****   \details Turns off D-Cache
 2364:./inc/core_cm7.h ****   */
 2365:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_DisableDCache (void)
- 315              		.loc 2 2365 27 view .LVU99
- 316              	.LBB28:
+ 647              		.loc 2 2365 27 view .LVU225
+ 648              	.LBB34:
 2366:./inc/core_cm7.h **** {
 2367:./inc/core_cm7.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
 2368:./inc/core_cm7.h ****     uint32_t ccsidr;
- 317              		.loc 2 2368 5 view .LVU100
+ 649              		.loc 2 2368 5 view .LVU226
 2369:./inc/core_cm7.h ****     uint32_t sets;
- 318              		.loc 2 2369 5 view .LVU101
+ 650              		.loc 2 2369 5 view .LVU227
 2370:./inc/core_cm7.h ****     uint32_t ways;
- 319              		.loc 2 2370 5 view .LVU102
+ 651              		.loc 2 2370 5 view .LVU228
 2371:./inc/core_cm7.h **** 
 2372:./inc/core_cm7.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
- 320              		.loc 2 2372 5 view .LVU103
- 321              		.loc 2 2372 17 is_stmt 0 view .LVU104
- 322 0000 2348     		ldr	r0, .L17
- 323 0002 0023     		movs	r3, #0
- 324              	.LBE28:
- 325              	.LBE27:
+ 652              		.loc 2 2372 5 view .LVU229
+ 653              		.loc 2 2372 17 is_stmt 0 view .LVU230
+ 654 0000 2348     		ldr	r0, .L45
+ 655 0002 0023     		movs	r3, #0
+ 656              	.LBE34:
+ 657              	.LBE33:
  367:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 326              		.loc 1 367 1 view .LVU105
- 327 0004 00B5     		push	{lr}
- 328              	.LCFI2:
- 329              		.cfi_def_cfa_offset 4
- 330              		.cfi_offset 14, -4
- 331              	.LBB41:
- 332              	.LBB39:
- 333              		.loc 2 2372 17 view .LVU106
- 334 0006 C0F88430 		str	r3, [r0, #132]
+ 658              		.loc 1 367 1 view .LVU231
+ 659 0004 00B5     		push	{lr}
+ 660              	.LCFI2:
+ 661              		.cfi_def_cfa_offset 4
+ 662              		.cfi_offset 14, -4
+ 663              	.LBB47:
+ 664              	.LBB45:
+ 665              		.loc 2 2372 17 view .LVU232
+ 666 0006 C0F88430 		str	r3, [r0, #132]
 2373:./inc/core_cm7.h ****     __DSB();
- 335              		.loc 2 2373 5 is_stmt 1 view .LVU107
- 336              	.LBB29:
- 337              	.LBI29:
- 338              		.file 3 "./inc/cmsis_gcc.h"
+ 667              		.loc 2 2373 5 is_stmt 1 view .LVU233
+ 668              	.LBB35:
+ 669              	.LBI35:
+ 670              		.file 3 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -4092,332 +4540,382 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
- 339              		.loc 3 944 27 view .LVU108
- 340              	.LBB30:
+ 671              		.loc 3 944 27 view .LVU234
+ 672              	.LBB36:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 341              		.loc 3 946 3 view .LVU109
- 342              	.LBE30:
- 343              	.LBE29:
- 344              	.LBE39:
- 345              	.LBE41:
+ 673              		.loc 3 946 3 view .LVU235
+ 674              	.LBE36:
+ 675              	.LBE35:
+ 676              	.LBE45:
+ 677              	.LBE47:
  367:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 346              		.loc 1 367 1 is_stmt 0 view .LVU110
- 347 000a 8BB0     		sub	sp, sp, #44
- 348              	.LCFI3:
- 349              		.cfi_def_cfa_offset 48
- 350              	.LBB42:
- 351              	.LBB40:
- 352              	.LBB32:
- 353              	.LBB31:
- 354              		.loc 3 946 3 view .LVU111
- 355              		.syntax unified
- 356              	@ 946 "./inc/cmsis_gcc.h" 1
- 357 000c BFF34F8F 		dsb 0xF
- 358              	@ 0 "" 2
- 359              		.thumb
- 360              		.syntax unified
- 361              	.LBE31:
- 362              	.LBE32:
+ 678              		.loc 1 367 1 is_stmt 0 view .LVU236
+ 679 000a 8BB0     		sub	sp, sp, #44
+ 680              	.LCFI3:
+ 681              		.cfi_def_cfa_offset 48
+ 682              	.LBB48:
+ 683              	.LBB46:
+ 684              	.LBB38:
+ 685              	.LBB37:
+ 686              		.loc 3 946 3 view .LVU237
+ 687              		.syntax unified
+ 688              	@ 946 "./inc/cmsis_gcc.h" 1
+ 689 000c BFF34F8F 		dsb 0xF
+ 690              	@ 0 "" 2
+ 691              		.thumb
+ 692              		.syntax unified
+ 693              	.LBE37:
+ 694              	.LBE38:
 2374:./inc/core_cm7.h **** 
 2375:./inc/core_cm7.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  /* disable D-Cache */
- 363              		.loc 2 2375 5 is_stmt 1 view .LVU112
- 364              		.loc 2 2375 14 is_stmt 0 view .LVU113
- 365 0010 4369     		ldr	r3, [r0, #20]
- 366 0012 23F48033 		bic	r3, r3, #65536
- 367 0016 4361     		str	r3, [r0, #20]
+ 695              		.loc 2 2375 5 is_stmt 1 view .LVU238
+ 696              		.loc 2 2375 14 is_stmt 0 view .LVU239
+ 697 0010 4369     		ldr	r3, [r0, #20]
+ 698 0012 23F48033 		bic	r3, r3, #65536
+ 699 0016 4361     		str	r3, [r0, #20]
 2376:./inc/core_cm7.h ****     __DSB();
- 368              		.loc 2 2376 5 is_stmt 1 view .LVU114
- 369              	.LBB33:
- 370              	.LBI33:
+ 700              		.loc 2 2376 5 is_stmt 1 view .LVU240
+ 701              	.LBB39:
+ 702              	.LBI39:
  944:./inc/cmsis_gcc.h **** {
- 371              		.loc 3 944 27 view .LVU115
- 372              	.LBB34:
- 373              		.loc 3 946 3 view .LVU116
- 374              		.syntax unified
- 375              	@ 946 "./inc/cmsis_gcc.h" 1
- 376 0018 BFF34F8F 		dsb 0xF
- 377              	@ 0 "" 2
- 378              		.thumb
- 379              		.syntax unified
- 380              	.LBE34:
- 381              	.LBE33:
+ 703              		.loc 3 944 27 view .LVU241
+ 704              	.LBB40:
+ 705              		.loc 3 946 3 view .LVU242
+ 706              		.syntax unified
+ 707              	@ 946 "./inc/cmsis_gcc.h" 1
+ 708 0018 BFF34F8F 		dsb 0xF
+ 709              	@ 0 "" 2
+ 710              		.thumb
+ 711              		.syntax unified
+ 712              	.LBE40:
+ 713              	.LBE39:
 2377:./inc/core_cm7.h **** 
 2378:./inc/core_cm7.h ****     ccsidr = SCB->CCSIDR;
- 382              		.loc 2 2378 5 view .LVU117
- 383              		.loc 2 2378 12 is_stmt 0 view .LVU118
- 384 001c D0F88030 		ldr	r3, [r0, #128]
- 385              	.LVL25:
+ 714              		.loc 2 2378 5 view .LVU243
+ 715              		.loc 2 2378 12 is_stmt 0 view .LVU244
+ 716 001c D0F88030 		ldr	r3, [r0, #128]
+ 717              	.LVL48:
 2379:./inc/core_cm7.h **** 
 2380:./inc/core_cm7.h ****                                             /* clean & invalidate D-Cache */
 2381:./inc/core_cm7.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
- 386              		.loc 2 2381 5 is_stmt 1 view .LVU119
+ 718              		.loc 2 2381 5 is_stmt 1 view .LVU245
 2382:./inc/core_cm7.h ****     do {
 2383:./inc/core_cm7.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
 2384:./inc/core_cm7.h ****       do {
 2385:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 387              		.loc 2 2385 54 is_stmt 0 view .LVU120
- 388 0020 43F6E074 		movw	r4, #16352
+ 719              		.loc 2 2385 54 is_stmt 0 view .LVU246
+ 720 0020 43F6E074 		movw	r4, #16352
 2381:./inc/core_cm7.h ****     do {
- 389              		.loc 2 2381 10 view .LVU121
- 390 0024 C3F34E3C 		ubfx	ip, r3, #13, #15
+ 721              		.loc 2 2381 10 view .LVU247
+ 722 0024 C3F34E3C 		ubfx	ip, r3, #13, #15
 2383:./inc/core_cm7.h ****       do {
- 391              		.loc 2 2383 12 view .LVU122
- 392 0028 C3F3C90E 		ubfx	lr, r3, #3, #10
- 393 002c 4FEA4C1C 		lsl	ip, ip, #5
- 394              	.LVL26:
- 395              	.L12:
+ 723              		.loc 2 2383 12 view .LVU248
+ 724 0028 C3F3C90E 		ubfx	lr, r3, #3, #10
+ 725 002c 4FEA4C1C 		lsl	ip, ip, #5
+ 726              	.LVL49:
+ 727              	.L40:
 2382:./inc/core_cm7.h ****     do {
- 396              		.loc 2 2382 5 is_stmt 1 view .LVU123
+ 728              		.loc 2 2382 5 is_stmt 1 view .LVU249
 2383:./inc/core_cm7.h ****       do {
- 397              		.loc 2 2383 7 view .LVU124
- 398              		.loc 2 2385 54 is_stmt 0 view .LVU125
- 399 0030 0CEA0401 		and	r1, ip, r4
+ 729              		.loc 2 2383 7 view .LVU250
+ 730              		.loc 2 2385 54 is_stmt 0 view .LVU251
+ 731 0030 0CEA0401 		and	r1, ip, r4
 2383:./inc/core_cm7.h ****       do {
- 400              		.loc 2 2383 12 view .LVU126
- 401 0034 7346     		mov	r3, lr
- 402              	.L11:
- 403              	.LVL27:
+ 732              		.loc 2 2383 12 view .LVU252
+ 733 0034 7346     		mov	r3, lr
+ 734              	.L39:
+ 735              	.LVL50:
 2384:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 404              		.loc 2 2384 7 is_stmt 1 view .LVU127
- 405              		.loc 2 2385 9 view .LVU128
- 406              		.loc 2 2385 76 is_stmt 0 view .LVU129
- 407 0036 41EA8372 		orr	r2, r1, r3, lsl #30
+ 736              		.loc 2 2384 7 is_stmt 1 view .LVU253
+ 737              		.loc 2 2385 9 view .LVU254
+ 738              		.loc 2 2385 76 is_stmt 0 view .LVU255
+ 739 0036 41EA8372 		orr	r2, r1, r3, lsl #30
 2386:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
 2387:./inc/core_cm7.h ****         #if defined ( __CC_ARM )
 2388:./inc/core_cm7.h ****           __schedule_barrier();
 2389:./inc/core_cm7.h ****         #endif
 2390:./inc/core_cm7.h ****       } while (ways-- != 0U);
- 408              		.loc 2 2390 20 view .LVU130
- 409 003a 013B     		subs	r3, r3, #1
- 410              	.LVL28:
+ 740              		.loc 2 2390 20 view .LVU256
+ 741 003a 013B     		subs	r3, r3, #1
+ 742              	.LVL51:
 2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
- 411              		.loc 2 2385 21 view .LVU131
- 412 003c C0F87422 		str	r2, [r0, #628]
- 413              		.loc 2 2390 15 is_stmt 1 view .LVU132
- 414              	.LVL29:
- 415              		.loc 2 2390 7 is_stmt 0 view .LVU133
- 416 0040 5A1C     		adds	r2, r3, #1
- 417 0042 F8D1     		bne	.L11
+ 743              		.loc 2 2385 21 view .LVU257
+ 744 003c C0F87422 		str	r2, [r0, #628]
+ 745              		.loc 2 2390 15 is_stmt 1 view .LVU258
+ 746              	.LVL52:
+ 747              		.loc 2 2390 7 is_stmt 0 view .LVU259
+ 748 0040 5A1C     		adds	r2, r3, #1
+ 749 0042 F8D1     		bne	.L39
 2391:./inc/core_cm7.h ****     } while(sets-- != 0U);
- 418              		.loc 2 2391 12 is_stmt 1 view .LVU134
- 419              		.loc 2 2391 5 is_stmt 0 view .LVU135
- 420 0044 ACF1200C 		sub	ip, ip, #32
- 421 0048 1CF1200F 		cmn	ip, #32
- 422 004c F0D1     		bne	.L12
+ 750              		.loc 2 2391 12 is_stmt 1 view .LVU260
+ 751              		.loc 2 2391 5 is_stmt 0 view .LVU261
+ 752 0044 ACF1200C 		sub	ip, ip, #32
+ 753 0048 1CF1200F 		cmn	ip, #32
+ 754 004c F0D1     		bne	.L40
 2392:./inc/core_cm7.h **** 
 2393:./inc/core_cm7.h ****     __DSB();
- 423              		.loc 2 2393 5 is_stmt 1 view .LVU136
- 424              	.LBB35:
- 425              	.LBI35:
+ 755              		.loc 2 2393 5 is_stmt 1 view .LVU262
+ 756              	.LBB41:
+ 757              	.LBI41:
  944:./inc/cmsis_gcc.h **** {
- 426              		.loc 3 944 27 view .LVU137
- 427              	.LBB36:
- 428              		.loc 3 946 3 view .LVU138
- 429              		.syntax unified
- 430              	@ 946 "./inc/cmsis_gcc.h" 1
- 431 004e BFF34F8F 		dsb 0xF
- 432              	@ 0 "" 2
- 433              		.thumb
- 434              		.syntax unified
- 435              	.LBE36:
- 436              	.LBE35:
+ 758              		.loc 3 944 27 view .LVU263
+ 759              	.LBB42:
+ 760              		.loc 3 946 3 view .LVU264
+ 761              		.syntax unified
+ 762              	@ 946 "./inc/cmsis_gcc.h" 1
+ 763 004e BFF34F8F 		dsb 0xF
+ 764              	@ 0 "" 2
+ 765              		.thumb
+ 766              		.syntax unified
+ 767              	.LBE42:
+ 768              	.LBE41:
 2394:./inc/core_cm7.h ****     __ISB();
- 437              		.loc 2 2394 5 view .LVU139
- 438              	.LBB37:
- 439              	.LBI37:
+ 769              		.loc 2 2394 5 view .LVU265
+ 770              	.LBB43:
+ 771              	.LBI43:
  933:./inc/cmsis_gcc.h **** {
- 440              		.loc 3 933 27 view .LVU140
- 441              	.LBB38:
+ 772              		.loc 3 933 27 view .LVU266
+ 773              	.LBB44:
  935:./inc/cmsis_gcc.h **** }
- 442              		.loc 3 935 3 view .LVU141
- 443              		.syntax unified
- 444              	@ 935 "./inc/cmsis_gcc.h" 1
- 445 0052 BFF36F8F 		isb 0xF
- 446              	@ 0 "" 2
- 447              	.LVL30:
+ 774              		.loc 3 935 3 view .LVU267
+ 775              		.syntax unified
+ 776              	@ 935 "./inc/cmsis_gcc.h" 1
+ 777 0052 BFF36F8F 		isb 0xF
+ 778              	@ 0 "" 2
+ 779              	.LVL53:
  935:./inc/cmsis_gcc.h **** }
- 448              		.loc 3 935 3 is_stmt 0 view .LVU142
- 449              		.thumb
- 450              		.syntax unified
- 451              	.LBE38:
- 452              	.LBE37:
- 453              	.LBE40:
- 454              	.LBE42:
+ 780              		.loc 3 935 3 is_stmt 0 view .LVU268
+ 781              		.thumb
+ 782              		.syntax unified
+ 783              	.LBE44:
+ 784              	.LBE43:
+ 785              	.LBE46:
+ 786              	.LBE48:
  371:./src/main.c  **** 
  372:./src/main.c  **** 	// finalize initialization
  373:./src/main.c  **** 	HW_Init();
- 455              		.loc 1 373 2 is_stmt 1 view .LVU143
- 456 0056 FFF7FEFF 		bl	HW_Init
- 457              	.LVL31:
- 374:./src/main.c  **** 	
- 375:./src/main.c  **** 	// initialize kernel
- 376:./src/main.c  **** 	osKernelInitialize();
- 458              		.loc 1 376 2 view .LVU144
- 459 005a FFF7FEFF 		bl	osKernelInitialize
- 460              	.LVL32:
- 461              	.LBB43:
- 377:./src/main.c  **** 	
- 378:./src/main.c  **** 	// create primary thread
- 379:./src/main.c  **** 	{
- 380:./src/main.c  **** 		osThreadAttr_t  attr;
- 462              		.loc 1 380 3 view .LVU145
- 381:./src/main.c  **** 
- 382:./src/main.c  **** 
- 383:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	//0
- 463              		.loc 1 383 3 view .LVU146
- 464 005e 2422     		movs	r2, #36
- 465 0060 0021     		movs	r1, #0
- 466 0062 01A8     		add	r0, sp, #4
- 467 0064 FFF7FEFF 		bl	memset
- 468              	.LVL33:
+ 787              		.loc 1 373 2 is_stmt 1 view .LVU269
+ 788 0056 FFF7FEFF 		bl	HW_Init
+ 789              	.LVL54:
+ 374:./src/main.c  **** 	__enable_irq();
+ 790              		.loc 1 374 2 view .LVU270
+ 791              	.LBB49:
+ 792              	.LBI49:
+ 196:./inc/cmsis_gcc.h **** {
+ 793              		.loc 3 196 27 view .LVU271
+ 794              	.LBB50:
+ 198:./inc/cmsis_gcc.h **** }
+ 795              		.loc 3 198 3 view .LVU272
+ 796              		.syntax unified
+ 797              	@ 198 "./inc/cmsis_gcc.h" 1
+ 798 005a 62B6     		cpsie i
+ 799              	@ 0 "" 2
+ 800              		.thumb
+ 801              		.syntax unified
+ 802              	.LBE50:
+ 803              	.LBE49:
+ 375:./src/main.c  **** 	
+ 376:./src/main.c  **** 	
+ 377:./src/main.c  **** 	// initialize kernel
+ 378:./src/main.c  **** 	osKernelInitialize();
+ 804              		.loc 1 378 2 view .LVU273
+ 805 005c FFF7FEFF 		bl	osKernelInitialize
+ 806              	.LVL55:
+ 807              	.LBB51:
+ 379:./src/main.c  **** 	
+ 380:./src/main.c  **** 	// create primary thread
+ 381:./src/main.c  **** 	{
+ 382:./src/main.c  **** 		osThreadAttr_t  attr;
+ 808              		.loc 1 382 3 view .LVU274
+ 383:./src/main.c  **** 
  384:./src/main.c  **** 
- 385:./src/main.c  **** 		attr.stack_size = 2*1024;
- 469              		.loc 1 385 3 view .LVU147
- 470              		.loc 1 385 19 is_stmt 0 view .LVU148
- 471 0068 4FF40063 		mov	r3, #2048
+ 385:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	//0
+ 809              		.loc 1 385 3 view .LVU275
+ 810 0060 2422     		movs	r2, #36
+ 811 0062 0021     		movs	r1, #0
+ 812 0064 01A8     		add	r0, sp, #4
+ 813 0066 FFF7FEFF 		bl	memset
+ 814              	.LVL56:
  386:./src/main.c  **** 
- 387:./src/main.c  **** 		osThreadNew ( thread_main, NULL, &attr);
- 472              		.loc 1 387 3 view .LVU149
- 473 006c 01AA     		add	r2, sp, #4
- 474 006e 0021     		movs	r1, #0
- 475 0070 0848     		ldr	r0, .L17+4
- 385:./src/main.c  **** 
- 476              		.loc 1 385 19 view .LVU150
- 477 0072 0693     		str	r3, [sp, #24]
- 478              		.loc 1 387 3 is_stmt 1 view .LVU151
- 479 0074 FFF7FEFF 		bl	osThreadNew
- 480              	.LVL34:
- 481              	.LBE43:
- 388:./src/main.c  **** 	}
- 389:./src/main.c  **** 	
- 390:./src/main.c  **** 	// create a timer
- 391:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
- 482              		.loc 1 391 2 view .LVU152
- 483              		.loc 1 391 26 is_stmt 0 view .LVU153
- 484 0078 0023     		movs	r3, #0
- 485 007a 0121     		movs	r1, #1
- 486 007c 0648     		ldr	r0, .L17+8
- 487 007e 1A46     		mov	r2, r3
- 488 0080 FFF7FEFF 		bl	osTimerNew
- 489              	.LVL35:
- 490              		.loc 1 391 24 view .LVU154
- 491 0084 054B     		ldr	r3, .L17+12
- 492 0086 1860     		str	r0, [r3]
- 392:./src/main.c  **** 	
- 393:./src/main.c  **** 	// start thread execution
- 394:./src/main.c  **** 	osKernelStart();
- 493              		.loc 1 394 2 is_stmt 1 view .LVU155
- 494 0088 FFF7FEFF 		bl	osKernelStart
- 495              	.LVL36:
- 496              	.L13:
- 395:./src/main.c  **** 	
- 396:./src/main.c  **** 	// should not reach this point !
- 397:./src/main.c  **** 	while(1)
- 497              		.loc 1 397 2 discriminator 1 view .LVU156
- 398:./src/main.c  **** 	 {}
- 498              		.loc 1 398 4 discriminator 1 view .LVU157
- 397:./src/main.c  **** 	 {}
- 499              		.loc 1 397 7 discriminator 1 view .LVU158
- 397:./src/main.c  **** 	 {}
- 500              		.loc 1 397 2 discriminator 1 view .LVU159
- 501              		.loc 1 398 4 discriminator 1 view .LVU160
- 397:./src/main.c  **** 	 {}
- 502              		.loc 1 397 7 discriminator 1 view .LVU161
- 503 008c FEE7     		b	.L13
- 504              	.L18:
- 505 008e 00BF     		.align	2
- 506              	.L17:
- 507 0090 00ED00E0 		.word	-536810240
- 508 0094 00000000 		.word	thread_main
- 509 0098 00000000 		.word	thread_milli_timer
- 510 009c 00000000 		.word	.LANCHOR0
- 511              		.cfi_endproc
- 512              	.LFE172:
- 514              		.global	lastGreetingTick_CAN2
- 515              		.global	GATEWAY_ADDRESS
- 516              		.global	NETMASK_ADDRESS
- 517              		.global	IP_ADDRESS
- 518              		.global	gw
- 519              		.global	netmask
- 520              		.global	ipaddr
- 521              		.global	gnetif
- 522              		.global	Ident
- 523              		.section	.rodata
- 524              		.align	2
- 527              	Ident:
- 528 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
- 528      2D526F75 
- 528      7465725F 
- 528      50726F5F 
- 528      464400
- 529              		.bss
- 530              		.align	2
- 531              		.set	.LANCHOR0,. + 0
- 534              	thread_milli_timer_id:
- 535 0000 00000000 		.space	4
- 538              	IP_ADDRESS:
- 539 0004 00000000 		.space	4
- 542              	NETMASK_ADDRESS:
- 543 0008 00000000 		.space	4
- 546              	GATEWAY_ADDRESS:
- 547 000c 00000000 		.space	4
- 550              	ipaddr:
- 551 0010 00000000 		.space	4
- 554              	netmask:
- 555 0014 00000000 		.space	4
- 558              	gw:
- 559 0018 00000000 		.space	4
- 562              	gnetif:
- 563 001c 00000000 		.space	52
- 563      00000000 
- 563      00000000 
- 563      00000000 
- 563      00000000 
- 566              	lastGreetingTick_CAN2:
- 567 0050 00000000 		.space	4
- 568              		.text
- 569              	.Letext0:
- 570              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 571              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 572              		.file 6 "./inc/can.h"
- 573              		.file 7 "./inc/cmsis_os2.h"
- 574              		.file 8 "./inc/stm32f765xx.h"
- 575              		.file 9 "./lwip-2.1.2/src/include/lwip/arch.h"
- 576              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
- 577              		.file 11 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 578              		.file 12 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 579              		.file 13 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 580              		.file 14 "./lwip-2.1.2/src/include/lwip/memp.h"
- 581              		.file 15 "./lwip-2.1.2/src/include/lwip/netif.h"
- 582              		.file 16 "./inc/hardware.h"
- 583              		.file 17 "./inc/can_user.h"
- 584              		.file 18 "./lwip-2.1.2/src/include/lwip/tcpip.h"
- 585              		.file 19 "./inc/startDebug.h"
- 586              		.file 20 "./inc/udp_total.h"
- 587              		.file 21 "./inc/stm32f7xx_hal.h"
- 588              		.file 22 "<built-in>"
+ 387:./src/main.c  **** 		attr.stack_size = 4*1024;
+ 815              		.loc 1 387 3 view .LVU276
+ 816              		.loc 1 387 19 is_stmt 0 view .LVU277
+ 817 006a 4FF48053 		mov	r3, #4096
+ 388:./src/main.c  **** 
+ 389:./src/main.c  **** 		osThreadNew ( thread_main, NULL, &attr);
+ 818              		.loc 1 389 3 view .LVU278
+ 819 006e 01AA     		add	r2, sp, #4
+ 820 0070 0021     		movs	r1, #0
+ 821 0072 0848     		ldr	r0, .L45+4
+ 387:./src/main.c  **** 
+ 822              		.loc 1 387 19 view .LVU279
+ 823 0074 0693     		str	r3, [sp, #24]
+ 824              		.loc 1 389 3 is_stmt 1 view .LVU280
+ 825 0076 FFF7FEFF 		bl	osThreadNew
+ 826              	.LVL57:
+ 827              	.LBE51:
+ 390:./src/main.c  **** 	}
+ 391:./src/main.c  **** 	
+ 392:./src/main.c  **** 	// create a timer
+ 393:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
+ 828              		.loc 1 393 2 view .LVU281
+ 829              		.loc 1 393 26 is_stmt 0 view .LVU282
+ 830 007a 0023     		movs	r3, #0
+ 831 007c 0121     		movs	r1, #1
+ 832 007e 0648     		ldr	r0, .L45+8
+ 833 0080 1A46     		mov	r2, r3
+ 834 0082 FFF7FEFF 		bl	osTimerNew
+ 835              	.LVL58:
+ 836              		.loc 1 393 24 view .LVU283
+ 837 0086 054B     		ldr	r3, .L45+12
+ 838 0088 1860     		str	r0, [r3]
+ 394:./src/main.c  **** 	
+ 395:./src/main.c  **** 	// start thread execution
+ 396:./src/main.c  **** 	osKernelStart();
+ 839              		.loc 1 396 2 is_stmt 1 view .LVU284
+ 840 008a FFF7FEFF 		bl	osKernelStart
+ 841              	.LVL59:
+ 842              	.L41:
+ 397:./src/main.c  **** 	
+ 398:./src/main.c  **** 	// should not reach this point !
+ 399:./src/main.c  **** 	while(1)
+ 843              		.loc 1 399 2 discriminator 1 view .LVU285
+ 400:./src/main.c  **** 	 {}
+ 844              		.loc 1 400 4 discriminator 1 view .LVU286
+ 399:./src/main.c  **** 	 {}
+ 845              		.loc 1 399 7 discriminator 1 view .LVU287
+ 399:./src/main.c  **** 	 {}
+ 846              		.loc 1 399 2 discriminator 1 view .LVU288
+ 847              		.loc 1 400 4 discriminator 1 view .LVU289
+ 399:./src/main.c  **** 	 {}
+ 848              		.loc 1 399 7 discriminator 1 view .LVU290
+ 849 008e FEE7     		b	.L41
+ 850              	.L46:
+ 851              		.align	2
+ 852              	.L45:
+ 853 0090 00ED00E0 		.word	-536810240
+ 854 0094 00000000 		.word	thread_main
+ 855 0098 00000000 		.word	thread_milli_timer
+ 856 009c 00000000 		.word	.LANCHOR0
+ 857              		.cfi_endproc
+ 858              	.LFE172:
+ 860              		.global	lastGreetingTick_CAN2
+ 861              		.global	GATEWAY_ADDRESS
+ 862              		.global	NETMASK_ADDRESS
+ 863              		.global	IP_ADDRESS
+ 864              		.global	gw
+ 865              		.global	netmask
+ 866              		.global	ipaddr
+ 867              		.global	gnetif
+ 868              		.global	Ident
+ 869              		.section	.rodata
+ 870              		.align	2
+ 873              	Ident:
+ 874 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
+ 874      2D526F75 
+ 874      7465725F 
+ 874      50726F5F 
+ 874      464400
+ 875              		.bss
+ 876              		.align	2
+ 877              		.set	.LANCHOR0,. + 0
+ 880              	thread_milli_timer_id:
+ 881 0000 00000000 		.space	4
+ 884              	IP_ADDRESS:
+ 885 0004 00000000 		.space	4
+ 888              	NETMASK_ADDRESS:
+ 889 0008 00000000 		.space	4
+ 892              	GATEWAY_ADDRESS:
+ 893 000c 00000000 		.space	4
+ 896              	ipaddr:
+ 897 0010 00000000 		.space	4
+ 900              	netmask:
+ 901 0014 00000000 		.space	4
+ 904              	gw:
+ 905 0018 00000000 		.space	4
+ 908              	gnetif:
+ 909 001c 00000000 		.space	52
+ 909      00000000 
+ 909      00000000 
+ 909      00000000 
+ 909      00000000 
+ 912              	LED_toggleCAN1:
+ 913 0050 00       		.space	1
+ 916              	LED_toggleCAN2:
+ 917 0051 00       		.space	1
+ 918 0052 0000     		.space	2
+ 921              	lastGreetingTick_CAN2:
+ 922 0054 00000000 		.space	4
+ 925              	LED_toggleCAN3:
+ 926 0058 00       		.space	1
+ 929              	LED_toggleCAN4:
+ 930 0059 00       		.space	1
+ 933              	LED_toggleCAN5:
+ 934 005a 00       		.space	1
+ 937              	LED_toggleCAN6:
+ 938 005b 00       		.space	1
+ 939              		.section	.bss.dtcm,"aw",%nobits
+ 940              		.align	2
+ 941              		.set	.LANCHOR1,. + 0
+ 944              	RxMsg.0:
+ 945 0000 00000000 		.space	96
+ 945      00000000 
+ 945      00000000 
+ 945      00000000 
+ 945      00000000 
+ 946              		.text
+ 947              	.Letext0:
+ 948              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 949              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 950              		.file 6 "./inc/can.h"
+ 951              		.file 7 "./inc/can_user.h"
+ 952              		.file 8 "./inc/cmsis_os2.h"
+ 953              		.file 9 "./inc/stm32f765xx.h"
+ 954              		.file 10 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 955              		.file 11 "./lwip-2.1.2/src/include/lwip/err.h"
+ 956              		.file 12 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 957              		.file 13 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 958              		.file 14 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 959              		.file 15 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 960              		.file 16 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 961              		.file 17 "./inc/hardware.h"
+ 962              		.file 18 "./inc/stm32f7xx_hal.h"
+ 963              		.file 19 "./lwip-2.1.2/src/include/lwip/tcpip.h"
+ 964              		.file 20 "./inc/startDebug.h"
+ 965              		.file 21 "./inc/udp_total.h"
+ 966              		.file 22 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:24     .text:00000000 thread_milli_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:47     .text:00000004 thread_main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:285    .text:00000118 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:296    .text.startup:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:304    .text.startup:00000000 main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:507    .text.startup:00000090 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:566    .bss:00000050 lastGreetingTick_CAN2
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:546    .bss:0000000c GATEWAY_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:542    .bss:00000008 NETMASK_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:538    .bss:00000004 IP_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:558    .bss:00000018 gw
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:554    .bss:00000014 netmask
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:550    .bss:00000010 ipaddr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:562    .bss:0000001c gnetif
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:527    .rodata:00000000 Ident
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:524    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:530    .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:534    .bss:00000000 thread_milli_timer_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:24     .text:00000000 thread_milli_timer
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:47     .text:00000004 thread_main
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:305    .text:00000122 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:311    .text:00000128 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:614    .text:000002a4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:628    .text.startup:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:636    .text.startup:00000000 main
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:853    .text.startup:00000090 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:921    .bss:00000054 lastGreetingTick_CAN2
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:892    .bss:0000000c GATEWAY_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:888    .bss:00000008 NETMASK_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:884    .bss:00000004 IP_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:904    .bss:00000018 gw
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:900    .bss:00000014 netmask
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:896    .bss:00000010 ipaddr
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:908    .bss:0000001c gnetif
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:873    .rodata:00000000 Ident
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:870    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:876    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:880    .bss:00000000 thread_milli_timer_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:912    .bss:00000050 LED_toggleCAN1
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:916    .bss:00000051 LED_toggleCAN2
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:925    .bss:00000058 LED_toggleCAN3
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:929    .bss:00000059 LED_toggleCAN4
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:933    .bss:0000005a LED_toggleCAN5
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:937    .bss:0000005b LED_toggleCAN6
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:940    .bss.dtcm:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cctq5ne6.s:944    .bss.dtcm:00000000 RxMsg.0
 
 UNDEFINED SYMBOLS
 HAL_IncTick
@@ -4436,6 +4934,8 @@ task02_init
 UDP_task
 osThreadGetId
 osThreadSuspend
+CAN_UserRead
+HAL_GetTick
 netif_set_down
 tcpip_input
 ethernetif_init

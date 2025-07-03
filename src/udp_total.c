@@ -9,13 +9,13 @@
 
 #include "cmsis_os2.h"
 #include "reset.h"
-
 #include "ARMCM7_DP.h"
 
 /* Private typedef -----------------------------------------------------------*/
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
 #define UDP_CLIENT_PORT    7   /* define the UDP remote connection port */
 #define UDP_SYSTEM_PORT    10 
+
 
 
 /* Private pv -----------------------------------------------------------*/
@@ -73,7 +73,7 @@ void udp_total_connect(void)
   err_t err;
   
   /* Create a new UDP control block  */
-  upcb = udp_new();
+upcb = udp_new();
   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
 
@@ -139,7 +139,6 @@ void udp_client_send(const char *msg)
 
     pbuf_free(p);
 }
-
 
 void UDP_thread(void *argument)
 {

@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//#define ARMCM7_DP
+#define ARMCM7_DP
 #undef ARMCM7_SP
 #undef ARMCM7
 

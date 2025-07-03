@@ -55,6 +55,7 @@ CSRC += $(SRC_FOLDER)/startDebug.c
 CSRC += $(SRC_FOLDER)/task01.c
 CSRC += $(SRC_FOLDER)/task02.c
 CSRC += $(SRC_FOLDER)/reset.c
+CSRC += $(SRC_FOLDER)/firmware_tag.c
 
 CSRC += ./lwip-2.1.2/src/apps/http/httpd.c
 CSRC += ./lwip-2.1.2/src/apps/http/fs.c

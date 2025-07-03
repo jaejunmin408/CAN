@@ -22,6 +22,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define ARMCM7_DP
 
 #if defined (ARMCM7)
   #include "ARMCM7.h"
@@ -122,7 +123,7 @@ void SystemInit (void)
 {
 
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-  SCB->VTOR = (uint32_t) &__VECTOR_TABLE;
+  SCB->VTOR = (uint32_t) &__VECTOR_TABLE;  //0x08040000U
 #endif
 
 #if defined (__FPU_USED) && (__FPU_USED == 1U)

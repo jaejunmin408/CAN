@@ -71,17 +71,33 @@ static EEPROMResult_t ackpoll ( void)
 	I2C1->CR2 |= 1 << 13;
 
 
+	// do {
+	// 	isr = I2C1->ISR;
+
+	// 	if ( isr & ( 1 << 4))
+	// 	{
+	// 		// NACK
+	// 		stat = EEPROM_ERR_ILLDEVICE;
+	// 	}
+		
+	// // until stop
+	// } while ( !( isr & ( 1 << 5)));
+	uint32_t timeout = 100000;
+
 	do {
 		isr = I2C1->ISR;
 
-		if ( isr & ( 1 << 4))
-		{
-			// NACK
+		if (isr & (1 << 4)) {  // NACKF
 			stat = EEPROM_ERR_ILLDEVICE;
+			I2C1->CR2 |= I2C_CR2_STOP;
 		}
-		
-	// until stop
-	} while ( !( isr & ( 1 << 5)));
+
+		if (--timeout == 0) {
+			stat = EEPROM_ERR_TIMEOUT;
+			break;
+		}
+
+	} while (!(isr & (1 << 5)));  // STOPF
 
 	return stat;
 }

@@ -3245,13 +3245,13 @@
    9:./src/udp_total.c **** 
   10:./src/udp_total.c **** #include "cmsis_os2.h"
   11:./src/udp_total.c **** #include "reset.h"
-  12:./src/udp_total.c **** 
-  13:./src/udp_total.c **** #include "ARMCM7_DP.h"
-  14:./src/udp_total.c **** 
-  15:./src/udp_total.c **** /* Private typedef -----------------------------------------------------------*/
-  16:./src/udp_total.c **** #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
-  17:./src/udp_total.c **** #define UDP_CLIENT_PORT    7   /* define the UDP remote connection port */
-  18:./src/udp_total.c **** #define UDP_SYSTEM_PORT    10 
+  12:./src/udp_total.c **** #include "ARMCM7_DP.h"
+  13:./src/udp_total.c **** 
+  14:./src/udp_total.c **** /* Private typedef -----------------------------------------------------------*/
+  15:./src/udp_total.c **** #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
+  16:./src/udp_total.c **** #define UDP_CLIENT_PORT    7   /* define the UDP remote connection port */
+  17:./src/udp_total.c **** #define UDP_SYSTEM_PORT    10 
+  18:./src/udp_total.c **** 
   19:./src/udp_total.c **** 
   20:./src/udp_total.c **** 
   21:./src/udp_total.c **** /* Private pv -----------------------------------------------------------*/
@@ -3496,7 +3496,7 @@
   73:./src/udp_total.c ****   err_t err;
   74:./src/udp_total.c ****   
   75:./src/udp_total.c ****   /* Create a new UDP control block  */
-  76:./src/udp_total.c ****   upcb = udp_new();
+  76:./src/udp_total.c **** upcb = udp_new();
   77:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
   78:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
   79:./src/udp_total.c **** 
@@ -3662,16 +3662,15 @@
  140:./src/udp_total.c ****     pbuf_free(p);
  141:./src/udp_total.c **** }
  142:./src/udp_total.c **** 
- 143:./src/udp_total.c **** 
- 144:./src/udp_total.c **** void UDP_thread(void *argument)
- 145:./src/udp_total.c **** {
- 380              		.loc 3 145 1 is_stmt 1 view -0
+ 143:./src/udp_total.c **** void UDP_thread(void *argument)
+ 144:./src/udp_total.c **** {
+ 380              		.loc 3 144 1 is_stmt 1 view -0
  381              		.cfi_startproc
  382              		@ Volatile: function does not return.
  383              		@ args = 0, pretend = 0, frame = 0
  384              		@ frame_needed = 0, uses_anonymous_args = 0
  385              	.LVL28:
- 386              		.loc 3 145 1 is_stmt 0 view .LVU79
+ 386              		.loc 3 144 1 is_stmt 0 view .LVU79
  387 010c 08B5     		push	{r3, lr}
  388              	.LCFI8:
  389              		.cfi_def_cfa_offset 8
@@ -3679,22 +3678,22 @@
  391              		.cfi_offset 14, -4
  392              	.LVL29:
  393              	.L26:
- 146:./src/udp_total.c ****   (void)argument;
- 394              		.loc 3 146 3 is_stmt 1 discriminator 1 view .LVU80
- 147:./src/udp_total.c ****   for(;;)
- 395              		.loc 3 147 3 discriminator 1 view .LVU81
- 148:./src/udp_total.c ****   {
- 149:./src/udp_total.c ****     udp_echoclient_send();
- 396              		.loc 3 149 5 discriminator 1 view .LVU82
+ 145:./src/udp_total.c ****   (void)argument;
+ 394              		.loc 3 145 3 is_stmt 1 discriminator 1 view .LVU80
+ 146:./src/udp_total.c ****   for(;;)
+ 395              		.loc 3 146 3 discriminator 1 view .LVU81
+ 147:./src/udp_total.c ****   {
+ 148:./src/udp_total.c ****     udp_echoclient_send();
+ 396              		.loc 3 148 5 discriminator 1 view .LVU82
  397 010e FFF7FEFF 		bl	udp_echoclient_send
  398              	.LVL30:
- 150:./src/udp_total.c ****     osDelay(1);                      //[user custom] : osDelay setting , now we send UDP message in
- 399              		.loc 3 150 5 discriminator 1 view .LVU83
+ 149:./src/udp_total.c ****     osDelay(1);                      //[user custom] : osDelay setting , now we send UDP message in
+ 399              		.loc 3 149 5 discriminator 1 view .LVU83
  400 0112 0120     		movs	r0, #1
  401 0114 FFF7FEFF 		bl	osDelay
  402              	.LVL31:
- 147:./src/udp_total.c ****   for(;;)
- 403              		.loc 3 147 8 discriminator 1 view .LVU84
+ 146:./src/udp_total.c ****   for(;;)
+ 403              		.loc 3 146 8 discriminator 1 view .LVU84
  404 0118 F9E7     		b	.L26
  405              		.cfi_endproc
  406              	.LFE173:
@@ -3935,7 +3934,7 @@
   73:./src/udp_total.c ****   
  594              		.loc 3 73 3 view .LVU120
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 595              		.loc 3 76 3 view .LVU121
+ 595              		.loc 3 76 1 view .LVU121
   71:./src/udp_total.c ****   ip_addr_t DestIPaddr;
  596              		.loc 3 71 1 is_stmt 0 view .LVU122
  597 0198 30B5     		push	{r4, r5, lr}
@@ -3948,13 +3947,13 @@
  604              	.LCFI18:
  605              		.cfi_def_cfa_offset 24
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 606              		.loc 3 76 8 view .LVU123
+ 606              		.loc 3 76 6 view .LVU123
  607 019c 134C     		ldr	r4, .L45
   77:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
  608              		.loc 3 77 3 view .LVU124
  609 019e 144D     		ldr	r5, .L45+4
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 610              		.loc 3 76 10 view .LVU125
+ 610              		.loc 3 76 8 view .LVU125
  611 01a0 FFF7FEFF 		bl	udp_new
  612              	.LVL51:
   78:./src/udp_total.c **** 
@@ -3962,7 +3961,7 @@
  614 01a4 0722     		movs	r2, #7
  615 01a6 01A9     		add	r1, sp, #4
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 616              		.loc 3 76 8 view .LVU127
+ 616              		.loc 3 76 6 view .LVU127
  617 01a8 6066     		str	r0, [r4, #100]
   77:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
  618              		.loc 3 77 3 is_stmt 1 view .LVU128
@@ -4077,60 +4076,60 @@
  703              	UDP_task:
  704              	.LVL59:
  705              	.LFB174:
- 151:./src/udp_total.c ****   }
- 152:./src/udp_total.c **** }
- 153:./src/udp_total.c **** 
- 154:./src/udp_total.c **** void UDP_task(void *argument)
- 155:./src/udp_total.c **** {
- 706              		.loc 3 155 1 is_stmt 1 view -0
+ 150:./src/udp_total.c ****   }
+ 151:./src/udp_total.c **** }
+ 152:./src/udp_total.c **** 
+ 153:./src/udp_total.c **** void UDP_task(void *argument)
+ 154:./src/udp_total.c **** {
+ 706              		.loc 3 154 1 is_stmt 1 view -0
  707              		.cfi_startproc
  708              		@ args = 0, pretend = 0, frame = 0
  709              		@ frame_needed = 0, uses_anonymous_args = 0
- 156:./src/udp_total.c ****     (void)argument;
- 710              		.loc 3 156 5 view .LVU150
- 157:./src/udp_total.c **** 
- 158:./src/udp_total.c ****     UDPHandle = osThreadNew(UDP_thread, NULL, &UDP_attributes);
- 711              		.loc 3 158 5 view .LVU151
  155:./src/udp_total.c ****     (void)argument;
- 712              		.loc 3 155 1 is_stmt 0 view .LVU152
+ 710              		.loc 3 155 5 view .LVU150
+ 156:./src/udp_total.c **** 
+ 157:./src/udp_total.c ****     UDPHandle = osThreadNew(UDP_thread, NULL, &UDP_attributes);
+ 711              		.loc 3 157 5 view .LVU151
+ 154:./src/udp_total.c ****     (void)argument;
+ 712              		.loc 3 154 1 is_stmt 0 view .LVU152
  713 0200 08B5     		push	{r3, lr}
  714              	.LCFI21:
  715              		.cfi_def_cfa_offset 8
  716              		.cfi_offset 3, -8
  717              		.cfi_offset 14, -4
- 718              		.loc 3 158 17 view .LVU153
+ 718              		.loc 3 157 17 view .LVU153
  719 0202 074A     		ldr	r2, .L51
  720 0204 0021     		movs	r1, #0
  721 0206 0748     		ldr	r0, .L51+4
  722              	.LVL60:
- 723              		.loc 3 158 17 view .LVU154
+ 723              		.loc 3 157 17 view .LVU154
  724 0208 FFF7FEFF 		bl	osThreadNew
  725              	.LVL61:
- 726              		.loc 3 158 15 view .LVU155
+ 726              		.loc 3 157 15 view .LVU155
  727 020c 064B     		ldr	r3, .L51+8
  728 020e 1867     		str	r0, [r3, #112]
- 159:./src/udp_total.c ****     if(UDPHandle == NULL)
- 729              		.loc 3 159 5 is_stmt 1 view .LVU156
- 730              		.loc 3 159 7 is_stmt 0 view .LVU157
+ 158:./src/udp_total.c ****     if(UDPHandle == NULL)
+ 729              		.loc 3 158 5 is_stmt 1 view .LVU156
+ 730              		.loc 3 158 7 is_stmt 0 view .LVU157
  731 0210 00B1     		cbz	r0, .L50
- 160:./src/udp_total.c ****     {
- 161:./src/udp_total.c ****       printf("[CHECK] task creation failed!, not enough total heap memory\n");
- 162:./src/udp_total.c ****     }
- 163:./src/udp_total.c **** }
- 732              		.loc 3 163 1 view .LVU158
+ 159:./src/udp_total.c ****     {
+ 160:./src/udp_total.c ****       printf("[CHECK] task creation failed!, not enough total heap memory\n");
+ 161:./src/udp_total.c ****     }
+ 162:./src/udp_total.c **** }
+ 732              		.loc 3 162 1 view .LVU158
  733 0212 08BD     		pop	{r3, pc}
  734              	.L50:
- 161:./src/udp_total.c ****     }
- 735              		.loc 3 161 7 is_stmt 1 view .LVU159
+ 160:./src/udp_total.c ****     }
+ 735              		.loc 3 160 7 is_stmt 1 view .LVU159
  736 0214 0548     		ldr	r0, .L51+12
- 737              		.loc 3 163 1 is_stmt 0 view .LVU160
+ 737              		.loc 3 162 1 is_stmt 0 view .LVU160
  738 0216 BDE80840 		pop	{r3, lr}
  739              	.LCFI22:
  740              		.cfi_restore 14
  741              		.cfi_restore 3
  742              		.cfi_def_cfa_offset 0
- 161:./src/udp_total.c ****     }
- 743              		.loc 3 161 7 view .LVU161
+ 160:./src/udp_total.c ****     }
+ 743              		.loc 3 160 7 view .LVU161
  744 021a FFF7FEBF 		b	puts
  745              	.LVL62:
  746              	.L52:
@@ -4225,37 +4224,37 @@
  835              		.file 18 "./lwip-2.1.2/src/include/lwip/netif.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 udp_total.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:24     .text:00000000 __NVIC_SystemReset
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:89     .text:0000001c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:95     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:102    .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:110    .text:00000024 udp_receive_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:263    .text:00000098 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:272    .text:000000a4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:280    .text:000000a4 udp_echoclient_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:365    .text:00000104 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:370    .text:0000010c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:378    .text:0000010c UDP_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:427    .text:0000011c udp_client_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:567    .text:00000188 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:579    .text:00000198 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:587    .text:00000198 udp_total_connect
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:681    .text:000001ec $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:695    .text:00000200 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:703    .text:00000200 UDP_task
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:749    .text:00000220 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:779    .rodata:00000000 UDP_attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:817    .bss:00000070 UDPHandle
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:794    .data:00000004 JUMP_FW_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:790    .data:00000000 JUMP_BOOT_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:813    .bss:0000006c udp_server_pcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:809    .bss:00000068 upcb_sys
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:805    .bss:00000064 upcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:801    .bss:00000000 data
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:775    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:786    .data:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc47885e.s:797    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:24     .text:00000000 __NVIC_SystemReset
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:89     .text:0000001c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:95     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:102    .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:110    .text:00000024 udp_receive_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:263    .text:00000098 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:272    .text:000000a4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:280    .text:000000a4 udp_echoclient_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:365    .text:00000104 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:370    .text:0000010c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:378    .text:0000010c UDP_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:427    .text:0000011c udp_client_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:567    .text:00000188 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:579    .text:00000198 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:587    .text:00000198 udp_total_connect
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:681    .text:000001ec $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:695    .text:00000200 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:703    .text:00000200 UDP_task
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:749    .text:00000220 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:779    .rodata:00000000 UDP_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:817    .bss:00000070 UDPHandle
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:794    .data:00000004 JUMP_FW_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:790    .data:00000000 JUMP_BOOT_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:813    .bss:0000006c udp_server_pcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:809    .bss:00000068 upcb_sys
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:805    .bss:00000064 upcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:801    .bss:00000000 data
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:775    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:786    .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccApTipI.s:797    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 memcpy

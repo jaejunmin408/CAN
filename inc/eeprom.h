@@ -40,6 +40,7 @@
 #define	EEPROM_ERR_ILLDEVICE		1		//!< device not responding
 #define	EEPROM_ERR_ILLPARAMVAL	2		//!< invalid parameter value
 #define	EEPROM_ERR_UNKNOWN		3		//!< unknown error
+#define EEPROM_ERR_TIMEOUT      4       //add new something 
 #include <stdint.h>
 /*! @}*/
 
