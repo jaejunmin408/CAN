@@ -6,7 +6,7 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"sys_arch.c"
@@ -14,14 +14,17 @@
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
   16              		.align	1
-  17              		.arch armv7e-m
-  18              		.syntax unified
-  19              		.thumb
-  20              		.thumb_func
-  21              		.fpu fpv5-d16
-  23              	sys_arch_dbg:
-  24              	.LFB169:
-  25              		.file 1 "./src/sys_arch.c"
+  17              		.p2align 2,,3
+  18              		.global	HAL_Delay
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	HAL_Delay:
+  26              	.LVL0:
+  27              	.LFB170:
+  28              		.file 1 "./src/sys_arch.c"
    1:./src/sys_arch.c **** 
    2:./src/sys_arch.c **** #include <lwip/arch.h>
    3:./src/sys_arch.c **** #include "arch/sys_arch.h"
@@ -34,133 +37,51 @@
   10:./src/sys_arch.c **** 
   11:./src/sys_arch.c **** static void  sys_arch_dbg ( uint32_t  err)
   12:./src/sys_arch.c **** {
-  26              		.loc 1 12 1
-  27              		.cfi_startproc
-  28              		@ args = 0, pretend = 0, frame = 8
-  29              		@ frame_needed = 1, uses_anonymous_args = 0
-  30              		@ link register save eliminated.
-  31 0000 80B4     		push	{r7}
-  32              	.LCFI0:
-  33              		.cfi_def_cfa_offset 4
-  34              		.cfi_offset 7, -4
-  35 0002 83B0     		sub	sp, sp, #12
-  36              	.LCFI1:
-  37              		.cfi_def_cfa_offset 16
-  38 0004 00AF     		add	r7, sp, #0
-  39              	.LCFI2:
-  40              		.cfi_def_cfa_register 7
-  41 0006 7860     		str	r0, [r7, #4]
   13:./src/sys_arch.c ****    //while(1);
   14:./src/sys_arch.c **** }
-  42              		.loc 1 14 1
-  43 0008 00BF     		nop
-  44 000a 0C37     		adds	r7, r7, #12
-  45              	.LCFI3:
-  46              		.cfi_def_cfa_offset 4
-  47 000c BD46     		mov	sp, r7
-  48              	.LCFI4:
-  49              		.cfi_def_cfa_register 13
-  50              		@ sp needed
-  51 000e 5DF8047B 		ldr	r7, [sp], #4
-  52              	.LCFI5:
-  53              		.cfi_restore 7
-  54              		.cfi_def_cfa_offset 0
-  55 0012 7047     		bx	lr
-  56              		.cfi_endproc
-  57              	.LFE169:
-  59              		.align	1
-  60              		.global	HAL_Delay
-  61              		.syntax unified
-  62              		.thumb
-  63              		.thumb_func
-  64              		.fpu fpv5-d16
-  66              	HAL_Delay:
-  67              	.LFB170:
   15:./src/sys_arch.c **** 
   16:./src/sys_arch.c **** 
   17:./src/sys_arch.c **** 
   18:./src/sys_arch.c **** void HAL_Delay(uint32_t Delay)
   19:./src/sys_arch.c **** {
-  68              		.loc 1 19 1
-  69              		.cfi_startproc
-  70              		@ args = 0, pretend = 0, frame = 8
-  71              		@ frame_needed = 1, uses_anonymous_args = 0
-  72 0014 80B5     		push	{r7, lr}
-  73              	.LCFI6:
-  74              		.cfi_def_cfa_offset 8
-  75              		.cfi_offset 7, -8
-  76              		.cfi_offset 14, -4
-  77 0016 82B0     		sub	sp, sp, #8
-  78              	.LCFI7:
-  79              		.cfi_def_cfa_offset 16
-  80 0018 00AF     		add	r7, sp, #0
-  81              	.LCFI8:
-  82              		.cfi_def_cfa_register 7
-  83 001a 7860     		str	r0, [r7, #4]
+  29              		.loc 1 19 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
   20:./src/sys_arch.c **** 	osDelay ( DLY_MS(Delay));
-  84              		.loc 1 20 2
-  85 001c 7A68     		ldr	r2, [r7, #4]
-  86 001e 1346     		mov	r3, r2
-  87 0020 9B00     		lsls	r3, r3, #2
-  88 0022 1344     		add	r3, r3, r2
-  89 0024 1846     		mov	r0, r3
-  90 0026 FFF7FEFF 		bl	osDelay
+  34              		.loc 1 20 2 view .LVU1
+  35 0000 00EB8000 		add	r0, r0, r0, lsl #2
+  36              	.LVL1:
+  37              		.loc 1 20 2 is_stmt 0 view .LVU2
+  38 0004 FFF7FEBF 		b	osDelay
+  39              	.LVL2:
+  40              		.cfi_endproc
+  41              	.LFE170:
+  43              		.align	1
+  44              		.p2align 2,,3
+  45              		.global	HAL_GetTick
+  46              		.syntax unified
+  47              		.thumb
+  48              		.thumb_func
+  49              		.fpu fpv5-d16
+  51              	HAL_GetTick:
+  52              	.LFB171:
   21:./src/sys_arch.c **** }
-  91              		.loc 1 21 1
-  92 002a 00BF     		nop
-  93 002c 0837     		adds	r7, r7, #8
-  94              	.LCFI9:
-  95              		.cfi_def_cfa_offset 8
-  96 002e BD46     		mov	sp, r7
-  97              	.LCFI10:
-  98              		.cfi_def_cfa_register 13
-  99              		@ sp needed
- 100 0030 80BD     		pop	{r7, pc}
- 101              		.cfi_endproc
- 102              	.LFE170:
- 104              		.align	1
- 105              		.global	HAL_GetTick
- 106              		.syntax unified
- 107              		.thumb
- 108              		.thumb_func
- 109              		.fpu fpv5-d16
- 111              	HAL_GetTick:
- 112              	.LFB171:
   22:./src/sys_arch.c **** 
   23:./src/sys_arch.c **** 
   24:./src/sys_arch.c **** 
   25:./src/sys_arch.c **** uint32_t HAL_GetTick(void)
   26:./src/sys_arch.c **** {
- 113              		.loc 1 26 1
- 114              		.cfi_startproc
- 115              		@ args = 0, pretend = 0, frame = 0
- 116              		@ frame_needed = 1, uses_anonymous_args = 0
- 117 0032 80B5     		push	{r7, lr}
- 118              	.LCFI11:
- 119              		.cfi_def_cfa_offset 8
- 120              		.cfi_offset 7, -8
- 121              		.cfi_offset 14, -4
- 122 0034 00AF     		add	r7, sp, #0
- 123              	.LCFI12:
- 124              		.cfi_def_cfa_register 7
+  53              		.loc 1 26 1 is_stmt 1 view -0
+  54              		.cfi_startproc
+  55              		@ args = 0, pretend = 0, frame = 0
+  56              		@ frame_needed = 0, uses_anonymous_args = 0
   27:./src/sys_arch.c **** 	return sys_now();
- 125              		.loc 1 27 9
- 126 0036 FFF7FEFF 		bl	sys_now
- 127 003a 0346     		mov	r3, r0
+  57              		.loc 1 27 2 view .LVU4
+  58              	.LBB28:
+  59              	.LBI28:
   28:./src/sys_arch.c **** }
- 128              		.loc 1 28 1
- 129 003c 1846     		mov	r0, r3
- 130 003e 80BD     		pop	{r7, pc}
- 131              		.cfi_endproc
- 132              	.LFE171:
- 134              		.align	1
- 135              		.global	sys_now
- 136              		.syntax unified
- 137              		.thumb
- 138              		.thumb_func
- 139              		.fpu fpv5-d16
- 141              	sys_now:
- 142              	.LFB172:
   29:./src/sys_arch.c **** 
   30:./src/sys_arch.c **** 
   31:./src/sys_arch.c **** 
@@ -169,84 +90,103 @@
   34:./src/sys_arch.c **** 
   35:./src/sys_arch.c **** 
   36:./src/sys_arch.c **** u32_t  sys_now ( void)
+  60              		.loc 1 36 8 view .LVU5
+  61              	.LBB29:
   37:./src/sys_arch.c **** {
- 143              		.loc 1 37 1
- 144              		.cfi_startproc
- 145              		@ args = 0, pretend = 0, frame = 0
- 146              		@ frame_needed = 1, uses_anonymous_args = 0
- 147 0040 80B5     		push	{r7, lr}
- 148              	.LCFI13:
- 149              		.cfi_def_cfa_offset 8
- 150              		.cfi_offset 7, -8
- 151              		.cfi_offset 14, -4
- 152 0042 00AF     		add	r7, sp, #0
- 153              	.LCFI14:
- 154              		.cfi_def_cfa_register 7
   38:./src/sys_arch.c **** 	return osKernelGetTickCount() / OS_TICKS_PER_MILLI;
- 155              		.loc 1 38 9
- 156 0044 FFF7FEFF 		bl	osKernelGetTickCount
- 157 0048 0346     		mov	r3, r0
- 158              		.loc 1 38 32
- 159 004a 034A     		ldr	r2, .L7
- 160 004c A2FB0323 		umull	r2, r3, r2, r3
- 161 0050 9B08     		lsrs	r3, r3, #2
+  62              		.loc 1 38 2 view .LVU6
+  63              	.LBE29:
+  64              	.LBE28:
+  26:./src/sys_arch.c **** 	return sys_now();
+  65              		.loc 1 26 1 is_stmt 0 view .LVU7
+  66 0008 08B5     		push	{r3, lr}
+  67              	.LCFI0:
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 3, -8
+  70              		.cfi_offset 14, -4
+  71              	.LBB31:
+  72              	.LBB30:
+  73              		.loc 1 38 9 view .LVU8
+  74 000a FFF7FEFF 		bl	osKernelGetTickCount
+  75              	.LVL3:
+  76              		.loc 1 38 32 view .LVU9
+  77 000e 024B     		ldr	r3, .L5
+  78 0010 A3FB0030 		umull	r3, r0, r3, r0
+  79              	.LBE30:
+  80              	.LBE31:
+  28:./src/sys_arch.c **** }
+  81              		.loc 1 28 1 view .LVU10
+  82 0014 8008     		lsrs	r0, r0, #2
+  83 0016 08BD     		pop	{r3, pc}
+  84              	.L6:
+  85              		.align	2
+  86              	.L5:
+  87 0018 CDCCCCCC 		.word	-858993459
+  88              		.cfi_endproc
+  89              	.LFE171:
+  91              		.align	1
+  92              		.p2align 2,,3
+  93              		.global	sys_now
+  94              		.syntax unified
+  95              		.thumb
+  96              		.thumb_func
+  97              		.fpu fpv5-d16
+  99              	sys_now:
+ 100              	.LFB191:
+ 101              		.cfi_startproc
+ 102              		@ args = 0, pretend = 0, frame = 0
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104 001c 08B5     		push	{r3, lr}
+ 105              	.LCFI1:
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 3, -8
+ 108              		.cfi_offset 14, -4
+ 109 001e FFF7FEFF 		bl	osKernelGetTickCount
+ 110 0022 024B     		ldr	r3, .L9
+ 111 0024 A3FB0030 		umull	r3, r0, r3, r0
+ 112 0028 8008     		lsrs	r0, r0, #2
+ 113 002a 08BD     		pop	{r3, pc}
+ 114              	.L10:
+ 115              		.align	2
+ 116              	.L9:
+ 117 002c CDCCCCCC 		.word	-858993459
+ 118              		.cfi_endproc
+ 119              	.LFE191:
+ 121              		.align	1
+ 122              		.p2align 2,,3
+ 123              		.global	sys_init
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 127              		.fpu fpv5-d16
+ 129              	sys_init:
+ 130              	.LFB173:
   39:./src/sys_arch.c **** }
- 162              		.loc 1 39 1
- 163 0052 1846     		mov	r0, r3
- 164 0054 80BD     		pop	{r7, pc}
- 165              	.L8:
- 166 0056 00BF     		.align	2
- 167              	.L7:
- 168 0058 CDCCCCCC 		.word	-858993459
- 169              		.cfi_endproc
- 170              	.LFE172:
- 172              		.align	1
- 173              		.global	sys_init
- 174              		.syntax unified
- 175              		.thumb
- 176              		.thumb_func
- 177              		.fpu fpv5-d16
- 179              	sys_init:
- 180              	.LFB173:
   40:./src/sys_arch.c **** 
   41:./src/sys_arch.c **** 
   42:./src/sys_arch.c **** 
   43:./src/sys_arch.c **** void  sys_init ( void)
   44:./src/sys_arch.c **** {
- 181              		.loc 1 44 1
- 182              		.cfi_startproc
- 183              		@ args = 0, pretend = 0, frame = 0
- 184              		@ frame_needed = 1, uses_anonymous_args = 0
- 185              		@ link register save eliminated.
- 186 005c 80B4     		push	{r7}
- 187              	.LCFI15:
- 188              		.cfi_def_cfa_offset 4
- 189              		.cfi_offset 7, -4
- 190 005e 00AF     		add	r7, sp, #0
- 191              	.LCFI16:
- 192              		.cfi_def_cfa_register 7
+ 131              		.loc 1 44 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
   45:./src/sys_arch.c **** }
- 193              		.loc 1 45 1
- 194 0060 00BF     		nop
- 195 0062 BD46     		mov	sp, r7
- 196              	.LCFI17:
- 197              		.cfi_def_cfa_register 13
- 198              		@ sp needed
- 199 0064 5DF8047B 		ldr	r7, [sp], #4
- 200              	.LCFI18:
- 201              		.cfi_restore 7
- 202              		.cfi_def_cfa_offset 0
- 203 0068 7047     		bx	lr
- 204              		.cfi_endproc
- 205              	.LFE173:
- 207              		.align	1
- 208              		.global	sys_thread_new
- 209              		.syntax unified
- 210              		.thumb
- 211              		.thumb_func
- 212              		.fpu fpv5-d16
- 214              	sys_thread_new:
- 215              	.LFB174:
+ 136              		.loc 1 45 1 view .LVU12
+ 137 0030 7047     		bx	lr
+ 138              		.cfi_endproc
+ 139              	.LFE173:
+ 141              		.align	1
+ 142 0032 00BF     		.p2align 2,,3
+ 143              		.global	sys_thread_new
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.fpu fpv5-d16
+ 149              	sys_thread_new:
+ 150              	.LVL4:
+ 151              	.LFB174:
   46:./src/sys_arch.c **** 
   47:./src/sys_arch.c **** 
   48:./src/sys_arch.c **** 
@@ -266,105 +206,115 @@
   62:./src/sys_arch.c ****  */
   63:./src/sys_arch.c **** sys_thread_t  sys_thread_new ( const char *name, lwip_thread_fn function, void *arg, int stacksize,
   64:./src/sys_arch.c **** {
- 216              		.loc 1 64 1
- 217              		.cfi_startproc
- 218              		@ args = 4, pretend = 0, frame = 56
- 219              		@ frame_needed = 1, uses_anonymous_args = 0
- 220 006a 80B5     		push	{r7, lr}
- 221              	.LCFI19:
- 222              		.cfi_def_cfa_offset 8
- 223              		.cfi_offset 7, -8
- 224              		.cfi_offset 14, -4
- 225 006c 8EB0     		sub	sp, sp, #56
- 226              	.LCFI20:
- 227              		.cfi_def_cfa_offset 64
- 228 006e 00AF     		add	r7, sp, #0
- 229              	.LCFI21:
- 230              		.cfi_def_cfa_register 7
- 231 0070 F860     		str	r0, [r7, #12]
- 232 0072 B960     		str	r1, [r7, #8]
- 233 0074 7A60     		str	r2, [r7, #4]
- 234 0076 3B60     		str	r3, [r7]
+ 152              		.loc 1 64 1 view -0
+ 153              		.cfi_startproc
+ 154              		@ args = 4, pretend = 0, frame = 40
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
   65:./src/sys_arch.c **** 	osThreadId_t    thread_id;
+ 156              		.loc 1 65 2 view .LVU14
   66:./src/sys_arch.c **** 	osThreadAttr_t  thread_attr;
+ 157              		.loc 1 66 2 view .LVU15
   67:./src/sys_arch.c **** 	
   68:./src/sys_arch.c **** 	
   69:./src/sys_arch.c **** 	memset ( &thread_attr, 0, sizeof ( thread_attr));
- 235              		.loc 1 69 2
- 236 0078 07F11003 		add	r3, r7, #16
- 237 007c 2422     		movs	r2, #36
- 238 007e 0021     		movs	r1, #0
- 239 0080 1846     		mov	r0, r3
- 240 0082 FFF7FEFF 		bl	memset
+ 158              		.loc 1 69 2 view .LVU16
+  64:./src/sys_arch.c **** 	osThreadId_t    thread_id;
+ 159              		.loc 1 64 1 is_stmt 0 view .LVU17
+ 160 0034 F0B5     		push	{r4, r5, r6, r7, lr}
+ 161              	.LCFI2:
+ 162              		.cfi_def_cfa_offset 20
+ 163              		.cfi_offset 4, -20
+ 164              		.cfi_offset 5, -16
+ 165              		.cfi_offset 6, -12
+ 166              		.cfi_offset 7, -8
+ 167              		.cfi_offset 14, -4
+ 168 0036 8BB0     		sub	sp, sp, #44
+ 169              	.LCFI3:
+ 170              		.cfi_def_cfa_offset 64
+  64:./src/sys_arch.c **** 	osThreadId_t    thread_id;
+ 171              		.loc 1 64 1 view .LVU18
+ 172 0038 1646     		mov	r6, r2
+ 173 003a 0D46     		mov	r5, r1
+ 174 003c 0446     		mov	r4, r0
+ 175              		.loc 1 69 2 view .LVU19
+ 176 003e 2022     		movs	r2, #32
+ 177              	.LVL5:
+ 178              		.loc 1 69 2 view .LVU20
+ 179 0040 0021     		movs	r1, #0
+ 180              	.LVL6:
+ 181              		.loc 1 69 2 view .LVU21
+ 182 0042 02A8     		add	r0, sp, #8
+ 183              	.LVL7:
+  64:./src/sys_arch.c **** 	osThreadId_t    thread_id;
+ 184              		.loc 1 64 1 view .LVU22
+ 185 0044 1F46     		mov	r7, r3
+ 186              		.loc 1 69 2 view .LVU23
+ 187 0046 FFF7FEFF 		bl	memset
+ 188              	.LVL8:
   70:./src/sys_arch.c **** 	
   71:./src/sys_arch.c **** 	thread_attr.stack_size = stacksize;
- 241              		.loc 1 71 25
- 242 0086 3B68     		ldr	r3, [r7]
- 243 0088 7B62     		str	r3, [r7, #36]
+ 189              		.loc 1 71 2 is_stmt 1 view .LVU24
   72:./src/sys_arch.c **** 	thread_attr.name = name;
- 244              		.loc 1 72 19
- 245 008a FB68     		ldr	r3, [r7, #12]
- 246 008c 3B61     		str	r3, [r7, #16]
   73:./src/sys_arch.c **** 	thread_attr.priority = prio;
- 247              		.loc 1 73 23
- 248 008e 3B6C     		ldr	r3, [r7, #64]
- 249 0090 BB62     		str	r3, [r7, #40]
+ 190              		.loc 1 73 23 is_stmt 0 view .LVU25
+ 191 004a 109B     		ldr	r3, [sp, #64]
   74:./src/sys_arch.c **** 	
   75:./src/sys_arch.c **** 	thread_id = osThreadNew ( function, arg, &thread_attr);
- 250              		.loc 1 75 14
- 251 0092 07F11003 		add	r3, r7, #16
- 252 0096 1A46     		mov	r2, r3
- 253 0098 7968     		ldr	r1, [r7, #4]
- 254 009a B868     		ldr	r0, [r7, #8]
- 255 009c FFF7FEFF 		bl	osThreadNew
- 256 00a0 7863     		str	r0, [r7, #52]
+ 192              		.loc 1 75 14 view .LVU26
+ 193 004c 01AA     		add	r2, sp, #4
+ 194 004e 3146     		mov	r1, r6
+ 195 0050 2846     		mov	r0, r5
+  71:./src/sys_arch.c **** 	thread_attr.name = name;
+ 196              		.loc 1 71 25 view .LVU27
+ 197 0052 0697     		str	r7, [sp, #24]
+  72:./src/sys_arch.c **** 	thread_attr.name = name;
+ 198              		.loc 1 72 2 is_stmt 1 view .LVU28
+  72:./src/sys_arch.c **** 	thread_attr.name = name;
+ 199              		.loc 1 72 19 is_stmt 0 view .LVU29
+ 200 0054 0194     		str	r4, [sp, #4]
+  73:./src/sys_arch.c **** 	
+ 201              		.loc 1 73 2 is_stmt 1 view .LVU30
+  73:./src/sys_arch.c **** 	
+ 202              		.loc 1 73 23 is_stmt 0 view .LVU31
+ 203 0056 0793     		str	r3, [sp, #28]
+ 204              		.loc 1 75 2 is_stmt 1 view .LVU32
+ 205              		.loc 1 75 14 is_stmt 0 view .LVU33
+ 206 0058 FFF7FEFF 		bl	osThreadNew
+ 207              	.LVL9:
   76:./src/sys_arch.c **** 	
   77:./src/sys_arch.c **** 	return thread_id;
- 257              		.loc 1 77 9
- 258 00a2 7B6B     		ldr	r3, [r7, #52]
+ 208              		.loc 1 77 2 is_stmt 1 view .LVU34
   78:./src/sys_arch.c **** }
- 259              		.loc 1 78 1
- 260 00a4 1846     		mov	r0, r3
- 261 00a6 3837     		adds	r7, r7, #56
- 262              	.LCFI22:
- 263              		.cfi_def_cfa_offset 8
- 264 00a8 BD46     		mov	sp, r7
- 265              	.LCFI23:
- 266              		.cfi_def_cfa_register 13
- 267              		@ sp needed
- 268 00aa 80BD     		pop	{r7, pc}
- 269              		.cfi_endproc
- 270              	.LFE174:
- 272              		.align	1
- 273              		.global	sys_mutex_new
- 274              		.syntax unified
- 275              		.thumb
- 276              		.thumb_func
- 277              		.fpu fpv5-d16
- 279              	sys_mutex_new:
- 280              	.LFB175:
+ 209              		.loc 1 78 1 is_stmt 0 view .LVU35
+ 210 005c 0BB0     		add	sp, sp, #44
+ 211              	.LCFI4:
+ 212              		.cfi_def_cfa_offset 20
+ 213              		@ sp needed
+ 214 005e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 215              		.loc 1 78 1 view .LVU36
+ 216              		.cfi_endproc
+ 217              	.LFE174:
+ 219              		.align	1
+ 220              		.p2align 2,,3
+ 221              		.global	sys_mutex_new
+ 222              		.syntax unified
+ 223              		.thumb
+ 224              		.thumb_func
+ 225              		.fpu fpv5-d16
+ 227              	sys_mutex_new:
+ 228              	.LVL10:
+ 229              	.LFB175:
   79:./src/sys_arch.c **** 
   80:./src/sys_arch.c **** 
   81:./src/sys_arch.c **** 
   82:./src/sys_arch.c **** err_t  sys_mutex_new ( sys_mutex_t *mutex)
   83:./src/sys_arch.c **** {
- 281              		.loc 1 83 1
- 282              		.cfi_startproc
- 283              		@ args = 0, pretend = 0, frame = 8
- 284              		@ frame_needed = 1, uses_anonymous_args = 0
- 285 00ac 80B5     		push	{r7, lr}
- 286              	.LCFI24:
- 287              		.cfi_def_cfa_offset 8
- 288              		.cfi_offset 7, -8
- 289              		.cfi_offset 14, -4
- 290 00ae 82B0     		sub	sp, sp, #8
- 291              	.LCFI25:
- 292              		.cfi_def_cfa_offset 16
- 293 00b0 00AF     		add	r7, sp, #0
- 294              	.LCFI26:
- 295              		.cfi_def_cfa_register 7
- 296 00b2 7860     		str	r0, [r7, #4]
+ 230              		.loc 1 83 1 is_stmt 1 view -0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 0
+ 233              		@ frame_needed = 0, uses_anonymous_args = 0
   84:./src/sys_arch.c ****    static const osMutexAttr_t attr = {
+ 234              		.loc 1 84 4 view .LVU38
   85:./src/sys_arch.c ****       NULL,
   86:./src/sys_arch.c ****       osMutexPrioInherit | osMutexRecursive,
   87:./src/sys_arch.c ****       NULL,
@@ -373,1121 +323,1041 @@
   90:./src/sys_arch.c **** 
   91:./src/sys_arch.c **** 
   92:./src/sys_arch.c ****    *mutex = osMutexNew ( &attr);
- 297              		.loc 1 92 13
- 298 00b4 0A48     		ldr	r0, .L15
- 299 00b6 FFF7FEFF 		bl	osMutexNew
- 300 00ba 0246     		mov	r2, r0
- 301              		.loc 1 92 11
- 302 00bc 7B68     		ldr	r3, [r7, #4]
- 303 00be 1A60     		str	r2, [r3]
+ 235              		.loc 1 92 4 view .LVU39
+  83:./src/sys_arch.c ****    static const osMutexAttr_t attr = {
+ 236              		.loc 1 83 1 is_stmt 0 view .LVU40
+ 237 0060 10B5     		push	{r4, lr}
+ 238              	.LCFI5:
+ 239              		.cfi_def_cfa_offset 8
+ 240              		.cfi_offset 4, -8
+ 241              		.cfi_offset 14, -4
+  83:./src/sys_arch.c ****    static const osMutexAttr_t attr = {
+ 242              		.loc 1 83 1 view .LVU41
+ 243 0062 0446     		mov	r4, r0
+ 244              		.loc 1 92 13 view .LVU42
+ 245 0064 0448     		ldr	r0, .L16
+ 246              	.LVL11:
+ 247              		.loc 1 92 13 view .LVU43
+ 248 0066 FFF7FEFF 		bl	osMutexNew
+ 249              	.LVL12:
   93:./src/sys_arch.c **** 
   94:./src/sys_arch.c ****    if ( *mutex)
- 304              		.loc 1 94 9
- 305 00c0 7B68     		ldr	r3, [r7, #4]
- 306 00c2 1B68     		ldr	r3, [r3]
- 307              		.loc 1 94 7
- 308 00c4 002B     		cmp	r3, #0
- 309 00c6 01D0     		beq	.L13
+ 250              		.loc 1 94 7 view .LVU44
+ 251 006a B0FA80F3 		clz	r3, r0
+  92:./src/sys_arch.c **** 
+ 252              		.loc 1 92 11 view .LVU45
+ 253 006e 2060     		str	r0, [r4]
+ 254              		.loc 1 94 4 is_stmt 1 view .LVU46
+ 255              		.loc 1 94 7 is_stmt 0 view .LVU47
+ 256 0070 5B09     		lsrs	r3, r3, #5
   95:./src/sys_arch.c ****       return ERR_OK;
- 310              		.loc 1 95 14
- 311 00c8 0023     		movs	r3, #0
- 312 00ca 04E0     		b	.L14
- 313              	.L13:
   96:./src/sys_arch.c **** 
   97:./src/sys_arch.c ****    sys_arch_dbg ( 1);
- 314              		.loc 1 97 4
- 315 00cc 0120     		movs	r0, #1
- 316 00ce FFF797FF 		bl	sys_arch_dbg
   98:./src/sys_arch.c ****    
   99:./src/sys_arch.c ****    return ERR_MEM;
- 317              		.loc 1 99 11
- 318 00d2 4FF0FF33 		mov	r3, #-1
- 319              	.L14:
  100:./src/sys_arch.c **** }
- 320              		.loc 1 100 1
- 321 00d6 1846     		mov	r0, r3
- 322 00d8 0837     		adds	r7, r7, #8
- 323              	.LCFI27:
- 324              		.cfi_def_cfa_offset 8
- 325 00da BD46     		mov	sp, r7
- 326              	.LCFI28:
- 327              		.cfi_def_cfa_register 13
- 328              		@ sp needed
- 329 00dc 80BD     		pop	{r7, pc}
- 330              	.L16:
- 331 00de 00BF     		.align	2
- 332              	.L15:
- 333 00e0 00000000 		.word	attr.0
- 334              		.cfi_endproc
- 335              	.LFE175:
- 337              		.align	1
- 338              		.global	sys_mutex_lock
- 339              		.syntax unified
- 340              		.thumb
- 341              		.thumb_func
- 342              		.fpu fpv5-d16
- 344              	sys_mutex_lock:
- 345              	.LFB176:
+ 257              		.loc 1 100 1 view .LVU48
+ 258 0072 5842     		rsbs	r0, r3, #0
+ 259 0074 10BD     		pop	{r4, pc}
+ 260              	.LVL13:
+ 261              	.L17:
+ 262              		.loc 1 100 1 view .LVU49
+ 263 0076 00BF     		.align	2
+ 264              	.L16:
+ 265 0078 00000000 		.word	.LANCHOR0
+ 266              		.cfi_endproc
+ 267              	.LFE175:
+ 269              		.align	1
+ 270              		.p2align 2,,3
+ 271              		.global	sys_mutex_lock
+ 272              		.syntax unified
+ 273              		.thumb
+ 274              		.thumb_func
+ 275              		.fpu fpv5-d16
+ 277              	sys_mutex_lock:
+ 278              	.LVL14:
+ 279              	.LFB176:
  101:./src/sys_arch.c **** 
  102:./src/sys_arch.c **** 
  103:./src/sys_arch.c **** 
  104:./src/sys_arch.c **** void  sys_mutex_lock ( sys_mutex_t *mutex)
  105:./src/sys_arch.c **** {
- 346              		.loc 1 105 1
- 347              		.cfi_startproc
- 348              		@ args = 0, pretend = 0, frame = 16
- 349              		@ frame_needed = 1, uses_anonymous_args = 0
- 350 00e4 80B5     		push	{r7, lr}
- 351              	.LCFI29:
- 352              		.cfi_def_cfa_offset 8
- 353              		.cfi_offset 7, -8
- 354              		.cfi_offset 14, -4
- 355 00e6 84B0     		sub	sp, sp, #16
- 356              	.LCFI30:
- 357              		.cfi_def_cfa_offset 24
- 358 00e8 00AF     		add	r7, sp, #0
- 359              	.LCFI31:
- 360              		.cfi_def_cfa_register 7
- 361 00ea 7860     		str	r0, [r7, #4]
+ 280              		.loc 1 105 1 is_stmt 1 view -0
+ 281              		.cfi_startproc
+ 282              		@ args = 0, pretend = 0, frame = 0
+ 283              		@ frame_needed = 0, uses_anonymous_args = 0
+ 284              		@ link register save eliminated.
  106:./src/sys_arch.c ****    osStatus_t  stat;
+ 285              		.loc 1 106 4 view .LVU51
  107:./src/sys_arch.c **** 
  108:./src/sys_arch.c **** 
  109:./src/sys_arch.c **** 	stat = osMutexAcquire ( *mutex, osWaitForever);
- 362              		.loc 1 109 9
- 363 00ec 7B68     		ldr	r3, [r7, #4]
- 364 00ee 1B68     		ldr	r3, [r3]
- 365 00f0 4FF0FF31 		mov	r1, #-1
- 366 00f4 1846     		mov	r0, r3
- 367 00f6 FFF7FEFF 		bl	osMutexAcquire
- 368 00fa F860     		str	r0, [r7, #12]
+ 286              		.loc 1 109 2 view .LVU52
+ 287              		.loc 1 109 9 is_stmt 0 view .LVU53
+ 288 007c 4FF0FF31 		mov	r1, #-1
+ 289 0080 0068     		ldr	r0, [r0]
+ 290              	.LVL15:
+ 291              		.loc 1 109 9 view .LVU54
+ 292 0082 FFF7FEBF 		b	osMutexAcquire
+ 293              	.LVL16:
+ 294              		.cfi_endproc
+ 295              	.LFE176:
+ 297              		.align	1
+ 298 0086 00BF     		.p2align 2,,3
+ 299              		.global	sys_mutex_unlock
+ 300              		.syntax unified
+ 301              		.thumb
+ 302              		.thumb_func
+ 303              		.fpu fpv5-d16
+ 305              	sys_mutex_unlock:
+ 306              	.LVL17:
+ 307              	.LFB177:
  110:./src/sys_arch.c **** 
  111:./src/sys_arch.c ****    if ( stat != osOK) {
- 369              		.loc 1 111 7
- 370 00fc FB68     		ldr	r3, [r7, #12]
- 371 00fe 002B     		cmp	r3, #0
- 372 0100 02D0     		beq	.L19
  112:./src/sys_arch.c ****       sys_arch_dbg ( 2);
- 373              		.loc 1 112 7
- 374 0102 0220     		movs	r0, #2
- 375 0104 FFF77CFF 		bl	sys_arch_dbg
- 376              	.L19:
  113:./src/sys_arch.c ****    }
  114:./src/sys_arch.c **** }
- 377              		.loc 1 114 1
- 378 0108 00BF     		nop
- 379 010a 1037     		adds	r7, r7, #16
- 380              	.LCFI32:
- 381              		.cfi_def_cfa_offset 8
- 382 010c BD46     		mov	sp, r7
- 383              	.LCFI33:
- 384              		.cfi_def_cfa_register 13
- 385              		@ sp needed
- 386 010e 80BD     		pop	{r7, pc}
- 387              		.cfi_endproc
- 388              	.LFE176:
- 390              		.align	1
- 391              		.global	sys_mutex_unlock
- 392              		.syntax unified
- 393              		.thumb
- 394              		.thumb_func
- 395              		.fpu fpv5-d16
- 397              	sys_mutex_unlock:
- 398              	.LFB177:
  115:./src/sys_arch.c **** 
  116:./src/sys_arch.c **** 
  117:./src/sys_arch.c **** 
  118:./src/sys_arch.c **** void  sys_mutex_unlock ( sys_mutex_t *mutex)
  119:./src/sys_arch.c **** {
- 399              		.loc 1 119 1
- 400              		.cfi_startproc
- 401              		@ args = 0, pretend = 0, frame = 16
- 402              		@ frame_needed = 1, uses_anonymous_args = 0
- 403 0110 80B5     		push	{r7, lr}
- 404              	.LCFI34:
- 405              		.cfi_def_cfa_offset 8
- 406              		.cfi_offset 7, -8
- 407              		.cfi_offset 14, -4
- 408 0112 84B0     		sub	sp, sp, #16
- 409              	.LCFI35:
- 410              		.cfi_def_cfa_offset 24
- 411 0114 00AF     		add	r7, sp, #0
- 412              	.LCFI36:
- 413              		.cfi_def_cfa_register 7
- 414 0116 7860     		str	r0, [r7, #4]
+ 308              		.loc 1 119 1 is_stmt 1 view -0
+ 309              		.cfi_startproc
+ 310              		@ args = 0, pretend = 0, frame = 0
+ 311              		@ frame_needed = 0, uses_anonymous_args = 0
+ 312              		@ link register save eliminated.
  120:./src/sys_arch.c **** 	osStatus_t  stat;
+ 313              		.loc 1 120 2 view .LVU56
  121:./src/sys_arch.c **** 
  122:./src/sys_arch.c **** 
  123:./src/sys_arch.c **** 	stat = osMutexRelease ( *mutex);
- 415              		.loc 1 123 9
- 416 0118 7B68     		ldr	r3, [r7, #4]
- 417 011a 1B68     		ldr	r3, [r3]
- 418 011c 1846     		mov	r0, r3
- 419 011e FFF7FEFF 		bl	osMutexRelease
- 420 0122 F860     		str	r0, [r7, #12]
+ 314              		.loc 1 123 2 view .LVU57
+ 315              		.loc 1 123 9 is_stmt 0 view .LVU58
+ 316 0088 0068     		ldr	r0, [r0]
+ 317              	.LVL18:
+ 318              		.loc 1 123 9 view .LVU59
+ 319 008a FFF7FEBF 		b	osMutexRelease
+ 320              	.LVL19:
+ 321              		.cfi_endproc
+ 322              	.LFE177:
+ 324              		.align	1
+ 325 008e 00BF     		.p2align 2,,3
+ 326              		.global	sys_mbox_new
+ 327              		.syntax unified
+ 328              		.thumb
+ 329              		.thumb_func
+ 330              		.fpu fpv5-d16
+ 332              	sys_mbox_new:
+ 333              	.LVL20:
+ 334              	.LFB178:
  124:./src/sys_arch.c **** 
  125:./src/sys_arch.c ****    if ( stat != osOK) {
- 421              		.loc 1 125 7
- 422 0124 FB68     		ldr	r3, [r7, #12]
- 423 0126 002B     		cmp	r3, #0
- 424 0128 02D0     		beq	.L22
  126:./src/sys_arch.c ****       sys_arch_dbg ( 3);
- 425              		.loc 1 126 7
- 426 012a 0320     		movs	r0, #3
- 427 012c FFF768FF 		bl	sys_arch_dbg
- 428              	.L22:
  127:./src/sys_arch.c ****    }
  128:./src/sys_arch.c **** }
- 429              		.loc 1 128 1
- 430 0130 00BF     		nop
- 431 0132 1037     		adds	r7, r7, #16
- 432              	.LCFI37:
- 433              		.cfi_def_cfa_offset 8
- 434 0134 BD46     		mov	sp, r7
- 435              	.LCFI38:
- 436              		.cfi_def_cfa_register 13
- 437              		@ sp needed
- 438 0136 80BD     		pop	{r7, pc}
- 439              		.cfi_endproc
- 440              	.LFE177:
- 442              		.align	1
- 443              		.global	sys_mbox_new
- 444              		.syntax unified
- 445              		.thumb
- 446              		.thumb_func
- 447              		.fpu fpv5-d16
- 449              	sys_mbox_new:
- 450              	.LFB178:
  129:./src/sys_arch.c **** 
  130:./src/sys_arch.c **** 
  131:./src/sys_arch.c **** 
  132:./src/sys_arch.c **** err_t  sys_mbox_new ( sys_mbox_t *mbox, int size)
  133:./src/sys_arch.c **** {
- 451              		.loc 1 133 1
- 452              		.cfi_startproc
- 453              		@ args = 0, pretend = 0, frame = 8
- 454              		@ frame_needed = 1, uses_anonymous_args = 0
- 455 0138 80B5     		push	{r7, lr}
- 456              	.LCFI39:
- 457              		.cfi_def_cfa_offset 8
- 458              		.cfi_offset 7, -8
- 459              		.cfi_offset 14, -4
- 460 013a 82B0     		sub	sp, sp, #8
- 461              	.LCFI40:
- 462              		.cfi_def_cfa_offset 16
- 463 013c 00AF     		add	r7, sp, #0
- 464              	.LCFI41:
- 465              		.cfi_def_cfa_register 7
- 466 013e 7860     		str	r0, [r7, #4]
- 467 0140 3960     		str	r1, [r7]
+ 335              		.loc 1 133 1 is_stmt 1 view -0
+ 336              		.cfi_startproc
+ 337              		@ args = 0, pretend = 0, frame = 0
+ 338              		@ frame_needed = 0, uses_anonymous_args = 0
  134:./src/sys_arch.c **** 	
  135:./src/sys_arch.c **** 	*mbox = osMessageQueueNew ( size, sizeof ( void*), NULL);
- 468              		.loc 1 135 10
- 469 0142 3B68     		ldr	r3, [r7]
- 470 0144 0022     		movs	r2, #0
- 471 0146 0421     		movs	r1, #4
- 472 0148 1846     		mov	r0, r3
- 473 014a FFF7FEFF 		bl	osMessageQueueNew
- 474 014e 0246     		mov	r2, r0
- 475              		.loc 1 135 8
- 476 0150 7B68     		ldr	r3, [r7, #4]
- 477 0152 1A60     		str	r2, [r3]
+ 339              		.loc 1 135 2 view .LVU61
+ 133:./src/sys_arch.c **** 	
+ 340              		.loc 1 133 1 is_stmt 0 view .LVU62
+ 341 0090 0B46     		mov	r3, r1
+ 342              		.loc 1 135 10 view .LVU63
+ 343 0092 0022     		movs	r2, #0
+ 344 0094 0421     		movs	r1, #4
+ 345              	.LVL21:
+ 133:./src/sys_arch.c **** 	
+ 346              		.loc 1 133 1 view .LVU64
+ 347 0096 10B5     		push	{r4, lr}
+ 348              	.LCFI6:
+ 349              		.cfi_def_cfa_offset 8
+ 350              		.cfi_offset 4, -8
+ 351              		.cfi_offset 14, -4
+ 133:./src/sys_arch.c **** 	
+ 352              		.loc 1 133 1 view .LVU65
+ 353 0098 0446     		mov	r4, r0
+ 354              		.loc 1 135 10 view .LVU66
+ 355 009a 1846     		mov	r0, r3
+ 356              	.LVL22:
+ 357              		.loc 1 135 10 view .LVU67
+ 358 009c FFF7FEFF 		bl	osMessageQueueNew
+ 359              	.LVL23:
  136:./src/sys_arch.c **** 	
  137:./src/sys_arch.c **** 	if ( *mbox)
- 478              		.loc 1 137 7
- 479 0154 7B68     		ldr	r3, [r7, #4]
- 480 0156 1B68     		ldr	r3, [r3]
- 481              		.loc 1 137 5
- 482 0158 002B     		cmp	r3, #0
- 483 015a 01D0     		beq	.L24
+ 360              		.loc 1 137 5 view .LVU68
+ 361 00a0 B0FA80F3 		clz	r3, r0
+ 135:./src/sys_arch.c **** 	
+ 362              		.loc 1 135 8 view .LVU69
+ 363 00a4 2060     		str	r0, [r4]
+ 364              		.loc 1 137 2 is_stmt 1 view .LVU70
+ 365              		.loc 1 137 5 is_stmt 0 view .LVU71
+ 366 00a6 5B09     		lsrs	r3, r3, #5
  138:./src/sys_arch.c **** 	 return ERR_OK;
- 484              		.loc 1 138 10
- 485 015c 0023     		movs	r3, #0
- 486 015e 04E0     		b	.L25
- 487              	.L24:
  139:./src/sys_arch.c **** 	
  140:./src/sys_arch.c ****    sys_arch_dbg ( 4);
- 488              		.loc 1 140 4
- 489 0160 0420     		movs	r0, #4
- 490 0162 FFF74DFF 		bl	sys_arch_dbg
  141:./src/sys_arch.c **** 	return ERR_MEM;
- 491              		.loc 1 141 9
- 492 0166 4FF0FF33 		mov	r3, #-1
- 493              	.L25:
  142:./src/sys_arch.c **** }
- 494              		.loc 1 142 1
- 495 016a 1846     		mov	r0, r3
- 496 016c 0837     		adds	r7, r7, #8
- 497              	.LCFI42:
- 498              		.cfi_def_cfa_offset 8
- 499 016e BD46     		mov	sp, r7
- 500              	.LCFI43:
- 501              		.cfi_def_cfa_register 13
- 502              		@ sp needed
- 503 0170 80BD     		pop	{r7, pc}
- 504              		.cfi_endproc
- 505              	.LFE178:
- 507              		.align	1
- 508              		.global	sys_mbox_post
- 509              		.syntax unified
- 510              		.thumb
- 511              		.thumb_func
- 512              		.fpu fpv5-d16
- 514              	sys_mbox_post:
- 515              	.LFB179:
+ 367              		.loc 1 142 1 view .LVU72
+ 368 00a8 5842     		rsbs	r0, r3, #0
+ 369 00aa 10BD     		pop	{r4, pc}
+ 370              		.loc 1 142 1 view .LVU73
+ 371              		.cfi_endproc
+ 372              	.LFE178:
+ 374              		.align	1
+ 375              		.p2align 2,,3
+ 376              		.global	sys_mbox_post
+ 377              		.syntax unified
+ 378              		.thumb
+ 379              		.thumb_func
+ 380              		.fpu fpv5-d16
+ 382              	sys_mbox_post:
+ 383              	.LVL24:
+ 384              	.LFB179:
  143:./src/sys_arch.c **** 
  144:./src/sys_arch.c **** 
  145:./src/sys_arch.c **** 
  146:./src/sys_arch.c **** void  sys_mbox_post ( sys_mbox_t *q, void *msg)
  147:./src/sys_arch.c **** {
- 516              		.loc 1 147 1
- 517              		.cfi_startproc
- 518              		@ args = 0, pretend = 0, frame = 16
- 519              		@ frame_needed = 1, uses_anonymous_args = 0
- 520 0172 80B5     		push	{r7, lr}
- 521              	.LCFI44:
- 522              		.cfi_def_cfa_offset 8
- 523              		.cfi_offset 7, -8
- 524              		.cfi_offset 14, -4
- 525 0174 84B0     		sub	sp, sp, #16
- 526              	.LCFI45:
- 527              		.cfi_def_cfa_offset 24
- 528 0176 00AF     		add	r7, sp, #0
- 529              	.LCFI46:
- 530              		.cfi_def_cfa_register 7
- 531 0178 7860     		str	r0, [r7, #4]
- 532 017a 3960     		str	r1, [r7]
+ 385              		.loc 1 147 1 is_stmt 1 view -0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 8
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
  148:./src/sys_arch.c **** 	uint32_t  tmp;
+ 389              		.loc 1 148 2 view .LVU75
  149:./src/sys_arch.c ****    osStatus_t  stat;
+ 390              		.loc 1 149 4 view .LVU76
  150:./src/sys_arch.c **** 	
  151:./src/sys_arch.c **** 	
  152:./src/sys_arch.c **** 	tmp = (uint32_t) msg;
- 533              		.loc 1 152 8
- 534 017c 3B68     		ldr	r3, [r7]
- 535              		.loc 1 152 6
- 536 017e BB60     		str	r3, [r7, #8]
+ 391              		.loc 1 152 2 view .LVU77
+ 147:./src/sys_arch.c **** 	uint32_t  tmp;
+ 392              		.loc 1 147 1 is_stmt 0 view .LVU78
+ 393 00ac 10B5     		push	{r4, lr}
+ 394              	.LCFI7:
+ 395              		.cfi_def_cfa_offset 8
+ 396              		.cfi_offset 4, -8
+ 397              		.cfi_offset 14, -4
+ 398 00ae 82B0     		sub	sp, sp, #8
+ 399              	.LCFI8:
+ 400              		.cfi_def_cfa_offset 16
+ 147:./src/sys_arch.c **** 	uint32_t  tmp;
+ 401              		.loc 1 147 1 view .LVU79
+ 402 00b0 0C46     		mov	r4, r1
  153:./src/sys_arch.c **** 	stat = osMessageQueuePut ( *q, &tmp, 0, osWaitForever);
- 537              		.loc 1 153 9
- 538 0180 7B68     		ldr	r3, [r7, #4]
- 539 0182 1868     		ldr	r0, [r3]
- 540 0184 07F10801 		add	r1, r7, #8
- 541 0188 4FF0FF33 		mov	r3, #-1
- 542 018c 0022     		movs	r2, #0
- 543 018e FFF7FEFF 		bl	osMessageQueuePut
- 544 0192 F860     		str	r0, [r7, #12]
+ 403              		.loc 1 153 9 view .LVU80
+ 404 00b2 4FF0FF33 		mov	r3, #-1
+ 405 00b6 0022     		movs	r2, #0
+ 406 00b8 01A9     		add	r1, sp, #4
+ 407              	.LVL25:
+ 408              		.loc 1 153 9 view .LVU81
+ 409 00ba 0068     		ldr	r0, [r0]
+ 410              	.LVL26:
+ 152:./src/sys_arch.c **** 	stat = osMessageQueuePut ( *q, &tmp, 0, osWaitForever);
+ 411              		.loc 1 152 6 view .LVU82
+ 412 00bc 0194     		str	r4, [sp, #4]
+ 413              		.loc 1 153 2 is_stmt 1 view .LVU83
+ 414              		.loc 1 153 9 is_stmt 0 view .LVU84
+ 415 00be FFF7FEFF 		bl	osMessageQueuePut
+ 416              	.LVL27:
  154:./src/sys_arch.c **** 
  155:./src/sys_arch.c ****    if ( stat != osOK) {
- 545              		.loc 1 155 7
- 546 0194 FB68     		ldr	r3, [r7, #12]
- 547 0196 002B     		cmp	r3, #0
- 548 0198 02D0     		beq	.L28
+ 417              		.loc 1 155 4 is_stmt 1 view .LVU85
  156:./src/sys_arch.c ****       sys_arch_dbg ( 5);
- 549              		.loc 1 156 7
- 550 019a 0520     		movs	r0, #5
- 551 019c FFF730FF 		bl	sys_arch_dbg
- 552              	.L28:
  157:./src/sys_arch.c ****    }
  158:./src/sys_arch.c **** }
- 553              		.loc 1 158 1
- 554 01a0 00BF     		nop
- 555 01a2 1037     		adds	r7, r7, #16
- 556              	.LCFI47:
- 557              		.cfi_def_cfa_offset 8
- 558 01a4 BD46     		mov	sp, r7
- 559              	.LCFI48:
- 560              		.cfi_def_cfa_register 13
- 561              		@ sp needed
- 562 01a6 80BD     		pop	{r7, pc}
- 563              		.cfi_endproc
- 564              	.LFE179:
- 566              		.align	1
- 567              		.global	sys_mbox_trypost
- 568              		.syntax unified
- 569              		.thumb
- 570              		.thumb_func
- 571              		.fpu fpv5-d16
- 573              	sys_mbox_trypost:
- 574              	.LFB180:
+ 418              		.loc 1 158 1 is_stmt 0 view .LVU86
+ 419 00c2 02B0     		add	sp, sp, #8
+ 420              	.LCFI9:
+ 421              		.cfi_def_cfa_offset 8
+ 422              		@ sp needed
+ 423 00c4 10BD     		pop	{r4, pc}
+ 424              		.loc 1 158 1 view .LVU87
+ 425              		.cfi_endproc
+ 426              	.LFE179:
+ 428              		.align	1
+ 429 00c6 00BF     		.p2align 2,,3
+ 430              		.global	sys_mbox_trypost
+ 431              		.syntax unified
+ 432              		.thumb
+ 433              		.thumb_func
+ 434              		.fpu fpv5-d16
+ 436              	sys_mbox_trypost:
+ 437              	.LVL28:
+ 438              	.LFB180:
  159:./src/sys_arch.c **** 
  160:./src/sys_arch.c **** 
  161:./src/sys_arch.c **** 
  162:./src/sys_arch.c **** err_t  sys_mbox_trypost ( sys_mbox_t *q, void *msg)
  163:./src/sys_arch.c **** {
- 575              		.loc 1 163 1
- 576              		.cfi_startproc
- 577              		@ args = 0, pretend = 0, frame = 16
- 578              		@ frame_needed = 1, uses_anonymous_args = 0
- 579 01a8 80B5     		push	{r7, lr}
- 580              	.LCFI49:
- 581              		.cfi_def_cfa_offset 8
- 582              		.cfi_offset 7, -8
- 583              		.cfi_offset 14, -4
- 584 01aa 84B0     		sub	sp, sp, #16
- 585              	.LCFI50:
- 586              		.cfi_def_cfa_offset 24
- 587 01ac 00AF     		add	r7, sp, #0
- 588              	.LCFI51:
- 589              		.cfi_def_cfa_register 7
- 590 01ae 7860     		str	r0, [r7, #4]
- 591 01b0 3960     		str	r1, [r7]
+ 439              		.loc 1 163 1 is_stmt 1 view -0
+ 440              		.cfi_startproc
+ 441              		@ args = 0, pretend = 0, frame = 8
+ 442              		@ frame_needed = 0, uses_anonymous_args = 0
  164:./src/sys_arch.c **** 	uint32_t  tmp;
+ 443              		.loc 1 164 2 view .LVU89
  165:./src/sys_arch.c **** 	
  166:./src/sys_arch.c **** 	
  167:./src/sys_arch.c **** 	tmp = (uint32_t) msg;
- 592              		.loc 1 167 8
- 593 01b2 3B68     		ldr	r3, [r7]
- 594              		.loc 1 167 6
- 595 01b4 FB60     		str	r3, [r7, #12]
+ 444              		.loc 1 167 2 view .LVU90
+ 163:./src/sys_arch.c **** 	uint32_t  tmp;
+ 445              		.loc 1 163 1 is_stmt 0 view .LVU91
+ 446 00c8 10B5     		push	{r4, lr}
+ 447              	.LCFI10:
+ 448              		.cfi_def_cfa_offset 8
+ 449              		.cfi_offset 4, -8
+ 450              		.cfi_offset 14, -4
  168:./src/sys_arch.c **** 	
  169:./src/sys_arch.c **** 	if ( osMessageQueuePut ( *q, &tmp, 0, 0) == osOK)
- 596              		.loc 1 169 7
- 597 01b6 7B68     		ldr	r3, [r7, #4]
- 598 01b8 1868     		ldr	r0, [r3]
- 599 01ba 07F10C01 		add	r1, r7, #12
- 600 01be 0023     		movs	r3, #0
- 601 01c0 0022     		movs	r2, #0
- 602 01c2 FFF7FEFF 		bl	osMessageQueuePut
- 603 01c6 0346     		mov	r3, r0
- 604              		.loc 1 169 5
- 605 01c8 002B     		cmp	r3, #0
- 606 01ca 01D1     		bne	.L30
+ 451              		.loc 1 169 7 view .LVU92
+ 452 00ca 0023     		movs	r3, #0
+ 163:./src/sys_arch.c **** 	uint32_t  tmp;
+ 453              		.loc 1 163 1 view .LVU93
+ 454 00cc 82B0     		sub	sp, sp, #8
+ 455              	.LCFI11:
+ 456              		.cfi_def_cfa_offset 16
+ 163:./src/sys_arch.c **** 	uint32_t  tmp;
+ 457              		.loc 1 163 1 view .LVU94
+ 458 00ce 0C46     		mov	r4, r1
+ 459              		.loc 1 169 7 view .LVU95
+ 460 00d0 0068     		ldr	r0, [r0]
+ 461              	.LVL29:
+ 462              		.loc 1 169 7 view .LVU96
+ 463 00d2 01A9     		add	r1, sp, #4
+ 464              	.LVL30:
+ 465              		.loc 1 169 7 view .LVU97
+ 466 00d4 1A46     		mov	r2, r3
+ 167:./src/sys_arch.c **** 	
+ 467              		.loc 1 167 6 view .LVU98
+ 468 00d6 0194     		str	r4, [sp, #4]
+ 469              		.loc 1 169 2 is_stmt 1 view .LVU99
+ 470              		.loc 1 169 7 is_stmt 0 view .LVU100
+ 471 00d8 FFF7FEFF 		bl	osMessageQueuePut
+ 472              	.LVL31:
+ 473              		.loc 1 169 5 view .LVU101
+ 474 00dc 0038     		subs	r0, r0, #0
+ 475 00de 18BF     		it	ne
+ 476 00e0 0120     		movne	r0, #1
  170:./src/sys_arch.c **** 	 return ERR_OK;
- 607              		.loc 1 170 10
- 608 01cc 0023     		movs	r3, #0
- 609 01ce 04E0     		b	.L32
- 610              	.L30:
  171:./src/sys_arch.c **** 	
  172:./src/sys_arch.c ****    sys_arch_dbg ( 6);
- 611              		.loc 1 172 4
- 612 01d0 0620     		movs	r0, #6
- 613 01d2 FFF715FF 		bl	sys_arch_dbg
  173:./src/sys_arch.c **** 	return ERR_MEM;
- 614              		.loc 1 173 9
- 615 01d6 4FF0FF33 		mov	r3, #-1
- 616              	.L32:
  174:./src/sys_arch.c **** }
- 617              		.loc 1 174 1 discriminator 1
- 618 01da 1846     		mov	r0, r3
- 619 01dc 1037     		adds	r7, r7, #16
- 620              	.LCFI52:
- 621              		.cfi_def_cfa_offset 8
- 622 01de BD46     		mov	sp, r7
- 623              	.LCFI53:
- 624              		.cfi_def_cfa_register 13
- 625              		@ sp needed
- 626 01e0 80BD     		pop	{r7, pc}
- 627              		.cfi_endproc
- 628              	.LFE180:
- 630              		.align	1
- 631              		.global	sys_mbox_trypost_fromisr
- 632              		.syntax unified
- 633              		.thumb
- 634              		.thumb_func
- 635              		.fpu fpv5-d16
- 637              	sys_mbox_trypost_fromisr:
- 638              	.LFB181:
+ 477              		.loc 1 174 1 view .LVU102
+ 478 00e2 4042     		rsbs	r0, r0, #0
+ 479 00e4 02B0     		add	sp, sp, #8
+ 480              	.LCFI12:
+ 481              		.cfi_def_cfa_offset 8
+ 482              		@ sp needed
+ 483 00e6 10BD     		pop	{r4, pc}
+ 484              		.loc 1 174 1 view .LVU103
+ 485              		.cfi_endproc
+ 486              	.LFE180:
+ 488              		.align	1
+ 489              		.p2align 2,,3
+ 490              		.global	sys_mbox_trypost_fromisr
+ 491              		.syntax unified
+ 492              		.thumb
+ 493              		.thumb_func
+ 494              		.fpu fpv5-d16
+ 496              	sys_mbox_trypost_fromisr:
+ 497              	.LVL32:
+ 498              	.LFB181:
  175:./src/sys_arch.c **** 
  176:./src/sys_arch.c **** 
  177:./src/sys_arch.c **** 
  178:./src/sys_arch.c **** err_t  sys_mbox_trypost_fromisr ( sys_mbox_t *q, void *msg)
  179:./src/sys_arch.c **** {
- 639              		.loc 1 179 1
- 640              		.cfi_startproc
- 641              		@ args = 0, pretend = 0, frame = 8
- 642              		@ frame_needed = 1, uses_anonymous_args = 0
- 643 01e2 80B5     		push	{r7, lr}
- 644              	.LCFI54:
- 645              		.cfi_def_cfa_offset 8
- 646              		.cfi_offset 7, -8
- 647              		.cfi_offset 14, -4
- 648 01e4 82B0     		sub	sp, sp, #8
- 649              	.LCFI55:
- 650              		.cfi_def_cfa_offset 16
- 651 01e6 00AF     		add	r7, sp, #0
- 652              	.LCFI56:
- 653              		.cfi_def_cfa_register 7
- 654 01e8 7860     		str	r0, [r7, #4]
- 655 01ea 3960     		str	r1, [r7]
+ 499              		.loc 1 179 1 is_stmt 1 view -0
+ 500              		.cfi_startproc
+ 501              		@ args = 0, pretend = 0, frame = 8
+ 502              		@ frame_needed = 0, uses_anonymous_args = 0
  180:./src/sys_arch.c **** 	return sys_mbox_trypost ( q, msg);
- 656              		.loc 1 180 9
- 657 01ec 3968     		ldr	r1, [r7]
- 658 01ee 7868     		ldr	r0, [r7, #4]
- 659 01f0 FFF7FEFF 		bl	sys_mbox_trypost
- 660 01f4 0346     		mov	r3, r0
+ 503              		.loc 1 180 2 view .LVU105
+ 179:./src/sys_arch.c **** 	return sys_mbox_trypost ( q, msg);
+ 504              		.loc 1 179 1 is_stmt 0 view .LVU106
+ 505 00e8 10B5     		push	{r4, lr}
+ 506              	.LCFI13:
+ 507              		.cfi_def_cfa_offset 8
+ 508              		.cfi_offset 4, -8
+ 509              		.cfi_offset 14, -4
+ 510              	.LBB34:
+ 511              	.LBB35:
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 512              		.loc 1 169 7 view .LVU107
+ 513 00ea 0023     		movs	r3, #0
+ 514              	.LVL33:
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 515              		.loc 1 169 7 view .LVU108
+ 516              	.LBE35:
+ 517              	.LBE34:
+ 179:./src/sys_arch.c **** 	return sys_mbox_trypost ( q, msg);
+ 518              		.loc 1 179 1 view .LVU109
+ 519 00ec 82B0     		sub	sp, sp, #8
+ 520              	.LCFI14:
+ 521              		.cfi_def_cfa_offset 16
+ 179:./src/sys_arch.c **** 	return sys_mbox_trypost ( q, msg);
+ 522              		.loc 1 179 1 view .LVU110
+ 523 00ee 0C46     		mov	r4, r1
+ 524              	.LVL34:
+ 525              	.LBB37:
+ 526              	.LBI34:
+ 162:./src/sys_arch.c **** {
+ 527              		.loc 1 162 8 is_stmt 1 view .LVU111
+ 528              	.LBB36:
+ 164:./src/sys_arch.c **** 	
+ 529              		.loc 1 164 2 view .LVU112
+ 167:./src/sys_arch.c **** 	
+ 530              		.loc 1 167 2 view .LVU113
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 531              		.loc 1 169 7 is_stmt 0 view .LVU114
+ 532 00f0 0068     		ldr	r0, [r0]
+ 533              	.LVL35:
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 534              		.loc 1 169 7 view .LVU115
+ 535 00f2 01A9     		add	r1, sp, #4
+ 536              	.LVL36:
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 537              		.loc 1 169 7 view .LVU116
+ 538 00f4 1A46     		mov	r2, r3
+ 167:./src/sys_arch.c **** 	
+ 539              		.loc 1 167 6 view .LVU117
+ 540 00f6 0194     		str	r4, [sp, #4]
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 541              		.loc 1 169 2 is_stmt 1 view .LVU118
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 542              		.loc 1 169 7 is_stmt 0 view .LVU119
+ 543 00f8 FFF7FEFF 		bl	osMessageQueuePut
+ 544              	.LVL37:
+ 169:./src/sys_arch.c **** 	 return ERR_OK;
+ 545              		.loc 1 169 5 view .LVU120
+ 546 00fc 0038     		subs	r0, r0, #0
+ 547 00fe 18BF     		it	ne
+ 548 0100 0120     		movne	r0, #1
+ 549              	.LBE36:
+ 550              	.LBE37:
  181:./src/sys_arch.c **** }
- 661              		.loc 1 181 1
- 662 01f6 1846     		mov	r0, r3
- 663 01f8 0837     		adds	r7, r7, #8
- 664              	.LCFI57:
- 665              		.cfi_def_cfa_offset 8
- 666 01fa BD46     		mov	sp, r7
- 667              	.LCFI58:
- 668              		.cfi_def_cfa_register 13
- 669              		@ sp needed
- 670 01fc 80BD     		pop	{r7, pc}
- 671              		.cfi_endproc
- 672              	.LFE181:
- 674              		.align	1
- 675              		.global	sys_arch_mbox_fetch
- 676              		.syntax unified
- 677              		.thumb
- 678              		.thumb_func
- 679              		.fpu fpv5-d16
- 681              	sys_arch_mbox_fetch:
- 682              	.LFB182:
+ 551              		.loc 1 181 1 view .LVU121
+ 552 0102 4042     		rsbs	r0, r0, #0
+ 553 0104 02B0     		add	sp, sp, #8
+ 554              	.LCFI15:
+ 555              		.cfi_def_cfa_offset 8
+ 556              		@ sp needed
+ 557 0106 10BD     		pop	{r4, pc}
+ 558              		.loc 1 181 1 view .LVU122
+ 559              		.cfi_endproc
+ 560              	.LFE181:
+ 562              		.align	1
+ 563              		.p2align 2,,3
+ 564              		.global	sys_arch_mbox_fetch
+ 565              		.syntax unified
+ 566              		.thumb
+ 567              		.thumb_func
+ 568              		.fpu fpv5-d16
+ 570              	sys_arch_mbox_fetch:
+ 571              	.LVL38:
+ 572              	.LFB182:
  182:./src/sys_arch.c **** 
  183:./src/sys_arch.c **** 
  184:./src/sys_arch.c **** 
  185:./src/sys_arch.c **** u32_t  sys_arch_mbox_fetch ( sys_mbox_t *q, void **msg, u32_t timeout)
  186:./src/sys_arch.c **** {
- 683              		.loc 1 186 1
- 684              		.cfi_startproc
- 685              		@ args = 0, pretend = 0, frame = 24
- 686              		@ frame_needed = 1, uses_anonymous_args = 0
- 687 01fe 80B5     		push	{r7, lr}
- 688              	.LCFI59:
- 689              		.cfi_def_cfa_offset 8
- 690              		.cfi_offset 7, -8
- 691              		.cfi_offset 14, -4
- 692 0200 86B0     		sub	sp, sp, #24
- 693              	.LCFI60:
- 694              		.cfi_def_cfa_offset 32
- 695 0202 00AF     		add	r7, sp, #0
- 696              	.LCFI61:
- 697              		.cfi_def_cfa_register 7
- 698 0204 F860     		str	r0, [r7, #12]
- 699 0206 B960     		str	r1, [r7, #8]
- 700 0208 7A60     		str	r2, [r7, #4]
+ 573              		.loc 1 186 1 is_stmt 1 view -0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 8
+ 576              		@ frame_needed = 0, uses_anonymous_args = 0
  187:./src/sys_arch.c **** 	osStatus_t  stat;
+ 577              		.loc 1 187 2 view .LVU124
  188:./src/sys_arch.c **** 	uint32_t  tmp;
+ 578              		.loc 1 188 2 view .LVU125
  189:./src/sys_arch.c **** 	
  190:./src/sys_arch.c **** 	
  191:./src/sys_arch.c **** 	if ( timeout)
- 701              		.loc 1 191 5
- 702 020a 7B68     		ldr	r3, [r7, #4]
- 703 020c 002B     		cmp	r3, #0
- 704 020e 0CD0     		beq	.L36
+ 579              		.loc 1 191 2 view .LVU126
+ 186:./src/sys_arch.c **** 	osStatus_t  stat;
+ 580              		.loc 1 186 1 is_stmt 0 view .LVU127
+ 581 0108 10B5     		push	{r4, lr}
+ 582              	.LCFI16:
+ 583              		.cfi_def_cfa_offset 8
+ 584              		.cfi_offset 4, -8
+ 585              		.cfi_offset 14, -4
+ 586 010a 0C46     		mov	r4, r1
+ 587 010c 82B0     		sub	sp, sp, #8
+ 588              	.LCFI17:
+ 589              		.cfi_def_cfa_offset 16
+ 590              		.loc 1 191 5 view .LVU128
+ 591 010e 6AB1     		cbz	r2, .L29
  192:./src/sys_arch.c **** 	 stat = osMessageQueueGet (*q, &tmp, NULL, DLY_MS(timeout));
- 705              		.loc 1 192 10
- 706 0210 FB68     		ldr	r3, [r7, #12]
- 707 0212 1868     		ldr	r0, [r3]
- 708 0214 7A68     		ldr	r2, [r7, #4]
- 709 0216 1346     		mov	r3, r2
- 710 0218 9B00     		lsls	r3, r3, #2
- 711 021a 1344     		add	r3, r3, r2
- 712 021c 07F11001 		add	r1, r7, #16
- 713 0220 0022     		movs	r2, #0
- 714 0222 FFF7FEFF 		bl	osMessageQueueGet
- 715 0226 7861     		str	r0, [r7, #20]
- 716 0228 09E0     		b	.L37
- 717              	.L36:
+ 592              		.loc 1 192 3 is_stmt 1 view .LVU129
+ 593              		.loc 1 192 10 is_stmt 0 view .LVU130
+ 594 0110 02EB8203 		add	r3, r2, r2, lsl #2
+ 595 0114 01A9     		add	r1, sp, #4
+ 596              	.LVL39:
+ 597              		.loc 1 192 10 view .LVU131
+ 598 0116 0022     		movs	r2, #0
+ 599              	.LVL40:
+ 600              		.loc 1 192 10 view .LVU132
+ 601 0118 0068     		ldr	r0, [r0]
+ 602              	.LVL41:
+ 603              		.loc 1 192 10 view .LVU133
+ 604 011a FFF7FEFF 		bl	osMessageQueueGet
+ 605              	.LVL42:
  193:./src/sys_arch.c **** 	else
  194:./src/sys_arch.c **** 	 stat = osMessageQueueGet (*q, &tmp, NULL, osWaitForever);
- 718              		.loc 1 194 10
- 719 022a FB68     		ldr	r3, [r7, #12]
- 720 022c 1868     		ldr	r0, [r3]
- 721 022e 07F11001 		add	r1, r7, #16
- 722 0232 4FF0FF33 		mov	r3, #-1
- 723 0236 0022     		movs	r2, #0
- 724 0238 FFF7FEFF 		bl	osMessageQueueGet
- 725 023c 7861     		str	r0, [r7, #20]
- 726              	.L37:
  195:./src/sys_arch.c **** 	
  196:./src/sys_arch.c **** 	
  197:./src/sys_arch.c **** 	if ( stat == osErrorTimeout)
- 727              		.loc 1 197 5
- 728 023e 7B69     		ldr	r3, [r7, #20]
- 729 0240 13F1020F 		cmn	r3, #2
- 730 0244 02D1     		bne	.L38
+ 606              		.loc 1 197 2 is_stmt 1 view .LVU134
+ 607              		.loc 1 197 5 is_stmt 0 view .LVU135
+ 608 011e 0230     		adds	r0, r0, #2
+ 609              	.LVL43:
+ 610              		.loc 1 197 5 view .LVU136
+ 611 0120 0CD0     		beq	.L32
+ 612              	.LVL44:
+ 613              	.L34:
  198:./src/sys_arch.c **** 	 return SYS_ARCH_TIMEOUT;
- 731              		.loc 1 198 10
- 732 0246 4FF0FF33 		mov	r3, #-1
- 733 024a 04E0     		b	.L40
- 734              	.L38:
  199:./src/sys_arch.c **** 	
  200:./src/sys_arch.c **** 	*msg = (void*) tmp;
- 735              		.loc 1 200 9
- 736 024c 3B69     		ldr	r3, [r7, #16]
- 737 024e 1A46     		mov	r2, r3
- 738              		.loc 1 200 7
- 739 0250 BB68     		ldr	r3, [r7, #8]
- 740 0252 1A60     		str	r2, [r3]
+ 614              		.loc 1 200 2 is_stmt 1 view .LVU137
+ 615              		.loc 1 200 7 is_stmt 0 view .LVU138
+ 616 0122 019B     		ldr	r3, [sp, #4]
  201:./src/sys_arch.c **** 	
  202:./src/sys_arch.c **** 	return 0;
- 741              		.loc 1 202 9
- 742 0254 0023     		movs	r3, #0
- 743              	.L40:
+ 617              		.loc 1 202 9 view .LVU139
+ 618 0124 0020     		movs	r0, #0
+ 200:./src/sys_arch.c **** 	
+ 619              		.loc 1 200 7 view .LVU140
+ 620 0126 2360     		str	r3, [r4]
+ 621              		.loc 1 202 2 is_stmt 1 view .LVU141
  203:./src/sys_arch.c **** }
- 744              		.loc 1 203 1 discriminator 1
- 745 0256 1846     		mov	r0, r3
- 746 0258 1837     		adds	r7, r7, #24
- 747              	.LCFI62:
- 748              		.cfi_def_cfa_offset 8
- 749 025a BD46     		mov	sp, r7
- 750              	.LCFI63:
- 751              		.cfi_def_cfa_register 13
- 752              		@ sp needed
- 753 025c 80BD     		pop	{r7, pc}
- 754              		.cfi_endproc
- 755              	.LFE182:
- 757              		.align	1
- 758              		.global	sys_sem_new
- 759              		.syntax unified
- 760              		.thumb
- 761              		.thumb_func
- 762              		.fpu fpv5-d16
- 764              	sys_sem_new:
- 765              	.LFB183:
+ 622              		.loc 1 203 1 is_stmt 0 view .LVU142
+ 623 0128 02B0     		add	sp, sp, #8
+ 624              	.LCFI18:
+ 625              		.cfi_remember_state
+ 626              		.cfi_def_cfa_offset 8
+ 627              		@ sp needed
+ 628 012a 10BD     		pop	{r4, pc}
+ 629              	.LVL45:
+ 630              	.L29:
+ 631              	.LCFI19:
+ 632              		.cfi_restore_state
+ 194:./src/sys_arch.c **** 	
+ 633              		.loc 1 194 3 is_stmt 1 view .LVU143
+ 194:./src/sys_arch.c **** 	
+ 634              		.loc 1 194 10 is_stmt 0 view .LVU144
+ 635 012c 4FF0FF33 		mov	r3, #-1
+ 636 0130 01A9     		add	r1, sp, #4
+ 637              	.LVL46:
+ 194:./src/sys_arch.c **** 	
+ 638              		.loc 1 194 10 view .LVU145
+ 639 0132 0068     		ldr	r0, [r0]
+ 640              	.LVL47:
+ 194:./src/sys_arch.c **** 	
+ 641              		.loc 1 194 10 view .LVU146
+ 642 0134 FFF7FEFF 		bl	osMessageQueueGet
+ 643              	.LVL48:
+ 197:./src/sys_arch.c **** 	 return SYS_ARCH_TIMEOUT;
+ 644              		.loc 1 197 2 is_stmt 1 view .LVU147
+ 197:./src/sys_arch.c **** 	 return SYS_ARCH_TIMEOUT;
+ 645              		.loc 1 197 5 is_stmt 0 view .LVU148
+ 646 0138 0230     		adds	r0, r0, #2
+ 647              	.LVL49:
+ 197:./src/sys_arch.c **** 	 return SYS_ARCH_TIMEOUT;
+ 648              		.loc 1 197 5 view .LVU149
+ 649 013a F2D1     		bne	.L34
+ 650              	.LVL50:
+ 651              	.L32:
+ 198:./src/sys_arch.c **** 	
+ 652              		.loc 1 198 10 view .LVU150
+ 653 013c 4FF0FF30 		mov	r0, #-1
+ 654              		.loc 1 203 1 view .LVU151
+ 655 0140 02B0     		add	sp, sp, #8
+ 656              	.LCFI20:
+ 657              		.cfi_def_cfa_offset 8
+ 658              		@ sp needed
+ 659 0142 10BD     		pop	{r4, pc}
+ 660              		.loc 1 203 1 view .LVU152
+ 661              		.cfi_endproc
+ 662              	.LFE182:
+ 664              		.align	1
+ 665              		.p2align 2,,3
+ 666              		.global	sys_sem_new
+ 667              		.syntax unified
+ 668              		.thumb
+ 669              		.thumb_func
+ 670              		.fpu fpv5-d16
+ 672              	sys_sem_new:
+ 673              	.LVL51:
+ 674              	.LFB183:
  204:./src/sys_arch.c **** 
  205:./src/sys_arch.c **** 
  206:./src/sys_arch.c **** 
  207:./src/sys_arch.c **** 
  208:./src/sys_arch.c **** err_t  sys_sem_new ( sys_sem_t *sem, u8_t count)
  209:./src/sys_arch.c **** {
- 766              		.loc 1 209 1
- 767              		.cfi_startproc
- 768              		@ args = 0, pretend = 0, frame = 16
- 769              		@ frame_needed = 1, uses_anonymous_args = 0
- 770 025e 80B5     		push	{r7, lr}
- 771              	.LCFI64:
- 772              		.cfi_def_cfa_offset 8
- 773              		.cfi_offset 7, -8
- 774              		.cfi_offset 14, -4
- 775 0260 84B0     		sub	sp, sp, #16
- 776              	.LCFI65:
- 777              		.cfi_def_cfa_offset 24
- 778 0262 00AF     		add	r7, sp, #0
- 779              	.LCFI66:
- 780              		.cfi_def_cfa_register 7
- 781 0264 7860     		str	r0, [r7, #4]
- 782 0266 0B46     		mov	r3, r1
- 783 0268 FB70     		strb	r3, [r7, #3]
+ 675              		.loc 1 209 1 is_stmt 1 view -0
+ 676              		.cfi_startproc
+ 677              		@ args = 0, pretend = 0, frame = 0
+ 678              		@ frame_needed = 0, uses_anonymous_args = 0
  210:./src/sys_arch.c ****    osSemaphoreId_t id;
+ 679              		.loc 1 210 4 view .LVU154
  211:./src/sys_arch.c **** 
  212:./src/sys_arch.c ****    id = osSemaphoreNew ( 1U, count, NULL);
- 784              		.loc 1 212 9
- 785 026a FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
- 786 026c 0022     		movs	r2, #0
- 787 026e 1946     		mov	r1, r3
- 788 0270 0120     		movs	r0, #1
- 789 0272 FFF7FEFF 		bl	osSemaphoreNew
- 790 0276 F860     		str	r0, [r7, #12]
+ 680              		.loc 1 212 4 view .LVU155
+ 209:./src/sys_arch.c ****    osSemaphoreId_t id;
+ 681              		.loc 1 209 1 is_stmt 0 view .LVU156
+ 682 0144 10B5     		push	{r4, lr}
+ 683              	.LCFI21:
+ 684              		.cfi_def_cfa_offset 8
+ 685              		.cfi_offset 4, -8
+ 686              		.cfi_offset 14, -4
+ 687              		.loc 1 212 9 view .LVU157
+ 688 0146 0022     		movs	r2, #0
+ 209:./src/sys_arch.c ****    osSemaphoreId_t id;
+ 689              		.loc 1 209 1 view .LVU158
+ 690 0148 0446     		mov	r4, r0
+ 691              		.loc 1 212 9 view .LVU159
+ 692 014a 0120     		movs	r0, #1
+ 693              	.LVL52:
+ 694              		.loc 1 212 9 view .LVU160
+ 695 014c FFF7FEFF 		bl	osSemaphoreNew
+ 696              	.LVL53:
  213:./src/sys_arch.c **** 
  214:./src/sys_arch.c ****    if ( id == NULL) {
- 791              		.loc 1 214 7
- 792 0278 FB68     		ldr	r3, [r7, #12]
- 793 027a 002B     		cmp	r3, #0
- 794 027c 05D1     		bne	.L42
+ 697              		.loc 1 214 4 is_stmt 1 view .LVU161
+ 698              		.loc 1 214 7 is_stmt 0 view .LVU162
+ 699 0150 18B1     		cbz	r0, .L37
+ 700 0152 0346     		mov	r3, r0
  215:./src/sys_arch.c ****       sys_arch_dbg ( 7);
- 795              		.loc 1 215 7
- 796 027e 0720     		movs	r0, #7
- 797 0280 FFF7BEFE 		bl	sys_arch_dbg
  216:./src/sys_arch.c ****       return ERR_MEM;
- 798              		.loc 1 216 14
- 799 0284 4FF0FF33 		mov	r3, #-1
- 800 0288 03E0     		b	.L43
- 801              	.L42:
  217:./src/sys_arch.c ****    }
  218:./src/sys_arch.c **** 
  219:./src/sys_arch.c ****    *sem = id;
- 802              		.loc 1 219 9
- 803 028a 7B68     		ldr	r3, [r7, #4]
- 804 028c FA68     		ldr	r2, [r7, #12]
- 805 028e 1A60     		str	r2, [r3]
+ 701              		.loc 1 219 4 is_stmt 1 view .LVU163
  220:./src/sys_arch.c **** 
  221:./src/sys_arch.c ****    return ERR_OK;
- 806              		.loc 1 221 11
- 807 0290 0023     		movs	r3, #0
- 808              	.L43:
+ 702              		.loc 1 221 11 is_stmt 0 view .LVU164
+ 703 0154 0020     		movs	r0, #0
+ 704              	.LVL54:
+ 219:./src/sys_arch.c **** 
+ 705              		.loc 1 219 9 view .LVU165
+ 706 0156 2360     		str	r3, [r4]
+ 707              		.loc 1 221 4 is_stmt 1 view .LVU166
  222:./src/sys_arch.c **** }
- 809              		.loc 1 222 1
- 810 0292 1846     		mov	r0, r3
- 811 0294 1037     		adds	r7, r7, #16
- 812              	.LCFI67:
- 813              		.cfi_def_cfa_offset 8
- 814 0296 BD46     		mov	sp, r7
- 815              	.LCFI68:
- 816              		.cfi_def_cfa_register 13
- 817              		@ sp needed
- 818 0298 80BD     		pop	{r7, pc}
- 819              		.cfi_endproc
- 820              	.LFE183:
- 822              		.align	1
- 823              		.global	sys_mbox_free
- 824              		.syntax unified
- 825              		.thumb
- 826              		.thumb_func
- 827              		.fpu fpv5-d16
- 829              	sys_mbox_free:
- 830              	.LFB184:
+ 708              		.loc 1 222 1 is_stmt 0 view .LVU167
+ 709 0158 10BD     		pop	{r4, pc}
+ 710              	.LVL55:
+ 711              	.L37:
+ 216:./src/sys_arch.c ****    }
+ 712              		.loc 1 216 14 view .LVU168
+ 713 015a 4FF0FF30 		mov	r0, #-1
+ 714              	.LVL56:
+ 715              		.loc 1 222 1 view .LVU169
+ 716 015e 10BD     		pop	{r4, pc}
+ 717              		.loc 1 222 1 view .LVU170
+ 718              		.cfi_endproc
+ 719              	.LFE183:
+ 721              		.align	1
+ 722              		.p2align 2,,3
+ 723              		.global	sys_mbox_free
+ 724              		.syntax unified
+ 725              		.thumb
+ 726              		.thumb_func
+ 727              		.fpu fpv5-d16
+ 729              	sys_mbox_free:
+ 730              	.LVL57:
+ 731              	.LFB184:
  223:./src/sys_arch.c **** 
  224:./src/sys_arch.c **** 
  225:./src/sys_arch.c **** 
  226:./src/sys_arch.c **** void  sys_mbox_free ( sys_mbox_t *mbox)
  227:./src/sys_arch.c **** {
- 831              		.loc 1 227 1
- 832              		.cfi_startproc
- 833              		@ args = 0, pretend = 0, frame = 16
- 834              		@ frame_needed = 1, uses_anonymous_args = 0
- 835 029a 80B5     		push	{r7, lr}
- 836              	.LCFI69:
- 837              		.cfi_def_cfa_offset 8
- 838              		.cfi_offset 7, -8
- 839              		.cfi_offset 14, -4
- 840 029c 84B0     		sub	sp, sp, #16
- 841              	.LCFI70:
- 842              		.cfi_def_cfa_offset 24
- 843 029e 00AF     		add	r7, sp, #0
- 844              	.LCFI71:
- 845              		.cfi_def_cfa_register 7
- 846 02a0 7860     		str	r0, [r7, #4]
+ 732              		.loc 1 227 1 is_stmt 1 view -0
+ 733              		.cfi_startproc
+ 734              		@ args = 0, pretend = 0, frame = 0
+ 735              		@ frame_needed = 0, uses_anonymous_args = 0
+ 736              		@ link register save eliminated.
  228:./src/sys_arch.c ****    osStatus_t  stat;
+ 737              		.loc 1 228 4 view .LVU172
  229:./src/sys_arch.c **** 
  230:./src/sys_arch.c **** 
  231:./src/sys_arch.c ****    stat = osMessageQueueDelete ( *mbox);
- 847              		.loc 1 231 11
- 848 02a2 7B68     		ldr	r3, [r7, #4]
- 849 02a4 1B68     		ldr	r3, [r3]
- 850 02a6 1846     		mov	r0, r3
- 851 02a8 FFF7FEFF 		bl	osMessageQueueDelete
- 852 02ac F860     		str	r0, [r7, #12]
+ 738              		.loc 1 231 4 view .LVU173
+ 739              		.loc 1 231 11 is_stmt 0 view .LVU174
+ 740 0160 0068     		ldr	r0, [r0]
+ 741              	.LVL58:
+ 742              		.loc 1 231 11 view .LVU175
+ 743 0162 FFF7FEBF 		b	osMessageQueueDelete
+ 744              	.LVL59:
+ 745              		.cfi_endproc
+ 746              	.LFE184:
+ 748              		.align	1
+ 749 0166 00BF     		.p2align 2,,3
+ 750              		.global	sys_sem_signal
+ 751              		.syntax unified
+ 752              		.thumb
+ 753              		.thumb_func
+ 754              		.fpu fpv5-d16
+ 756              	sys_sem_signal:
+ 757              	.LVL60:
+ 758              	.LFB185:
  232:./src/sys_arch.c **** 
  233:./src/sys_arch.c ****    if ( stat != osOK) {
- 853              		.loc 1 233 7
- 854 02ae FB68     		ldr	r3, [r7, #12]
- 855 02b0 002B     		cmp	r3, #0
- 856 02b2 02D0     		beq	.L46
  234:./src/sys_arch.c ****       sys_arch_dbg ( 8);
- 857              		.loc 1 234 7
- 858 02b4 0820     		movs	r0, #8
- 859 02b6 FFF7A3FE 		bl	sys_arch_dbg
- 860              	.L46:
  235:./src/sys_arch.c ****    }
  236:./src/sys_arch.c **** }
- 861              		.loc 1 236 1
- 862 02ba 00BF     		nop
- 863 02bc 1037     		adds	r7, r7, #16
- 864              	.LCFI72:
- 865              		.cfi_def_cfa_offset 8
- 866 02be BD46     		mov	sp, r7
- 867              	.LCFI73:
- 868              		.cfi_def_cfa_register 13
- 869              		@ sp needed
- 870 02c0 80BD     		pop	{r7, pc}
- 871              		.cfi_endproc
- 872              	.LFE184:
- 874              		.align	1
- 875              		.global	sys_sem_signal
- 876              		.syntax unified
- 877              		.thumb
- 878              		.thumb_func
- 879              		.fpu fpv5-d16
- 881              	sys_sem_signal:
- 882              	.LFB185:
  237:./src/sys_arch.c **** 
  238:./src/sys_arch.c **** 
  239:./src/sys_arch.c **** 
  240:./src/sys_arch.c **** void  sys_sem_signal ( sys_sem_t *sem)
  241:./src/sys_arch.c **** {
- 883              		.loc 1 241 1
- 884              		.cfi_startproc
- 885              		@ args = 0, pretend = 0, frame = 16
- 886              		@ frame_needed = 1, uses_anonymous_args = 0
- 887 02c2 80B5     		push	{r7, lr}
- 888              	.LCFI74:
- 889              		.cfi_def_cfa_offset 8
- 890              		.cfi_offset 7, -8
- 891              		.cfi_offset 14, -4
- 892 02c4 84B0     		sub	sp, sp, #16
- 893              	.LCFI75:
- 894              		.cfi_def_cfa_offset 24
- 895 02c6 00AF     		add	r7, sp, #0
- 896              	.LCFI76:
- 897              		.cfi_def_cfa_register 7
- 898 02c8 7860     		str	r0, [r7, #4]
+ 759              		.loc 1 241 1 is_stmt 1 view -0
+ 760              		.cfi_startproc
+ 761              		@ args = 0, pretend = 0, frame = 0
+ 762              		@ frame_needed = 0, uses_anonymous_args = 0
+ 763              		@ link register save eliminated.
  242:./src/sys_arch.c ****    osStatus_t  stat;
+ 764              		.loc 1 242 4 view .LVU177
  243:./src/sys_arch.c **** 
  244:./src/sys_arch.c **** 
  245:./src/sys_arch.c ****    stat = osSemaphoreRelease ( *sem);
- 899              		.loc 1 245 11
- 900 02ca 7B68     		ldr	r3, [r7, #4]
- 901 02cc 1B68     		ldr	r3, [r3]
- 902 02ce 1846     		mov	r0, r3
- 903 02d0 FFF7FEFF 		bl	osSemaphoreRelease
- 904 02d4 F860     		str	r0, [r7, #12]
+ 765              		.loc 1 245 4 view .LVU178
+ 766              		.loc 1 245 11 is_stmt 0 view .LVU179
+ 767 0168 0068     		ldr	r0, [r0]
+ 768              	.LVL61:
+ 769              		.loc 1 245 11 view .LVU180
+ 770 016a FFF7FEBF 		b	osSemaphoreRelease
+ 771              	.LVL62:
+ 772              		.cfi_endproc
+ 773              	.LFE185:
+ 775              		.align	1
+ 776 016e 00BF     		.p2align 2,,3
+ 777              		.global	sys_sem_free
+ 778              		.syntax unified
+ 779              		.thumb
+ 780              		.thumb_func
+ 781              		.fpu fpv5-d16
+ 783              	sys_sem_free:
+ 784              	.LVL63:
+ 785              	.LFB186:
  246:./src/sys_arch.c **** 
  247:./src/sys_arch.c ****    if ( stat != osOK) {
- 905              		.loc 1 247 7
- 906 02d6 FB68     		ldr	r3, [r7, #12]
- 907 02d8 002B     		cmp	r3, #0
- 908 02da 02D0     		beq	.L49
  248:./src/sys_arch.c ****       sys_arch_dbg ( 9);
- 909              		.loc 1 248 7
- 910 02dc 0920     		movs	r0, #9
- 911 02de FFF78FFE 		bl	sys_arch_dbg
- 912              	.L49:
  249:./src/sys_arch.c ****    }
  250:./src/sys_arch.c **** }
- 913              		.loc 1 250 1
- 914 02e2 00BF     		nop
- 915 02e4 1037     		adds	r7, r7, #16
- 916              	.LCFI77:
- 917              		.cfi_def_cfa_offset 8
- 918 02e6 BD46     		mov	sp, r7
- 919              	.LCFI78:
- 920              		.cfi_def_cfa_register 13
- 921              		@ sp needed
- 922 02e8 80BD     		pop	{r7, pc}
- 923              		.cfi_endproc
- 924              	.LFE185:
- 926              		.align	1
- 927              		.global	sys_sem_free
- 928              		.syntax unified
- 929              		.thumb
- 930              		.thumb_func
- 931              		.fpu fpv5-d16
- 933              	sys_sem_free:
- 934              	.LFB186:
  251:./src/sys_arch.c **** 
  252:./src/sys_arch.c **** 
  253:./src/sys_arch.c **** 
  254:./src/sys_arch.c **** void  sys_sem_free ( sys_sem_t *sem)
  255:./src/sys_arch.c **** {
- 935              		.loc 1 255 1
- 936              		.cfi_startproc
- 937              		@ args = 0, pretend = 0, frame = 16
- 938              		@ frame_needed = 1, uses_anonymous_args = 0
- 939 02ea 80B5     		push	{r7, lr}
- 940              	.LCFI79:
- 941              		.cfi_def_cfa_offset 8
- 942              		.cfi_offset 7, -8
- 943              		.cfi_offset 14, -4
- 944 02ec 84B0     		sub	sp, sp, #16
- 945              	.LCFI80:
- 946              		.cfi_def_cfa_offset 24
- 947 02ee 00AF     		add	r7, sp, #0
- 948              	.LCFI81:
- 949              		.cfi_def_cfa_register 7
- 950 02f0 7860     		str	r0, [r7, #4]
+ 786              		.loc 1 255 1 is_stmt 1 view -0
+ 787              		.cfi_startproc
+ 788              		@ args = 0, pretend = 0, frame = 0
+ 789              		@ frame_needed = 0, uses_anonymous_args = 0
+ 790              		@ link register save eliminated.
  256:./src/sys_arch.c ****    osStatus_t  stat;
+ 791              		.loc 1 256 4 view .LVU182
  257:./src/sys_arch.c **** 
  258:./src/sys_arch.c **** 
  259:./src/sys_arch.c ****    stat = osSemaphoreDelete ( *sem);
- 951              		.loc 1 259 11
- 952 02f2 7B68     		ldr	r3, [r7, #4]
- 953 02f4 1B68     		ldr	r3, [r3]
- 954 02f6 1846     		mov	r0, r3
- 955 02f8 FFF7FEFF 		bl	osSemaphoreDelete
- 956 02fc F860     		str	r0, [r7, #12]
+ 792              		.loc 1 259 4 view .LVU183
+ 793              		.loc 1 259 11 is_stmt 0 view .LVU184
+ 794 0170 0068     		ldr	r0, [r0]
+ 795              	.LVL64:
+ 796              		.loc 1 259 11 view .LVU185
+ 797 0172 FFF7FEBF 		b	osSemaphoreDelete
+ 798              	.LVL65:
+ 799              		.cfi_endproc
+ 800              	.LFE186:
+ 802              		.align	1
+ 803 0176 00BF     		.p2align 2,,3
+ 804              		.global	sys_arch_mbox_tryfetch
+ 805              		.syntax unified
+ 806              		.thumb
+ 807              		.thumb_func
+ 808              		.fpu fpv5-d16
+ 810              	sys_arch_mbox_tryfetch:
+ 811              	.LVL66:
+ 812              	.LFB187:
  260:./src/sys_arch.c **** 
  261:./src/sys_arch.c ****    if ( stat != osOK) {
- 957              		.loc 1 261 7
- 958 02fe FB68     		ldr	r3, [r7, #12]
- 959 0300 002B     		cmp	r3, #0
- 960 0302 02D0     		beq	.L52
  262:./src/sys_arch.c ****       sys_arch_dbg ( 10);
- 961              		.loc 1 262 7
- 962 0304 0A20     		movs	r0, #10
- 963 0306 FFF77BFE 		bl	sys_arch_dbg
- 964              	.L52:
  263:./src/sys_arch.c ****    }
  264:./src/sys_arch.c **** }
- 965              		.loc 1 264 1
- 966 030a 00BF     		nop
- 967 030c 1037     		adds	r7, r7, #16
- 968              	.LCFI82:
- 969              		.cfi_def_cfa_offset 8
- 970 030e BD46     		mov	sp, r7
- 971              	.LCFI83:
- 972              		.cfi_def_cfa_register 13
- 973              		@ sp needed
- 974 0310 80BD     		pop	{r7, pc}
- 975              		.cfi_endproc
- 976              	.LFE186:
- 978              		.align	1
- 979              		.global	sys_arch_mbox_tryfetch
- 980              		.syntax unified
- 981              		.thumb
- 982              		.thumb_func
- 983              		.fpu fpv5-d16
- 985              	sys_arch_mbox_tryfetch:
- 986              	.LFB187:
  265:./src/sys_arch.c **** 
  266:./src/sys_arch.c **** 
  267:./src/sys_arch.c **** 
  268:./src/sys_arch.c **** 
  269:./src/sys_arch.c **** u32_t  sys_arch_mbox_tryfetch ( sys_mbox_t *q, void **msg)
  270:./src/sys_arch.c **** {
- 987              		.loc 1 270 1
- 988              		.cfi_startproc
- 989              		@ args = 0, pretend = 0, frame = 16
- 990              		@ frame_needed = 1, uses_anonymous_args = 0
- 991 0312 80B5     		push	{r7, lr}
- 992              	.LCFI84:
- 993              		.cfi_def_cfa_offset 8
- 994              		.cfi_offset 7, -8
- 995              		.cfi_offset 14, -4
- 996 0314 84B0     		sub	sp, sp, #16
- 997              	.LCFI85:
- 998              		.cfi_def_cfa_offset 24
- 999 0316 00AF     		add	r7, sp, #0
- 1000              	.LCFI86:
- 1001              		.cfi_def_cfa_register 7
- 1002 0318 7860     		str	r0, [r7, #4]
- 1003 031a 3960     		str	r1, [r7]
+ 813              		.loc 1 270 1 is_stmt 1 view -0
+ 814              		.cfi_startproc
+ 815              		@ args = 0, pretend = 0, frame = 8
+ 816              		@ frame_needed = 0, uses_anonymous_args = 0
  271:./src/sys_arch.c ****    osStatus_t status;
+ 817              		.loc 1 271 4 view .LVU187
  272:./src/sys_arch.c ****    uint32_t  tmp;
+ 818              		.loc 1 272 4 view .LVU188
  273:./src/sys_arch.c **** 
  274:./src/sys_arch.c **** 
  275:./src/sys_arch.c ****    status = osMessageQueueGet ( *q, &tmp, NULL, 0U);
- 1004              		.loc 1 275 13
- 1005 031c 7B68     		ldr	r3, [r7, #4]
- 1006 031e 1868     		ldr	r0, [r3]
- 1007 0320 07F10801 		add	r1, r7, #8
- 1008 0324 0023     		movs	r3, #0
- 1009 0326 0022     		movs	r2, #0
- 1010 0328 FFF7FEFF 		bl	osMessageQueueGet
- 1011 032c F860     		str	r0, [r7, #12]
+ 819              		.loc 1 275 4 view .LVU189
+ 270:./src/sys_arch.c ****    osStatus_t status;
+ 820              		.loc 1 270 1 is_stmt 0 view .LVU190
+ 821 0178 10B5     		push	{r4, lr}
+ 822              	.LCFI22:
+ 823              		.cfi_def_cfa_offset 8
+ 824              		.cfi_offset 4, -8
+ 825              		.cfi_offset 14, -4
+ 826              		.loc 1 275 13 view .LVU191
+ 827 017a 0023     		movs	r3, #0
+ 270:./src/sys_arch.c ****    osStatus_t status;
+ 828              		.loc 1 270 1 view .LVU192
+ 829 017c 82B0     		sub	sp, sp, #8
+ 830              	.LCFI23:
+ 831              		.cfi_def_cfa_offset 16
+ 270:./src/sys_arch.c ****    osStatus_t status;
+ 832              		.loc 1 270 1 view .LVU193
+ 833 017e 0C46     		mov	r4, r1
+ 834              		.loc 1 275 13 view .LVU194
+ 835 0180 0068     		ldr	r0, [r0]
+ 836              	.LVL67:
+ 837              		.loc 1 275 13 view .LVU195
+ 838 0182 01A9     		add	r1, sp, #4
+ 839              	.LVL68:
+ 840              		.loc 1 275 13 view .LVU196
+ 841 0184 1A46     		mov	r2, r3
+ 842 0186 FFF7FEFF 		bl	osMessageQueueGet
+ 843              	.LVL69:
  276:./src/sys_arch.c ****    
  277:./src/sys_arch.c ****    if (status != osOK) {
- 1012              		.loc 1 277 7
- 1013 032e FB68     		ldr	r3, [r7, #12]
- 1014 0330 002B     		cmp	r3, #0
- 1015 0332 02D0     		beq	.L54
+ 844              		.loc 1 277 4 is_stmt 1 view .LVU197
+ 845              		.loc 1 277 7 is_stmt 0 view .LVU198
+ 846 018a 18B9     		cbnz	r0, .L44
  278:./src/sys_arch.c ****       return SYS_MBOX_EMPTY;
- 1016              		.loc 1 278 14
- 1017 0334 4FF0FF33 		mov	r3, #-1
- 1018 0338 04E0     		b	.L56
- 1019              	.L54:
  279:./src/sys_arch.c ****    }
  280:./src/sys_arch.c **** 
  281:./src/sys_arch.c ****    *msg = (void*) tmp;
- 1020              		.loc 1 281 11
- 1021 033a BB68     		ldr	r3, [r7, #8]
- 1022 033c 1A46     		mov	r2, r3
- 1023              		.loc 1 281 9
- 1024 033e 3B68     		ldr	r3, [r7]
- 1025 0340 1A60     		str	r2, [r3]
+ 847              		.loc 1 281 4 is_stmt 1 view .LVU199
+ 848              		.loc 1 281 9 is_stmt 0 view .LVU200
+ 849 018c 019B     		ldr	r3, [sp, #4]
+ 850 018e 2360     		str	r3, [r4]
  282:./src/sys_arch.c **** 
  283:./src/sys_arch.c ****    return 0U;
- 1026              		.loc 1 283 11
- 1027 0342 0023     		movs	r3, #0
- 1028              	.L56:
+ 851              		.loc 1 283 4 is_stmt 1 view .LVU201
  284:./src/sys_arch.c **** }
- 1029              		.loc 1 284 1 discriminator 1
- 1030 0344 1846     		mov	r0, r3
- 1031 0346 1037     		adds	r7, r7, #16
- 1032              	.LCFI87:
- 1033              		.cfi_def_cfa_offset 8
- 1034 0348 BD46     		mov	sp, r7
- 1035              	.LCFI88:
- 1036              		.cfi_def_cfa_register 13
- 1037              		@ sp needed
- 1038 034a 80BD     		pop	{r7, pc}
- 1039              		.cfi_endproc
- 1040              	.LFE187:
- 1042              		.align	1
- 1043              		.global	sys_arch_sem_wait
- 1044              		.syntax unified
- 1045              		.thumb
- 1046              		.thumb_func
- 1047              		.fpu fpv5-d16
- 1049              	sys_arch_sem_wait:
- 1050              	.LFB188:
+ 852              		.loc 1 284 1 is_stmt 0 view .LVU202
+ 853 0190 02B0     		add	sp, sp, #8
+ 854              	.LCFI24:
+ 855              		.cfi_remember_state
+ 856              		.cfi_def_cfa_offset 8
+ 857              		@ sp needed
+ 858 0192 10BD     		pop	{r4, pc}
+ 859              	.LVL70:
+ 860              	.L44:
+ 861              	.LCFI25:
+ 862              		.cfi_restore_state
+ 278:./src/sys_arch.c ****       return SYS_MBOX_EMPTY;
+ 863              		.loc 1 278 14 view .LVU203
+ 864 0194 4FF0FF30 		mov	r0, #-1
+ 865              	.LVL71:
+ 866              		.loc 1 284 1 view .LVU204
+ 867 0198 02B0     		add	sp, sp, #8
+ 868              	.LCFI26:
+ 869              		.cfi_def_cfa_offset 8
+ 870              		@ sp needed
+ 871 019a 10BD     		pop	{r4, pc}
+ 872              		.loc 1 284 1 view .LVU205
+ 873              		.cfi_endproc
+ 874              	.LFE187:
+ 876              		.align	1
+ 877              		.p2align 2,,3
+ 878              		.global	sys_arch_sem_wait
+ 879              		.syntax unified
+ 880              		.thumb
+ 881              		.thumb_func
+ 882              		.fpu fpv5-d16
+ 884              	sys_arch_sem_wait:
+ 885              	.LVL72:
+ 886              	.LFB188:
  285:./src/sys_arch.c **** 
  286:./src/sys_arch.c **** 
  287:./src/sys_arch.c **** 
  288:./src/sys_arch.c **** 
  289:./src/sys_arch.c **** u32_t  sys_arch_sem_wait ( sys_sem_t *sem, u32_t timeout)
  290:./src/sys_arch.c **** {
- 1051              		.loc 1 290 1
- 1052              		.cfi_startproc
- 1053              		@ args = 0, pretend = 0, frame = 16
- 1054              		@ frame_needed = 1, uses_anonymous_args = 0
- 1055 034c 80B5     		push	{r7, lr}
- 1056              	.LCFI89:
- 1057              		.cfi_def_cfa_offset 8
- 1058              		.cfi_offset 7, -8
- 1059              		.cfi_offset 14, -4
- 1060 034e 84B0     		sub	sp, sp, #16
- 1061              	.LCFI90:
- 1062              		.cfi_def_cfa_offset 24
- 1063 0350 00AF     		add	r7, sp, #0
- 1064              	.LCFI91:
- 1065              		.cfi_def_cfa_register 7
- 1066 0352 7860     		str	r0, [r7, #4]
- 1067 0354 3960     		str	r1, [r7]
+ 887              		.loc 1 290 1 is_stmt 1 view -0
+ 888              		.cfi_startproc
+ 889              		@ args = 0, pretend = 0, frame = 0
+ 890              		@ frame_needed = 0, uses_anonymous_args = 0
  291:./src/sys_arch.c ****    osStatus_t status;
+ 891              		.loc 1 291 4 view .LVU207
  292:./src/sys_arch.c **** 
  293:./src/sys_arch.c **** 
  294:./src/sys_arch.c ****    if ( timeout)
- 1068              		.loc 1 294 7
- 1069 0356 3B68     		ldr	r3, [r7]
- 1070 0358 002B     		cmp	r3, #0
- 1071 035a 0AD0     		beq	.L58
+ 892              		.loc 1 294 4 view .LVU208
+ 290:./src/sys_arch.c ****    osStatus_t status;
+ 893              		.loc 1 290 1 is_stmt 0 view .LVU209
+ 894 019c 08B5     		push	{r3, lr}
+ 895              	.LCFI27:
+ 896              		.cfi_def_cfa_offset 8
+ 897              		.cfi_offset 3, -8
+ 898              		.cfi_offset 14, -4
+ 899              		.loc 1 294 7 view .LVU210
+ 900 019e 49B1     		cbz	r1, .L47
  295:./src/sys_arch.c ****       status = osSemaphoreAcquire ( *sem, DLY_MS(timeout));
- 1072              		.loc 1 295 16
- 1073 035c 7B68     		ldr	r3, [r7, #4]
- 1074 035e 1868     		ldr	r0, [r3]
- 1075 0360 3A68     		ldr	r2, [r7]
- 1076 0362 1346     		mov	r3, r2
- 1077 0364 9B00     		lsls	r3, r3, #2
- 1078 0366 1344     		add	r3, r3, r2
- 1079 0368 1946     		mov	r1, r3
- 1080 036a FFF7FEFF 		bl	osSemaphoreAcquire
- 1081 036e F860     		str	r0, [r7, #12]
- 1082 0370 07E0     		b	.L59
- 1083              	.L58:
+ 901              		.loc 1 295 7 is_stmt 1 view .LVU211
+ 902              		.loc 1 295 16 is_stmt 0 view .LVU212
+ 903 01a0 01EB8101 		add	r1, r1, r1, lsl #2
+ 904              	.LVL73:
+ 905              		.loc 1 295 16 view .LVU213
+ 906 01a4 0068     		ldr	r0, [r0]
+ 907              	.LVL74:
+ 908              		.loc 1 295 16 view .LVU214
+ 909 01a6 FFF7FEFF 		bl	osSemaphoreAcquire
+ 910              	.LVL75:
  296:./src/sys_arch.c ****    else
  297:./src/sys_arch.c ****       status = osSemaphoreAcquire ( *sem, osWaitForever);
- 1084              		.loc 1 297 16
- 1085 0372 7B68     		ldr	r3, [r7, #4]
- 1086 0374 1B68     		ldr	r3, [r3]
- 1087 0376 4FF0FF31 		mov	r1, #-1
- 1088 037a 1846     		mov	r0, r3
- 1089 037c FFF7FEFF 		bl	osSemaphoreAcquire
- 1090 0380 F860     		str	r0, [r7, #12]
- 1091              	.L59:
  298:./src/sys_arch.c ****    
  299:./src/sys_arch.c **** 
  300:./src/sys_arch.c ****    if (status != osOK) {
- 1092              		.loc 1 300 7
- 1093 0382 FB68     		ldr	r3, [r7, #12]
- 1094 0384 002B     		cmp	r3, #0
- 1095 0386 02D0     		beq	.L60
+ 911              		.loc 1 300 4 is_stmt 1 view .LVU215
+ 912              		.loc 1 300 7 is_stmt 0 view .LVU216
+ 913 01aa 0038     		subs	r0, r0, #0
+ 914              		.loc 1 300 7 view .LVU217
+ 915 01ac 18BF     		it	ne
+ 916 01ae 0120     		movne	r0, #1
+ 917              	.LVL76:
  301:./src/sys_arch.c ****       return SYS_ARCH_TIMEOUT;
- 1096              		.loc 1 301 14
- 1097 0388 4FF0FF33 		mov	r3, #-1
- 1098 038c 00E0     		b	.L61
- 1099              	.L60:
  302:./src/sys_arch.c ****    }
  303:./src/sys_arch.c ****    
  304:./src/sys_arch.c ****    return 0U;
- 1100              		.loc 1 304 11
- 1101 038e 0023     		movs	r3, #0
- 1102              	.L61:
  305:./src/sys_arch.c **** }
- 1103              		.loc 1 305 1
- 1104 0390 1846     		mov	r0, r3
- 1105 0392 1037     		adds	r7, r7, #16
- 1106              	.LCFI92:
- 1107              		.cfi_def_cfa_offset 8
- 1108 0394 BD46     		mov	sp, r7
- 1109              	.LCFI93:
- 1110              		.cfi_def_cfa_register 13
- 1111              		@ sp needed
- 1112 0396 80BD     		pop	{r7, pc}
- 1113              		.cfi_endproc
- 1114              	.LFE188:
- 1116              		.align	1
- 1117              		.global	sys_mutex_free
- 1118              		.syntax unified
- 1119              		.thumb
- 1120              		.thumb_func
- 1121              		.fpu fpv5-d16
- 1123              	sys_mutex_free:
- 1124              	.LFB189:
+ 918              		.loc 1 305 1 view .LVU218
+ 919 01b0 4042     		rsbs	r0, r0, #0
+ 920 01b2 08BD     		pop	{r3, pc}
+ 921              	.LVL77:
+ 922              	.L47:
+ 297:./src/sys_arch.c ****    
+ 923              		.loc 1 297 7 is_stmt 1 view .LVU219
+ 297:./src/sys_arch.c ****    
+ 924              		.loc 1 297 16 is_stmt 0 view .LVU220
+ 925 01b4 4FF0FF31 		mov	r1, #-1
+ 926              	.LVL78:
+ 297:./src/sys_arch.c ****    
+ 927              		.loc 1 297 16 view .LVU221
+ 928 01b8 0068     		ldr	r0, [r0]
+ 929              	.LVL79:
+ 297:./src/sys_arch.c ****    
+ 930              		.loc 1 297 16 view .LVU222
+ 931 01ba FFF7FEFF 		bl	osSemaphoreAcquire
+ 932              	.LVL80:
+ 300:./src/sys_arch.c ****       return SYS_ARCH_TIMEOUT;
+ 933              		.loc 1 300 4 is_stmt 1 view .LVU223
+ 300:./src/sys_arch.c ****       return SYS_ARCH_TIMEOUT;
+ 934              		.loc 1 300 7 is_stmt 0 view .LVU224
+ 935 01be 0038     		subs	r0, r0, #0
+ 300:./src/sys_arch.c ****       return SYS_ARCH_TIMEOUT;
+ 936              		.loc 1 300 7 view .LVU225
+ 937 01c0 18BF     		it	ne
+ 938 01c2 0120     		movne	r0, #1
+ 939              	.LVL81:
+ 940              		.loc 1 305 1 view .LVU226
+ 941 01c4 4042     		rsbs	r0, r0, #0
+ 942 01c6 08BD     		pop	{r3, pc}
+ 943              		.cfi_endproc
+ 944              	.LFE188:
+ 946              		.align	1
+ 947              		.p2align 2,,3
+ 948              		.global	sys_mutex_free
+ 949              		.syntax unified
+ 950              		.thumb
+ 951              		.thumb_func
+ 952              		.fpu fpv5-d16
+ 954              	sys_mutex_free:
+ 955              	.LVL82:
+ 956              	.LFB189:
  306:./src/sys_arch.c **** 
  307:./src/sys_arch.c **** 
  308:./src/sys_arch.c **** 
  309:./src/sys_arch.c **** void  sys_mutex_free ( sys_mutex_t *mutex)
  310:./src/sys_arch.c **** {
- 1125              		.loc 1 310 1
- 1126              		.cfi_startproc
- 1127              		@ args = 0, pretend = 0, frame = 16
- 1128              		@ frame_needed = 1, uses_anonymous_args = 0
- 1129 0398 80B5     		push	{r7, lr}
- 1130              	.LCFI94:
- 1131              		.cfi_def_cfa_offset 8
- 1132              		.cfi_offset 7, -8
- 1133              		.cfi_offset 14, -4
- 1134 039a 84B0     		sub	sp, sp, #16
- 1135              	.LCFI95:
- 1136              		.cfi_def_cfa_offset 24
- 1137 039c 00AF     		add	r7, sp, #0
- 1138              	.LCFI96:
- 1139              		.cfi_def_cfa_register 7
- 1140 039e 7860     		str	r0, [r7, #4]
+ 957              		.loc 1 310 1 is_stmt 1 view -0
+ 958              		.cfi_startproc
+ 959              		@ args = 0, pretend = 0, frame = 0
+ 960              		@ frame_needed = 0, uses_anonymous_args = 0
+ 961              		@ link register save eliminated.
  311:./src/sys_arch.c ****    osStatus_t status;
+ 962              		.loc 1 311 4 view .LVU228
  312:./src/sys_arch.c **** 
  313:./src/sys_arch.c **** 
  314:./src/sys_arch.c ****    status = osMutexDelete ( *mutex);
- 1141              		.loc 1 314 13
- 1142 03a0 7B68     		ldr	r3, [r7, #4]
- 1143 03a2 1B68     		ldr	r3, [r3]
- 1144 03a4 1846     		mov	r0, r3
- 1145 03a6 FFF7FEFF 		bl	osMutexDelete
- 1146 03aa F860     		str	r0, [r7, #12]
- 315:./src/sys_arch.c **** 
- 316:./src/sys_arch.c ****    if ( status != osOK) {
- 1147              		.loc 1 316 7
- 1148 03ac FB68     		ldr	r3, [r7, #12]
- 1149 03ae 002B     		cmp	r3, #0
- 1150 03b0 02D0     		beq	.L64
- 317:./src/sys_arch.c ****       sys_arch_dbg ( 11);
- 1151              		.loc 1 317 7
- 1152 03b2 0B20     		movs	r0, #11
- 1153 03b4 FFF724FE 		bl	sys_arch_dbg
- 1154              	.L64:
- 318:./src/sys_arch.c ****    }
- 319:./src/sys_arch.c **** }
- 1155              		.loc 1 319 1
- 1156 03b8 00BF     		nop
- 1157 03ba 1037     		adds	r7, r7, #16
- 1158              	.LCFI97:
- 1159              		.cfi_def_cfa_offset 8
- 1160 03bc BD46     		mov	sp, r7
- 1161              	.LCFI98:
- 1162              		.cfi_def_cfa_register 13
- 1163              		@ sp needed
- 1164 03be 80BD     		pop	{r7, pc}
- 1165              		.cfi_endproc
- 1166              	.LFE189:
- 1168              		.section	.rodata
- 1169              		.align	2
- 1172              	attr.0:
- 1173 0000 00000000 		.word	0
- 1174 0004 03000000 		.word	3
- 1175 0008 00000000 		.word	0
- 1176 000c 00000000 		.word	0
- 1177              		.text
- 1178              	.Letext0:
- 1179              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1180              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1181              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
- 1182              		.file 5 "./inc/cmsis_os2.h"
- 1183              		.file 6 "./inc/arch/sys_arch.h"
- 1184              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
- 1185              		.file 8 "./lwip-2.1.2/src/include/lwip/sys.h"
+ 963              		.loc 1 314 4 view .LVU229
+ 964              		.loc 1 314 13 is_stmt 0 view .LVU230
+ 965 01c8 0068     		ldr	r0, [r0]
+ 966              	.LVL83:
+ 967              		.loc 1 314 13 view .LVU231
+ 968 01ca FFF7FEBF 		b	osMutexDelete
+ 969              	.LVL84:
+ 970              		.cfi_endproc
+ 971              	.LFE189:
+ 973              		.section	.rodata
+ 974              		.align	2
+ 975              		.set	.LANCHOR0,. + 0
+ 978              	attr.0:
+ 979 0000 00000000 		.word	0
+ 980 0004 03000000 		.word	3
+ 981 0008 00000000 		.word	0
+ 982 000c 00000000 		.word	0
+ 983              		.text
+ 984              	.Letext0:
+ 985              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 986              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 987              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 988              		.file 5 "./inc/cmsis_os2.h"
+ 989              		.file 6 "./inc/arch/sys_arch.h"
+ 990              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
+ 991              		.file 8 "./lwip-2.1.2/src/include/lwip/sys.h"
+ 992              		.file 9 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 sys_arch.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:23     .text:00000000 sys_arch_dbg
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:66     .text:00000014 HAL_Delay
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:111    .text:00000032 HAL_GetTick
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:141    .text:00000040 sys_now
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:168    .text:00000058 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:172    .text:0000005c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:179    .text:0000005c sys_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:214    .text:0000006a sys_thread_new
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:279    .text:000000ac sys_mutex_new
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:333    .text:000000e0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:1172   .rodata:00000000 attr.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:337    .text:000000e4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:344    .text:000000e4 sys_mutex_lock
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:397    .text:00000110 sys_mutex_unlock
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:449    .text:00000138 sys_mbox_new
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:514    .text:00000172 sys_mbox_post
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:573    .text:000001a8 sys_mbox_trypost
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:637    .text:000001e2 sys_mbox_trypost_fromisr
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:681    .text:000001fe sys_arch_mbox_fetch
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:764    .text:0000025e sys_sem_new
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:829    .text:0000029a sys_mbox_free
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:881    .text:000002c2 sys_sem_signal
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:933    .text:000002ea sys_sem_free
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:985    .text:00000312 sys_arch_mbox_tryfetch
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:1049   .text:0000034c sys_arch_sem_wait
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:1123   .text:00000398 sys_mutex_free
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc5SN2HX.s:1169   .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:25     .text:00000000 HAL_Delay
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:51     .text:00000008 HAL_GetTick
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:87     .text:00000018 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:91     .text:0000001c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:99     .text:0000001c sys_now
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:117    .text:0000002c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:121    .text:00000030 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:129    .text:00000030 sys_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:149    .text:00000034 sys_thread_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:227    .text:00000060 sys_mutex_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:265    .text:00000078 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:269    .text:0000007c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:277    .text:0000007c sys_mutex_lock
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:305    .text:00000088 sys_mutex_unlock
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:332    .text:00000090 sys_mbox_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:382    .text:000000ac sys_mbox_post
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:436    .text:000000c8 sys_mbox_trypost
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:496    .text:000000e8 sys_mbox_trypost_fromisr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:570    .text:00000108 sys_arch_mbox_fetch
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:672    .text:00000144 sys_sem_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:729    .text:00000160 sys_mbox_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:756    .text:00000168 sys_sem_signal
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:783    .text:00000170 sys_sem_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:810    .text:00000178 sys_arch_mbox_tryfetch
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:884    .text:0000019c sys_arch_sem_wait
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:954    .text:000001c8 sys_mutex_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:974    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMGvvr6.s:978    .rodata:00000000 attr.0
 
 UNDEFINED SYMBOLS
 osDelay

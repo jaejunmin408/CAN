@@ -6,179 +6,24 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"rtx_lib.c"
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.section	.bss.os,"aw",%nobits
-  17              		.align	3
-  20              	os_mem:
-  21 0000 00000000 		.space	32768
-  21      00000000 
-  21      00000000 
-  21      00000000 
-  21      00000000 
-  22              		.align	2
-  25              	os_isr_queue:
-  26 8000 00000000 		.space	64
-  26      00000000 
-  26      00000000 
-  26      00000000 
-  26      00000000 
-  27              		.section	.bss.os.thread.cb,"aw",%nobits
-  28              		.align	2
-  31              	os_idle_thread_cb:
-  32 0000 00000000 		.space	68
-  32      00000000 
-  32      00000000 
-  32      00000000 
-  32      00000000 
-  33              		.section	.bss.os.thread.stack,"aw",%nobits
-  34              		.align	3
-  37              	os_idle_thread_stack:
-  38 0000 00000000 		.space	256
-  38      00000000 
-  38      00000000 
-  38      00000000 
-  38      00000000 
-  39              		.section	.rodata
-  40              		.align	2
-  43              	os_idle_thread_attr:
-  44 0000 00000000 		.word	0
-  45 0004 00000000 		.word	0
-  46 0008 00000000 		.word	os_idle_thread_cb
-  47 000c 44000000 		.word	68
-  48 0010 00000000 		.word	os_idle_thread_stack
-  49 0014 00010000 		.word	256
-  50 0018 01000000 		.word	1
-  51 001c 00000000 		.word	0
-  52 0020 00000000 		.word	0
-  53              		.section	.bss.os.thread.cb
-  54              		.align	2
-  57              	os_timer_thread_cb:
-  58 0044 00000000 		.space	68
-  58      00000000 
-  58      00000000 
-  58      00000000 
-  58      00000000 
-  59              		.section	.bss.os.thread.stack
-  60              		.align	3
-  63              	os_timer_thread_stack:
-  64 0100 00000000 		.space	256
-  64      00000000 
-  64      00000000 
-  64      00000000 
-  64      00000000 
-  65              		.section	.rodata
-  66              		.align	2
-  69              	os_timer_thread_attr:
-  70 0024 00000000 		.word	0
-  71 0028 00000000 		.word	0
-  72 002c 44000000 		.word	os_timer_thread_cb
-  73 0030 44000000 		.word	68
-  74 0034 00010000 		.word	os_timer_thread_stack
-  75 0038 00010000 		.word	256
-  76 003c 28000000 		.word	40
-  77 0040 00000000 		.word	0
-  78 0044 00000000 		.word	0
-  79              		.section	.bss.os.msgqueue.cb,"aw",%nobits
-  80              		.align	2
-  83              	os_timer_mq_cb:
-  84 0000 00000000 		.space	52
-  84      00000000 
-  84      00000000 
-  84      00000000 
-  84      00000000 
-  85              		.section	.bss.os.msgqueue.mem,"aw",%nobits
-  86              		.align	2
-  89              	os_timer_mq_data:
-  90 0000 00000000 		.space	80
-  90      00000000 
-  90      00000000 
-  90      00000000 
-  90      00000000 
-  91              		.section	.rodata
-  92              		.align	2
-  95              	os_timer_mq_attr:
-  96 0048 00000000 		.word	0
-  97 004c 00000000 		.word	0
-  98 0050 00000000 		.word	os_timer_mq_cb
-  99 0054 34000000 		.word	52
- 100 0058 00000000 		.word	os_timer_mq_data
- 101 005c 50000000 		.word	80
- 102              		.global	osRtxConfig
- 103              		.section	.rodata,"a"
- 104              		.align	2
- 107              	osRtxConfig:
- 108 0060 03000000 		.word	3
- 109 0064 88130000 		.word	5000
- 110 0068 05000000 		.word	5
- 111 006c 00800000 		.word	os_isr_queue
- 112 0070 1000     		.short	16
- 113 0072 0000     		.short	0
- 114 0074 00000000 		.word	0
- 115 0078 00000000 		.word	0
- 116 007c 00000000 		.word	0
- 117 0080 00000000 		.word	0
- 118 0084 00000000 		.word	0
- 119 0088 00000000 		.word	0
- 120 008c 00000000 		.word	os_mem
- 121 0090 00800000 		.word	32768
- 122 0094 00000000 		.word	0
- 123 0098 00000000 		.word	0
- 124 009c 00000000 		.word	0
- 125 00a0 00000000 		.word	0
- 126 00a4 00000000 		.word	0
- 127 00a8 00000000 		.word	0
- 128 00ac 00000000 		.word	0
- 129 00b0 00000000 		.word	0
- 130 00b4 00100000 		.word	4096
- 131 00b8 00000000 		.word	os_idle_thread_attr
- 132 00bc 24000000 		.word	os_timer_thread_attr
- 133 00c0 48000000 		.word	os_timer_mq_attr
- 134 00c4 04000000 		.word	4
- 135              		.global	irqRtxLibRef
- 136              		.data
- 137              		.align	2
- 140              	irqRtxLibRef:
- 141 0000 00000000 		.word	irqRtxLib
- 142              		.weak	osRtxUserSVC
- 143              		.section	.rodata
- 144              		.align	2
- 147              	osRtxUserSVC:
- 148 00c8 00000000 		.space	4
- 149              		.global	os_cb_sections
- 150              		.section	.rodata
- 151              		.align	2
- 154              	os_cb_sections:
- 155 00cc 00000000 		.word	__os_thread_cb_start__
- 156 00d0 00000000 		.word	__os_thread_cb_end__
- 157 00d4 00000000 		.word	__os_timer_cb_start__
- 158 00d8 00000000 		.word	__os_timer_cb_end__
- 159 00dc 00000000 		.word	__os_evflags_cb_start__
- 160 00e0 00000000 		.word	__os_evflags_cb_end__
- 161 00e4 00000000 		.word	__os_mutex_cb_start__
- 162 00e8 00000000 		.word	__os_mutex_cb_end__
- 163 00ec 00000000 		.word	__os_semaphore_cb_start__
- 164 00f0 00000000 		.word	__os_semaphore_cb_end__
- 165 00f4 00000000 		.word	__os_mempool_cb_start__
- 166 00f8 00000000 		.word	__os_mempool_cb_end__
- 167 00fc 00000000 		.word	__os_msgqueue_cb_start__
- 168 0100 00000000 		.word	__os_msgqueue_cb_end__
- 169              		.text
- 170              		.align	1
- 171              		.weak	software_init_hook
- 172              		.arch armv7e-m
- 173              		.syntax unified
- 174              		.thumb
- 175              		.thumb_func
- 176              		.fpu fpv5-d16
- 178              	software_init_hook:
- 179              	.LFB104:
- 180              		.file 1 "./src/rtx_lib.c"
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.weak	software_init_hook
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	software_init_hook:
+  26              	.LFB104:
+  27              		.file 1 "./src/rtx_lib.c"
    1:./src/rtx_lib.c **** /*
    2:./src/rtx_lib.c ****  * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
    3:./src/rtx_lib.c ****  *
@@ -820,74 +665,209 @@
  639:./src/rtx_lib.c **** 
  640:./src/rtx_lib.c **** extern void software_init_hook (void);
  641:./src/rtx_lib.c **** __WEAK void software_init_hook (void) {
- 181              		.loc 1 641 39
- 182              		.cfi_startproc
- 183              		@ args = 0, pretend = 0, frame = 0
- 184              		@ frame_needed = 1, uses_anonymous_args = 0
- 185 0000 80B5     		push	{r7, lr}
- 186              	.LCFI0:
- 187              		.cfi_def_cfa_offset 8
- 188              		.cfi_offset 7, -8
- 189              		.cfi_offset 14, -4
- 190 0002 00AF     		add	r7, sp, #0
- 191              	.LCFI1:
- 192              		.cfi_def_cfa_register 7
+  28              		.loc 1 641 39 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
  642:./src/rtx_lib.c ****   (void)osKernelInitialize();
- 193              		.loc 1 642 9
- 194 0004 FFF7FEFF 		bl	osKernelInitialize
- 643:./src/rtx_lib.c **** }
- 195              		.loc 1 643 1
- 196 0008 00BF     		nop
- 197 000a 80BD     		pop	{r7, pc}
- 198              		.cfi_endproc
- 199              	.LFE104:
- 201              		.weak	__os_msgqueue_cb_end__
- 202              		.weak	__os_msgqueue_cb_start__
- 203              		.weak	__os_mempool_cb_end__
- 204              		.weak	__os_mempool_cb_start__
- 205              		.weak	__os_semaphore_cb_end__
- 206              		.weak	__os_semaphore_cb_start__
- 207              		.weak	__os_mutex_cb_end__
- 208              		.weak	__os_mutex_cb_start__
- 209              		.weak	__os_evflags_cb_end__
- 210              		.weak	__os_evflags_cb_start__
- 211              		.weak	__os_timer_cb_end__
- 212              		.weak	__os_timer_cb_start__
- 213              		.weak	__os_thread_cb_end__
- 214              		.weak	__os_thread_cb_start__
- 215              	.Letext0:
- 216              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 217              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 218              		.file 4 "./inc/cmsis_os2.h"
- 219              		.file 5 "./inc/rtx_os.h"
+  33              		.loc 1 642 3 view .LVU1
+  34              		.loc 1 642 9 is_stmt 0 view .LVU2
+  35 0000 FFF7FEBF 		b	osKernelInitialize
+  36              	.LVL0:
+  37              		.cfi_endproc
+  38              	.LFE104:
+  40              		.global	os_cb_sections
+  41              		.weak	osRtxUserSVC
+  42              		.global	irqRtxLibRef
+  43              		.global	osRtxConfig
+  44              		.section	.rodata
+  45              		.align	2
+  48              	osRtxUserSVC:
+  49 0000 00000000 		.space	4
+  52              	os_timer_mq_attr:
+  53 0004 00000000 		.word	0
+  54 0008 00000000 		.word	0
+  55 000c 00000000 		.word	os_timer_mq_cb
+  56 0010 34000000 		.word	52
+  57 0014 00000000 		.word	os_timer_mq_data
+  58 0018 50000000 		.word	80
+  61              	os_timer_thread_attr:
+  62 001c 00000000 		.word	0
+  63 0020 00000000 		.word	0
+  64 0024 00000000 		.word	os_timer_thread_cb
+  65 0028 44000000 		.word	68
+  66 002c 00000000 		.word	os_timer_thread_stack
+  67 0030 00010000 		.word	256
+  68 0034 28000000 		.word	40
+  69 0038 00000000 		.word	0
+  70 003c 00000000 		.word	0
+  73              	os_idle_thread_attr:
+  74 0040 00000000 		.word	0
+  75 0044 00000000 		.word	0
+  76 0048 44000000 		.word	os_idle_thread_cb
+  77 004c 44000000 		.word	68
+  78 0050 00010000 		.word	os_idle_thread_stack
+  79 0054 00010000 		.word	256
+  80 0058 01000000 		.word	1
+  81 005c 00000000 		.word	0
+  82 0060 00000000 		.word	0
+  83              		.data
+  84              		.align	2
+  87              	irqRtxLibRef:
+  88 0000 00000000 		.word	irqRtxLib
+  89              		.section	.bss.os,"aw",%nobits
+  90              		.align	3
+  93              	os_isr_queue:
+  94 0000 00000000 		.space	64
+  94      00000000 
+  94      00000000 
+  94      00000000 
+  94      00000000 
+  97              	os_mem:
+  98 0040 00000000 		.space	32768
+  98      00000000 
+  98      00000000 
+  98      00000000 
+  98      00000000 
+  99              		.section	.bss.os.msgqueue.cb,"aw",%nobits
+ 100              		.align	2
+ 103              	os_timer_mq_cb:
+ 104 0000 00000000 		.space	52
+ 104      00000000 
+ 104      00000000 
+ 104      00000000 
+ 104      00000000 
+ 105              		.section	.bss.os.msgqueue.mem,"aw",%nobits
+ 106              		.align	2
+ 109              	os_timer_mq_data:
+ 110 0000 00000000 		.space	80
+ 110      00000000 
+ 110      00000000 
+ 110      00000000 
+ 110      00000000 
+ 111              		.section	.bss.os.thread.cb,"aw",%nobits
+ 112              		.align	2
+ 115              	os_timer_thread_cb:
+ 116 0000 00000000 		.space	68
+ 116      00000000 
+ 116      00000000 
+ 116      00000000 
+ 116      00000000 
+ 119              	os_idle_thread_cb:
+ 120 0044 00000000 		.space	68
+ 120      00000000 
+ 120      00000000 
+ 120      00000000 
+ 120      00000000 
+ 121              		.section	.bss.os.thread.stack,"aw",%nobits
+ 122              		.align	3
+ 125              	os_timer_thread_stack:
+ 126 0000 00000000 		.space	256
+ 126      00000000 
+ 126      00000000 
+ 126      00000000 
+ 126      00000000 
+ 129              	os_idle_thread_stack:
+ 130 0100 00000000 		.space	256
+ 130      00000000 
+ 130      00000000 
+ 130      00000000 
+ 130      00000000 
+ 131              		.section	.rodata,"a"
+ 132              		.align	2
+ 135              	os_cb_sections:
+ 136 0064 00000000 		.word	__os_thread_cb_start__
+ 137 0068 00000000 		.word	__os_thread_cb_end__
+ 138 006c 00000000 		.word	__os_timer_cb_start__
+ 139 0070 00000000 		.word	__os_timer_cb_end__
+ 140 0074 00000000 		.word	__os_evflags_cb_start__
+ 141 0078 00000000 		.word	__os_evflags_cb_end__
+ 142 007c 00000000 		.word	__os_mutex_cb_start__
+ 143 0080 00000000 		.word	__os_mutex_cb_end__
+ 144 0084 00000000 		.word	__os_semaphore_cb_start__
+ 145 0088 00000000 		.word	__os_semaphore_cb_end__
+ 146 008c 00000000 		.word	__os_mempool_cb_start__
+ 147 0090 00000000 		.word	__os_mempool_cb_end__
+ 148 0094 00000000 		.word	__os_msgqueue_cb_start__
+ 149 0098 00000000 		.word	__os_msgqueue_cb_end__
+ 152              	osRtxConfig:
+ 153 009c 03000000 		.word	3
+ 154 00a0 88130000 		.word	5000
+ 155 00a4 05000000 		.word	5
+ 156 00a8 00000000 		.word	os_isr_queue
+ 157 00ac 1000     		.short	16
+ 158 00ae 0000     		.short	0
+ 159 00b0 00000000 		.word	0
+ 160 00b4 00000000 		.word	0
+ 161 00b8 00000000 		.word	0
+ 162 00bc 00000000 		.word	0
+ 163 00c0 00000000 		.word	0
+ 164 00c4 00000000 		.word	0
+ 165 00c8 40000000 		.word	os_mem
+ 166 00cc 00800000 		.word	32768
+ 167 00d0 00000000 		.word	0
+ 168 00d4 00000000 		.word	0
+ 169 00d8 00000000 		.word	0
+ 170 00dc 00000000 		.word	0
+ 171 00e0 00000000 		.word	0
+ 172 00e4 00000000 		.word	0
+ 173 00e8 00000000 		.word	0
+ 174 00ec 00000000 		.word	0
+ 175 00f0 00100000 		.word	4096
+ 176 00f4 40000000 		.word	os_idle_thread_attr
+ 177 00f8 1C000000 		.word	os_timer_thread_attr
+ 178 00fc 04000000 		.word	os_timer_mq_attr
+ 179 0100 04000000 		.word	4
+ 180              		.weak	__os_msgqueue_cb_end__
+ 181              		.weak	__os_msgqueue_cb_start__
+ 182              		.weak	__os_mempool_cb_end__
+ 183              		.weak	__os_mempool_cb_start__
+ 184              		.weak	__os_semaphore_cb_end__
+ 185              		.weak	__os_semaphore_cb_start__
+ 186              		.weak	__os_mutex_cb_end__
+ 187              		.weak	__os_mutex_cb_start__
+ 188              		.weak	__os_evflags_cb_end__
+ 189              		.weak	__os_evflags_cb_start__
+ 190              		.weak	__os_timer_cb_end__
+ 191              		.weak	__os_timer_cb_start__
+ 192              		.weak	__os_thread_cb_end__
+ 193              		.weak	__os_thread_cb_start__
+ 194              		.text
+ 195              	.Letext0:
+ 196              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 197              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 198              		.file 4 "./inc/cmsis_os2.h"
+ 199              		.file 5 "./inc/rtx_os.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 rtx_lib.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:17     .bss.os:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:20     .bss.os:00000000 os_mem
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:25     .bss.os:00008000 os_isr_queue
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:28     .bss.os.thread.cb:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:31     .bss.os.thread.cb:00000000 os_idle_thread_cb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:34     .bss.os.thread.stack:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:37     .bss.os.thread.stack:00000000 os_idle_thread_stack
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:40     .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:43     .rodata:00000000 os_idle_thread_attr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:57     .bss.os.thread.cb:00000044 os_timer_thread_cb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:63     .bss.os.thread.stack:00000100 os_timer_thread_stack
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:69     .rodata:00000024 os_timer_thread_attr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:80     .bss.os.msgqueue.cb:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:83     .bss.os.msgqueue.cb:00000000 os_timer_mq_cb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:86     .bss.os.msgqueue.mem:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:89     .bss.os.msgqueue.mem:00000000 os_timer_mq_data
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:95     .rodata:00000048 os_timer_mq_attr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:107    .rodata:00000060 osRtxConfig
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:140    .data:00000000 irqRtxLibRef
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:137    .data:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:147    .rodata:000000c8 osRtxUserSVC
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:154    .rodata:000000cc os_cb_sections
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:170    .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdozUCo.s:178    .text:00000000 software_init_hook
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:25     .text:00000000 software_init_hook
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:135    .rodata:00000064 os_cb_sections
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:48     .rodata:00000000 osRtxUserSVC
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:87     .data:00000000 irqRtxLibRef
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:152    .rodata:0000009c osRtxConfig
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:45     .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:52     .rodata:00000004 os_timer_mq_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:103    .bss.os.msgqueue.cb:00000000 os_timer_mq_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:109    .bss.os.msgqueue.mem:00000000 os_timer_mq_data
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:61     .rodata:0000001c os_timer_thread_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:115    .bss.os.thread.cb:00000000 os_timer_thread_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:125    .bss.os.thread.stack:00000000 os_timer_thread_stack
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:73     .rodata:00000040 os_idle_thread_attr
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:119    .bss.os.thread.cb:00000044 os_idle_thread_cb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:129    .bss.os.thread.stack:00000100 os_idle_thread_stack
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:84     .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:90     .bss.os:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:93     .bss.os:00000000 os_isr_queue
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:97     .bss.os:00000040 os_mem
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:100    .bss.os.msgqueue.cb:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:106    .bss.os.msgqueue.mem:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:112    .bss.os.thread.cb:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6WM7LL.s:122    .bss.os.thread.stack:00000000 $d
 
 UNDEFINED SYMBOLS
+osKernelInitialize
 irqRtxLib
 __os_thread_cb_start__
 __os_thread_cb_end__
@@ -903,4 +883,3 @@ __os_mempool_cb_start__
 __os_mempool_cb_end__
 __os_msgqueue_cb_start__
 __os_msgqueue_cb_end__
-osKernelInitialize

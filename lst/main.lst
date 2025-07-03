@@ -13,17 +13,18 @@
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	thread_milli_timer:
-  25              	.LVL0:
-  26              	.LFB169:
-  27              		.file 1 "./src/main.c"
+  16              		.section	.text.startup,"ax",%progbits
+  17              		.align	1
+  18              		.p2align 2,,3
+  19              		.global	main
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv5-d16
+  26              	main:
+  27              	.LFB171:
+  28              		.file 1 "./src/main.c"
    1:./src/main.c  **** 
    2:./src/main.c  **** #include <stdint.h>
    3:./src/main.c  **** #include <string.h>
@@ -41,8 +42,8 @@
   15:./src/main.c  **** #include "lwip/dhcp.h"
   16:./src/main.c  **** #include "lwip/apps/httpd.h"
   17:./src/main.c  **** 
-  18:./src/main.c  **** #include "startDebug.h"
-  19:./src/main.c  **** #include "udp_total.h"
+  18:./src/main.c  **** #include "udp_total.h"
+  19:./src/main.c  **** #include "stm32f7xx_hal_rcc_ex.h"
   20:./src/main.c  **** 
   21:./src/main.c  **** 
   22:./src/main.c  **** // abstract:
@@ -71,685 +72,139 @@
   45:./src/main.c  **** uint8_t IP_ADDRESS[4];
   46:./src/main.c  **** uint8_t NETMASK_ADDRESS[4];
   47:./src/main.c  **** uint8_t GATEWAY_ADDRESS[4];
-  48:./src/main.c  **** static uint8_t LED_toggleCAN1;
-  49:./src/main.c  **** static uint8_t LED_toggleCAN2;
-  50:./src/main.c  **** static uint8_t LED_toggleCAN3;
-  51:./src/main.c  **** static uint8_t LED_toggleCAN4;
-  52:./src/main.c  **** static uint8_t LED_toggleCAN5;
-  53:./src/main.c  **** static uint8_t LED_toggleCAN6;
+  48:./src/main.c  **** 
+  49:./src/main.c  **** 
+  50:./src/main.c  **** typedef  void (*pFunction)(void);
+  51:./src/main.c  **** #define USER_FLASH_FIRST_PAGE_ADDRESS 0x08040000;
+  52:./src/main.c  **** pFunction JumpToApplication;
+  53:./src/main.c  **** uint32_t JumpAddress;
   54:./src/main.c  **** 
-  55:./src/main.c  **** uint32_t lastGreetingTick_CAN2 = 0;
-  56:./src/main.c  **** 
-  57:./src/main.c  **** 
-  58:./src/main.c  **** 
-  59:./src/main.c  **** //! @brief      a timer based on a high prio thread
-  60:./src/main.c  **** static void thread_milli_timer ( void *argument)
-  61:./src/main.c  **** {
-  28              		.loc 1 61 1 view -0
-  29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32              		@ link register save eliminated.
-  62:./src/main.c  **** 	HAL_IncTick();
-  33              		.loc 1 62 2 view .LVU1
-  34 0000 FFF7FEBF 		b	HAL_IncTick
-  35              	.LVL1:
-  36              		.loc 1 62 2 is_stmt 0 view .LVU2
-  37              		.cfi_endproc
-  38              	.LFE169:
-  40              		.align	1
-  41              		.p2align 2,,3
-  42              		.syntax unified
-  43              		.thumb
-  44              		.thumb_func
-  45              		.fpu fpv5-d16
-  47              	thread_main:
-  48              	.LVL2:
-  49              	.LFB171:
-  63:./src/main.c  **** }
-  64:./src/main.c  **** 
-  65:./src/main.c  **** static void  main_greeting ( void)
-  66:./src/main.c  **** {
-  67:./src/main.c  **** 	CANTxMsg_t  msg;
-  68:./src/main.c  **** 	
-  69:./src/main.c  **** 	
-  70:./src/main.c  **** 	msg.bufftype = CAN_BUFFER_TX_MSG;
-  71:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
-  72:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
-  73:./src/main.c  **** 	msg.id       = 0x123;
-  74:./src/main.c  **** 	
-  75:./src/main.c  **** 	msg.data32[0] = 0x67452301;
-  76:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
-  77:./src/main.c  **** 	
-  78:./src/main.c  **** 	// patch byte 0 with FPGA version
-  79:./src/main.c  **** 	msg.data8[0] = HW_FPGA_VERSION;
-  80:./src/main.c  **** 	
-  81:./src/main.c  **** 	// Send message
-  82:./src/main.c  **** 	CAN_Write ( CAN_BUS1, &msg);
-  83:./src/main.c  **** }
-  84:./src/main.c  **** 
-  85:./src/main.c  **** 
-  86:./src/main.c  **** 
-  87:./src/main.c  **** //! @brief      primary thread
-  88:./src/main.c  **** static void  thread_main ( void  *argument)
-  89:./src/main.c  **** {
-  50              		.loc 1 89 1 is_stmt 1 view -0
-  51              		.cfi_startproc
-  52              		@ Volatile: function does not return.
-  53              		@ args = 0, pretend = 0, frame = 88
-  54              		@ frame_needed = 0, uses_anonymous_args = 0
-  90:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  91:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));
-  55              		.loc 1 91 2 view .LVU4
-  56 0004 444C     		ldr	r4, .L8
-  57 0006 0521     		movs	r1, #5
-  92:./src/main.c  **** 	
-  93:./src/main.c  **** 	// init CAN
-  94:./src/main.c  **** 	CAN_UserInit();
-  95:./src/main.c  **** 	
-  96:./src/main.c  **** 	// set green LEDs for CANs
-  97:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
-  98:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
-  99:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
- 100:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
- 101:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
- 102:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
- 103:./src/main.c  **** 
- 104:./src/main.c  **** 
- 105:./src/main.c  **** 	// put 100Base-T1 PHY into slave mode
- 106:./src/main.c  **** 	#if _PHY_IS_T1_
- 107:./src/main.c  **** 	HW_BR_REACH_SLAVE;
- 108:./src/main.c  **** 	#else
- 109:./src/main.c  **** 	//HW_BR_REACH_MASTER;
- 110:./src/main.c  **** 	#endif
- 111:./src/main.c  **** 
- 112:./src/main.c  **** 	// enable PHY, deassert reset
- 113:./src/main.c  **** 	HW_ENA_ETH_PHY;
- 114:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
- 115:./src/main.c  **** 	
- 116:./src/main.c  **** 	
- 117:./src/main.c  **** 	// init lwip stack
- 118:./src/main.c  **** 	tcpip_init( NULL, NULL );
- 119:./src/main.c  **** 
- 120:./src/main.c  **** 
- 121:./src/main.c  **** 	// init ip address, requested later by dhcp
- 122:./src/main.c  ****   	IP_ADDRESS[0] = 192;
- 123:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 124:./src/main.c  ****   	IP_ADDRESS[2] = 20;
- 125:./src/main.c  ****   	IP_ADDRESS[3] = 70;
- 126:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
- 127:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 128:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
- 129:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
- 131:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 132:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
- 133:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
- 134:./src/main.c  **** 
- 135:./src/main.c  **** 
- 136:./src/main.c  **** 	IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
- 137:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 138:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 139:./src/main.c  **** 	// add the network interface
- 140:./src/main.c  **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
-  58              		.loc 1 140 2 is_stmt 0 view .LVU5
-  59 0008 444D     		ldr	r5, .L8+4
-  91:./src/main.c  **** 	
-  60              		.loc 1 91 2 view .LVU6
-  61 000a 2068     		ldr	r0, [r4]
-  62              	.LVL3:
-  89:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  63              		.loc 1 89 1 view .LVU7
-  64 000c 00B5     		push	{lr}
-  65              	.LCFI0:
-  66              		.cfi_def_cfa_offset 4
-  67              		.cfi_offset 14, -4
-  68 000e 9BB0     		sub	sp, sp, #108
-  69              	.LCFI1:
-  70              		.cfi_def_cfa_offset 112
-  91:./src/main.c  **** 	
-  71              		.loc 1 91 2 view .LVU8
-  72 0010 FFF7FEFF 		bl	osTimerStart
-  73              	.LVL4:
-  94:./src/main.c  **** 	
-  74              		.loc 1 94 2 is_stmt 1 view .LVU9
-  75 0014 FFF7FEFF 		bl	CAN_UserInit
-  76              	.LVL5:
-  97:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
-  77              		.loc 1 97 2 view .LVU10
-  78 0018 0221     		movs	r1, #2
-  79 001a 0120     		movs	r0, #1
-  80 001c FFF7FEFF 		bl	HW_SetLED
-  81              	.LVL6:
-  98:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
-  82              		.loc 1 98 2 view .LVU11
-  83 0020 0221     		movs	r1, #2
-  84 0022 0846     		mov	r0, r1
-  85 0024 FFF7FEFF 		bl	HW_SetLED
-  86              	.LVL7:
-  99:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
-  87              		.loc 1 99 2 view .LVU12
-  88 0028 0221     		movs	r1, #2
-  89 002a 0320     		movs	r0, #3
-  90 002c FFF7FEFF 		bl	HW_SetLED
-  91              	.LVL8:
- 100:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
-  92              		.loc 1 100 2 view .LVU13
-  93 0030 0221     		movs	r1, #2
-  94 0032 0420     		movs	r0, #4
-  95 0034 FFF7FEFF 		bl	HW_SetLED
-  96              	.LVL9:
- 101:./src/main.c  **** 	HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
-  97              		.loc 1 101 2 view .LVU14
-  98 0038 0221     		movs	r1, #2
-  99 003a 0520     		movs	r0, #5
- 100 003c FFF7FEFF 		bl	HW_SetLED
- 101              	.LVL10:
- 102:./src/main.c  **** 
- 102              		.loc 1 102 2 view .LVU15
- 103 0040 0221     		movs	r1, #2
- 104 0042 0620     		movs	r0, #6
- 105 0044 FFF7FEFF 		bl	HW_SetLED
- 106              	.LVL11:
- 113:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
- 107              		.loc 1 113 2 view .LVU16
- 108 0048 354B     		ldr	r3, .L8+8
- 109 004a 4FF44052 		mov	r2, #12288
- 114:./src/main.c  **** 	
- 110              		.loc 1 114 2 is_stmt 0 view .LVU17
- 111 004e 40F27710 		movw	r0, #375
- 113:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
- 112              		.loc 1 113 2 view .LVU18
- 113 0052 9A61     		str	r2, [r3, #24]
- 114:./src/main.c  **** 	
- 114              		.loc 1 114 2 is_stmt 1 view .LVU19
- 115 0054 FFF7FEFF 		bl	osDelay
- 116              	.LVL12:
- 118:./src/main.c  **** 
- 117              		.loc 1 118 2 view .LVU20
- 118 0058 0021     		movs	r1, #0
- 119 005a 0846     		mov	r0, r1
- 120 005c FFF7FEFF 		bl	tcpip_init
- 121              	.LVL13:
- 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 122              		.loc 1 122 4 view .LVU21
- 123:./src/main.c  ****   	IP_ADDRESS[2] = 20;
- 123              		.loc 1 123 4 view .LVU22
- 124:./src/main.c  ****   	IP_ADDRESS[3] = 70;
- 124              		.loc 1 124 4 view .LVU23
- 125:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
- 125              		.loc 1 125 4 view .LVU24
- 138:./src/main.c  **** 	// add the network interface
- 126              		.loc 1 138 4 is_stmt 0 view .LVU25
- 127 0060 2346     		mov	r3, r4
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 128              		.loc 1 130 23 view .LVU26
- 129 0062 304A     		ldr	r2, .L8+12
- 130              		.loc 1 140 2 view .LVU27
- 131 0064 3048     		ldr	r0, .L8+16
- 138:./src/main.c  **** 	// add the network interface
- 132              		.loc 1 138 4 view .LVU28
- 133 0066 43F8182F 		str	r2, [r3, #24]!
- 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 134              		.loc 1 122 18 view .LVU29
- 135 006a 3049     		ldr	r1, .L8+20
- 136              		.loc 1 140 2 view .LVU30
- 137 006c 0295     		str	r5, [sp, #8]
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 138              		.loc 1 126 23 view .LVU31
- 139 006e 6FF07F45 		mvn	r5, #-16777216
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 140              		.loc 1 130 23 view .LVU32
- 141 0072 E260     		str	r2, [r4, #12]
- 142              		.loc 1 140 2 view .LVU33
- 143 0074 04F11402 		add	r2, r4, #20
- 144 0078 0190     		str	r0, [sp, #4]
- 145 007a 0020     		movs	r0, #0
- 122:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 146              		.loc 1 122 18 view .LVU34
- 147 007c 6160     		str	r1, [r4, #4]
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 148              		.loc 1 126 4 is_stmt 1 view .LVU35
- 127:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
- 149              		.loc 1 127 4 view .LVU36
- 128:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
- 150              		.loc 1 128 4 view .LVU37
- 129:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
- 151              		.loc 1 129 4 view .LVU38
- 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 152              		.loc 1 136 2 is_stmt 0 view .LVU39
- 153 007e 2161     		str	r1, [r4, #16]
- 154              		.loc 1 140 2 view .LVU40
- 155 0080 04F11001 		add	r1, r4, #16
- 156 0084 0090     		str	r0, [sp]
- 157 0086 04F11C00 		add	r0, r4, #28
- 126:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 158              		.loc 1 126 23 view .LVU41
- 159 008a A560     		str	r5, [r4, #8]
- 130:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 160              		.loc 1 130 4 is_stmt 1 view .LVU42
- 131:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
- 161              		.loc 1 131 4 view .LVU43
- 132:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
- 162              		.loc 1 132 4 view .LVU44
- 133:./src/main.c  **** 
- 163              		.loc 1 133 4 view .LVU45
- 136:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 164              		.loc 1 136 2 view .LVU46
- 137:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 165              		.loc 1 137 4 view .LVU47
- 166 008c 6561     		str	r5, [r4, #20]
- 138:./src/main.c  **** 	// add the network interface
- 167              		.loc 1 138 4 view .LVU48
- 168              		.loc 1 140 2 view .LVU49
- 169 008e FFF7FEFF 		bl	netif_add
- 170              	.LVL14:
- 141:./src/main.c  **** 
- 142:./src/main.c  **** 
- 143:./src/main.c  **** 	// set default netif
- 144:./src/main.c  **** 	netif_set_default ( &gnetif);
- 171              		.loc 1 144 2 view .LVU50
- 172 0092 04F11C00 		add	r0, r4, #28
- 173 0096 FFF7FEFF 		bl	netif_set_default
- 174              	.LVL15:
- 145:./src/main.c  **** 
- 146:./src/main.c  **** 	if ( netif_is_link_up ( &gnetif))
- 175              		.loc 1 146 2 view .LVU51
- 176              		.loc 1 146 7 is_stmt 0 view .LVU52
- 177 009a 94F84930 		ldrb	r3, [r4, #73]	@ zero_extendqisi2
- 147:./src/main.c  **** 	{
- 148:./src/main.c  **** 		/* When the netif is fully configured this function must be called */
- 149:./src/main.c  **** 		netif_set_up ( &gnetif);
- 178              		.loc 1 149 3 view .LVU53
- 179 009e 04F11C00 		add	r0, r4, #28
- 146:./src/main.c  **** 	{
- 180              		.loc 1 146 5 view .LVU54
- 181 00a2 5B07     		lsls	r3, r3, #29
- 182 00a4 35D5     		bpl	.L4
- 183              		.loc 1 149 3 is_stmt 1 view .LVU55
- 184 00a6 FFF7FEFF 		bl	netif_set_up
- 185              	.LVL16:
- 186              	.L5:
- 150:./src/main.c  **** 	}
- 151:./src/main.c  **** 
- 152:./src/main.c  **** 	else
- 153:./src/main.c  **** 	{
- 154:./src/main.c  **** 		/* When the netif link is down this function must be called */
- 155:./src/main.c  **** 		netif_set_down ( &gnetif);
- 156:./src/main.c  **** 	}
- 157:./src/main.c  **** 
- 158:./src/main.c  **** 
- 159:./src/main.c  **** 	// // start dhcp
- 160:./src/main.c  **** 	// dhcp_start ( &gnetif);
- 161:./src/main.c  **** 	startDebug(NULL);
- 187              		.loc 1 161 2 view .LVU56
- 188 00aa 0020     		movs	r0, #0
- 189              	.LBB23:
- 190              	.LBB24:
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 191              		.loc 1 71 15 is_stmt 0 view .LVU57
- 192 00ac 0825     		movs	r5, #8
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 193              		.loc 1 72 15 view .LVU58
- 194 00ae 0446     		mov	r4, r0
- 195              	.LBE24:
- 196              	.LBE23:
- 197              		.loc 1 161 2 view .LVU59
- 198 00b0 FFF7FEFF 		bl	startDebug
- 199              	.LVL17:
- 162:./src/main.c  **** 	main_greeting();
- 200              		.loc 1 162 2 is_stmt 1 view .LVU60
- 201              	.LBB26:
- 202              	.LBI23:
+  55:./src/main.c  **** //! @brief      a timer based on a high prio thread
+  56:./src/main.c  **** static void thread_milli_timer ( void *argument)
+  57:./src/main.c  **** {
+  58:./src/main.c  **** 	HAL_IncTick();
+  59:./src/main.c  **** }
+  60:./src/main.c  **** 
+  61:./src/main.c  **** 
+  62:./src/main.c  **** 
+  63:./src/main.c  **** //! @brief      primary thread
+  64:./src/main.c  **** static void  thread_main ( void  *argument)
   65:./src/main.c  **** {
- 203              		.loc 1 65 14 view .LVU61
- 204              	.LBB25:
-  67:./src/main.c  **** 	
- 205              		.loc 1 67 2 view .LVU62
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 206              		.loc 1 70 2 view .LVU63
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 207              		.loc 1 70 15 is_stmt 0 view .LVU64
- 208 00b4 4FF48051 		mov	r1, #4096
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 209              		.loc 1 71 15 view .LVU65
- 210 00b8 9DF82030 		ldrb	r3, [sp, #32]	@ zero_extendqisi2
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 211              		.loc 1 75 16 view .LVU66
- 212 00bc 1C4A     		ldr	r2, .L8+24
-  73:./src/main.c  **** 	
- 213              		.loc 1 73 15 view .LVU67
- 214 00be 40F22310 		movw	r0, #291
-  70:./src/main.c  **** 	msg.dlc      = CAN_LEN8_DLC;
- 215              		.loc 1 70 15 view .LVU68
- 216 00c2 ADF81610 		strh	r1, [sp, #22]	@ movhi
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 217              		.loc 1 71 2 is_stmt 1 view .LVU69
-  76:./src/main.c  **** 	
- 218              		.loc 1 76 16 is_stmt 0 view .LVU70
- 219 00c6 A1F18151 		sub	r1, r1, #270532608
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 220              		.loc 1 75 16 view .LVU71
- 221 00ca 0A92     		str	r2, [sp, #40]
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 222              		.loc 1 71 15 view .LVU72
- 223 00cc 65F30713 		bfi	r3, r5, #4, #4
-  76:./src/main.c  **** 	
- 224              		.loc 1 76 16 view .LVU73
- 225 00d0 A1F59311 		sub	r1, r1, #1204224
-  79:./src/main.c  **** 	
- 226              		.loc 1 79 17 view .LVU74
- 227 00d4 4FF0C842 		mov	r2, #1677721600
-  73:./src/main.c  **** 	
- 228              		.loc 1 73 15 view .LVU75
- 229 00d8 0990     		str	r0, [sp, #36]
-  82:./src/main.c  **** }
- 230              		.loc 1 82 2 view .LVU76
- 231 00da 2046     		mov	r0, r4
-  76:./src/main.c  **** 	
- 232              		.loc 1 76 16 view .LVU77
- 233 00dc A1F27741 		subw	r1, r1, #1143
-  71:./src/main.c  **** 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 234              		.loc 1 71 15 view .LVU78
- 235 00e0 8DF82030 		strb	r3, [sp, #32]
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 236              		.loc 1 72 2 is_stmt 1 view .LVU79
-  76:./src/main.c  **** 	
- 237              		.loc 1 76 16 is_stmt 0 view .LVU80
- 238 00e4 0B91     		str	r1, [sp, #44]
-  82:./src/main.c  **** }
- 239              		.loc 1 82 2 view .LVU81
- 240 00e6 05A9     		add	r1, sp, #20
-  79:./src/main.c  **** 	
- 241              		.loc 1 79 17 view .LVU82
- 242 00e8 1368     		ldr	r3, [r2]
-  72:./src/main.c  **** 	msg.id       = 0x123;
- 243              		.loc 1 72 15 view .LVU83
- 244 00ea ADF82240 		strh	r4, [sp, #34]	@ movhi
-  73:./src/main.c  **** 	
- 245              		.loc 1 73 2 is_stmt 1 view .LVU84
-  75:./src/main.c  **** 	msg.data32[1] = 0xEFCDAB89;
- 246              		.loc 1 75 2 view .LVU85
-  76:./src/main.c  **** 	
- 247              		.loc 1 76 2 view .LVU86
-  79:./src/main.c  **** 	
- 248              		.loc 1 79 2 view .LVU87
-  79:./src/main.c  **** 	
- 249              		.loc 1 79 15 is_stmt 0 view .LVU88
- 250 00ee 8DF82830 		strb	r3, [sp, #40]
-  82:./src/main.c  **** }
- 251              		.loc 1 82 2 is_stmt 1 view .LVU89
- 252 00f2 FFF7FEFF 		bl	CAN_Write
- 253              	.LVL18:
- 254              	.LBE25:
- 255              	.LBE26:
+  66:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
+  67:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));
+  68:./src/main.c  **** 	
+  69:./src/main.c  **** 	// init CAN
+  70:./src/main.c  **** 	CAN_UserInit();
+  71:./src/main.c  **** 
+  72:./src/main.c  **** 	// put 100Base-T1 PHY into slave mode
+  73:./src/main.c  **** 	#if _PHY_IS_T1_
+  74:./src/main.c  **** 	HW_BR_REACH_SLAVE;
+  75:./src/main.c  **** 	#else
+  76:./src/main.c  **** 	//HW_BR_REACH_MASTER;
+  77:./src/main.c  **** 	#endif
+  78:./src/main.c  **** 
+  79:./src/main.c  **** 	// enable PHY, deassert reset
+  80:./src/main.c  **** 	HW_ENA_ETH_PHY;
+  81:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
+  82:./src/main.c  **** 	
+  83:./src/main.c  **** 	
+  84:./src/main.c  **** 	// init lwip stack
+  85:./src/main.c  **** 	tcpip_init( NULL, NULL );
+  86:./src/main.c  **** 
+  87:./src/main.c  **** 
+  88:./src/main.c  **** 	// init ip address, requested later by dhcp
+  89:./src/main.c  ****   	IP_ADDRESS[0] = 192;
+  90:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+  91:./src/main.c  ****   	IP_ADDRESS[2] = 20;
+  92:./src/main.c  ****   	IP_ADDRESS[3] = 70;
+  93:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
+  94:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+  95:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
+  96:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
+  97:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
+  98:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+  99:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
+ 100:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
+ 101:./src/main.c  **** 
+ 102:./src/main.c  **** 
+ 103:./src/main.c  **** 	IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
+ 104:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 105:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+ 106:./src/main.c  **** 	// add the network interface
+ 107:./src/main.c  **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
+ 108:./src/main.c  **** 
+ 109:./src/main.c  **** 
+ 110:./src/main.c  **** 	// set default netif
+ 111:./src/main.c  **** 	netif_set_default ( &gnetif);
+ 112:./src/main.c  **** 
+ 113:./src/main.c  **** 	if ( netif_is_link_up ( &gnetif))
+ 114:./src/main.c  **** 	{
+ 115:./src/main.c  **** 		/* When the netif is fully configured this function must be called */
+ 116:./src/main.c  **** 		netif_set_up ( &gnetif);
+ 117:./src/main.c  **** 	}
+ 118:./src/main.c  **** 
+ 119:./src/main.c  **** 	else
+ 120:./src/main.c  **** 	{
+ 121:./src/main.c  **** 		/* When the netif link is down this function must be called */
+ 122:./src/main.c  **** 		netif_set_down ( &gnetif);
+ 123:./src/main.c  **** 	}
+ 124:./src/main.c  **** 
+ 125:./src/main.c  **** 
+ 126:./src/main.c  **** 	uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 127:./src/main.c  **** 	volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
+ 128:./src/main.c  **** 
+ 129:./src/main.c  **** 	printf("App MSP: 0x%08lX\n", isr_vector_addr);
+ 130:./src/main.c  **** 	printf("App Reset_Handler: 0x%08lX\n", app_sp_value);
+ 131:./src/main.c  **** 
+ 132:./src/main.c  **** 
+ 133:./src/main.c  ****     __disable_irq();
+ 134:./src/main.c  ****     SysTick->CTRL = 0;
+ 135:./src/main.c  ****     SysTick->LOAD = 0;
+ 136:./src/main.c  ****     SysTick->VAL  = 0;
+ 137:./src/main.c  ****     for (uint32_t i = 0; i < 8; i++)
+ 138:./src/main.c  ****     {
+ 139:./src/main.c  ****         NVIC->ICER[i] = 0xFFFFFFFF;
+ 140:./src/main.c  ****         NVIC->ICPR[i] = 0xFFFFFFFF;
+ 141:./src/main.c  ****     }
+ 142:./src/main.c  **** 	SCB_DisableICache();
+ 143:./src/main.c  **** 	SCB_DisableDCache();
+ 144:./src/main.c  **** 	JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
+ 145:./src/main.c  ****     JumpToApplication = (pFunction) JumpAddress;
+ 146:./src/main.c  **** 
+ 147:./src/main.c  **** 
+ 148:./src/main.c  ****     /* Initialize user application's Stack Pointer */
+ 149:./src/main.c  ****     __set_MSP(*(__IO uint32_t*) isr_vector_addr);
+ 150:./src/main.c  **** 	SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
+ 151:./src/main.c  ****     JumpToApplication();
+ 152:./src/main.c  **** 
+ 153:./src/main.c  **** 	// // start dhcp
+ 154:./src/main.c  **** 	// dhcp_start ( &gnetif);
+ 155:./src/main.c  **** 
+ 156:./src/main.c  **** 	while ( 1)
+ 157:./src/main.c  **** 	{
+ 158:./src/main.c  **** 		osThreadSuspend(osThreadGetId());
+ 159:./src/main.c  **** 	}
+ 160:./src/main.c  **** 
+ 161:./src/main.c  **** }
+ 162:./src/main.c  **** 
  163:./src/main.c  **** 
- 164:./src/main.c  **** 	task01_init(NULL);
- 256              		.loc 1 164 2 view .LVU90
- 257 00f6 2046     		mov	r0, r4
- 258 00f8 FFF7FEFF 		bl	task01_init
- 259              	.LVL19:
- 165:./src/main.c  ****   	task02_init(NULL);
- 260              		.loc 1 165 4 view .LVU91
- 261 00fc 2046     		mov	r0, r4
- 262 00fe FFF7FEFF 		bl	task02_init
- 263              	.LVL20:
- 166:./src/main.c  ****   	UDP_task(NULL);
- 264              		.loc 1 166 4 view .LVU92
- 265 0102 2046     		mov	r0, r4
- 266 0104 FFF7FEFF 		bl	UDP_task
- 267              	.LVL21:
- 268              	.L6:
- 167:./src/main.c  **** 
- 168:./src/main.c  **** 	while ( 1)
- 269              		.loc 1 168 2 discriminator 1 view .LVU93
- 169:./src/main.c  **** 	{
- 170:./src/main.c  **** 		osThreadSuspend(osThreadGetId());
- 270              		.loc 1 170 3 discriminator 1 view .LVU94
- 271 0108 FFF7FEFF 		bl	osThreadGetId
- 272              	.LVL22:
- 273 010c FFF7FEFF 		bl	osThreadSuspend
- 274              	.LVL23:
- 168:./src/main.c  **** 	{
- 275              		.loc 1 168 8 discriminator 1 view .LVU95
- 276 0110 FAE7     		b	.L6
- 277              	.L4:
- 155:./src/main.c  **** 	}
- 278              		.loc 1 155 3 view .LVU96
- 279 0112 FFF7FEFF 		bl	netif_set_down
- 280              	.LVL24:
- 281 0116 C8E7     		b	.L5
- 282              	.L9:
- 283              		.align	2
- 284              	.L8:
- 285 0118 00000000 		.word	.LANCHOR0
- 286 011c 00000000 		.word	tcpip_input
- 287 0120 00040240 		.word	1073873920
- 288 0124 C0A81401 		.word	18131136
- 289 0128 00000000 		.word	ethernetif_init
- 290 012c C0A81446 		.word	1175759040
- 291 0130 01234567 		.word	1732584193
- 292              		.cfi_endproc
- 293              	.LFE171:
- 295              		.section	.text.startup,"ax",%progbits
- 296              		.align	1
- 297              		.p2align 2,,3
- 298              		.global	main
- 299              		.syntax unified
- 300              		.thumb
- 301              		.thumb_func
- 302              		.fpu fpv5-d16
- 304              	main:
- 305              	.LFB172:
- 171:./src/main.c  **** 		// CANTxMsg_t  msg;
- 172:./src/main.c  **** 
- 173:./src/main.c  **** 
- 174:./src/main.c  **** 		// msg.bufftype = CAN_BUFFER_TX_MSG;
- 175:./src/main.c  **** 		// msg.dlc      = CAN_LEN4_DLC;
- 176:./src/main.c  **** 		// msg.msgtype  = CAN_MSGTYPE_STANDARD;
- 177:./src/main.c  **** 		// msg.id       = 0x456;
- 178:./src/main.c  **** 
- 179:./src/main.c  **** 		// msg.data32[0] = 0x0;
- 180:./src/main.c  **** 
- 181:./src/main.c  ****     // static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
- 182:./src/main.c  ****     // 		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
- 183:./src/main.c  **** 	// 	{
- 184:./src/main.c  **** 	// 		switch ( RxMsg.hBus)
- 185:./src/main.c  **** 	// 		{
- 186:./src/main.c  **** 	// 			case CAN_BUS1:
- 187:./src/main.c  **** 	// 				// message received from CAN1
- 188:./src/main.c  **** 	// 				LED_toggleCAN1 ^= 1;
- 189:./src/main.c  **** 
- 190:./src/main.c  **** 	// 				if ( LED_toggleCAN1)
- 191:./src/main.c  **** 	// 				{
- 192:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN1, HW_LED_ORANGE);
- 193:./src/main.c  **** 	// 				}
- 194:./src/main.c  **** 					
- 195:./src/main.c  **** 	// 				else
- 196:./src/main.c  **** 	// 				{
- 197:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
- 198:./src/main.c  **** 	// 				}
- 199:./src/main.c  **** 
- 200:./src/main.c  **** 	// 				// catch ID 123h and convert it from classical CAN to CAN-FD
- 201:./src/main.c  **** 	// 				if ( RxMsg.id == 0x123  &&  RxMsg.msgtype == CAN_MSGTYPE_STANDARD)
- 202:./src/main.c  **** 	// 				{
- 203:./src/main.c  **** 	// 					// overwrite msgtype
- 204:./src/main.c  **** 	// 					RxMsg.msgtype = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
- 205:./src/main.c  **** 
- 206:./src/main.c  **** 	// 					// set dlc to 12 data bytes
- 207:./src/main.c  **** 	// 					RxMsg.dlc = CAN_LEN12_DLC;
- 208:./src/main.c  **** 
- 209:./src/main.c  **** 	// 					// add some other data
- 210:./src/main.c  **** 	// 					RxMsg.data8[8] = 0x11;
- 211:./src/main.c  **** 	// 					RxMsg.data8[9] = 0x22;
- 212:./src/main.c  **** 	// 					RxMsg.data8[10] = 0x33;
- 213:./src/main.c  **** 	// 					RxMsg.data8[11] = 0x44;
- 214:./src/main.c  **** 	// 				}
- 215:./src/main.c  **** 
- 216:./src/main.c  **** 	// 				// forward message to CAN2
- 217:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS2, &RxMsg);
- 218:./src/main.c  **** 	// 				break;
- 219:./src/main.c  **** 					
- 220:./src/main.c  **** 					
- 221:./src/main.c  **** 	// 			case CAN_BUS2:
- 222:./src/main.c  **** 	// 				// message received from CAN2
- 223:./src/main.c  **** 	// 				LED_toggleCAN2 ^= 1;
- 224:./src/main.c  **** 
- 225:./src/main.c  **** 	// 				if ( LED_toggleCAN2)
- 226:./src/main.c  **** 	// 				{
- 227:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
- 228:./src/main.c  **** 	// 				}
- 229:./src/main.c  **** 					
- 230:./src/main.c  **** 	// 				else
- 231:./src/main.c  **** 	// 				{
- 232:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
- 233:./src/main.c  **** 	// 				}
- 234:./src/main.c  **** 					
- 235:./src/main.c  ****     //             	if (RxMsg.id == 0x123 && RxMsg.dlc >= 1 && RxMsg.data8[0] == HW_FPGA_VERSION)
- 236:./src/main.c  ****     //             	{
- 237:./src/main.c  ****     //                		HW_SetLED(HW_LED_CAN2, HW_LED_ORANGE);
- 238:./src/main.c  ****     //                 	lastGreetingTick_CAN2 = HAL_GetTick();
- 239:./src/main.c  ****     //             	}
- 240:./src/main.c  **** 
- 241:./src/main.c  **** 	// 				// CAN1 will be classic CAN only. If msgs will have more than
- 242:./src/main.c  **** 	// 				// eight bytes you have to fragment them manually.
- 243:./src/main.c  **** 	// 				RxMsg.msgtype &= ~( CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS);
- 244:./src/main.c  **** 
- 245:./src/main.c  **** 	// 				// forward message to CAN1
- 246:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS1, &RxMsg);
- 247:./src/main.c  **** 	// 				break;
- 248:./src/main.c  **** 					
- 249:./src/main.c  **** 					
- 250:./src/main.c  **** 	// 			case CAN_BUS3:
- 251:./src/main.c  **** 	// 				// message received from CAN3
- 252:./src/main.c  **** 	// 				LED_toggleCAN3 ^= 1;
- 253:./src/main.c  **** 
- 254:./src/main.c  **** 	// 				if ( LED_toggleCAN3)
- 255:./src/main.c  **** 	// 				{
- 256:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
- 257:./src/main.c  **** 	// 				}
- 258:./src/main.c  **** 					
- 259:./src/main.c  **** 	// 				else
- 260:./src/main.c  **** 	// 				{
- 261:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
- 262:./src/main.c  **** 	// 				}
- 263:./src/main.c  **** 					
- 264:./src/main.c  **** 	// 				// forward message to CAN4
- 265:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS4, &RxMsg);
- 266:./src/main.c  **** 	// 				break;
- 267:./src/main.c  **** 					
- 268:./src/main.c  **** 					
- 269:./src/main.c  **** 	// 			case CAN_BUS4:
- 270:./src/main.c  **** 	// 				// message received from CAN4
- 271:./src/main.c  **** 	// 				LED_toggleCAN4 ^= 1;
- 272:./src/main.c  **** 
- 273:./src/main.c  **** 	// 				if ( LED_toggleCAN4)
- 274:./src/main.c  **** 	// 				{
- 275:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
- 276:./src/main.c  **** 	// 				}
- 277:./src/main.c  **** 					
- 278:./src/main.c  **** 	// 				else
- 279:./src/main.c  **** 	// 				{
- 280:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
- 281:./src/main.c  **** 	// 				}
- 282:./src/main.c  **** 					
- 283:./src/main.c  **** 	// 				// forward message to CAN3
- 284:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS3, &RxMsg);
- 285:./src/main.c  **** 	// 				break;
- 286:./src/main.c  **** 					
- 287:./src/main.c  **** 					
- 288:./src/main.c  **** 	// 			case CAN_BUS5:
- 289:./src/main.c  **** 	// 				// message received from CAN5
- 290:./src/main.c  **** 	// 				LED_toggleCAN5 ^= 1;
- 291:./src/main.c  **** 
- 292:./src/main.c  **** 	// 				if ( LED_toggleCAN5)
- 293:./src/main.c  **** 	// 				{
- 294:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
- 295:./src/main.c  **** 	// 				}
- 296:./src/main.c  **** 					
- 297:./src/main.c  **** 	// 				else
- 298:./src/main.c  **** 	// 				{
- 299:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
- 300:./src/main.c  **** 	// 				}
- 301:./src/main.c  **** 					
- 302:./src/main.c  **** 	// 				// forward message to CAN6
- 303:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS6, &RxMsg);
- 304:./src/main.c  **** 	// 				break;
- 305:./src/main.c  **** 					
- 306:./src/main.c  **** 					
- 307:./src/main.c  **** 	// 			case CAN_BUS6:
- 308:./src/main.c  **** 	// 				// message received from CAN6
- 309:./src/main.c  **** 	// 				LED_toggleCAN6 ^= 1;
- 310:./src/main.c  **** 
- 311:./src/main.c  **** 	// 				if ( LED_toggleCAN6)
- 312:./src/main.c  **** 	// 				{
- 313:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
- 314:./src/main.c  **** 	// 				}
- 315:./src/main.c  **** 					
- 316:./src/main.c  **** 	// 				else
- 317:./src/main.c  **** 	// 				{
- 318:./src/main.c  **** 	// 					HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
- 319:./src/main.c  **** 	// 				}
- 320:./src/main.c  **** 					
- 321:./src/main.c  **** 	// 				// forward message to CAN5
- 322:./src/main.c  **** 	// 				CAN_Write ( CAN_BUS5, &RxMsg);
- 323:./src/main.c  **** 	// 				break;
- 324:./src/main.c  **** 	// 		}
- 325:./src/main.c  **** 	// 	}
- 326:./src/main.c  **** 
- 327:./src/main.c  **** 	// 	uint32_t now = HAL_GetTick();
- 328:./src/main.c  **** 	// 	if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
- 329:./src/main.c  **** 
- 330:./src/main.c  **** 	// 	osDelay ( DLY_MS(5000));
- 331:./src/main.c  **** 
- 332:./src/main.c  **** 		// if ( dhcp_supplied_address ( &gnetif))
- 333:./src/main.c  **** 		// {
- 334:./src/main.c  **** 		// 	// IPv4 used here
- 335:./src/main.c  **** 		// 	msg.data32[0] = gnetif.ip_addr.addr;
- 336:./src/main.c  **** 
- 337:./src/main.c  **** 		// 	// Send message
- 338:./src/main.c  **** 		// 	CAN_Write ( CAN_BUS1, &msg);
- 339:./src/main.c  **** 		// 	break;
- 340:./src/main.c  **** 		// }
- 341:./src/main.c  **** 
- 342:./src/main.c  **** 		// else
- 343:./src/main.c  **** 		// {
- 344:./src/main.c  **** 		// 	// Send message
- 345:./src/main.c  **** 		// 	CAN_Write ( CAN_BUS1, &msg);
- 346:./src/main.c  **** 		// }
- 347:./src/main.c  **** 	}
- 348:./src/main.c  **** 
- 349:./src/main.c  **** 
- 350:./src/main.c  **** 	// init http server
- 351:./src/main.c  **** 	// httpd_init();
- 352:./src/main.c  **** 
- 353:./src/main.c  **** 
- 354:./src/main.c  **** 	// while(1)
- 355:./src/main.c  **** 	// {	
- 356:./src/main.c  **** 	// 	osDelay ( DLY_MS(1000));
- 357:./src/main.c  **** 	// }
- 358:./src/main.c  **** 
- 359:./src/main.c  **** }
- 360:./src/main.c  **** 
- 361:./src/main.c  **** 
- 362:./src/main.c  **** 
- 363:./src/main.c  **** 
- 364:./src/main.c  **** 
- 365:./src/main.c  **** //! @brief      entry point
- 366:./src/main.c  **** int  main ( void)
- 367:./src/main.c  **** {
- 306              		.loc 1 367 1 view -0
- 307              		.cfi_startproc
- 308              		@ Volatile: function does not return.
- 309              		@ args = 0, pretend = 0, frame = 40
- 310              		@ frame_needed = 0, uses_anonymous_args = 0
- 368:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 369:./src/main.c  **** 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
- 370:./src/main.c  **** 	SCB_DisableDCache();
- 311              		.loc 1 370 2 view .LVU98
- 312              	.LBB27:
- 313              	.LBI27:
- 314              		.file 2 "./inc/core_cm7.h"
+ 164:./src/main.c  **** 
+ 165:./src/main.c  **** 
+ 166:./src/main.c  **** 
+ 167:./src/main.c  **** //! @brief      entry point
+ 168:./src/main.c  **** int  main ( void)
+ 169:./src/main.c  **** {
+  29              		.loc 1 169 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
+ 171:./src/main.c  **** 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
+ 172:./src/main.c  **** 	SCB_DisableDCache();
+  33              		.loc 1 172 2 view .LVU1
+  34              	.LBB53:
+  35              	.LBI53:
+  36              		.file 2 "./inc/core_cm7.h"
    1:./inc/core_cm7.h **** /**************************************************************************//**
    2:./inc/core_cm7.h ****  * @file     core_cm7.h
    3:./inc/core_cm7.h ****  * @brief    CMSIS Cortex-M7 Core Peripheral Access Layer Header File
@@ -3115,39 +2570,40 @@
 2363:./inc/core_cm7.h ****   \details Turns off D-Cache
 2364:./inc/core_cm7.h ****   */
 2365:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_DisableDCache (void)
- 315              		.loc 2 2365 27 view .LVU99
- 316              	.LBB28:
+  37              		.loc 2 2365 27 view .LVU2
+  38              	.LBB54:
 2366:./inc/core_cm7.h **** {
 2367:./inc/core_cm7.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
 2368:./inc/core_cm7.h ****     uint32_t ccsidr;
- 317              		.loc 2 2368 5 view .LVU100
+  39              		.loc 2 2368 5 view .LVU3
 2369:./inc/core_cm7.h ****     uint32_t sets;
- 318              		.loc 2 2369 5 view .LVU101
+  40              		.loc 2 2369 5 view .LVU4
 2370:./inc/core_cm7.h ****     uint32_t ways;
- 319              		.loc 2 2370 5 view .LVU102
+  41              		.loc 2 2370 5 view .LVU5
 2371:./inc/core_cm7.h **** 
 2372:./inc/core_cm7.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
- 320              		.loc 2 2372 5 view .LVU103
- 321              		.loc 2 2372 17 is_stmt 0 view .LVU104
- 322 0000 2348     		ldr	r0, .L17
- 323 0002 0023     		movs	r3, #0
- 324              	.LBE28:
- 325              	.LBE27:
- 367:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 326              		.loc 1 367 1 view .LVU105
- 327 0004 00B5     		push	{lr}
- 328              	.LCFI2:
- 329              		.cfi_def_cfa_offset 4
- 330              		.cfi_offset 14, -4
- 331              	.LBB41:
- 332              	.LBB39:
- 333              		.loc 2 2372 17 view .LVU106
- 334 0006 C0F88430 		str	r3, [r0, #132]
+  42              		.loc 2 2372 5 view .LVU6
+  43              		.loc 2 2372 17 is_stmt 0 view .LVU7
+  44 0000 4049     		ldr	r1, .L15
+  45 0002 0023     		movs	r3, #0
+  46              	.LBE54:
+  47              	.LBE53:
+ 169:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
+  48              		.loc 1 169 1 view .LVU8
+  49 0004 10B5     		push	{r4, lr}
+  50              	.LCFI0:
+  51              		.cfi_def_cfa_offset 8
+  52              		.cfi_offset 4, -8
+  53              		.cfi_offset 14, -4
+  54              	.LBB67:
+  55              	.LBB65:
+  56              		.loc 2 2372 17 view .LVU9
+  57 0006 C1F88430 		str	r3, [r1, #132]
 2373:./inc/core_cm7.h ****     __DSB();
- 335              		.loc 2 2373 5 is_stmt 1 view .LVU107
- 336              	.LBB29:
- 337              	.LBI29:
- 338              		.file 3 "./inc/cmsis_gcc.h"
+  58              		.loc 2 2373 5 is_stmt 1 view .LVU10
+  59              	.LBB55:
+  60              	.LBI55:
+  61              		.file 3 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -4092,356 +3548,674 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
- 339              		.loc 3 944 27 view .LVU108
- 340              	.LBB30:
+  62              		.loc 3 944 27 view .LVU11
+  63              	.LBB56:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 341              		.loc 3 946 3 view .LVU109
- 342              	.LBE30:
- 343              	.LBE29:
- 344              	.LBE39:
- 345              	.LBE41:
- 367:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 346              		.loc 1 367 1 is_stmt 0 view .LVU110
- 347 000a 8BB0     		sub	sp, sp, #44
- 348              	.LCFI3:
- 349              		.cfi_def_cfa_offset 48
- 350              	.LBB42:
- 351              	.LBB40:
- 352              	.LBB32:
- 353              	.LBB31:
- 354              		.loc 3 946 3 view .LVU111
- 355              		.syntax unified
- 356              	@ 946 "./inc/cmsis_gcc.h" 1
- 357 000c BFF34F8F 		dsb 0xF
- 358              	@ 0 "" 2
- 359              		.thumb
- 360              		.syntax unified
- 361              	.LBE31:
- 362              	.LBE32:
+  64              		.loc 3 946 3 view .LVU12
+  65              	.LBE56:
+  66              	.LBE55:
+  67              	.LBE65:
+  68              	.LBE67:
+ 169:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
+  69              		.loc 1 169 1 is_stmt 0 view .LVU13
+  70 000a 82B0     		sub	sp, sp, #8
+  71              	.LCFI1:
+  72              		.cfi_def_cfa_offset 16
+  73              	.LBB68:
+  74              	.LBB66:
+  75              	.LBB58:
+  76              	.LBB57:
+  77              		.loc 3 946 3 view .LVU14
+  78              		.syntax unified
+  79              	@ 946 "./inc/cmsis_gcc.h" 1
+  80 000c BFF34F8F 		dsb 0xF
+  81              	@ 0 "" 2
+  82              		.thumb
+  83              		.syntax unified
+  84              	.LBE57:
+  85              	.LBE58:
 2374:./inc/core_cm7.h **** 
 2375:./inc/core_cm7.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  /* disable D-Cache */
- 363              		.loc 2 2375 5 is_stmt 1 view .LVU112
- 364              		.loc 2 2375 14 is_stmt 0 view .LVU113
- 365 0010 4369     		ldr	r3, [r0, #20]
- 366 0012 23F48033 		bic	r3, r3, #65536
- 367 0016 4361     		str	r3, [r0, #20]
+  86              		.loc 2 2375 5 is_stmt 1 view .LVU15
+  87              		.loc 2 2375 14 is_stmt 0 view .LVU16
+  88 0010 4B69     		ldr	r3, [r1, #20]
+  89 0012 23F48033 		bic	r3, r3, #65536
+  90 0016 4B61     		str	r3, [r1, #20]
 2376:./inc/core_cm7.h ****     __DSB();
- 368              		.loc 2 2376 5 is_stmt 1 view .LVU114
- 369              	.LBB33:
- 370              	.LBI33:
+  91              		.loc 2 2376 5 is_stmt 1 view .LVU17
+  92              	.LBB59:
+  93              	.LBI59:
  944:./inc/cmsis_gcc.h **** {
- 371              		.loc 3 944 27 view .LVU115
- 372              	.LBB34:
- 373              		.loc 3 946 3 view .LVU116
- 374              		.syntax unified
- 375              	@ 946 "./inc/cmsis_gcc.h" 1
- 376 0018 BFF34F8F 		dsb 0xF
- 377              	@ 0 "" 2
- 378              		.thumb
- 379              		.syntax unified
- 380              	.LBE34:
- 381              	.LBE33:
+  94              		.loc 3 944 27 view .LVU18
+  95              	.LBB60:
+  96              		.loc 3 946 3 view .LVU19
+  97              		.syntax unified
+  98              	@ 946 "./inc/cmsis_gcc.h" 1
+  99 0018 BFF34F8F 		dsb 0xF
+ 100              	@ 0 "" 2
+ 101              		.thumb
+ 102              		.syntax unified
+ 103              	.LBE60:
+ 104              	.LBE59:
 2377:./inc/core_cm7.h **** 
 2378:./inc/core_cm7.h ****     ccsidr = SCB->CCSIDR;
- 382              		.loc 2 2378 5 view .LVU117
- 383              		.loc 2 2378 12 is_stmt 0 view .LVU118
- 384 001c D0F88030 		ldr	r3, [r0, #128]
- 385              	.LVL25:
+ 105              		.loc 2 2378 5 view .LVU20
+ 106              		.loc 2 2378 12 is_stmt 0 view .LVU21
+ 107 001c D1F88030 		ldr	r3, [r1, #128]
+ 108              	.LVL0:
 2379:./inc/core_cm7.h **** 
 2380:./inc/core_cm7.h ****                                             /* clean & invalidate D-Cache */
 2381:./inc/core_cm7.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
- 386              		.loc 2 2381 5 is_stmt 1 view .LVU119
+ 109              		.loc 2 2381 5 is_stmt 1 view .LVU22
 2382:./inc/core_cm7.h ****     do {
 2383:./inc/core_cm7.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
 2384:./inc/core_cm7.h ****       do {
 2385:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 387              		.loc 2 2385 54 is_stmt 0 view .LVU120
- 388 0020 43F6E074 		movw	r4, #16352
+ 110              		.loc 2 2385 54 is_stmt 0 view .LVU23
+ 111 0020 43F6E07E 		movw	lr, #16352
 2381:./inc/core_cm7.h ****     do {
- 389              		.loc 2 2381 10 view .LVU121
- 390 0024 C3F34E3C 		ubfx	ip, r3, #13, #15
+ 112              		.loc 2 2381 10 view .LVU24
+ 113 0024 C3F34E30 		ubfx	r0, r3, #13, #15
 2383:./inc/core_cm7.h ****       do {
- 391              		.loc 2 2383 12 view .LVU122
- 392 0028 C3F3C90E 		ubfx	lr, r3, #3, #10
- 393 002c 4FEA4C1C 		lsl	ip, ip, #5
- 394              	.LVL26:
- 395              	.L12:
+ 114              		.loc 2 2383 12 view .LVU25
+ 115 0028 C3F3C90C 		ubfx	ip, r3, #3, #10
+ 116 002c 4001     		lsls	r0, r0, #5
+ 117              	.LVL1:
+ 118              	.L3:
 2382:./inc/core_cm7.h ****     do {
- 396              		.loc 2 2382 5 is_stmt 1 view .LVU123
+ 119              		.loc 2 2382 5 is_stmt 1 view .LVU26
 2383:./inc/core_cm7.h ****       do {
- 397              		.loc 2 2383 7 view .LVU124
- 398              		.loc 2 2385 54 is_stmt 0 view .LVU125
- 399 0030 0CEA0401 		and	r1, ip, r4
+ 120              		.loc 2 2383 7 view .LVU27
+ 121              		.loc 2 2385 54 is_stmt 0 view .LVU28
+ 122 002e 00EA0E02 		and	r2, r0, lr
 2383:./inc/core_cm7.h ****       do {
- 400              		.loc 2 2383 12 view .LVU126
- 401 0034 7346     		mov	r3, lr
- 402              	.L11:
- 403              	.LVL27:
+ 123              		.loc 2 2383 12 view .LVU29
+ 124 0032 6446     		mov	r4, ip
+ 125              	.L2:
+ 126              	.LVL2:
 2384:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 404              		.loc 2 2384 7 is_stmt 1 view .LVU127
- 405              		.loc 2 2385 9 view .LVU128
- 406              		.loc 2 2385 76 is_stmt 0 view .LVU129
- 407 0036 41EA8372 		orr	r2, r1, r3, lsl #30
+ 127              		.loc 2 2384 7 is_stmt 1 view .LVU30
+ 128              		.loc 2 2385 9 view .LVU31
+ 129              		.loc 2 2385 76 is_stmt 0 view .LVU32
+ 130 0034 42EA8473 		orr	r3, r2, r4, lsl #30
 2386:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
 2387:./inc/core_cm7.h ****         #if defined ( __CC_ARM )
 2388:./inc/core_cm7.h ****           __schedule_barrier();
 2389:./inc/core_cm7.h ****         #endif
 2390:./inc/core_cm7.h ****       } while (ways-- != 0U);
- 408              		.loc 2 2390 20 view .LVU130
- 409 003a 013B     		subs	r3, r3, #1
- 410              	.LVL28:
+ 131              		.loc 2 2390 20 view .LVU33
+ 132 0038 013C     		subs	r4, r4, #1
+ 133              	.LVL3:
 2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
- 411              		.loc 2 2385 21 view .LVU131
- 412 003c C0F87422 		str	r2, [r0, #628]
- 413              		.loc 2 2390 15 is_stmt 1 view .LVU132
- 414              	.LVL29:
- 415              		.loc 2 2390 7 is_stmt 0 view .LVU133
- 416 0040 5A1C     		adds	r2, r3, #1
- 417 0042 F8D1     		bne	.L11
+ 134              		.loc 2 2385 21 view .LVU34
+ 135 003a C1F87432 		str	r3, [r1, #628]
+ 136              		.loc 2 2390 15 is_stmt 1 view .LVU35
+ 137              	.LVL4:
+ 138              		.loc 2 2390 7 is_stmt 0 view .LVU36
+ 139 003e 631C     		adds	r3, r4, #1
+ 140 0040 F8D1     		bne	.L2
 2391:./inc/core_cm7.h ****     } while(sets-- != 0U);
- 418              		.loc 2 2391 12 is_stmt 1 view .LVU134
- 419              		.loc 2 2391 5 is_stmt 0 view .LVU135
- 420 0044 ACF1200C 		sub	ip, ip, #32
- 421 0048 1CF1200F 		cmn	ip, #32
- 422 004c F0D1     		bne	.L12
+ 141              		.loc 2 2391 12 is_stmt 1 view .LVU37
+ 142              		.loc 2 2391 5 is_stmt 0 view .LVU38
+ 143 0042 2038     		subs	r0, r0, #32
+ 144 0044 10F1200F 		cmn	r0, #32
+ 145 0048 F1D1     		bne	.L3
 2392:./inc/core_cm7.h **** 
 2393:./inc/core_cm7.h ****     __DSB();
- 423              		.loc 2 2393 5 is_stmt 1 view .LVU136
- 424              	.LBB35:
- 425              	.LBI35:
+ 146              		.loc 2 2393 5 is_stmt 1 view .LVU39
+ 147              	.LBB61:
+ 148              	.LBI61:
  944:./inc/cmsis_gcc.h **** {
- 426              		.loc 3 944 27 view .LVU137
- 427              	.LBB36:
- 428              		.loc 3 946 3 view .LVU138
- 429              		.syntax unified
- 430              	@ 946 "./inc/cmsis_gcc.h" 1
- 431 004e BFF34F8F 		dsb 0xF
- 432              	@ 0 "" 2
- 433              		.thumb
- 434              		.syntax unified
- 435              	.LBE36:
- 436              	.LBE35:
+ 149              		.loc 3 944 27 view .LVU40
+ 150              	.LBB62:
+ 151              		.loc 3 946 3 view .LVU41
+ 152              		.syntax unified
+ 153              	@ 946 "./inc/cmsis_gcc.h" 1
+ 154 004a BFF34F8F 		dsb 0xF
+ 155              	@ 0 "" 2
+ 156              		.thumb
+ 157              		.syntax unified
+ 158              	.LBE62:
+ 159              	.LBE61:
 2394:./inc/core_cm7.h ****     __ISB();
- 437              		.loc 2 2394 5 view .LVU139
- 438              	.LBB37:
- 439              	.LBI37:
+ 160              		.loc 2 2394 5 view .LVU42
+ 161              	.LBB63:
+ 162              	.LBI63:
  933:./inc/cmsis_gcc.h **** {
- 440              		.loc 3 933 27 view .LVU140
- 441              	.LBB38:
+ 163              		.loc 3 933 27 view .LVU43
+ 164              	.LBB64:
  935:./inc/cmsis_gcc.h **** }
- 442              		.loc 3 935 3 view .LVU141
- 443              		.syntax unified
- 444              	@ 935 "./inc/cmsis_gcc.h" 1
- 445 0052 BFF36F8F 		isb 0xF
- 446              	@ 0 "" 2
- 447              	.LVL30:
+ 165              		.loc 3 935 3 view .LVU44
+ 166              		.syntax unified
+ 167              	@ 935 "./inc/cmsis_gcc.h" 1
+ 168 004e BFF36F8F 		isb 0xF
+ 169              	@ 0 "" 2
+ 170              	.LVL5:
  935:./inc/cmsis_gcc.h **** }
- 448              		.loc 3 935 3 is_stmt 0 view .LVU142
- 449              		.thumb
- 450              		.syntax unified
- 451              	.LBE38:
- 452              	.LBE37:
- 453              	.LBE40:
- 454              	.LBE42:
- 371:./src/main.c  **** 
- 372:./src/main.c  **** 	// finalize initialization
- 373:./src/main.c  **** 	HW_Init();
- 455              		.loc 1 373 2 is_stmt 1 view .LVU143
- 456 0056 FFF7FEFF 		bl	HW_Init
- 457              	.LVL31:
- 374:./src/main.c  **** 	
- 375:./src/main.c  **** 	// initialize kernel
- 376:./src/main.c  **** 	osKernelInitialize();
- 458              		.loc 1 376 2 view .LVU144
- 459 005a FFF7FEFF 		bl	osKernelInitialize
- 460              	.LVL32:
- 461              	.LBB43:
- 377:./src/main.c  **** 	
- 378:./src/main.c  **** 	// create primary thread
- 379:./src/main.c  **** 	{
- 380:./src/main.c  **** 		osThreadAttr_t  attr;
- 462              		.loc 1 380 3 view .LVU145
- 381:./src/main.c  **** 
- 382:./src/main.c  **** 
- 383:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	//0
- 463              		.loc 1 383 3 view .LVU146
- 464 005e 2422     		movs	r2, #36
- 465 0060 0021     		movs	r1, #0
- 466 0062 01A8     		add	r0, sp, #4
- 467 0064 FFF7FEFF 		bl	memset
- 468              	.LVL33:
- 384:./src/main.c  **** 
- 385:./src/main.c  **** 		attr.stack_size = 2*1024;
- 469              		.loc 1 385 3 view .LVU147
- 470              		.loc 1 385 19 is_stmt 0 view .LVU148
- 471 0068 4FF40063 		mov	r3, #2048
- 386:./src/main.c  **** 
- 387:./src/main.c  **** 		osThreadNew ( thread_main, NULL, &attr);
- 472              		.loc 1 387 3 view .LVU149
- 473 006c 01AA     		add	r2, sp, #4
- 474 006e 0021     		movs	r1, #0
- 475 0070 0848     		ldr	r0, .L17+4
- 385:./src/main.c  **** 
- 476              		.loc 1 385 19 view .LVU150
- 477 0072 0693     		str	r3, [sp, #24]
- 478              		.loc 1 387 3 is_stmt 1 view .LVU151
- 479 0074 FFF7FEFF 		bl	osThreadNew
- 480              	.LVL34:
- 481              	.LBE43:
- 388:./src/main.c  **** 	}
- 389:./src/main.c  **** 	
- 390:./src/main.c  **** 	// create a timer
- 391:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
- 482              		.loc 1 391 2 view .LVU152
- 483              		.loc 1 391 26 is_stmt 0 view .LVU153
- 484 0078 0023     		movs	r3, #0
- 485 007a 0121     		movs	r1, #1
- 486 007c 0648     		ldr	r0, .L17+8
- 487 007e 1A46     		mov	r2, r3
- 488 0080 FFF7FEFF 		bl	osTimerNew
- 489              	.LVL35:
- 490              		.loc 1 391 24 view .LVU154
- 491 0084 054B     		ldr	r3, .L17+12
- 492 0086 1860     		str	r0, [r3]
- 392:./src/main.c  **** 	
- 393:./src/main.c  **** 	// start thread execution
- 394:./src/main.c  **** 	osKernelStart();
- 493              		.loc 1 394 2 is_stmt 1 view .LVU155
- 494 0088 FFF7FEFF 		bl	osKernelStart
- 495              	.LVL36:
- 496              	.L13:
- 395:./src/main.c  **** 	
- 396:./src/main.c  **** 	// should not reach this point !
- 397:./src/main.c  **** 	while(1)
- 497              		.loc 1 397 2 discriminator 1 view .LVU156
- 398:./src/main.c  **** 	 {}
- 498              		.loc 1 398 4 discriminator 1 view .LVU157
- 397:./src/main.c  **** 	 {}
- 499              		.loc 1 397 7 discriminator 1 view .LVU158
- 397:./src/main.c  **** 	 {}
- 500              		.loc 1 397 2 discriminator 1 view .LVU159
- 501              		.loc 1 398 4 discriminator 1 view .LVU160
- 397:./src/main.c  **** 	 {}
- 502              		.loc 1 397 7 discriminator 1 view .LVU161
- 503 008c FEE7     		b	.L13
- 504              	.L18:
- 505 008e 00BF     		.align	2
- 506              	.L17:
- 507 0090 00ED00E0 		.word	-536810240
- 508 0094 00000000 		.word	thread_main
- 509 0098 00000000 		.word	thread_milli_timer
- 510 009c 00000000 		.word	.LANCHOR0
- 511              		.cfi_endproc
- 512              	.LFE172:
- 514              		.global	lastGreetingTick_CAN2
- 515              		.global	GATEWAY_ADDRESS
- 516              		.global	NETMASK_ADDRESS
- 517              		.global	IP_ADDRESS
- 518              		.global	gw
- 519              		.global	netmask
- 520              		.global	ipaddr
- 521              		.global	gnetif
- 522              		.global	Ident
- 523              		.section	.rodata
- 524              		.align	2
- 527              	Ident:
- 528 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
- 528      2D526F75 
- 528      7465725F 
- 528      50726F5F 
- 528      464400
- 529              		.bss
- 530              		.align	2
- 531              		.set	.LANCHOR0,. + 0
- 534              	thread_milli_timer_id:
- 535 0000 00000000 		.space	4
- 538              	IP_ADDRESS:
- 539 0004 00000000 		.space	4
- 542              	NETMASK_ADDRESS:
- 543 0008 00000000 		.space	4
- 546              	GATEWAY_ADDRESS:
- 547 000c 00000000 		.space	4
- 550              	ipaddr:
- 551 0010 00000000 		.space	4
- 554              	netmask:
- 555 0014 00000000 		.space	4
- 558              	gw:
- 559 0018 00000000 		.space	4
- 562              	gnetif:
- 563 001c 00000000 		.space	52
- 563      00000000 
- 563      00000000 
- 563      00000000 
- 563      00000000 
- 566              	lastGreetingTick_CAN2:
- 567 0050 00000000 		.space	4
- 568              		.text
- 569              	.Letext0:
- 570              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 571              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 572              		.file 6 "./inc/can.h"
- 573              		.file 7 "./inc/cmsis_os2.h"
- 574              		.file 8 "./inc/stm32f765xx.h"
- 575              		.file 9 "./lwip-2.1.2/src/include/lwip/arch.h"
- 576              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
- 577              		.file 11 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 578              		.file 12 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 579              		.file 13 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 580              		.file 14 "./lwip-2.1.2/src/include/lwip/memp.h"
- 581              		.file 15 "./lwip-2.1.2/src/include/lwip/netif.h"
- 582              		.file 16 "./inc/hardware.h"
- 583              		.file 17 "./inc/can_user.h"
- 584              		.file 18 "./lwip-2.1.2/src/include/lwip/tcpip.h"
- 585              		.file 19 "./inc/startDebug.h"
- 586              		.file 20 "./inc/udp_total.h"
- 587              		.file 21 "./inc/stm32f7xx_hal.h"
- 588              		.file 22 "<built-in>"
+ 171              		.loc 3 935 3 is_stmt 0 view .LVU45
+ 172              		.thumb
+ 173              		.syntax unified
+ 174              	.LBE64:
+ 175              	.LBE63:
+ 176              	.LBE66:
+ 177              	.LBE68:
+ 173:./src/main.c  **** 
+ 174:./src/main.c  **** 	// finalize initialization
+ 175:./src/main.c  **** 	HW_Init();
+ 178              		.loc 1 175 2 is_stmt 1 view .LVU46
+ 179 0052 FFF7FEFF 		bl	HW_Init
+ 180              	.LVL6:
+ 176:./src/main.c  **** 	
+ 177:./src/main.c  **** 	uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 181              		.loc 1 177 2 view .LVU47
+ 182              		.loc 1 177 58 view .LVU48
+ 178:./src/main.c  **** 	volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
+ 183              		.loc 1 178 2 view .LVU49
+ 184              		.loc 1 178 35 is_stmt 0 view .LVU50
+ 185 0056 2C4B     		ldr	r3, .L15+4
+ 186 0058 1B68     		ldr	r3, [r3]
+ 187              		.loc 1 178 20 view .LVU51
+ 188 005a 0193     		str	r3, [sp, #4]
+ 179:./src/main.c  **** 
+ 180:./src/main.c  **** 	HAL_RCC_DeInit();
+ 189              		.loc 1 180 2 is_stmt 1 view .LVU52
+ 190 005c FFF7FEFF 		bl	HAL_RCC_DeInit
+ 191              	.LVL7:
+ 181:./src/main.c  **** 	//HAL_DeInit();
+ 182:./src/main.c  ****     __disable_irq();
+ 192              		.loc 1 182 5 view .LVU53
+ 193              	.LBB69:
+ 194              	.LBI69:
+ 207:./inc/cmsis_gcc.h **** {
+ 195              		.loc 3 207 27 view .LVU54
+ 196              	.LBB70:
+ 209:./inc/cmsis_gcc.h **** }
+ 197              		.loc 3 209 3 view .LVU55
+ 198              		.syntax unified
+ 199              	@ 209 "./inc/cmsis_gcc.h" 1
+ 200 0060 72B6     		cpsid i
+ 201              	@ 0 "" 2
+ 202              		.thumb
+ 203              		.syntax unified
+ 204              	.LBE70:
+ 205              	.LBE69:
+ 183:./src/main.c  ****     SysTick->CTRL = 0;
+ 206              		.loc 1 183 5 view .LVU56
+ 207              		.loc 1 183 19 is_stmt 0 view .LVU57
+ 208 0062 0022     		movs	r2, #0
+ 209 0064 4FF0E020 		mov	r0, #-536813568
+ 210 0068 2849     		ldr	r1, .L15+8
+ 211              	.LBB71:
+ 184:./src/main.c  ****     SysTick->LOAD = 0;
+ 185:./src/main.c  ****     SysTick->VAL  = 0;
+ 186:./src/main.c  ****     for (uint32_t i = 0; i < 8; i++)
+ 212              		.loc 1 186 19 view .LVU58
+ 213 006a 1346     		mov	r3, r2
+ 214              	.LBE71:
+ 183:./src/main.c  ****     SysTick->CTRL = 0;
+ 215              		.loc 1 183 19 view .LVU59
+ 216 006c 0261     		str	r2, [r0, #16]
+ 184:./src/main.c  ****     SysTick->LOAD = 0;
+ 217              		.loc 1 184 5 is_stmt 1 view .LVU60
+ 184:./src/main.c  ****     SysTick->LOAD = 0;
+ 218              		.loc 1 184 19 is_stmt 0 view .LVU61
+ 219 006e 4261     		str	r2, [r0, #20]
+ 185:./src/main.c  ****     for (uint32_t i = 0; i < 8; i++)
+ 220              		.loc 1 185 5 is_stmt 1 view .LVU62
+ 185:./src/main.c  ****     for (uint32_t i = 0; i < 8; i++)
+ 221              		.loc 1 185 19 is_stmt 0 view .LVU63
+ 222 0070 8261     		str	r2, [r0, #24]
+ 223              		.loc 1 186 5 is_stmt 1 view .LVU64
+ 224              	.LBB72:
+ 225              		.loc 1 186 10 view .LVU65
+ 226              	.LVL8:
+ 227              		.loc 1 186 26 view .LVU66
+ 228              	.L4:
+ 187:./src/main.c  ****     {
+ 188:./src/main.c  ****         NVIC->ICER[i] = 0xFFFFFFFF;
+ 229              		.loc 1 188 9 discriminator 3 view .LVU67
+ 230 0072 01EB8302 		add	r2, r1, r3, lsl #2
+ 186:./src/main.c  ****     {
+ 231              		.loc 1 186 34 is_stmt 0 discriminator 3 view .LVU68
+ 232 0076 0133     		adds	r3, r3, #1
+ 233              	.LVL9:
+ 186:./src/main.c  ****     {
+ 234              		.loc 1 186 5 discriminator 3 view .LVU69
+ 235 0078 082B     		cmp	r3, #8
+ 236              		.loc 1 188 23 discriminator 3 view .LVU70
+ 237 007a C2F88040 		str	r4, [r2, #128]
+ 189:./src/main.c  ****         NVIC->ICPR[i] = 0xFFFFFFFF;
+ 238              		.loc 1 189 9 is_stmt 1 discriminator 3 view .LVU71
+ 239              		.loc 1 189 23 is_stmt 0 discriminator 3 view .LVU72
+ 240 007e C2F88041 		str	r4, [r2, #384]
+ 186:./src/main.c  ****     {
+ 241              		.loc 1 186 33 is_stmt 1 discriminator 3 view .LVU73
+ 242              	.LVL10:
+ 186:./src/main.c  ****     {
+ 243              		.loc 1 186 26 discriminator 3 view .LVU74
+ 186:./src/main.c  ****     {
+ 244              		.loc 1 186 5 is_stmt 0 discriminator 3 view .LVU75
+ 245 0082 F6D1     		bne	.L4
+ 246              	.LBE72:
+ 190:./src/main.c  ****     }
+ 191:./src/main.c  **** 	SCB_DisableICache();
+ 247              		.loc 1 191 2 is_stmt 1 view .LVU76
+ 248              	.LBB73:
+ 249              	.LBI73:
+2262:./inc/core_cm7.h **** {
+ 250              		.loc 2 2262 27 view .LVU77
+ 251              	.LBB74:
+2265:./inc/core_cm7.h ****     __ISB();
+ 252              		.loc 2 2265 5 view .LVU78
+ 253              	.LBB75:
+ 254              	.LBI75:
+ 944:./inc/cmsis_gcc.h **** {
+ 255              		.loc 3 944 27 view .LVU79
+ 256              	.LBB76:
+ 257              		.loc 3 946 3 view .LVU80
+ 258              		.syntax unified
+ 259              	@ 946 "./inc/cmsis_gcc.h" 1
+ 260 0084 BFF34F8F 		dsb 0xF
+ 261              	@ 0 "" 2
+ 262              		.thumb
+ 263              		.syntax unified
+ 264              	.LBE76:
+ 265              	.LBE75:
+2266:./inc/core_cm7.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_IC_Msk;  /* disable I-Cache */
+ 266              		.loc 2 2266 5 view .LVU81
+ 267              	.LBB77:
+ 268              	.LBI77:
+ 933:./inc/cmsis_gcc.h **** {
+ 269              		.loc 3 933 27 view .LVU82
+ 270              	.LBB78:
+ 935:./inc/cmsis_gcc.h **** }
+ 271              		.loc 3 935 3 view .LVU83
+ 272              		.syntax unified
+ 273              	@ 935 "./inc/cmsis_gcc.h" 1
+ 274 0088 BFF36F8F 		isb 0xF
+ 275              	@ 0 "" 2
+ 276              		.thumb
+ 277              		.syntax unified
+ 278              	.LBE78:
+ 279              	.LBE77:
+2267:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+ 280              		.loc 2 2267 5 view .LVU84
+2267:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+ 281              		.loc 2 2267 14 is_stmt 0 view .LVU85
+ 282 008c 1D48     		ldr	r0, .L15
+2268:./inc/core_cm7.h ****     __DSB();
+ 283              		.loc 2 2268 18 view .LVU86
+ 284 008e 0022     		movs	r2, #0
+2267:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+ 285              		.loc 2 2267 14 view .LVU87
+ 286 0090 4369     		ldr	r3, [r0, #20]
+ 287              	.LVL11:
+2267:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+ 288              		.loc 2 2267 14 view .LVU88
+ 289 0092 23F40033 		bic	r3, r3, #131072
+ 290 0096 4361     		str	r3, [r0, #20]
+2268:./inc/core_cm7.h ****     __DSB();
+ 291              		.loc 2 2268 5 is_stmt 1 view .LVU89
+2268:./inc/core_cm7.h ****     __DSB();
+ 292              		.loc 2 2268 18 is_stmt 0 view .LVU90
+ 293 0098 C0F85022 		str	r2, [r0, #592]
+2269:./inc/core_cm7.h ****     __ISB();
+ 294              		.loc 2 2269 5 is_stmt 1 view .LVU91
+ 295              	.LBB79:
+ 296              	.LBI79:
+ 944:./inc/cmsis_gcc.h **** {
+ 297              		.loc 3 944 27 view .LVU92
+ 298              	.LBB80:
+ 299              		.loc 3 946 3 view .LVU93
+ 300              		.syntax unified
+ 301              	@ 946 "./inc/cmsis_gcc.h" 1
+ 302 009c BFF34F8F 		dsb 0xF
+ 303              	@ 0 "" 2
+ 304              		.thumb
+ 305              		.syntax unified
+ 306              	.LBE80:
+ 307              	.LBE79:
+2270:./inc/core_cm7.h ****   #endif
+ 308              		.loc 2 2270 5 view .LVU94
+ 309              	.LBB81:
+ 310              	.LBI81:
+ 933:./inc/cmsis_gcc.h **** {
+ 311              		.loc 3 933 27 view .LVU95
+ 312              	.LBB82:
+ 935:./inc/cmsis_gcc.h **** }
+ 313              		.loc 3 935 3 view .LVU96
+ 314              		.syntax unified
+ 315              	@ 935 "./inc/cmsis_gcc.h" 1
+ 316 00a0 BFF36F8F 		isb 0xF
+ 317              	@ 0 "" 2
+ 318              		.thumb
+ 319              		.syntax unified
+ 320              	.LBE82:
+ 321              	.LBE81:
+ 322              	.LBE74:
+ 323              	.LBE73:
+ 192:./src/main.c  **** 	SCB_DisableDCache();
+ 324              		.loc 1 192 2 view .LVU97
+ 325              	.LBB83:
+ 326              	.LBI83:
+2365:./inc/core_cm7.h **** {
+ 327              		.loc 2 2365 27 view .LVU98
+ 328              	.LBB84:
+2368:./inc/core_cm7.h ****     uint32_t sets;
+ 329              		.loc 2 2368 5 view .LVU99
+2369:./inc/core_cm7.h ****     uint32_t ways;
+ 330              		.loc 2 2369 5 view .LVU100
+2370:./inc/core_cm7.h **** 
+ 331              		.loc 2 2370 5 view .LVU101
+2372:./inc/core_cm7.h ****     __DSB();
+ 332              		.loc 2 2372 5 view .LVU102
+2372:./inc/core_cm7.h ****     __DSB();
+ 333              		.loc 2 2372 17 is_stmt 0 view .LVU103
+ 334 00a4 C0F88420 		str	r2, [r0, #132]
+2373:./inc/core_cm7.h **** 
+ 335              		.loc 2 2373 5 is_stmt 1 view .LVU104
+ 336              	.LBB85:
+ 337              	.LBI85:
+ 944:./inc/cmsis_gcc.h **** {
+ 338              		.loc 3 944 27 view .LVU105
+ 339              	.LBB86:
+ 340              		.loc 3 946 3 view .LVU106
+ 341              		.syntax unified
+ 342              	@ 946 "./inc/cmsis_gcc.h" 1
+ 343 00a8 BFF34F8F 		dsb 0xF
+ 344              	@ 0 "" 2
+ 345              		.thumb
+ 346              		.syntax unified
+ 347              	.LBE86:
+ 348              	.LBE85:
+2375:./inc/core_cm7.h ****     __DSB();
+ 349              		.loc 2 2375 5 view .LVU107
+2375:./inc/core_cm7.h ****     __DSB();
+ 350              		.loc 2 2375 14 is_stmt 0 view .LVU108
+ 351 00ac 4369     		ldr	r3, [r0, #20]
+ 352 00ae 23F48033 		bic	r3, r3, #65536
+ 353 00b2 4361     		str	r3, [r0, #20]
+2376:./inc/core_cm7.h **** 
+ 354              		.loc 2 2376 5 is_stmt 1 view .LVU109
+ 355              	.LBB87:
+ 356              	.LBI87:
+ 944:./inc/cmsis_gcc.h **** {
+ 357              		.loc 3 944 27 view .LVU110
+ 358              	.LBB88:
+ 359              		.loc 3 946 3 view .LVU111
+ 360              		.syntax unified
+ 361              	@ 946 "./inc/cmsis_gcc.h" 1
+ 362 00b4 BFF34F8F 		dsb 0xF
+ 363              	@ 0 "" 2
+ 364              		.thumb
+ 365              		.syntax unified
+ 366              	.LBE88:
+ 367              	.LBE87:
+2378:./inc/core_cm7.h **** 
+ 368              		.loc 2 2378 5 view .LVU112
+2378:./inc/core_cm7.h **** 
+ 369              		.loc 2 2378 12 is_stmt 0 view .LVU113
+ 370 00b8 D0F88030 		ldr	r3, [r0, #128]
+ 371              	.LVL12:
+2381:./inc/core_cm7.h ****     do {
+ 372              		.loc 2 2381 5 is_stmt 1 view .LVU114
+2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 373              		.loc 2 2385 54 is_stmt 0 view .LVU115
+ 374 00bc 43F6E07E 		movw	lr, #16352
+2381:./inc/core_cm7.h ****     do {
+ 375              		.loc 2 2381 10 view .LVU116
+ 376 00c0 C3F34E34 		ubfx	r4, r3, #13, #15
+2383:./inc/core_cm7.h ****       do {
+ 377              		.loc 2 2383 12 view .LVU117
+ 378 00c4 C3F3C90C 		ubfx	ip, r3, #3, #10
+ 379 00c8 6401     		lsls	r4, r4, #5
+ 380              	.LVL13:
+ 381              	.L6:
+2382:./inc/core_cm7.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
+ 382              		.loc 2 2382 5 is_stmt 1 view .LVU118
+2383:./inc/core_cm7.h ****       do {
+ 383              		.loc 2 2383 7 view .LVU119
+2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 384              		.loc 2 2385 54 is_stmt 0 view .LVU120
+ 385 00ca 04EA0E01 		and	r1, r4, lr
+2383:./inc/core_cm7.h ****       do {
+ 386              		.loc 2 2383 12 view .LVU121
+ 387 00ce 6346     		mov	r3, ip
+ 388              	.L5:
+ 389              	.LVL14:
+2384:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
+ 390              		.loc 2 2384 7 is_stmt 1 view .LVU122
+2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 391              		.loc 2 2385 9 view .LVU123
+2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 392              		.loc 2 2385 76 is_stmt 0 view .LVU124
+ 393 00d0 41EA8372 		orr	r2, r1, r3, lsl #30
+2390:./inc/core_cm7.h ****     } while(sets-- != 0U);
+ 394              		.loc 2 2390 20 view .LVU125
+ 395 00d4 013B     		subs	r3, r3, #1
+ 396              	.LVL15:
+2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 397              		.loc 2 2385 21 view .LVU126
+ 398 00d6 C0F87422 		str	r2, [r0, #628]
+2390:./inc/core_cm7.h ****     } while(sets-- != 0U);
+ 399              		.loc 2 2390 15 is_stmt 1 view .LVU127
+ 400              	.LVL16:
+2390:./inc/core_cm7.h ****     } while(sets-- != 0U);
+ 401              		.loc 2 2390 7 is_stmt 0 view .LVU128
+ 402 00da 5A1C     		adds	r2, r3, #1
+ 403 00dc F8D1     		bne	.L5
+2391:./inc/core_cm7.h **** 
+ 404              		.loc 2 2391 12 is_stmt 1 view .LVU129
+2391:./inc/core_cm7.h **** 
+ 405              		.loc 2 2391 5 is_stmt 0 view .LVU130
+ 406 00de 203C     		subs	r4, r4, #32
+ 407 00e0 14F1200F 		cmn	r4, #32
+ 408 00e4 F1D1     		bne	.L6
+2393:./inc/core_cm7.h ****     __ISB();
+ 409              		.loc 2 2393 5 is_stmt 1 view .LVU131
+ 410              	.LBB89:
+ 411              	.LBI89:
+ 944:./inc/cmsis_gcc.h **** {
+ 412              		.loc 3 944 27 view .LVU132
+ 413              	.LBB90:
+ 414              		.loc 3 946 3 view .LVU133
+ 415              		.syntax unified
+ 416              	@ 946 "./inc/cmsis_gcc.h" 1
+ 417 00e6 BFF34F8F 		dsb 0xF
+ 418              	@ 0 "" 2
+ 419              		.thumb
+ 420              		.syntax unified
+ 421              	.LBE90:
+ 422              	.LBE89:
+ 423              		.loc 2 2394 5 view .LVU134
+ 424              	.LBB91:
+ 425              	.LBI91:
+ 933:./inc/cmsis_gcc.h **** {
+ 426              		.loc 3 933 27 view .LVU135
+ 427              	.LBB92:
+ 935:./inc/cmsis_gcc.h **** }
+ 428              		.loc 3 935 3 view .LVU136
+ 429              		.syntax unified
+ 430              	@ 935 "./inc/cmsis_gcc.h" 1
+ 431 00ea BFF36F8F 		isb 0xF
+ 432              	@ 0 "" 2
+ 433              	.LVL17:
+ 935:./inc/cmsis_gcc.h **** }
+ 434              		.loc 3 935 3 is_stmt 0 view .LVU137
+ 435              		.thumb
+ 436              		.syntax unified
+ 437              	.LBE92:
+ 438              	.LBE91:
+ 439              	.LBE84:
+ 440              	.LBE83:
+ 193:./src/main.c  **** 	JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
+ 441              		.loc 1 193 2 is_stmt 1 view .LVU138
+ 442              		.loc 1 193 16 is_stmt 0 view .LVU139
+ 443 00ee 064A     		ldr	r2, .L15+4
+ 444              		.loc 1 193 14 view .LVU140
+ 445 00f0 0749     		ldr	r1, .L15+12
+ 446              		.loc 1 193 16 view .LVU141
+ 447 00f2 5368     		ldr	r3, [r2, #4]
+ 194:./src/main.c  ****     JumpToApplication = (pFunction) JumpAddress;
+ 448              		.loc 1 194 23 view .LVU142
+ 449 00f4 C1E90033 		strd	r3, r3, [r1]
+ 195:./src/main.c  **** 
+ 196:./src/main.c  **** 
+ 197:./src/main.c  ****     /* Initialize user application's Stack Pointer */
+ 198:./src/main.c  ****     __set_MSP(*(__IO uint32_t*) isr_vector_addr);
+ 450              		.loc 1 198 5 is_stmt 1 view .LVU143
+ 451 00f8 1168     		ldr	r1, [r2]
+ 452              	.LVL18:
+ 453              	.LBB93:
+ 454              	.LBI93:
+ 398:./inc/cmsis_gcc.h **** {
+ 455              		.loc 3 398 27 view .LVU144
+ 456              	.LBB94:
+ 400:./inc/cmsis_gcc.h **** }
+ 457              		.loc 3 400 3 view .LVU145
+ 458              		.syntax unified
+ 459              	@ 400 "./inc/cmsis_gcc.h" 1
+ 460 00fa 81F30888 		MSR msp, r1
+ 461              	@ 0 "" 2
+ 462              	.LVL19:
+ 400:./inc/cmsis_gcc.h **** }
+ 463              		.loc 3 400 3 is_stmt 0 view .LVU146
+ 464              		.thumb
+ 465              		.syntax unified
+ 466              	.LBE94:
+ 467              	.LBE93:
+ 199:./src/main.c  **** 	SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
+ 468              		.loc 1 199 2 is_stmt 1 view .LVU147
+ 469              		.loc 1 199 12 is_stmt 0 view .LVU148
+ 470 00fe 8260     		str	r2, [r0, #8]
+ 471              		.loc 1 199 43 is_stmt 1 view .LVU149
+ 200:./src/main.c  ****     JumpToApplication();
+ 472              		.loc 1 200 5 view .LVU150
+ 473 0100 9847     		blx	r3
+ 474              	.LVL20:
+ 475              	.L7:
+ 201:./src/main.c  **** 
+ 202:./src/main.c  **** 	// initialize kernel
+ 203:./src/main.c  **** 	// osKernelInitialize();
+ 204:./src/main.c  **** 	
+ 205:./src/main.c  **** 	// // create primary thread
+ 206:./src/main.c  **** 	// {
+ 207:./src/main.c  **** 	// 	osThreadAttr_t  attr;
+ 208:./src/main.c  **** 
+ 209:./src/main.c  **** 
+ 210:./src/main.c  **** 	// 	memset ( &attr, 0, sizeof ( attr));	//0
+ 211:./src/main.c  **** 
+ 212:./src/main.c  **** 	// 	attr.stack_size = 2*1024;
+ 213:./src/main.c  **** 
+ 214:./src/main.c  **** 	// 	osThreadNew ( thread_main, NULL, &attr);
+ 215:./src/main.c  **** 	// }
+ 216:./src/main.c  **** 	
+ 217:./src/main.c  **** 	// // create a timer
+ 218:./src/main.c  **** 	// thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
+ 219:./src/main.c  **** 	
+ 220:./src/main.c  **** 	// // start thread execution
+ 221:./src/main.c  **** 	// osKernelStart();
+ 222:./src/main.c  **** 
+ 223:./src/main.c  **** 
+ 224:./src/main.c  **** 	
+ 225:./src/main.c  **** 	// should not reach this point !
+ 226:./src/main.c  **** 	while(1)
+ 476              		.loc 1 226 2 discriminator 1 view .LVU151
+ 227:./src/main.c  **** 	 {}
+ 477              		.loc 1 227 4 discriminator 1 view .LVU152
+ 226:./src/main.c  **** 	 {}
+ 478              		.loc 1 226 7 discriminator 1 view .LVU153
+ 226:./src/main.c  **** 	 {}
+ 479              		.loc 1 226 2 discriminator 1 view .LVU154
+ 480              		.loc 1 227 4 discriminator 1 view .LVU155
+ 226:./src/main.c  **** 	 {}
+ 481              		.loc 1 226 7 discriminator 1 view .LVU156
+ 482 0102 FEE7     		b	.L7
+ 483              	.L16:
+ 484              		.align	2
+ 485              	.L15:
+ 486 0104 00ED00E0 		.word	-536810240
+ 487 0108 00000408 		.word	134479872
+ 488 010c 00E100E0 		.word	-536813312
+ 489 0110 00000000 		.word	.LANCHOR0
+ 490              		.cfi_endproc
+ 491              	.LFE171:
+ 493              		.global	JumpAddress
+ 494              		.global	JumpToApplication
+ 495              		.global	GATEWAY_ADDRESS
+ 496              		.global	NETMASK_ADDRESS
+ 497              		.global	IP_ADDRESS
+ 498              		.global	gw
+ 499              		.global	netmask
+ 500              		.global	ipaddr
+ 501              		.global	gnetif
+ 502              		.global	Ident
+ 503              		.section	.rodata
+ 504              		.align	2
+ 507              	Ident:
+ 508 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
+ 508      2D526F75 
+ 508      7465725F 
+ 508      50726F5F 
+ 508      464400
+ 509              		.bss
+ 510              		.align	2
+ 511              		.set	.LANCHOR0,. + 0
+ 514              	JumpAddress:
+ 515 0000 00000000 		.space	4
+ 518              	JumpToApplication:
+ 519 0004 00000000 		.space	4
+ 522              	GATEWAY_ADDRESS:
+ 523 0008 00000000 		.space	4
+ 526              	NETMASK_ADDRESS:
+ 527 000c 00000000 		.space	4
+ 530              	IP_ADDRESS:
+ 531 0010 00000000 		.space	4
+ 534              	gw:
+ 535 0014 00000000 		.space	4
+ 538              	netmask:
+ 539 0018 00000000 		.space	4
+ 542              	ipaddr:
+ 543 001c 00000000 		.space	4
+ 546              	gnetif:
+ 547 0020 00000000 		.space	52
+ 547      00000000 
+ 547      00000000 
+ 547      00000000 
+ 547      00000000 
+ 548              		.text
+ 549              	.Letext0:
+ 550              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 551              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 552              		.file 6 "./inc/cmsis_os2.h"
+ 553              		.file 7 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 554              		.file 8 "./lwip-2.1.2/src/include/lwip/err.h"
+ 555              		.file 9 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 556              		.file 10 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 557              		.file 11 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 558              		.file 12 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 559              		.file 13 "./inc/hardware.h"
+ 560              		.file 14 "./inc/stm32f7xx_hal_rcc.h"
+ 561              		.file 15 "./lwip-2.1.2/src/include/lwip/memp.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:24     .text:00000000 thread_milli_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:47     .text:00000004 thread_main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:285    .text:00000118 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:296    .text.startup:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:304    .text.startup:00000000 main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:507    .text.startup:00000090 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:566    .bss:00000050 lastGreetingTick_CAN2
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:546    .bss:0000000c GATEWAY_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:542    .bss:00000008 NETMASK_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:538    .bss:00000004 IP_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:558    .bss:00000018 gw
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:554    .bss:00000014 netmask
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:550    .bss:00000010 ipaddr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:562    .bss:0000001c gnetif
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:527    .rodata:00000000 Ident
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:524    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:530    .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccBE2d1i.s:534    .bss:00000000 thread_milli_timer_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:17     .text.startup:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:26     .text.startup:00000000 main
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:486    .text.startup:00000104 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:514    .bss:00000000 JumpAddress
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:518    .bss:00000004 JumpToApplication
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:522    .bss:00000008 GATEWAY_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:526    .bss:0000000c NETMASK_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:530    .bss:00000010 IP_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:534    .bss:00000014 gw
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:538    .bss:00000018 netmask
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:542    .bss:0000001c ipaddr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:546    .bss:00000020 gnetif
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:507    .rodata:00000000 Ident
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:504    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccSCXsrb.s:510    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
-HAL_IncTick
-osTimerStart
-CAN_UserInit
-HW_SetLED
-osDelay
-tcpip_init
-netif_add
-netif_set_default
-netif_set_up
-startDebug
-CAN_Write
-task01_init
-task02_init
-UDP_task
-osThreadGetId
-osThreadSuspend
-netif_set_down
-tcpip_input
-ethernetif_init
 HW_Init
-osKernelInitialize
-memset
-osThreadNew
-osTimerNew
-osKernelStart
+HAL_RCC_DeInit

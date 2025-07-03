@@ -6,37 +6,24 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"tcpip.c"
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.bss
-  17              		.align	2
-  18              	tcpip_init_done:
-  19 0000 00000000 		.space	4
-  21              		.align	2
-  22              	tcpip_init_done_arg:
-  23 0004 00000000 		.space	4
-  25              		.align	2
-  26              	tcpip_mbox:
-  27 0008 00000000 		.space	4
-  29              		.global	lock_tcpip_core
-  30              		.align	2
-  33              	lock_tcpip_core:
-  34 000c 00000000 		.space	4
-  35              		.text
-  36              		.align	1
-  37              		.arch armv7e-m
-  38              		.syntax unified
-  39              		.thumb
-  40              		.thumb_func
-  41              		.fpu fpv5-d16
-  43              	tcpip_timeouts_mbox_fetch:
-  44              	.LFB169:
-  45              		.file 1 "./lwip-2.1.2/src/api/tcpip.c"
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.arch armv7e-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv5-d16
+  24              	pbuf_free_int:
+  25              	.LVL0:
+  26              	.LFB183:
+  27              		.file 1 "./lwip-2.1.2/src/api/tcpip.c"
    1:./lwip-2.1.2/src/api/tcpip.c **** /**
    2:./lwip-2.1.2/src/api/tcpip.c ****  * @file
    3:./lwip-2.1.2/src/api/tcpip.c ****  * Sequential API Main thread module
@@ -122,125 +109,34 @@
   83:./lwip-2.1.2/src/api/tcpip.c **** static void
   84:./lwip-2.1.2/src/api/tcpip.c **** tcpip_timeouts_mbox_fetch(sys_mbox_t *mbox, void **msg)
   85:./lwip-2.1.2/src/api/tcpip.c **** {
-  46              		.loc 1 85 1
-  47              		.cfi_startproc
-  48              		@ args = 0, pretend = 0, frame = 16
-  49              		@ frame_needed = 1, uses_anonymous_args = 0
-  50 0000 80B5     		push	{r7, lr}
-  51              	.LCFI0:
-  52              		.cfi_def_cfa_offset 8
-  53              		.cfi_offset 7, -8
-  54              		.cfi_offset 14, -4
-  55 0002 84B0     		sub	sp, sp, #16
-  56              	.LCFI1:
-  57              		.cfi_def_cfa_offset 24
-  58 0004 00AF     		add	r7, sp, #0
-  59              	.LCFI2:
-  60              		.cfi_def_cfa_register 7
-  61 0006 7860     		str	r0, [r7, #4]
-  62 0008 3960     		str	r1, [r7]
-  63              	.L2:
   86:./lwip-2.1.2/src/api/tcpip.c ****   u32_t sleeptime, res;
   87:./lwip-2.1.2/src/api/tcpip.c **** 
   88:./lwip-2.1.2/src/api/tcpip.c **** again:
   89:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT_CORE_LOCKED();
   90:./lwip-2.1.2/src/api/tcpip.c **** 
   91:./lwip-2.1.2/src/api/tcpip.c ****   sleeptime = sys_timeouts_sleeptime();
-  64              		.loc 1 91 15
-  65 000a FFF7FEFF 		bl	sys_timeouts_sleeptime
-  66 000e F860     		str	r0, [r7, #12]
   92:./lwip-2.1.2/src/api/tcpip.c ****   if (sleeptime == SYS_TIMEOUTS_SLEEPTIME_INFINITE) {
-  67              		.loc 1 92 6
-  68 0010 FB68     		ldr	r3, [r7, #12]
-  69 0012 B3F1FF3F 		cmp	r3, #-1
-  70 0016 0BD1     		bne	.L3
   93:./lwip-2.1.2/src/api/tcpip.c ****     UNLOCK_TCPIP_CORE();
-  71              		.loc 1 93 5
-  72 0018 1348     		ldr	r0, .L6
-  73 001a FFF7FEFF 		bl	sys_mutex_unlock
   94:./lwip-2.1.2/src/api/tcpip.c ****     sys_arch_mbox_fetch(mbox, msg, 0);
-  74              		.loc 1 94 5
-  75 001e 0022     		movs	r2, #0
-  76 0020 3968     		ldr	r1, [r7]
-  77 0022 7868     		ldr	r0, [r7, #4]
-  78 0024 FFF7FEFF 		bl	sys_arch_mbox_fetch
   95:./lwip-2.1.2/src/api/tcpip.c ****     LOCK_TCPIP_CORE();
-  79              		.loc 1 95 5
-  80 0028 0F48     		ldr	r0, .L6
-  81 002a FFF7FEFF 		bl	sys_mutex_lock
   96:./lwip-2.1.2/src/api/tcpip.c ****     return;
-  82              		.loc 1 96 5
-  83 002e 18E0     		b	.L1
-  84              	.L3:
   97:./lwip-2.1.2/src/api/tcpip.c ****   } else if (sleeptime == 0) {
-  85              		.loc 1 97 13
-  86 0030 FB68     		ldr	r3, [r7, #12]
-  87 0032 002B     		cmp	r3, #0
-  88 0034 02D1     		bne	.L5
   98:./lwip-2.1.2/src/api/tcpip.c ****     sys_check_timeouts();
-  89              		.loc 1 98 5
-  90 0036 FFF7FEFF 		bl	sys_check_timeouts
   99:./lwip-2.1.2/src/api/tcpip.c ****     /* We try again to fetch a message from the mbox. */
  100:./lwip-2.1.2/src/api/tcpip.c ****     goto again;
-  91              		.loc 1 100 5
-  92 003a E6E7     		b	.L2
-  93              	.L5:
  101:./lwip-2.1.2/src/api/tcpip.c ****   }
  102:./lwip-2.1.2/src/api/tcpip.c **** 
  103:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
-  94              		.loc 1 103 3
-  95 003c 0A48     		ldr	r0, .L6
-  96 003e FFF7FEFF 		bl	sys_mutex_unlock
  104:./lwip-2.1.2/src/api/tcpip.c ****   res = sys_arch_mbox_fetch(mbox, msg, sleeptime);
-  97              		.loc 1 104 9
-  98 0042 FA68     		ldr	r2, [r7, #12]
-  99 0044 3968     		ldr	r1, [r7]
- 100 0046 7868     		ldr	r0, [r7, #4]
- 101 0048 FFF7FEFF 		bl	sys_arch_mbox_fetch
- 102 004c B860     		str	r0, [r7, #8]
  105:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
- 103              		.loc 1 105 3
- 104 004e 0648     		ldr	r0, .L6
- 105 0050 FFF7FEFF 		bl	sys_mutex_lock
  106:./lwip-2.1.2/src/api/tcpip.c ****   if (res == SYS_ARCH_TIMEOUT) {
- 106              		.loc 1 106 6
- 107 0054 BB68     		ldr	r3, [r7, #8]
- 108 0056 B3F1FF3F 		cmp	r3, #-1
- 109 005a 02D1     		bne	.L1
  107:./lwip-2.1.2/src/api/tcpip.c ****     /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
  108:./lwip-2.1.2/src/api/tcpip.c ****        before a message could be fetched. */
  109:./lwip-2.1.2/src/api/tcpip.c ****     sys_check_timeouts();
- 110              		.loc 1 109 5
- 111 005c FFF7FEFF 		bl	sys_check_timeouts
  110:./lwip-2.1.2/src/api/tcpip.c ****     /* We try again to fetch a message from the mbox. */
  111:./lwip-2.1.2/src/api/tcpip.c ****     goto again;
- 112              		.loc 1 111 5
- 113 0060 D3E7     		b	.L2
- 114              	.L1:
  112:./lwip-2.1.2/src/api/tcpip.c ****   }
  113:./lwip-2.1.2/src/api/tcpip.c **** }
- 115              		.loc 1 113 1
- 116 0062 1037     		adds	r7, r7, #16
- 117              	.LCFI3:
- 118              		.cfi_def_cfa_offset 8
- 119 0064 BD46     		mov	sp, r7
- 120              	.LCFI4:
- 121              		.cfi_def_cfa_register 13
- 122              		@ sp needed
- 123 0066 80BD     		pop	{r7, pc}
- 124              	.L7:
- 125              		.align	2
- 126              	.L6:
- 127 0068 00000000 		.word	lock_tcpip_core
- 128              		.cfi_endproc
- 129              	.LFE169:
- 131              		.align	1
- 132              		.syntax unified
- 133              		.thumb
- 134              		.thumb_func
- 135              		.fpu fpv5-d16
- 137              	tcpip_thread:
- 138              	.LFB170:
  114:./lwip-2.1.2/src/api/tcpip.c **** #endif /* !LWIP_TIMERS */
  115:./lwip-2.1.2/src/api/tcpip.c **** 
  116:./lwip-2.1.2/src/api/tcpip.c **** /**
@@ -256,98 +152,26 @@
  126:./lwip-2.1.2/src/api/tcpip.c **** static void
  127:./lwip-2.1.2/src/api/tcpip.c **** tcpip_thread(void *arg)
  128:./lwip-2.1.2/src/api/tcpip.c **** {
- 139              		.loc 1 128 1
- 140              		.cfi_startproc
- 141              		@ args = 0, pretend = 0, frame = 16
- 142              		@ frame_needed = 1, uses_anonymous_args = 0
- 143 006c 80B5     		push	{r7, lr}
- 144              	.LCFI5:
- 145              		.cfi_def_cfa_offset 8
- 146              		.cfi_offset 7, -8
- 147              		.cfi_offset 14, -4
- 148 006e 84B0     		sub	sp, sp, #16
- 149              	.LCFI6:
- 150              		.cfi_def_cfa_offset 24
- 151 0070 00AF     		add	r7, sp, #0
- 152              	.LCFI7:
- 153              		.cfi_def_cfa_register 7
- 154 0072 7860     		str	r0, [r7, #4]
  129:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
  130:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_UNUSED_ARG(arg);
  131:./lwip-2.1.2/src/api/tcpip.c **** 
  132:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_MARK_TCPIP_THREAD();
  133:./lwip-2.1.2/src/api/tcpip.c **** 
  134:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
- 155              		.loc 1 134 3
- 156 0074 0E48     		ldr	r0, .L14
- 157 0076 FFF7FEFF 		bl	sys_mutex_lock
  135:./lwip-2.1.2/src/api/tcpip.c ****   if (tcpip_init_done != NULL) {
- 158              		.loc 1 135 23
- 159 007a 0E4B     		ldr	r3, .L14+4
- 160 007c 1B68     		ldr	r3, [r3]
- 161              		.loc 1 135 6
- 162 007e 002B     		cmp	r3, #0
- 163 0080 05D0     		beq	.L12
  136:./lwip-2.1.2/src/api/tcpip.c ****     tcpip_init_done(tcpip_init_done_arg);
- 164              		.loc 1 136 5
- 165 0082 0C4B     		ldr	r3, .L14+4
- 166 0084 1B68     		ldr	r3, [r3]
- 167 0086 0C4A     		ldr	r2, .L14+8
- 168 0088 1268     		ldr	r2, [r2]
- 169 008a 1046     		mov	r0, r2
- 170 008c 9847     		blx	r3
- 171              	.LVL0:
- 172              	.L12:
  137:./lwip-2.1.2/src/api/tcpip.c ****   }
  138:./lwip-2.1.2/src/api/tcpip.c **** 
  139:./lwip-2.1.2/src/api/tcpip.c ****   while (1) {                          /* MAIN Loop */
  140:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_TCPIP_THREAD_ALIVE();
  141:./lwip-2.1.2/src/api/tcpip.c ****     /* wait for a message, timeouts are processed while waiting */
  142:./lwip-2.1.2/src/api/tcpip.c ****     TCPIP_MBOX_FETCH(&tcpip_mbox, (void **)&msg);
- 173              		.loc 1 142 5
- 174 008e 07F10C03 		add	r3, r7, #12
- 175 0092 1946     		mov	r1, r3
- 176 0094 0948     		ldr	r0, .L14+12
- 177 0096 FFF7B3FF 		bl	tcpip_timeouts_mbox_fetch
  143:./lwip-2.1.2/src/api/tcpip.c ****     if (msg == NULL) {
- 178              		.loc 1 143 13
- 179 009a FB68     		ldr	r3, [r7, #12]
- 180              		.loc 1 143 8
- 181 009c 002B     		cmp	r3, #0
- 182 009e 04D0     		beq	.L13
  144:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
  145:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_ASSERT("tcpip_thread: invalid message", 0);
  146:./lwip-2.1.2/src/api/tcpip.c ****       continue;
  147:./lwip-2.1.2/src/api/tcpip.c ****     }
  148:./lwip-2.1.2/src/api/tcpip.c ****     tcpip_thread_handle_msg(msg);
- 183              		.loc 1 148 5
- 184 00a0 FB68     		ldr	r3, [r7, #12]
- 185 00a2 1846     		mov	r0, r3
- 186 00a4 00F00CF8 		bl	tcpip_thread_handle_msg
- 187 00a8 F1E7     		b	.L12
- 188              	.L13:
- 146:./lwip-2.1.2/src/api/tcpip.c ****     }
- 189              		.loc 1 146 7
- 190 00aa 00BF     		nop
- 142:./lwip-2.1.2/src/api/tcpip.c ****     if (msg == NULL) {
- 191              		.loc 1 142 5
- 192 00ac EFE7     		b	.L12
- 193              	.L15:
- 194 00ae 00BF     		.align	2
- 195              	.L14:
- 196 00b0 00000000 		.word	lock_tcpip_core
- 197 00b4 00000000 		.word	tcpip_init_done
- 198 00b8 04000000 		.word	tcpip_init_done_arg
- 199 00bc 08000000 		.word	tcpip_mbox
- 200              		.cfi_endproc
- 201              	.LFE170:
- 203              		.align	1
- 204              		.syntax unified
- 205              		.thumb
- 206              		.thumb_func
- 207              		.fpu fpv5-d16
- 209              	tcpip_thread_handle_msg:
- 210              	.LFB171:
  149:./lwip-2.1.2/src/api/tcpip.c ****   }
  150:./lwip-2.1.2/src/api/tcpip.c **** }
  151:./lwip-2.1.2/src/api/tcpip.c **** 
@@ -357,35 +181,7 @@
  155:./lwip-2.1.2/src/api/tcpip.c **** static void
  156:./lwip-2.1.2/src/api/tcpip.c **** tcpip_thread_handle_msg(struct tcpip_msg *msg)
  157:./lwip-2.1.2/src/api/tcpip.c **** {
- 211              		.loc 1 157 1
- 212              		.cfi_startproc
- 213              		@ args = 0, pretend = 0, frame = 8
- 214              		@ frame_needed = 1, uses_anonymous_args = 0
- 215 00c0 80B5     		push	{r7, lr}
- 216              	.LCFI8:
- 217              		.cfi_def_cfa_offset 8
- 218              		.cfi_offset 7, -8
- 219              		.cfi_offset 14, -4
- 220 00c2 82B0     		sub	sp, sp, #8
- 221              	.LCFI9:
- 222              		.cfi_def_cfa_offset 16
- 223 00c4 00AF     		add	r7, sp, #0
- 224              	.LCFI10:
- 225              		.cfi_def_cfa_register 7
- 226 00c6 7860     		str	r0, [r7, #4]
  158:./lwip-2.1.2/src/api/tcpip.c ****   switch (msg->type) {
- 227              		.loc 1 158 14
- 228 00c8 7B68     		ldr	r3, [r7, #4]
- 229 00ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 230              		.loc 1 158 3
- 231 00cc 022B     		cmp	r3, #2
- 232 00ce 26D0     		beq	.L17
- 233 00d0 022B     		cmp	r3, #2
- 234 00d2 2BDC     		bgt	.L23
- 235 00d4 002B     		cmp	r3, #0
- 236 00d6 02D0     		beq	.L19
- 237 00d8 012B     		cmp	r3, #1
- 238 00da 15D0     		beq	.L20
  159:./lwip-2.1.2/src/api/tcpip.c **** #if !LWIP_TCPIP_CORE_LOCKING
  160:./lwip-2.1.2/src/api/tcpip.c ****     case TCPIP_MSG_API:
  161:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: API message %p\n", (void *)msg));
@@ -436,103 +232,8 @@
  206:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: %d\n", msg->type));
  207:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_ASSERT("tcpip_thread: invalid message", 0);
  208:./lwip-2.1.2/src/api/tcpip.c ****       break;
- 239              		.loc 1 208 7
- 240 00dc 26E0     		b	.L23
- 241              	.L19:
- 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
- 242              		.loc 1 174 23
- 243 00de 7B68     		ldr	r3, [r7, #4]
- 244 00e0 DB68     		ldr	r3, [r3, #12]
- 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
- 245              		.loc 1 174 11
- 246 00e2 7A68     		ldr	r2, [r7, #4]
- 247 00e4 5068     		ldr	r0, [r2, #4]
- 248 00e6 7A68     		ldr	r2, [r7, #4]
- 249 00e8 9268     		ldr	r2, [r2, #8]
- 250 00ea 1146     		mov	r1, r2
- 251 00ec 9847     		blx	r3
- 252              	.LVL1:
- 253 00ee 0346     		mov	r3, r0
- 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
- 254              		.loc 1 174 10
- 255 00f0 002B     		cmp	r3, #0
- 256 00f2 04D0     		beq	.L21
- 175:./lwip-2.1.2/src/api/tcpip.c ****       }
- 257              		.loc 1 175 9
- 258 00f4 7B68     		ldr	r3, [r7, #4]
- 259 00f6 5B68     		ldr	r3, [r3, #4]
- 260 00f8 1846     		mov	r0, r3
- 261 00fa FFF7FEFF 		bl	pbuf_free
- 262              	.L21:
- 177:./lwip-2.1.2/src/api/tcpip.c ****       break;
- 263              		.loc 1 177 7
- 264 00fe 7968     		ldr	r1, [r7, #4]
- 265 0100 0920     		movs	r0, #9
- 266 0102 FFF7FEFF 		bl	memp_free
- 178:./lwip-2.1.2/src/api/tcpip.c **** #endif /* !LWIP_TCPIP_CORE_LOCKING_INPUT */
- 267              		.loc 1 178 7
- 268 0106 12E0     		b	.L22
- 269              	.L20:
- 196:./lwip-2.1.2/src/api/tcpip.c ****       memp_free(MEMP_TCPIP_MSG_API, msg);
- 270              		.loc 1 196 18
- 271 0108 7B68     		ldr	r3, [r7, #4]
- 272 010a 5B68     		ldr	r3, [r3, #4]
- 196:./lwip-2.1.2/src/api/tcpip.c ****       memp_free(MEMP_TCPIP_MSG_API, msg);
- 273              		.loc 1 196 7
- 274 010c 7A68     		ldr	r2, [r7, #4]
- 275 010e 9268     		ldr	r2, [r2, #8]
- 276 0110 1046     		mov	r0, r2
- 277 0112 9847     		blx	r3
- 278              	.LVL2:
- 197:./lwip-2.1.2/src/api/tcpip.c ****       break;
- 279              		.loc 1 197 7
- 280 0114 7968     		ldr	r1, [r7, #4]
- 281 0116 0820     		movs	r0, #8
- 282 0118 FFF7FEFF 		bl	memp_free
- 198:./lwip-2.1.2/src/api/tcpip.c **** 
- 283              		.loc 1 198 7
- 284 011c 07E0     		b	.L22
- 285              	.L17:
- 202:./lwip-2.1.2/src/api/tcpip.c ****       break;
- 286              		.loc 1 202 18
- 287 011e 7B68     		ldr	r3, [r7, #4]
- 288 0120 5B68     		ldr	r3, [r3, #4]
- 202:./lwip-2.1.2/src/api/tcpip.c ****       break;
- 289              		.loc 1 202 7
- 290 0122 7A68     		ldr	r2, [r7, #4]
- 291 0124 9268     		ldr	r2, [r2, #8]
- 292 0126 1046     		mov	r0, r2
- 293 0128 9847     		blx	r3
- 294              	.LVL3:
- 203:./lwip-2.1.2/src/api/tcpip.c **** 
- 295              		.loc 1 203 7
- 296 012a 00E0     		b	.L22
- 297              	.L23:
- 298              		.loc 1 208 7
- 299 012c 00BF     		nop
- 300              	.L22:
  209:./lwip-2.1.2/src/api/tcpip.c ****   }
  210:./lwip-2.1.2/src/api/tcpip.c **** }
- 301              		.loc 1 210 1
- 302 012e 00BF     		nop
- 303 0130 0837     		adds	r7, r7, #8
- 304              	.LCFI11:
- 305              		.cfi_def_cfa_offset 8
- 306 0132 BD46     		mov	sp, r7
- 307              	.LCFI12:
- 308              		.cfi_def_cfa_register 13
- 309              		@ sp needed
- 310 0134 80BD     		pop	{r7, pc}
- 311              		.cfi_endproc
- 312              	.LFE171:
- 314              		.align	1
- 315              		.global	tcpip_inpkt
- 316              		.syntax unified
- 317              		.thumb
- 318              		.thumb_func
- 319              		.fpu fpv5-d16
- 321              	tcpip_inpkt:
- 322              	.LFB172:
  211:./lwip-2.1.2/src/api/tcpip.c **** 
  212:./lwip-2.1.2/src/api/tcpip.c **** #ifdef TCPIP_THREAD_TEST
  213:./lwip-2.1.2/src/api/tcpip.c **** /** Work on queued items in single-threaded test mode */
@@ -564,24 +265,6 @@
  239:./lwip-2.1.2/src/api/tcpip.c **** err_t
  240:./lwip-2.1.2/src/api/tcpip.c **** tcpip_inpkt(struct pbuf *p, struct netif *inp, netif_input_fn input_fn)
  241:./lwip-2.1.2/src/api/tcpip.c **** {
- 323              		.loc 1 241 1
- 324              		.cfi_startproc
- 325              		@ args = 0, pretend = 0, frame = 24
- 326              		@ frame_needed = 1, uses_anonymous_args = 0
- 327 0136 80B5     		push	{r7, lr}
- 328              	.LCFI13:
- 329              		.cfi_def_cfa_offset 8
- 330              		.cfi_offset 7, -8
- 331              		.cfi_offset 14, -4
- 332 0138 86B0     		sub	sp, sp, #24
- 333              	.LCFI14:
- 334              		.cfi_def_cfa_offset 32
- 335 013a 00AF     		add	r7, sp, #0
- 336              	.LCFI15:
- 337              		.cfi_def_cfa_register 7
- 338 013c F860     		str	r0, [r7, #12]
- 339 013e B960     		str	r1, [r7, #8]
- 340 0140 7A60     		str	r2, [r7, #4]
  242:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING_INPUT
  243:./lwip-2.1.2/src/api/tcpip.c ****   err_t ret;
  244:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_inpkt: PACKET %p/%p\n", (void *)p, (void *)inp));
@@ -595,92 +278,21 @@
  252:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
  253:./lwip-2.1.2/src/api/tcpip.c **** 
  254:./lwip-2.1.2/src/api/tcpip.c ****   msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_INPKT);
- 341              		.loc 1 254 29
- 342 0142 0920     		movs	r0, #9
- 343 0144 FFF7FEFF 		bl	memp_malloc
- 344 0148 7861     		str	r0, [r7, #20]
  255:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
- 345              		.loc 1 255 6
- 346 014a 7B69     		ldr	r3, [r7, #20]
- 347 014c 002B     		cmp	r3, #0
- 348 014e 02D1     		bne	.L25
  256:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
- 349              		.loc 1 256 12
- 350 0150 4FF0FF33 		mov	r3, #-1
- 351 0154 1AE0     		b	.L26
- 352              	.L25:
  257:./lwip-2.1.2/src/api/tcpip.c ****   }
  258:./lwip-2.1.2/src/api/tcpip.c **** 
  259:./lwip-2.1.2/src/api/tcpip.c ****   msg->type = TCPIP_MSG_INPKT;
- 353              		.loc 1 259 13
- 354 0156 7B69     		ldr	r3, [r7, #20]
- 355 0158 0022     		movs	r2, #0
- 356 015a 1A70     		strb	r2, [r3]
  260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
- 357              		.loc 1 260 18
- 358 015c 7B69     		ldr	r3, [r7, #20]
- 359 015e FA68     		ldr	r2, [r7, #12]
- 360 0160 5A60     		str	r2, [r3, #4]
  261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
- 361              		.loc 1 261 22
- 362 0162 7B69     		ldr	r3, [r7, #20]
- 363 0164 BA68     		ldr	r2, [r7, #8]
- 364 0166 9A60     		str	r2, [r3, #8]
  262:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
- 365              		.loc 1 262 25
- 366 0168 7B69     		ldr	r3, [r7, #20]
- 367 016a 7A68     		ldr	r2, [r7, #4]
- 368 016c DA60     		str	r2, [r3, #12]
  263:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
- 369              		.loc 1 263 7
- 370 016e 7969     		ldr	r1, [r7, #20]
- 371 0170 0848     		ldr	r0, .L28
- 372 0172 FFF7FEFF 		bl	sys_mbox_trypost
- 373 0176 0346     		mov	r3, r0
- 374              		.loc 1 263 6
- 375 0178 002B     		cmp	r3, #0
- 376 017a 06D0     		beq	.L27
  264:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
- 377              		.loc 1 264 5
- 378 017c 7969     		ldr	r1, [r7, #20]
- 379 017e 0920     		movs	r0, #9
- 380 0180 FFF7FEFF 		bl	memp_free
  265:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
- 381              		.loc 1 265 12
- 382 0184 4FF0FF33 		mov	r3, #-1
- 383 0188 00E0     		b	.L26
- 384              	.L27:
  266:./lwip-2.1.2/src/api/tcpip.c ****   }
  267:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
- 385              		.loc 1 267 10
- 386 018a 0023     		movs	r3, #0
- 387              	.L26:
  268:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_TCPIP_CORE_LOCKING_INPUT */
  269:./lwip-2.1.2/src/api/tcpip.c **** }
- 388              		.loc 1 269 1
- 389 018c 1846     		mov	r0, r3
- 390 018e 1837     		adds	r7, r7, #24
- 391              	.LCFI16:
- 392              		.cfi_def_cfa_offset 8
- 393 0190 BD46     		mov	sp, r7
- 394              	.LCFI17:
- 395              		.cfi_def_cfa_register 13
- 396              		@ sp needed
- 397 0192 80BD     		pop	{r7, pc}
- 398              	.L29:
- 399              		.align	2
- 400              	.L28:
- 401 0194 08000000 		.word	tcpip_mbox
- 402              		.cfi_endproc
- 403              	.LFE172:
- 405              		.align	1
- 406              		.global	tcpip_input
- 407              		.syntax unified
- 408              		.thumb
- 409              		.thumb_func
- 410              		.fpu fpv5-d16
- 412              	tcpip_input:
- 413              	.LFB173:
  270:./lwip-2.1.2/src/api/tcpip.c **** 
  271:./lwip-2.1.2/src/api/tcpip.c **** /**
  272:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -696,78 +308,13 @@
  282:./lwip-2.1.2/src/api/tcpip.c **** err_t
  283:./lwip-2.1.2/src/api/tcpip.c **** tcpip_input(struct pbuf *p, struct netif *inp)
  284:./lwip-2.1.2/src/api/tcpip.c **** {
- 414              		.loc 1 284 1
- 415              		.cfi_startproc
- 416              		@ args = 0, pretend = 0, frame = 8
- 417              		@ frame_needed = 1, uses_anonymous_args = 0
- 418 0198 80B5     		push	{r7, lr}
- 419              	.LCFI18:
- 420              		.cfi_def_cfa_offset 8
- 421              		.cfi_offset 7, -8
- 422              		.cfi_offset 14, -4
- 423 019a 82B0     		sub	sp, sp, #8
- 424              	.LCFI19:
- 425              		.cfi_def_cfa_offset 16
- 426 019c 00AF     		add	r7, sp, #0
- 427              	.LCFI20:
- 428              		.cfi_def_cfa_register 7
- 429 019e 7860     		str	r0, [r7, #4]
- 430 01a0 3960     		str	r1, [r7]
  285:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_ETHERNET
  286:./lwip-2.1.2/src/api/tcpip.c ****   if (inp->flags & (NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET)) {
- 431              		.loc 1 286 10
- 432 01a2 3B68     		ldr	r3, [r7]
- 433 01a4 93F82D30 		ldrb	r3, [r3, #45]	@ zero_extendqisi2
- 434              		.loc 1 286 18
- 435 01a8 03F01803 		and	r3, r3, #24
- 436              		.loc 1 286 6
- 437 01ac 002B     		cmp	r3, #0
- 438 01ae 06D0     		beq	.L31
  287:./lwip-2.1.2/src/api/tcpip.c ****     return tcpip_inpkt(p, inp, ethernet_input);
- 439              		.loc 1 287 12
- 440 01b0 084A     		ldr	r2, .L33
- 441 01b2 3968     		ldr	r1, [r7]
- 442 01b4 7868     		ldr	r0, [r7, #4]
- 443 01b6 FFF7FEFF 		bl	tcpip_inpkt
- 444 01ba 0346     		mov	r3, r0
- 445 01bc 05E0     		b	.L32
- 446              	.L31:
  288:./lwip-2.1.2/src/api/tcpip.c ****   } else
  289:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_ETHERNET */
  290:./lwip-2.1.2/src/api/tcpip.c ****     return tcpip_inpkt(p, inp, ip_input);
- 447              		.loc 1 290 12
- 448 01be 064A     		ldr	r2, .L33+4
- 449 01c0 3968     		ldr	r1, [r7]
- 450 01c2 7868     		ldr	r0, [r7, #4]
- 451 01c4 FFF7FEFF 		bl	tcpip_inpkt
- 452 01c8 0346     		mov	r3, r0
- 453              	.L32:
  291:./lwip-2.1.2/src/api/tcpip.c **** }
- 454              		.loc 1 291 1
- 455 01ca 1846     		mov	r0, r3
- 456 01cc 0837     		adds	r7, r7, #8
- 457              	.LCFI21:
- 458              		.cfi_def_cfa_offset 8
- 459 01ce BD46     		mov	sp, r7
- 460              	.LCFI22:
- 461              		.cfi_def_cfa_register 13
- 462              		@ sp needed
- 463 01d0 80BD     		pop	{r7, pc}
- 464              	.L34:
- 465 01d2 00BF     		.align	2
- 466              	.L33:
- 467 01d4 00000000 		.word	ethernet_input
- 468 01d8 00000000 		.word	ip4_input
- 469              		.cfi_endproc
- 470              	.LFE173:
- 472              		.align	1
- 473              		.global	tcpip_callback
- 474              		.syntax unified
- 475              		.thumb
- 476              		.thumb_func
- 477              		.fpu fpv5-d16
- 479              	tcpip_callback:
- 480              	.LFB174:
  292:./lwip-2.1.2/src/api/tcpip.c **** 
  293:./lwip-2.1.2/src/api/tcpip.c **** /**
  294:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -787,94 +334,22 @@
  308:./lwip-2.1.2/src/api/tcpip.c **** err_t
  309:./lwip-2.1.2/src/api/tcpip.c **** tcpip_callback(tcpip_callback_fn function, void *ctx)
  310:./lwip-2.1.2/src/api/tcpip.c **** {
- 481              		.loc 1 310 1
- 482              		.cfi_startproc
- 483              		@ args = 0, pretend = 0, frame = 16
- 484              		@ frame_needed = 1, uses_anonymous_args = 0
- 485 01dc 80B5     		push	{r7, lr}
- 486              	.LCFI23:
- 487              		.cfi_def_cfa_offset 8
- 488              		.cfi_offset 7, -8
- 489              		.cfi_offset 14, -4
- 490 01de 84B0     		sub	sp, sp, #16
- 491              	.LCFI24:
- 492              		.cfi_def_cfa_offset 24
- 493 01e0 00AF     		add	r7, sp, #0
- 494              	.LCFI25:
- 495              		.cfi_def_cfa_register 7
- 496 01e2 7860     		str	r0, [r7, #4]
- 497 01e4 3960     		str	r1, [r7]
  311:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
  312:./lwip-2.1.2/src/api/tcpip.c **** 
  313:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
  314:./lwip-2.1.2/src/api/tcpip.c **** 
  315:./lwip-2.1.2/src/api/tcpip.c ****   msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
- 498              		.loc 1 315 29
- 499 01e6 0820     		movs	r0, #8
- 500 01e8 FFF7FEFF 		bl	memp_malloc
- 501 01ec F860     		str	r0, [r7, #12]
  316:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
- 502              		.loc 1 316 6
- 503 01ee FB68     		ldr	r3, [r7, #12]
- 504 01f0 002B     		cmp	r3, #0
- 505 01f2 02D1     		bne	.L36
  317:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
- 506              		.loc 1 317 12
- 507 01f4 4FF0FF33 		mov	r3, #-1
- 508 01f8 0DE0     		b	.L37
- 509              	.L36:
  318:./lwip-2.1.2/src/api/tcpip.c ****   }
  319:./lwip-2.1.2/src/api/tcpip.c **** 
  320:./lwip-2.1.2/src/api/tcpip.c ****   msg->type = TCPIP_MSG_CALLBACK;
- 510              		.loc 1 320 13
- 511 01fa FB68     		ldr	r3, [r7, #12]
- 512 01fc 0122     		movs	r2, #1
- 513 01fe 1A70     		strb	r2, [r3]
  321:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
- 514              		.loc 1 321 24
- 515 0200 FB68     		ldr	r3, [r7, #12]
- 516 0202 7A68     		ldr	r2, [r7, #4]
- 517 0204 5A60     		str	r2, [r3, #4]
  322:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
- 518              		.loc 1 322 19
- 519 0206 FB68     		ldr	r3, [r7, #12]
- 520 0208 3A68     		ldr	r2, [r7]
- 521 020a 9A60     		str	r2, [r3, #8]
  323:./lwip-2.1.2/src/api/tcpip.c **** 
  324:./lwip-2.1.2/src/api/tcpip.c ****   sys_mbox_post(&tcpip_mbox, msg);
- 522              		.loc 1 324 3
- 523 020c F968     		ldr	r1, [r7, #12]
- 524 020e 0448     		ldr	r0, .L38
- 525 0210 FFF7FEFF 		bl	sys_mbox_post
  325:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
- 526              		.loc 1 325 10
- 527 0214 0023     		movs	r3, #0
- 528              	.L37:
  326:./lwip-2.1.2/src/api/tcpip.c **** }
- 529              		.loc 1 326 1
- 530 0216 1846     		mov	r0, r3
- 531 0218 1037     		adds	r7, r7, #16
- 532              	.LCFI26:
- 533              		.cfi_def_cfa_offset 8
- 534 021a BD46     		mov	sp, r7
- 535              	.LCFI27:
- 536              		.cfi_def_cfa_register 13
- 537              		@ sp needed
- 538 021c 80BD     		pop	{r7, pc}
- 539              	.L39:
- 540 021e 00BF     		.align	2
- 541              	.L38:
- 542 0220 08000000 		.word	tcpip_mbox
- 543              		.cfi_endproc
- 544              	.LFE174:
- 546              		.align	1
- 547              		.global	tcpip_try_callback
- 548              		.syntax unified
- 549              		.thumb
- 550              		.thumb_func
- 551              		.fpu fpv5-d16
- 553              	tcpip_try_callback:
- 554              	.LFB175:
  327:./lwip-2.1.2/src/api/tcpip.c **** 
  328:./lwip-2.1.2/src/api/tcpip.c **** /**
  329:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -895,109 +370,25 @@
  344:./lwip-2.1.2/src/api/tcpip.c **** err_t
  345:./lwip-2.1.2/src/api/tcpip.c **** tcpip_try_callback(tcpip_callback_fn function, void *ctx)
  346:./lwip-2.1.2/src/api/tcpip.c **** {
- 555              		.loc 1 346 1
- 556              		.cfi_startproc
- 557              		@ args = 0, pretend = 0, frame = 16
- 558              		@ frame_needed = 1, uses_anonymous_args = 0
- 559 0224 80B5     		push	{r7, lr}
- 560              	.LCFI28:
- 561              		.cfi_def_cfa_offset 8
- 562              		.cfi_offset 7, -8
- 563              		.cfi_offset 14, -4
- 564 0226 84B0     		sub	sp, sp, #16
- 565              	.LCFI29:
- 566              		.cfi_def_cfa_offset 24
- 567 0228 00AF     		add	r7, sp, #0
- 568              	.LCFI30:
- 569              		.cfi_def_cfa_register 7
- 570 022a 7860     		str	r0, [r7, #4]
- 571 022c 3960     		str	r1, [r7]
  347:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
  348:./lwip-2.1.2/src/api/tcpip.c **** 
  349:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
  350:./lwip-2.1.2/src/api/tcpip.c **** 
  351:./lwip-2.1.2/src/api/tcpip.c ****   msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
- 572              		.loc 1 351 29
- 573 022e 0820     		movs	r0, #8
- 574 0230 FFF7FEFF 		bl	memp_malloc
- 575 0234 F860     		str	r0, [r7, #12]
  352:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
- 576              		.loc 1 352 6
- 577 0236 FB68     		ldr	r3, [r7, #12]
- 578 0238 002B     		cmp	r3, #0
- 579 023a 02D1     		bne	.L41
  353:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
- 580              		.loc 1 353 12
- 581 023c 4FF0FF33 		mov	r3, #-1
- 582 0240 17E0     		b	.L42
- 583              	.L41:
  354:./lwip-2.1.2/src/api/tcpip.c ****   }
  355:./lwip-2.1.2/src/api/tcpip.c **** 
  356:./lwip-2.1.2/src/api/tcpip.c ****   msg->type = TCPIP_MSG_CALLBACK;
- 584              		.loc 1 356 13
- 585 0242 FB68     		ldr	r3, [r7, #12]
- 586 0244 0122     		movs	r2, #1
- 587 0246 1A70     		strb	r2, [r3]
  357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
- 588              		.loc 1 357 24
- 589 0248 FB68     		ldr	r3, [r7, #12]
- 590 024a 7A68     		ldr	r2, [r7, #4]
- 591 024c 5A60     		str	r2, [r3, #4]
  358:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
- 592              		.loc 1 358 19
- 593 024e FB68     		ldr	r3, [r7, #12]
- 594 0250 3A68     		ldr	r2, [r7]
- 595 0252 9A60     		str	r2, [r3, #8]
  359:./lwip-2.1.2/src/api/tcpip.c **** 
  360:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
- 596              		.loc 1 360 7
- 597 0254 F968     		ldr	r1, [r7, #12]
- 598 0256 0948     		ldr	r0, .L44
- 599 0258 FFF7FEFF 		bl	sys_mbox_trypost
- 600 025c 0346     		mov	r3, r0
- 601              		.loc 1 360 6
- 602 025e 002B     		cmp	r3, #0
- 603 0260 06D0     		beq	.L43
  361:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
- 604              		.loc 1 361 5
- 605 0262 F968     		ldr	r1, [r7, #12]
- 606 0264 0820     		movs	r0, #8
- 607 0266 FFF7FEFF 		bl	memp_free
  362:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
- 608              		.loc 1 362 12
- 609 026a 4FF0FF33 		mov	r3, #-1
- 610 026e 00E0     		b	.L42
- 611              	.L43:
  363:./lwip-2.1.2/src/api/tcpip.c ****   }
  364:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
- 612              		.loc 1 364 10
- 613 0270 0023     		movs	r3, #0
- 614              	.L42:
  365:./lwip-2.1.2/src/api/tcpip.c **** }
- 615              		.loc 1 365 1
- 616 0272 1846     		mov	r0, r3
- 617 0274 1037     		adds	r7, r7, #16
- 618              	.LCFI31:
- 619              		.cfi_def_cfa_offset 8
- 620 0276 BD46     		mov	sp, r7
- 621              	.LCFI32:
- 622              		.cfi_def_cfa_register 13
- 623              		@ sp needed
- 624 0278 80BD     		pop	{r7, pc}
- 625              	.L45:
- 626 027a 00BF     		.align	2
- 627              	.L44:
- 628 027c 08000000 		.word	tcpip_mbox
- 629              		.cfi_endproc
- 630              	.LFE175:
- 632              		.align	1
- 633              		.global	tcpip_send_msg_wait_sem
- 634              		.syntax unified
- 635              		.thumb
- 636              		.thumb_func
- 637              		.fpu fpv5-d16
- 639              	tcpip_send_msg_wait_sem:
- 640              	.LFB176:
  366:./lwip-2.1.2/src/api/tcpip.c **** 
  367:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_TIMEOUT && LWIP_TIMERS
  368:./lwip-2.1.2/src/api/tcpip.c **** /**
@@ -1071,43 +462,12 @@
  436:./lwip-2.1.2/src/api/tcpip.c **** err_t
  437:./lwip-2.1.2/src/api/tcpip.c **** tcpip_send_msg_wait_sem(tcpip_callback_fn fn, void *apimsg, sys_sem_t *sem)
  438:./lwip-2.1.2/src/api/tcpip.c **** {
- 641              		.loc 1 438 1
- 642              		.cfi_startproc
- 643              		@ args = 0, pretend = 0, frame = 16
- 644              		@ frame_needed = 1, uses_anonymous_args = 0
- 645 0280 80B5     		push	{r7, lr}
- 646              	.LCFI33:
- 647              		.cfi_def_cfa_offset 8
- 648              		.cfi_offset 7, -8
- 649              		.cfi_offset 14, -4
- 650 0282 84B0     		sub	sp, sp, #16
- 651              	.LCFI34:
- 652              		.cfi_def_cfa_offset 24
- 653 0284 00AF     		add	r7, sp, #0
- 654              	.LCFI35:
- 655              		.cfi_def_cfa_register 7
- 656 0286 F860     		str	r0, [r7, #12]
- 657 0288 B960     		str	r1, [r7, #8]
- 658 028a 7A60     		str	r2, [r7, #4]
  439:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
  440:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_UNUSED_ARG(sem);
  441:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
- 659              		.loc 1 441 3
- 660 028c 0648     		ldr	r0, .L48
- 661 028e FFF7FEFF 		bl	sys_mutex_lock
  442:./lwip-2.1.2/src/api/tcpip.c ****   fn(apimsg);
- 662              		.loc 1 442 3
- 663 0292 FB68     		ldr	r3, [r7, #12]
- 664 0294 B868     		ldr	r0, [r7, #8]
- 665 0296 9847     		blx	r3
- 666              	.LVL4:
  443:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
- 667              		.loc 1 443 3
- 668 0298 0348     		ldr	r0, .L48
- 669 029a FFF7FEFF 		bl	sys_mutex_unlock
  444:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
- 670              		.loc 1 444 10
- 671 029e 0023     		movs	r3, #0
  445:./lwip-2.1.2/src/api/tcpip.c **** #else /* LWIP_TCPIP_CORE_LOCKING */
  446:./lwip-2.1.2/src/api/tcpip.c ****   TCPIP_MSG_VAR_DECLARE(msg);
  447:./lwip-2.1.2/src/api/tcpip.c **** 
@@ -1124,30 +484,6 @@
  458:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
  459:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_TCPIP_CORE_LOCKING */
  460:./lwip-2.1.2/src/api/tcpip.c **** }
- 672              		.loc 1 460 1
- 673 02a0 1846     		mov	r0, r3
- 674 02a2 1037     		adds	r7, r7, #16
- 675              	.LCFI36:
- 676              		.cfi_def_cfa_offset 8
- 677 02a4 BD46     		mov	sp, r7
- 678              	.LCFI37:
- 679              		.cfi_def_cfa_register 13
- 680              		@ sp needed
- 681 02a6 80BD     		pop	{r7, pc}
- 682              	.L49:
- 683              		.align	2
- 684              	.L48:
- 685 02a8 00000000 		.word	lock_tcpip_core
- 686              		.cfi_endproc
- 687              	.LFE176:
- 689              		.align	1
- 690              		.global	tcpip_api_call
- 691              		.syntax unified
- 692              		.thumb
- 693              		.thumb_func
- 694              		.fpu fpv5-d16
- 696              	tcpip_api_call:
- 697              	.LFB177:
  461:./lwip-2.1.2/src/api/tcpip.c **** 
  462:./lwip-2.1.2/src/api/tcpip.c **** /**
  463:./lwip-2.1.2/src/api/tcpip.c ****  * Synchronously calls function in TCPIP thread and waits for its completion.
@@ -1162,44 +498,12 @@
  472:./lwip-2.1.2/src/api/tcpip.c **** err_t
  473:./lwip-2.1.2/src/api/tcpip.c **** tcpip_api_call(tcpip_api_call_fn fn, struct tcpip_api_call_data *call)
  474:./lwip-2.1.2/src/api/tcpip.c **** {
- 698              		.loc 1 474 1
- 699              		.cfi_startproc
- 700              		@ args = 0, pretend = 0, frame = 16
- 701              		@ frame_needed = 1, uses_anonymous_args = 0
- 702 02ac 80B5     		push	{r7, lr}
- 703              	.LCFI38:
- 704              		.cfi_def_cfa_offset 8
- 705              		.cfi_offset 7, -8
- 706              		.cfi_offset 14, -4
- 707 02ae 84B0     		sub	sp, sp, #16
- 708              	.LCFI39:
- 709              		.cfi_def_cfa_offset 24
- 710 02b0 00AF     		add	r7, sp, #0
- 711              	.LCFI40:
- 712              		.cfi_def_cfa_register 7
- 713 02b2 7860     		str	r0, [r7, #4]
- 714 02b4 3960     		str	r1, [r7]
  475:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
  476:./lwip-2.1.2/src/api/tcpip.c ****   err_t err;
  477:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
- 715              		.loc 1 477 3
- 716 02b6 0848     		ldr	r0, .L52
- 717 02b8 FFF7FEFF 		bl	sys_mutex_lock
  478:./lwip-2.1.2/src/api/tcpip.c ****   err = fn(call);
- 718              		.loc 1 478 9
- 719 02bc 7B68     		ldr	r3, [r7, #4]
- 720 02be 3868     		ldr	r0, [r7]
- 721 02c0 9847     		blx	r3
- 722              	.LVL5:
- 723 02c2 0346     		mov	r3, r0
- 724 02c4 FB73     		strb	r3, [r7, #15]
  479:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
- 725              		.loc 1 479 3
- 726 02c6 0448     		ldr	r0, .L52
- 727 02c8 FFF7FEFF 		bl	sys_mutex_unlock
  480:./lwip-2.1.2/src/api/tcpip.c ****   return err;
- 728              		.loc 1 480 10
- 729 02cc 97F90F30 		ldrsb	r3, [r7, #15]
  481:./lwip-2.1.2/src/api/tcpip.c **** #else /* LWIP_TCPIP_CORE_LOCKING */
  482:./lwip-2.1.2/src/api/tcpip.c ****   TCPIP_MSG_VAR_DECLARE(msg);
  483:./lwip-2.1.2/src/api/tcpip.c **** 
@@ -1232,30 +536,6 @@
  510:./lwip-2.1.2/src/api/tcpip.c ****   return call->err;
  511:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_TCPIP_CORE_LOCKING */
  512:./lwip-2.1.2/src/api/tcpip.c **** }
- 730              		.loc 1 512 1
- 731 02d0 1846     		mov	r0, r3
- 732 02d2 1037     		adds	r7, r7, #16
- 733              	.LCFI41:
- 734              		.cfi_def_cfa_offset 8
- 735 02d4 BD46     		mov	sp, r7
- 736              	.LCFI42:
- 737              		.cfi_def_cfa_register 13
- 738              		@ sp needed
- 739 02d6 80BD     		pop	{r7, pc}
- 740              	.L53:
- 741              		.align	2
- 742              	.L52:
- 743 02d8 00000000 		.word	lock_tcpip_core
- 744              		.cfi_endproc
- 745              	.LFE177:
- 747              		.align	1
- 748              		.global	tcpip_callbackmsg_new
- 749              		.syntax unified
- 750              		.thumb
- 751              		.thumb_func
- 752              		.fpu fpv5-d16
- 754              	tcpip_callbackmsg_new:
- 755              	.LFB178:
  513:./lwip-2.1.2/src/api/tcpip.c **** 
  514:./lwip-2.1.2/src/api/tcpip.c **** /**
  515:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -1276,79 +556,15 @@
  530:./lwip-2.1.2/src/api/tcpip.c **** struct tcpip_callback_msg *
  531:./lwip-2.1.2/src/api/tcpip.c **** tcpip_callbackmsg_new(tcpip_callback_fn function, void *ctx)
  532:./lwip-2.1.2/src/api/tcpip.c **** {
- 756              		.loc 1 532 1
- 757              		.cfi_startproc
- 758              		@ args = 0, pretend = 0, frame = 16
- 759              		@ frame_needed = 1, uses_anonymous_args = 0
- 760 02dc 80B5     		push	{r7, lr}
- 761              	.LCFI43:
- 762              		.cfi_def_cfa_offset 8
- 763              		.cfi_offset 7, -8
- 764              		.cfi_offset 14, -4
- 765 02de 84B0     		sub	sp, sp, #16
- 766              	.LCFI44:
- 767              		.cfi_def_cfa_offset 24
- 768 02e0 00AF     		add	r7, sp, #0
- 769              	.LCFI45:
- 770              		.cfi_def_cfa_register 7
- 771 02e2 7860     		str	r0, [r7, #4]
- 772 02e4 3960     		str	r1, [r7]
  533:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
- 773              		.loc 1 533 47
- 774 02e6 0820     		movs	r0, #8
- 775 02e8 FFF7FEFF 		bl	memp_malloc
- 776 02ec F860     		str	r0, [r7, #12]
  534:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
- 777              		.loc 1 534 6
- 778 02ee FB68     		ldr	r3, [r7, #12]
- 779 02f0 002B     		cmp	r3, #0
- 780 02f2 01D1     		bne	.L55
  535:./lwip-2.1.2/src/api/tcpip.c ****     return NULL;
- 781              		.loc 1 535 12
- 782 02f4 0023     		movs	r3, #0
- 783 02f6 09E0     		b	.L56
- 784              	.L55:
  536:./lwip-2.1.2/src/api/tcpip.c ****   }
  537:./lwip-2.1.2/src/api/tcpip.c ****   msg->type = TCPIP_MSG_CALLBACK_STATIC;
- 785              		.loc 1 537 13
- 786 02f8 FB68     		ldr	r3, [r7, #12]
- 787 02fa 0222     		movs	r2, #2
- 788 02fc 1A70     		strb	r2, [r3]
  538:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
- 789              		.loc 1 538 24
- 790 02fe FB68     		ldr	r3, [r7, #12]
- 791 0300 7A68     		ldr	r2, [r7, #4]
- 792 0302 5A60     		str	r2, [r3, #4]
  539:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
- 793              		.loc 1 539 19
- 794 0304 FB68     		ldr	r3, [r7, #12]
- 795 0306 3A68     		ldr	r2, [r7]
- 796 0308 9A60     		str	r2, [r3, #8]
  540:./lwip-2.1.2/src/api/tcpip.c ****   return (struct tcpip_callback_msg *)msg;
- 797              		.loc 1 540 10
- 798 030a FB68     		ldr	r3, [r7, #12]
- 799              	.L56:
  541:./lwip-2.1.2/src/api/tcpip.c **** }
- 800              		.loc 1 541 1
- 801 030c 1846     		mov	r0, r3
- 802 030e 1037     		adds	r7, r7, #16
- 803              	.LCFI46:
- 804              		.cfi_def_cfa_offset 8
- 805 0310 BD46     		mov	sp, r7
- 806              	.LCFI47:
- 807              		.cfi_def_cfa_register 13
- 808              		@ sp needed
- 809 0312 80BD     		pop	{r7, pc}
- 810              		.cfi_endproc
- 811              	.LFE178:
- 813              		.align	1
- 814              		.global	tcpip_callbackmsg_delete
- 815              		.syntax unified
- 816              		.thumb
- 817              		.thumb_func
- 818              		.fpu fpv5-d16
- 820              	tcpip_callbackmsg_delete:
- 821              	.LFB179:
  542:./lwip-2.1.2/src/api/tcpip.c **** 
  543:./lwip-2.1.2/src/api/tcpip.c **** /**
  544:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -1361,48 +577,8 @@
  551:./lwip-2.1.2/src/api/tcpip.c **** void
  552:./lwip-2.1.2/src/api/tcpip.c **** tcpip_callbackmsg_delete(struct tcpip_callback_msg *msg)
  553:./lwip-2.1.2/src/api/tcpip.c **** {
- 822              		.loc 1 553 1
- 823              		.cfi_startproc
- 824              		@ args = 0, pretend = 0, frame = 8
- 825              		@ frame_needed = 1, uses_anonymous_args = 0
- 826 0314 80B5     		push	{r7, lr}
- 827              	.LCFI48:
- 828              		.cfi_def_cfa_offset 8
- 829              		.cfi_offset 7, -8
- 830              		.cfi_offset 14, -4
- 831 0316 82B0     		sub	sp, sp, #8
- 832              	.LCFI49:
- 833              		.cfi_def_cfa_offset 16
- 834 0318 00AF     		add	r7, sp, #0
- 835              	.LCFI50:
- 836              		.cfi_def_cfa_register 7
- 837 031a 7860     		str	r0, [r7, #4]
  554:./lwip-2.1.2/src/api/tcpip.c ****   memp_free(MEMP_TCPIP_MSG_API, msg);
- 838              		.loc 1 554 3
- 839 031c 7968     		ldr	r1, [r7, #4]
- 840 031e 0820     		movs	r0, #8
- 841 0320 FFF7FEFF 		bl	memp_free
  555:./lwip-2.1.2/src/api/tcpip.c **** }
- 842              		.loc 1 555 1
- 843 0324 00BF     		nop
- 844 0326 0837     		adds	r7, r7, #8
- 845              	.LCFI51:
- 846              		.cfi_def_cfa_offset 8
- 847 0328 BD46     		mov	sp, r7
- 848              	.LCFI52:
- 849              		.cfi_def_cfa_register 13
- 850              		@ sp needed
- 851 032a 80BD     		pop	{r7, pc}
- 852              		.cfi_endproc
- 853              	.LFE179:
- 855              		.align	1
- 856              		.global	tcpip_callbackmsg_trycallback
- 857              		.syntax unified
- 858              		.thumb
- 859              		.thumb_func
- 860              		.fpu fpv5-d16
- 862              	tcpip_callbackmsg_trycallback:
- 863              	.LFB180:
  556:./lwip-2.1.2/src/api/tcpip.c **** 
  557:./lwip-2.1.2/src/api/tcpip.c **** /**
  558:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -1416,54 +592,9 @@
  566:./lwip-2.1.2/src/api/tcpip.c **** err_t
  567:./lwip-2.1.2/src/api/tcpip.c **** tcpip_callbackmsg_trycallback(struct tcpip_callback_msg *msg)
  568:./lwip-2.1.2/src/api/tcpip.c **** {
- 864              		.loc 1 568 1
- 865              		.cfi_startproc
- 866              		@ args = 0, pretend = 0, frame = 8
- 867              		@ frame_needed = 1, uses_anonymous_args = 0
- 868 032c 80B5     		push	{r7, lr}
- 869              	.LCFI53:
- 870              		.cfi_def_cfa_offset 8
- 871              		.cfi_offset 7, -8
- 872              		.cfi_offset 14, -4
- 873 032e 82B0     		sub	sp, sp, #8
- 874              	.LCFI54:
- 875              		.cfi_def_cfa_offset 16
- 876 0330 00AF     		add	r7, sp, #0
- 877              	.LCFI55:
- 878              		.cfi_def_cfa_register 7
- 879 0332 7860     		str	r0, [r7, #4]
  569:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
  570:./lwip-2.1.2/src/api/tcpip.c ****   return sys_mbox_trypost(&tcpip_mbox, msg);
- 880              		.loc 1 570 10
- 881 0334 7968     		ldr	r1, [r7, #4]
- 882 0336 0448     		ldr	r0, .L60
- 883 0338 FFF7FEFF 		bl	sys_mbox_trypost
- 884 033c 0346     		mov	r3, r0
  571:./lwip-2.1.2/src/api/tcpip.c **** }
- 885              		.loc 1 571 1
- 886 033e 1846     		mov	r0, r3
- 887 0340 0837     		adds	r7, r7, #8
- 888              	.LCFI56:
- 889              		.cfi_def_cfa_offset 8
- 890 0342 BD46     		mov	sp, r7
- 891              	.LCFI57:
- 892              		.cfi_def_cfa_register 13
- 893              		@ sp needed
- 894 0344 80BD     		pop	{r7, pc}
- 895              	.L61:
- 896 0346 00BF     		.align	2
- 897              	.L60:
- 898 0348 08000000 		.word	tcpip_mbox
- 899              		.cfi_endproc
- 900              	.LFE180:
- 902              		.align	1
- 903              		.global	tcpip_callbackmsg_trycallback_fromisr
- 904              		.syntax unified
- 905              		.thumb
- 906              		.thumb_func
- 907              		.fpu fpv5-d16
- 909              	tcpip_callbackmsg_trycallback_fromisr:
- 910              	.LFB181:
  572:./lwip-2.1.2/src/api/tcpip.c **** 
  573:./lwip-2.1.2/src/api/tcpip.c **** /**
  574:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -1480,62 +611,9 @@
  585:./lwip-2.1.2/src/api/tcpip.c **** err_t
  586:./lwip-2.1.2/src/api/tcpip.c **** tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg *msg)
  587:./lwip-2.1.2/src/api/tcpip.c **** {
- 911              		.loc 1 587 1
- 912              		.cfi_startproc
- 913              		@ args = 0, pretend = 0, frame = 8
- 914              		@ frame_needed = 1, uses_anonymous_args = 0
- 915 034c 80B5     		push	{r7, lr}
- 916              	.LCFI58:
- 917              		.cfi_def_cfa_offset 8
- 918              		.cfi_offset 7, -8
- 919              		.cfi_offset 14, -4
- 920 034e 82B0     		sub	sp, sp, #8
- 921              	.LCFI59:
- 922              		.cfi_def_cfa_offset 16
- 923 0350 00AF     		add	r7, sp, #0
- 924              	.LCFI60:
- 925              		.cfi_def_cfa_register 7
- 926 0352 7860     		str	r0, [r7, #4]
  588:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
  589:./lwip-2.1.2/src/api/tcpip.c ****   return sys_mbox_trypost_fromisr(&tcpip_mbox, msg);
- 927              		.loc 1 589 10
- 928 0354 7968     		ldr	r1, [r7, #4]
- 929 0356 0448     		ldr	r0, .L64
- 930 0358 FFF7FEFF 		bl	sys_mbox_trypost_fromisr
- 931 035c 0346     		mov	r3, r0
  590:./lwip-2.1.2/src/api/tcpip.c **** }
- 932              		.loc 1 590 1
- 933 035e 1846     		mov	r0, r3
- 934 0360 0837     		adds	r7, r7, #8
- 935              	.LCFI61:
- 936              		.cfi_def_cfa_offset 8
- 937 0362 BD46     		mov	sp, r7
- 938              	.LCFI62:
- 939              		.cfi_def_cfa_register 13
- 940              		@ sp needed
- 941 0364 80BD     		pop	{r7, pc}
- 942              	.L65:
- 943 0366 00BF     		.align	2
- 944              	.L64:
- 945 0368 08000000 		.word	tcpip_mbox
- 946              		.cfi_endproc
- 947              	.LFE181:
- 949              		.section	.rodata
- 950              		.align	2
- 951              	.LC0:
- 952 0000 74637069 		.ascii	"tcpip_thread\000"
- 952      705F7468 
- 952      72656164 
- 952      00
- 953              		.text
- 954              		.align	1
- 955              		.global	tcpip_init
- 956              		.syntax unified
- 957              		.thumb
- 958              		.thumb_func
- 959              		.fpu fpv5-d16
- 961              	tcpip_init:
- 962              	.LFB182:
  591:./lwip-2.1.2/src/api/tcpip.c **** 
  592:./lwip-2.1.2/src/api/tcpip.c **** /**
  593:./lwip-2.1.2/src/api/tcpip.c ****  * @ingroup lwip_os
@@ -1549,91 +627,21 @@
  601:./lwip-2.1.2/src/api/tcpip.c **** void
  602:./lwip-2.1.2/src/api/tcpip.c **** tcpip_init(tcpip_init_done_fn initfunc, void *arg)
  603:./lwip-2.1.2/src/api/tcpip.c **** {
- 963              		.loc 1 603 1
- 964              		.cfi_startproc
- 965              		@ args = 0, pretend = 0, frame = 8
- 966              		@ frame_needed = 1, uses_anonymous_args = 0
- 967 036c 80B5     		push	{r7, lr}
- 968              	.LCFI63:
- 969              		.cfi_def_cfa_offset 8
- 970              		.cfi_offset 7, -8
- 971              		.cfi_offset 14, -4
- 972 036e 84B0     		sub	sp, sp, #16
- 973              	.LCFI64:
- 974              		.cfi_def_cfa_offset 24
- 975 0370 02AF     		add	r7, sp, #8
- 976              	.LCFI65:
- 977              		.cfi_def_cfa 7, 16
- 978 0372 7860     		str	r0, [r7, #4]
- 979 0374 3960     		str	r1, [r7]
  604:./lwip-2.1.2/src/api/tcpip.c ****   lwip_init();
- 980              		.loc 1 604 3
- 981 0376 FFF7FEFF 		bl	lwip_init
  605:./lwip-2.1.2/src/api/tcpip.c **** 
  606:./lwip-2.1.2/src/api/tcpip.c ****   tcpip_init_done = initfunc;
- 982              		.loc 1 606 19
- 983 037a 0D4A     		ldr	r2, .L67
- 984 037c 7B68     		ldr	r3, [r7, #4]
- 985 037e 1360     		str	r3, [r2]
  607:./lwip-2.1.2/src/api/tcpip.c ****   tcpip_init_done_arg = arg;
- 986              		.loc 1 607 23
- 987 0380 0C4A     		ldr	r2, .L67+4
- 988 0382 3B68     		ldr	r3, [r7]
- 989 0384 1360     		str	r3, [r2]
  608:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_new(&tcpip_mbox, TCPIP_MBOX_SIZE) != ERR_OK) {
- 990              		.loc 1 608 7
- 991 0386 0621     		movs	r1, #6
- 992 0388 0B48     		ldr	r0, .L67+8
- 993 038a FFF7FEFF 		bl	sys_mbox_new
  609:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
  610:./lwip-2.1.2/src/api/tcpip.c ****   }
  611:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
  612:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mutex_new(&lock_tcpip_core) != ERR_OK) {
- 994              		.loc 1 612 7
- 995 038e 0B48     		ldr	r0, .L67+12
- 996 0390 FFF7FEFF 		bl	sys_mutex_new
  613:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create lock_tcpip_core", 0);
  614:./lwip-2.1.2/src/api/tcpip.c ****   }
  615:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_TCPIP_CORE_LOCKING */
  616:./lwip-2.1.2/src/api/tcpip.c **** 
  617:./lwip-2.1.2/src/api/tcpip.c ****   sys_thread_new(TCPIP_THREAD_NAME, tcpip_thread, NULL, TCPIP_THREAD_STACKSIZE, TCPIP_THREAD_PRIO);
- 997              		.loc 1 617 3
- 998 0394 2023     		movs	r3, #32
- 999 0396 0093     		str	r3, [sp]
- 1000 0398 4FF40063 		mov	r3, #2048
- 1001 039c 0022     		movs	r2, #0
- 1002 039e 0849     		ldr	r1, .L67+16
- 1003 03a0 0848     		ldr	r0, .L67+20
- 1004 03a2 FFF7FEFF 		bl	sys_thread_new
  618:./lwip-2.1.2/src/api/tcpip.c **** }
- 1005              		.loc 1 618 1
- 1006 03a6 00BF     		nop
- 1007 03a8 0837     		adds	r7, r7, #8
- 1008              	.LCFI66:
- 1009              		.cfi_def_cfa_offset 8
- 1010 03aa BD46     		mov	sp, r7
- 1011              	.LCFI67:
- 1012              		.cfi_def_cfa_register 13
- 1013              		@ sp needed
- 1014 03ac 80BD     		pop	{r7, pc}
- 1015              	.L68:
- 1016 03ae 00BF     		.align	2
- 1017              	.L67:
- 1018 03b0 00000000 		.word	tcpip_init_done
- 1019 03b4 04000000 		.word	tcpip_init_done_arg
- 1020 03b8 08000000 		.word	tcpip_mbox
- 1021 03bc 00000000 		.word	lock_tcpip_core
- 1022 03c0 00000000 		.word	tcpip_thread
- 1023 03c4 00000000 		.word	.LC0
- 1024              		.cfi_endproc
- 1025              	.LFE182:
- 1027              		.align	1
- 1028              		.syntax unified
- 1029              		.thumb
- 1030              		.thumb_func
- 1031              		.fpu fpv5-d16
- 1033              	pbuf_free_int:
- 1034              	.LFB183:
  619:./lwip-2.1.2/src/api/tcpip.c **** 
  620:./lwip-2.1.2/src/api/tcpip.c **** /**
  621:./lwip-2.1.2/src/api/tcpip.c ****  * Simple callback function used with tcpip_callback to free a pbuf
@@ -1644,51 +652,1332 @@
  626:./lwip-2.1.2/src/api/tcpip.c **** static void
  627:./lwip-2.1.2/src/api/tcpip.c **** pbuf_free_int(void *p)
  628:./lwip-2.1.2/src/api/tcpip.c **** {
- 1035              		.loc 1 628 1
- 1036              		.cfi_startproc
- 1037              		@ args = 0, pretend = 0, frame = 16
- 1038              		@ frame_needed = 1, uses_anonymous_args = 0
- 1039 03c8 80B5     		push	{r7, lr}
- 1040              	.LCFI68:
- 1041              		.cfi_def_cfa_offset 8
- 1042              		.cfi_offset 7, -8
- 1043              		.cfi_offset 14, -4
- 1044 03ca 84B0     		sub	sp, sp, #16
- 1045              	.LCFI69:
- 1046              		.cfi_def_cfa_offset 24
- 1047 03cc 00AF     		add	r7, sp, #0
- 1048              	.LCFI70:
- 1049              		.cfi_def_cfa_register 7
- 1050 03ce 7860     		str	r0, [r7, #4]
+  28              		.loc 1 628 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
  629:./lwip-2.1.2/src/api/tcpip.c ****   struct pbuf *q = (struct pbuf *)p;
- 1051              		.loc 1 629 16
- 1052 03d0 7B68     		ldr	r3, [r7, #4]
- 1053 03d2 FB60     		str	r3, [r7, #12]
+  33              		.loc 1 629 3 view .LVU1
  630:./lwip-2.1.2/src/api/tcpip.c ****   pbuf_free(q);
- 1054              		.loc 1 630 3
- 1055 03d4 F868     		ldr	r0, [r7, #12]
- 1056 03d6 FFF7FEFF 		bl	pbuf_free
+  34              		.loc 1 630 3 view .LVU2
+  35 0000 FFF7FEBF 		b	pbuf_free
+  36              	.LVL1:
+  37              		.loc 1 630 3 is_stmt 0 view .LVU3
+  38              		.cfi_endproc
+  39              	.LFE183:
+  41              		.align	1
+  42              		.p2align 2,,3
+  43              		.syntax unified
+  44              		.thumb
+  45              		.thumb_func
+  46              		.fpu fpv5-d16
+  48              	tcpip_thread:
+  49              	.LVL2:
+  50              	.LFB170:
+ 128:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+  51              		.loc 1 128 1 is_stmt 1 view -0
+  52              		.cfi_startproc
+  53              		@ Volatile: function does not return.
+  54              		@ args = 0, pretend = 0, frame = 8
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_UNUSED_ARG(arg);
+  56              		.loc 1 129 3 view .LVU5
+ 130:./lwip-2.1.2/src/api/tcpip.c **** 
+  57              		.loc 1 130 3 view .LVU6
+ 132:./lwip-2.1.2/src/api/tcpip.c **** 
+  58              		.loc 1 132 27 view .LVU7
+ 134:./lwip-2.1.2/src/api/tcpip.c ****   if (tcpip_init_done != NULL) {
+  59              		.loc 1 134 3 view .LVU8
+  60 0004 294C     		ldr	r4, .L29
+ 128:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+  61              		.loc 1 128 1 is_stmt 0 view .LVU9
+  62 0006 00B5     		push	{lr}
+  63              	.LCFI0:
+  64              		.cfi_def_cfa_offset 4
+  65              		.cfi_offset 14, -4
+ 134:./lwip-2.1.2/src/api/tcpip.c ****   if (tcpip_init_done != NULL) {
+  66              		.loc 1 134 3 view .LVU10
+  67 0008 2046     		mov	r0, r4
+  68              	.LVL3:
+ 128:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+  69              		.loc 1 128 1 view .LVU11
+  70 000a 83B0     		sub	sp, sp, #12
+  71              	.LCFI1:
+  72              		.cfi_def_cfa_offset 16
+ 134:./lwip-2.1.2/src/api/tcpip.c ****   if (tcpip_init_done != NULL) {
+  73              		.loc 1 134 3 view .LVU12
+  74 000c FFF7FEFF 		bl	sys_mutex_lock
+  75              	.LVL4:
+ 135:./lwip-2.1.2/src/api/tcpip.c ****     tcpip_init_done(tcpip_init_done_arg);
+  76              		.loc 1 135 3 is_stmt 1 view .LVU13
+ 135:./lwip-2.1.2/src/api/tcpip.c ****     tcpip_init_done(tcpip_init_done_arg);
+  77              		.loc 1 135 23 is_stmt 0 view .LVU14
+  78 0010 6368     		ldr	r3, [r4, #4]
+ 135:./lwip-2.1.2/src/api/tcpip.c ****     tcpip_init_done(tcpip_init_done_arg);
+  79              		.loc 1 135 6 view .LVU15
+  80 0012 0BB1     		cbz	r3, .L4
+ 136:./lwip-2.1.2/src/api/tcpip.c ****   }
+  81              		.loc 1 136 5 is_stmt 1 view .LVU16
+  82 0014 A068     		ldr	r0, [r4, #8]
+  83 0016 9847     		blx	r3
+  84              	.LVL5:
+  85              	.L4:
+  86              	.LBB6:
+  87              	.LBB7:
+ 103:./lwip-2.1.2/src/api/tcpip.c ****   res = sys_arch_mbox_fetch(mbox, msg, sleeptime);
+  88              		.loc 1 103 3 is_stmt 0 view .LVU17
+  89 0018 244D     		ldr	r5, .L29
+ 104:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
+  90              		.loc 1 104 9 view .LVU18
+  91 001a 05F10C06 		add	r6, r5, #12
+  92 001e 10E0     		b	.L9
+  93              	.LVL6:
+  94              	.L6:
+  97:./lwip-2.1.2/src/api/tcpip.c ****     sys_check_timeouts();
+  95              		.loc 1 97 10 is_stmt 1 view .LVU19
+  97:./lwip-2.1.2/src/api/tcpip.c ****     sys_check_timeouts();
+  96              		.loc 1 97 13 is_stmt 0 view .LVU20
+  97 0020 68B1     		cbz	r0, .L10
+ 103:./lwip-2.1.2/src/api/tcpip.c ****   res = sys_arch_mbox_fetch(mbox, msg, sleeptime);
+  98              		.loc 1 103 3 is_stmt 1 view .LVU21
+  99 0022 2846     		mov	r0, r5
+ 100              	.LVL7:
+ 103:./lwip-2.1.2/src/api/tcpip.c ****   res = sys_arch_mbox_fetch(mbox, msg, sleeptime);
+ 101              		.loc 1 103 3 is_stmt 0 view .LVU22
+ 102 0024 FFF7FEFF 		bl	sys_mutex_unlock
+ 103              	.LVL8:
+ 104:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
+ 104              		.loc 1 104 3 is_stmt 1 view .LVU23
+ 104:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
+ 105              		.loc 1 104 9 is_stmt 0 view .LVU24
+ 106 0028 2246     		mov	r2, r4
+ 107 002a 01A9     		add	r1, sp, #4
+ 108 002c 3046     		mov	r0, r6
+ 109 002e FFF7FEFF 		bl	sys_arch_mbox_fetch
+ 110              	.LVL9:
+ 111 0032 0446     		mov	r4, r0
+ 112              	.LVL10:
+ 105:./lwip-2.1.2/src/api/tcpip.c ****   if (res == SYS_ARCH_TIMEOUT) {
+ 113              		.loc 1 105 3 view .LVU25
+ 114 0034 2846     		mov	r0, r5
+ 115              	.LVL11:
+ 105:./lwip-2.1.2/src/api/tcpip.c ****   if (res == SYS_ARCH_TIMEOUT) {
+ 116              		.loc 1 105 3 is_stmt 1 view .LVU26
+ 117 0036 FFF7FEFF 		bl	sys_mutex_lock
+ 118              	.LVL12:
+ 106:./lwip-2.1.2/src/api/tcpip.c ****     /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
+ 119              		.loc 1 106 3 view .LVU27
+ 106:./lwip-2.1.2/src/api/tcpip.c ****     /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
+ 120              		.loc 1 106 6 is_stmt 0 view .LVU28
+ 121 003a 0134     		adds	r4, r4, #1
+ 122              	.LVL13:
+ 106:./lwip-2.1.2/src/api/tcpip.c ****     /* If a SYS_ARCH_TIMEOUT value is returned, a timeout occurred
+ 123              		.loc 1 106 6 view .LVU29
+ 124 003c 11D1     		bne	.L7
+ 125              	.LVL14:
+ 126              	.L10:
+  98:./lwip-2.1.2/src/api/tcpip.c ****     /* We try again to fetch a message from the mbox. */
+ 127              		.loc 1 98 5 is_stmt 1 view .LVU30
+ 128 003e FFF7FEFF 		bl	sys_check_timeouts
+ 129              	.LVL15:
+ 100:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 130              		.loc 1 100 5 view .LVU31
+ 131              	.L9:
+  86:./lwip-2.1.2/src/api/tcpip.c **** 
+ 132              		.loc 1 86 3 view .LVU32
+  89:./lwip-2.1.2/src/api/tcpip.c **** 
+ 133              		.loc 1 89 28 view .LVU33
+  91:./lwip-2.1.2/src/api/tcpip.c ****   if (sleeptime == SYS_TIMEOUTS_SLEEPTIME_INFINITE) {
+ 134              		.loc 1 91 3 view .LVU34
+  91:./lwip-2.1.2/src/api/tcpip.c ****   if (sleeptime == SYS_TIMEOUTS_SLEEPTIME_INFINITE) {
+ 135              		.loc 1 91 15 is_stmt 0 view .LVU35
+ 136 0042 FFF7FEFF 		bl	sys_timeouts_sleeptime
+ 137              	.LVL16:
+  92:./lwip-2.1.2/src/api/tcpip.c ****     UNLOCK_TCPIP_CORE();
+ 138              		.loc 1 92 6 view .LVU36
+ 139 0046 431C     		adds	r3, r0, #1
+  91:./lwip-2.1.2/src/api/tcpip.c ****   if (sleeptime == SYS_TIMEOUTS_SLEEPTIME_INFINITE) {
+ 140              		.loc 1 91 15 view .LVU37
+ 141 0048 0446     		mov	r4, r0
+ 142              	.LVL17:
+  92:./lwip-2.1.2/src/api/tcpip.c ****     UNLOCK_TCPIP_CORE();
+ 143              		.loc 1 92 3 is_stmt 1 view .LVU38
+  92:./lwip-2.1.2/src/api/tcpip.c ****     UNLOCK_TCPIP_CORE();
+ 144              		.loc 1 92 6 is_stmt 0 view .LVU39
+ 145 004a E9D1     		bne	.L6
+  93:./lwip-2.1.2/src/api/tcpip.c ****     sys_arch_mbox_fetch(mbox, msg, 0);
+ 146              		.loc 1 93 5 is_stmt 1 view .LVU40
+ 147 004c 2846     		mov	r0, r5
+ 148              	.LVL18:
+  93:./lwip-2.1.2/src/api/tcpip.c ****     sys_arch_mbox_fetch(mbox, msg, 0);
+ 149              		.loc 1 93 5 is_stmt 0 view .LVU41
+ 150 004e FFF7FEFF 		bl	sys_mutex_unlock
+ 151              	.LVL19:
+  94:./lwip-2.1.2/src/api/tcpip.c ****     LOCK_TCPIP_CORE();
+ 152              		.loc 1 94 5 is_stmt 1 view .LVU42
+ 153 0052 0022     		movs	r2, #0
+ 154 0054 01A9     		add	r1, sp, #4
+ 155 0056 3046     		mov	r0, r6
+ 156 0058 FFF7FEFF 		bl	sys_arch_mbox_fetch
+ 157              	.LVL20:
+  95:./lwip-2.1.2/src/api/tcpip.c ****     return;
+ 158              		.loc 1 95 5 view .LVU43
+ 159 005c 2846     		mov	r0, r5
+ 160 005e FFF7FEFF 		bl	sys_mutex_lock
+ 161              	.LVL21:
+  96:./lwip-2.1.2/src/api/tcpip.c ****   } else if (sleeptime == 0) {
+ 162              		.loc 1 96 5 view .LVU44
+ 163              	.L7:
+  96:./lwip-2.1.2/src/api/tcpip.c ****   } else if (sleeptime == 0) {
+ 164              		.loc 1 96 5 is_stmt 0 view .LVU45
+ 165              	.LBE7:
+ 166              	.LBE6:
+ 143:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
+ 167              		.loc 1 143 5 is_stmt 1 view .LVU46
+ 143:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
+ 168              		.loc 1 143 13 is_stmt 0 view .LVU47
+ 169 0062 019C     		ldr	r4, [sp, #4]
+ 143:./lwip-2.1.2/src/api/tcpip.c ****       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
+ 170              		.loc 1 143 8 view .LVU48
+ 171 0064 002C     		cmp	r4, #0
+ 172 0066 ECD0     		beq	.L9
+ 148:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 173              		.loc 1 148 5 is_stmt 1 view .LVU49
+ 174              	.LVL22:
+ 175              	.LBB8:
+ 176              	.LBI8:
+ 156:./lwip-2.1.2/src/api/tcpip.c **** {
+ 177              		.loc 1 156 1 view .LVU50
+ 178              	.LBB9:
+ 158:./lwip-2.1.2/src/api/tcpip.c **** #if !LWIP_TCPIP_CORE_LOCKING
+ 179              		.loc 1 158 3 view .LVU51
+ 158:./lwip-2.1.2/src/api/tcpip.c **** #if !LWIP_TCPIP_CORE_LOCKING
+ 180              		.loc 1 158 14 is_stmt 0 view .LVU52
+ 181 0068 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 158:./lwip-2.1.2/src/api/tcpip.c **** #if !LWIP_TCPIP_CORE_LOCKING
+ 182              		.loc 1 158 3 view .LVU53
+ 183 006a 012B     		cmp	r3, #1
+ 184 006c 11D0     		beq	.L12
+ 185 006e 022B     		cmp	r3, #2
+ 186 0070 0BD0     		beq	.L13
+ 187 0072 002B     		cmp	r3, #0
+ 188 0074 E5D1     		bne	.L9
+ 173:./lwip-2.1.2/src/api/tcpip.c ****       if (msg->msg.inp.input_fn(msg->msg.inp.p, msg->msg.inp.netif) != ERR_OK) {
+ 189              		.loc 1 173 75 is_stmt 1 view .LVU54
+ 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
+ 190              		.loc 1 174 7 view .LVU55
+ 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
+ 191              		.loc 1 174 11 is_stmt 0 view .LVU56
+ 192 0076 6068     		ldr	r0, [r4, #4]
+ 193 0078 D4E90213 		ldrd	r1, r3, [r4, #8]
+ 194 007c 9847     		blx	r3
+ 195              	.LVL23:
+ 174:./lwip-2.1.2/src/api/tcpip.c ****         pbuf_free(msg->msg.inp.p);
+ 196              		.loc 1 174 10 view .LVU57
+ 197 007e 80B9     		cbnz	r0, .L28
+ 198              	.L14:
+ 177:./lwip-2.1.2/src/api/tcpip.c ****       break;
+ 199              		.loc 1 177 7 is_stmt 1 view .LVU58
+ 200 0080 2146     		mov	r1, r4
+ 201 0082 0920     		movs	r0, #9
+ 202 0084 FFF7FEFF 		bl	memp_free
+ 203              	.LVL24:
+ 178:./lwip-2.1.2/src/api/tcpip.c **** #endif /* !LWIP_TCPIP_CORE_LOCKING_INPUT */
+ 204              		.loc 1 178 7 view .LVU59
+ 205 0088 DBE7     		b	.L9
+ 206              	.L13:
+ 201:./lwip-2.1.2/src/api/tcpip.c ****       msg->msg.cb.function(msg->msg.cb.ctx);
+ 207              		.loc 1 201 84 view .LVU60
+ 202:./lwip-2.1.2/src/api/tcpip.c ****       break;
+ 208              		.loc 1 202 7 view .LVU61
+ 209 008a D4E90130 		ldrd	r3, r0, [r4, #4]
+ 210 008e 9847     		blx	r3
+ 211              	.LVL25:
+ 203:./lwip-2.1.2/src/api/tcpip.c **** 
+ 212              		.loc 1 203 7 view .LVU62
+ 203:./lwip-2.1.2/src/api/tcpip.c **** 
+ 213              		.loc 1 203 7 is_stmt 0 view .LVU63
+ 214              	.LBE9:
+ 215              	.LBE8:
+ 139:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_TCPIP_THREAD_ALIVE();
+ 216              		.loc 1 139 3 is_stmt 1 view .LVU64
+ 140:./lwip-2.1.2/src/api/tcpip.c ****     /* wait for a message, timeouts are processed while waiting */
+ 217              		.loc 1 140 30 view .LVU65
+ 142:./lwip-2.1.2/src/api/tcpip.c ****     if (msg == NULL) {
+ 218              		.loc 1 142 5 view .LVU66
+ 219              	.LBB11:
+ 220              	.LBI6:
+  84:./lwip-2.1.2/src/api/tcpip.c **** {
+ 221              		.loc 1 84 1 view .LVU67
+  84:./lwip-2.1.2/src/api/tcpip.c **** {
+ 222              		.loc 1 84 1 is_stmt 0 view .LVU68
+ 223              	.LBE11:
+ 224              	.LBB12:
+ 225              	.LBB10:
+ 203:./lwip-2.1.2/src/api/tcpip.c **** 
+ 226              		.loc 1 203 7 view .LVU69
+ 227 0090 D7E7     		b	.L9
+ 228              	.LVL26:
+ 229              	.L12:
+ 195:./lwip-2.1.2/src/api/tcpip.c ****       msg->msg.cb.function(msg->msg.cb.ctx);
+ 230              		.loc 1 195 77 is_stmt 1 view .LVU70
+ 196:./lwip-2.1.2/src/api/tcpip.c ****       memp_free(MEMP_TCPIP_MSG_API, msg);
+ 231              		.loc 1 196 7 view .LVU71
+ 232 0092 D4E90130 		ldrd	r3, r0, [r4, #4]
+ 233 0096 9847     		blx	r3
+ 234              	.LVL27:
+ 197:./lwip-2.1.2/src/api/tcpip.c ****       break;
+ 235              		.loc 1 197 7 view .LVU72
+ 236 0098 2146     		mov	r1, r4
+ 237 009a 0820     		movs	r0, #8
+ 238 009c FFF7FEFF 		bl	memp_free
+ 239              	.LVL28:
+ 198:./lwip-2.1.2/src/api/tcpip.c **** 
+ 240              		.loc 1 198 7 view .LVU73
+ 241 00a0 CFE7     		b	.L9
+ 242              	.L28:
+ 175:./lwip-2.1.2/src/api/tcpip.c ****       }
+ 243              		.loc 1 175 9 view .LVU74
+ 244 00a2 6068     		ldr	r0, [r4, #4]
+ 245 00a4 FFF7FEFF 		bl	pbuf_free
+ 246              	.LVL29:
+ 247 00a8 EAE7     		b	.L14
+ 248              	.L30:
+ 249 00aa 00BF     		.align	2
+ 250              	.L29:
+ 251 00ac 00000000 		.word	.LANCHOR0
+ 252              	.LBE10:
+ 253              	.LBE12:
+ 254              		.cfi_endproc
+ 255              	.LFE170:
+ 257              		.align	1
+ 258              		.p2align 2,,3
+ 259              		.global	tcpip_inpkt
+ 260              		.syntax unified
+ 261              		.thumb
+ 262              		.thumb_func
+ 263              		.fpu fpv5-d16
+ 265              	tcpip_inpkt:
+ 266              	.LVL30:
+ 267              	.LFB172:
+ 241:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING_INPUT
+ 268              		.loc 1 241 1 view -0
+ 269              		.cfi_startproc
+ 270              		@ args = 0, pretend = 0, frame = 0
+ 271              		@ frame_needed = 0, uses_anonymous_args = 0
+ 250:./lwip-2.1.2/src/api/tcpip.c **** 
+ 272              		.loc 1 250 3 view .LVU76
+ 252:./lwip-2.1.2/src/api/tcpip.c **** 
+ 273              		.loc 1 252 62 view .LVU77
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 274              		.loc 1 254 3 view .LVU78
+ 241:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING_INPUT
+ 275              		.loc 1 241 1 is_stmt 0 view .LVU79
+ 276 00b0 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 277              	.LCFI2:
+ 278              		.cfi_def_cfa_offset 24
+ 279              		.cfi_offset 3, -24
+ 280              		.cfi_offset 4, -20
+ 281              		.cfi_offset 5, -16
+ 282              		.cfi_offset 6, -12
+ 283              		.cfi_offset 7, -8
+ 284              		.cfi_offset 14, -4
+ 241:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING_INPUT
+ 285              		.loc 1 241 1 view .LVU80
+ 286 00b2 0746     		mov	r7, r0
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 287              		.loc 1 254 29 view .LVU81
+ 288 00b4 0920     		movs	r0, #9
+ 289              	.LVL31:
+ 241:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING_INPUT
+ 290              		.loc 1 241 1 view .LVU82
+ 291 00b6 0E46     		mov	r6, r1
+ 292 00b8 1546     		mov	r5, r2
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 293              		.loc 1 254 29 view .LVU83
+ 294 00ba FFF7FEFF 		bl	memp_malloc
+ 295              	.LVL32:
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 296              		.loc 1 255 3 is_stmt 1 view .LVU84
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 297              		.loc 1 255 6 is_stmt 0 view .LVU85
+ 298 00be 90B1     		cbz	r0, .L33
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 299              		.loc 1 259 3 is_stmt 1 view .LVU86
+ 300 00c0 0446     		mov	r4, r0
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 301              		.loc 1 259 13 is_stmt 0 view .LVU87
+ 302 00c2 0023     		movs	r3, #0
+ 260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
+ 303              		.loc 1 260 18 view .LVU88
+ 304 00c4 4760     		str	r7, [r0, #4]
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 305              		.loc 1 263 7 view .LVU89
+ 306 00c6 0146     		mov	r1, r0
+ 261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
+ 307              		.loc 1 261 22 view .LVU90
+ 308 00c8 8660     		str	r6, [r0, #8]
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 309              		.loc 1 259 13 view .LVU91
+ 310 00ca 0370     		strb	r3, [r0]
+ 260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
+ 311              		.loc 1 260 3 is_stmt 1 view .LVU92
+ 261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
+ 312              		.loc 1 261 3 view .LVU93
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 313              		.loc 1 262 3 view .LVU94
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 314              		.loc 1 263 7 is_stmt 0 view .LVU95
+ 315 00cc 0748     		ldr	r0, .L39
+ 316              	.LVL33:
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 317              		.loc 1 262 25 view .LVU96
+ 318 00ce E560     		str	r5, [r4, #12]
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 319              		.loc 1 263 3 is_stmt 1 view .LVU97
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 320              		.loc 1 263 7 is_stmt 0 view .LVU98
+ 321 00d0 FFF7FEFF 		bl	sys_mbox_trypost
+ 322              	.LVL34:
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 323              		.loc 1 263 6 view .LVU99
+ 324 00d4 00B9     		cbnz	r0, .L38
+ 269:./lwip-2.1.2/src/api/tcpip.c **** 
+ 325              		.loc 1 269 1 view .LVU100
+ 326 00d6 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 327              	.LVL35:
+ 328              	.L38:
+ 264:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 329              		.loc 1 264 5 is_stmt 1 view .LVU101
+ 330 00d8 2146     		mov	r1, r4
+ 331 00da 0920     		movs	r0, #9
+ 332 00dc FFF7FEFF 		bl	memp_free
+ 333              	.LVL36:
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 334              		.loc 1 265 5 view .LVU102
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 335              		.loc 1 265 12 is_stmt 0 view .LVU103
+ 336 00e0 4FF0FF30 		mov	r0, #-1
+ 269:./lwip-2.1.2/src/api/tcpip.c **** 
+ 337              		.loc 1 269 1 view .LVU104
+ 338 00e4 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 339              	.LVL37:
+ 340              	.L33:
+ 256:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 341              		.loc 1 256 12 view .LVU105
+ 342 00e6 4FF0FF30 		mov	r0, #-1
+ 343              	.LVL38:
+ 269:./lwip-2.1.2/src/api/tcpip.c **** 
+ 344              		.loc 1 269 1 view .LVU106
+ 345 00ea F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 346              	.LVL39:
+ 347              	.L40:
+ 269:./lwip-2.1.2/src/api/tcpip.c **** 
+ 348              		.loc 1 269 1 view .LVU107
+ 349              		.align	2
+ 350              	.L39:
+ 351 00ec 0C000000 		.word	.LANCHOR0+12
+ 352              		.cfi_endproc
+ 353              	.LFE172:
+ 355              		.align	1
+ 356              		.p2align 2,,3
+ 357              		.global	tcpip_input
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 361              		.fpu fpv5-d16
+ 363              	tcpip_input:
+ 364              	.LVL40:
+ 365              	.LFB173:
+ 284:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_ETHERNET
+ 366              		.loc 1 284 1 is_stmt 1 view -0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 286:./lwip-2.1.2/src/api/tcpip.c ****     return tcpip_inpkt(p, inp, ethernet_input);
+ 370              		.loc 1 286 3 view .LVU109
+ 284:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_ETHERNET
+ 371              		.loc 1 284 1 is_stmt 0 view .LVU110
+ 372 00f0 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 373              	.LCFI3:
+ 374              		.cfi_def_cfa_offset 24
+ 375              		.cfi_offset 3, -24
+ 376              		.cfi_offset 4, -20
+ 377              		.cfi_offset 5, -16
+ 378              		.cfi_offset 6, -12
+ 379              		.cfi_offset 7, -8
+ 380              		.cfi_offset 14, -4
+ 286:./lwip-2.1.2/src/api/tcpip.c ****     return tcpip_inpkt(p, inp, ethernet_input);
+ 381              		.loc 1 286 6 view .LVU111
+ 382 00f2 91F82D30 		ldrb	r3, [r1, #45]	@ zero_extendqisi2
+ 284:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_ETHERNET
+ 383              		.loc 1 284 1 view .LVU112
+ 384 00f6 0746     		mov	r7, r0
+ 385 00f8 0C46     		mov	r4, r1
+ 386              	.LBB17:
+ 387              	.LBB18:
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 388              		.loc 1 254 29 view .LVU113
+ 389 00fa 0920     		movs	r0, #9
+ 390              	.LVL41:
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 391              		.loc 1 254 29 view .LVU114
+ 392              	.LBE18:
+ 393              	.LBE17:
+ 286:./lwip-2.1.2/src/api/tcpip.c ****     return tcpip_inpkt(p, inp, ethernet_input);
+ 394              		.loc 1 286 6 view .LVU115
+ 395 00fc 13F01805 		ands	r5, r3, #24
+ 396 0100 15D0     		beq	.L42
+ 287:./lwip-2.1.2/src/api/tcpip.c ****   } else
+ 397              		.loc 1 287 5 is_stmt 1 view .LVU116
+ 398              	.LVL42:
+ 399              	.LBB21:
+ 400              	.LBI17:
+ 240:./lwip-2.1.2/src/api/tcpip.c **** {
+ 401              		.loc 1 240 1 view .LVU117
+ 402              	.LBB19:
+ 250:./lwip-2.1.2/src/api/tcpip.c **** 
+ 403              		.loc 1 250 3 view .LVU118
+ 252:./lwip-2.1.2/src/api/tcpip.c **** 
+ 404              		.loc 1 252 62 view .LVU119
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 405              		.loc 1 254 3 view .LVU120
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 406              		.loc 1 254 29 is_stmt 0 view .LVU121
+ 407 0102 FFF7FEFF 		bl	memp_malloc
+ 408              	.LVL43:
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 409              		.loc 1 255 3 is_stmt 1 view .LVU122
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 410              		.loc 1 255 6 is_stmt 0 view .LVU123
+ 411 0106 0546     		mov	r5, r0
+ 412 0108 28B3     		cbz	r0, .L55
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 413              		.loc 1 259 3 is_stmt 1 view .LVU124
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 414              		.loc 1 259 13 is_stmt 0 view .LVU125
+ 415 010a 0022     		movs	r2, #0
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 416              		.loc 1 262 25 view .LVU126
+ 417 010c 134B     		ldr	r3, .L57
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 418              		.loc 1 263 7 view .LVU127
+ 419 010e 0146     		mov	r1, r0
+ 261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
+ 420              		.loc 1 261 22 view .LVU128
+ 421 0110 C0E90174 		strd	r7, r4, [r0, #4]
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 422              		.loc 1 263 7 view .LVU129
+ 423 0114 1248     		ldr	r0, .L57+4
+ 424              	.LVL44:
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 425              		.loc 1 259 13 view .LVU130
+ 426 0116 2A70     		strb	r2, [r5]
+ 260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
+ 427              		.loc 1 260 3 is_stmt 1 view .LVU131
+ 261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
+ 428              		.loc 1 261 3 view .LVU132
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 429              		.loc 1 262 3 view .LVU133
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 430              		.loc 1 262 25 is_stmt 0 view .LVU134
+ 431 0118 EB60     		str	r3, [r5, #12]
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 432              		.loc 1 263 3 is_stmt 1 view .LVU135
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 433              		.loc 1 263 7 is_stmt 0 view .LVU136
+ 434 011a FFF7FEFF 		bl	sys_mbox_trypost
+ 435              	.LVL45:
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 436              		.loc 1 263 6 view .LVU137
+ 437 011e A0B1     		cbz	r0, .L47
+ 264:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 438              		.loc 1 264 5 is_stmt 1 view .LVU138
+ 439 0120 2946     		mov	r1, r5
+ 440 0122 0920     		movs	r0, #9
+ 441 0124 FFF7FEFF 		bl	memp_free
+ 442              	.LVL46:
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 443              		.loc 1 265 5 view .LVU139
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 444              		.loc 1 265 12 is_stmt 0 view .LVU140
+ 445 0128 4FF0FF30 		mov	r0, #-1
+ 446              	.LVL47:
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 447              		.loc 1 265 12 view .LVU141
+ 448              	.LBE19:
+ 449              	.LBE21:
+ 291:./lwip-2.1.2/src/api/tcpip.c **** 
+ 450              		.loc 1 291 1 view .LVU142
+ 451 012c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 452              	.LVL48:
+ 453              	.L42:
+ 290:./lwip-2.1.2/src/api/tcpip.c **** }
+ 454              		.loc 1 290 5 is_stmt 1 view .LVU143
+ 455              	.LBB22:
+ 456              	.LBI22:
+ 240:./lwip-2.1.2/src/api/tcpip.c **** {
+ 457              		.loc 1 240 1 view .LVU144
+ 458              	.LBB23:
+ 250:./lwip-2.1.2/src/api/tcpip.c **** 
+ 459              		.loc 1 250 3 view .LVU145
+ 252:./lwip-2.1.2/src/api/tcpip.c **** 
+ 460              		.loc 1 252 62 view .LVU146
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 461              		.loc 1 254 3 view .LVU147
+ 254:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 462              		.loc 1 254 29 is_stmt 0 view .LVU148
+ 463 012e FFF7FEFF 		bl	memp_malloc
+ 464              	.LVL49:
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 465              		.loc 1 255 3 is_stmt 1 view .LVU149
+ 255:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 466              		.loc 1 255 6 is_stmt 0 view .LVU150
+ 467 0132 0646     		mov	r6, r0
+ 468 0134 78B1     		cbz	r0, .L55
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 469              		.loc 1 259 3 is_stmt 1 view .LVU151
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 470              		.loc 1 262 25 is_stmt 0 view .LVU152
+ 471 0136 0B4B     		ldr	r3, .L57+8
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 472              		.loc 1 263 7 view .LVU153
+ 473 0138 0146     		mov	r1, r0
+ 259:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.p = p;
+ 474              		.loc 1 259 13 view .LVU154
+ 475 013a 0570     		strb	r5, [r0]
+ 260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
+ 476              		.loc 1 260 3 is_stmt 1 view .LVU155
+ 260:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.netif = inp;
+ 477              		.loc 1 260 18 is_stmt 0 view .LVU156
+ 478 013c 4760     		str	r7, [r0, #4]
+ 261:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.inp.input_fn = input_fn;
+ 479              		.loc 1 261 3 is_stmt 1 view .LVU157
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 480              		.loc 1 263 7 is_stmt 0 view .LVU158
+ 481 013e 0848     		ldr	r0, .L57+4
+ 482              	.LVL50:
+ 262:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
+ 483              		.loc 1 262 25 view .LVU159
+ 484 0140 C6E90243 		strd	r4, r3, [r6, #8]
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 485              		.loc 1 263 3 is_stmt 1 view .LVU160
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 486              		.loc 1 263 7 is_stmt 0 view .LVU161
+ 487 0144 FFF7FEFF 		bl	sys_mbox_trypost
+ 488              	.LVL51:
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 489              		.loc 1 263 6 view .LVU162
+ 490 0148 08B9     		cbnz	r0, .L56
+ 491              	.LVL52:
+ 492              	.L47:
+ 263:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
+ 493              		.loc 1 263 6 view .LVU163
+ 494              	.LBE23:
+ 495              	.LBE22:
+ 496              	.LBB25:
+ 497              	.LBB20:
+ 267:./lwip-2.1.2/src/api/tcpip.c **** #endif /* LWIP_TCPIP_CORE_LOCKING_INPUT */
+ 498              		.loc 1 267 10 view .LVU164
+ 499 014a 0020     		movs	r0, #0
+ 500              	.LBE20:
+ 501              	.LBE25:
+ 291:./lwip-2.1.2/src/api/tcpip.c **** 
+ 502              		.loc 1 291 1 view .LVU165
+ 503 014c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 504              	.LVL53:
+ 505              	.L56:
+ 506              	.LBB26:
+ 507              	.LBB24:
+ 264:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 508              		.loc 1 264 5 is_stmt 1 view .LVU166
+ 509 014e 3146     		mov	r1, r6
+ 510 0150 0920     		movs	r0, #9
+ 511 0152 FFF7FEFF 		bl	memp_free
+ 512              	.LVL54:
+ 513              	.L55:
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 514              		.loc 1 265 5 view .LVU167
+ 265:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 515              		.loc 1 265 12 is_stmt 0 view .LVU168
+ 516 0156 4FF0FF30 		mov	r0, #-1
+ 517              	.LBE24:
+ 518              	.LBE26:
+ 291:./lwip-2.1.2/src/api/tcpip.c **** 
+ 519              		.loc 1 291 1 view .LVU169
+ 520 015a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 521              	.LVL55:
+ 522              	.L58:
+ 291:./lwip-2.1.2/src/api/tcpip.c **** 
+ 523              		.loc 1 291 1 view .LVU170
+ 524              		.align	2
+ 525              	.L57:
+ 526 015c 00000000 		.word	ethernet_input
+ 527 0160 0C000000 		.word	.LANCHOR0+12
+ 528 0164 00000000 		.word	ip4_input
+ 529              		.cfi_endproc
+ 530              	.LFE173:
+ 532              		.align	1
+ 533              		.p2align 2,,3
+ 534              		.global	tcpip_callback
+ 535              		.syntax unified
+ 536              		.thumb
+ 537              		.thumb_func
+ 538              		.fpu fpv5-d16
+ 540              	tcpip_callback:
+ 541              	.LVL56:
+ 542              	.LFB174:
+ 310:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 543              		.loc 1 310 1 is_stmt 1 view -0
+ 544              		.cfi_startproc
+ 545              		@ args = 0, pretend = 0, frame = 0
+ 546              		@ frame_needed = 0, uses_anonymous_args = 0
+ 311:./lwip-2.1.2/src/api/tcpip.c **** 
+ 547              		.loc 1 311 3 view .LVU172
+ 313:./lwip-2.1.2/src/api/tcpip.c **** 
+ 548              		.loc 1 313 62 view .LVU173
+ 315:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 549              		.loc 1 315 3 view .LVU174
+ 310:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 550              		.loc 1 310 1 is_stmt 0 view .LVU175
+ 551 0168 38B5     		push	{r3, r4, r5, lr}
+ 552              	.LCFI4:
+ 553              		.cfi_def_cfa_offset 16
+ 554              		.cfi_offset 3, -16
+ 555              		.cfi_offset 4, -12
+ 556              		.cfi_offset 5, -8
+ 557              		.cfi_offset 14, -4
+ 310:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 558              		.loc 1 310 1 view .LVU176
+ 559 016a 0546     		mov	r5, r0
+ 315:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 560              		.loc 1 315 29 view .LVU177
+ 561 016c 0820     		movs	r0, #8
+ 562              	.LVL57:
+ 310:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 563              		.loc 1 310 1 view .LVU178
+ 564 016e 0C46     		mov	r4, r1
+ 315:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 565              		.loc 1 315 29 view .LVU179
+ 566 0170 FFF7FEFF 		bl	memp_malloc
+ 567              	.LVL58:
+ 316:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 568              		.loc 1 316 3 is_stmt 1 view .LVU180
+ 316:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 569              		.loc 1 316 6 is_stmt 0 view .LVU181
+ 570 0174 48B1     		cbz	r0, .L61
+ 571 0176 0146     		mov	r1, r0
+ 320:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 572              		.loc 1 320 3 is_stmt 1 view .LVU182
+ 320:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 573              		.loc 1 320 13 is_stmt 0 view .LVU183
+ 574 0178 0122     		movs	r2, #1
+ 322:./lwip-2.1.2/src/api/tcpip.c **** 
+ 575              		.loc 1 322 19 view .LVU184
+ 576 017a C0E90154 		strd	r5, r4, [r0, #4]
+ 324:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
+ 577              		.loc 1 324 3 view .LVU185
+ 578 017e 0448     		ldr	r0, .L63
+ 579              	.LVL59:
+ 320:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 580              		.loc 1 320 13 view .LVU186
+ 581 0180 0A70     		strb	r2, [r1]
+ 321:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 582              		.loc 1 321 3 is_stmt 1 view .LVU187
+ 322:./lwip-2.1.2/src/api/tcpip.c **** 
+ 583              		.loc 1 322 3 view .LVU188
+ 324:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
+ 584              		.loc 1 324 3 view .LVU189
+ 585 0182 FFF7FEFF 		bl	sys_mbox_post
+ 586              	.LVL60:
+ 325:./lwip-2.1.2/src/api/tcpip.c **** }
+ 587              		.loc 1 325 3 view .LVU190
+ 325:./lwip-2.1.2/src/api/tcpip.c **** }
+ 588              		.loc 1 325 10 is_stmt 0 view .LVU191
+ 589 0186 0020     		movs	r0, #0
+ 326:./lwip-2.1.2/src/api/tcpip.c **** 
+ 590              		.loc 1 326 1 view .LVU192
+ 591 0188 38BD     		pop	{r3, r4, r5, pc}
+ 592              	.LVL61:
+ 593              	.L61:
+ 317:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 594              		.loc 1 317 12 view .LVU193
+ 595 018a 4FF0FF30 		mov	r0, #-1
+ 596              	.LVL62:
+ 326:./lwip-2.1.2/src/api/tcpip.c **** 
+ 597              		.loc 1 326 1 view .LVU194
+ 598 018e 38BD     		pop	{r3, r4, r5, pc}
+ 599              	.LVL63:
+ 600              	.L64:
+ 326:./lwip-2.1.2/src/api/tcpip.c **** 
+ 601              		.loc 1 326 1 view .LVU195
+ 602              		.align	2
+ 603              	.L63:
+ 604 0190 0C000000 		.word	.LANCHOR0+12
+ 605              		.cfi_endproc
+ 606              	.LFE174:
+ 608              		.align	1
+ 609              		.p2align 2,,3
+ 610              		.global	tcpip_try_callback
+ 611              		.syntax unified
+ 612              		.thumb
+ 613              		.thumb_func
+ 614              		.fpu fpv5-d16
+ 616              	tcpip_try_callback:
+ 617              	.LVL64:
+ 618              	.LFB175:
+ 346:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 619              		.loc 1 346 1 is_stmt 1 view -0
+ 620              		.cfi_startproc
+ 621              		@ args = 0, pretend = 0, frame = 0
+ 622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 347:./lwip-2.1.2/src/api/tcpip.c **** 
+ 623              		.loc 1 347 3 view .LVU197
+ 349:./lwip-2.1.2/src/api/tcpip.c **** 
+ 624              		.loc 1 349 62 view .LVU198
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 625              		.loc 1 351 3 view .LVU199
+ 346:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 626              		.loc 1 346 1 is_stmt 0 view .LVU200
+ 627 0194 70B5     		push	{r4, r5, r6, lr}
+ 628              	.LCFI5:
+ 629              		.cfi_def_cfa_offset 16
+ 630              		.cfi_offset 4, -16
+ 631              		.cfi_offset 5, -12
+ 632              		.cfi_offset 6, -8
+ 633              		.cfi_offset 14, -4
+ 346:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 634              		.loc 1 346 1 view .LVU201
+ 635 0196 0646     		mov	r6, r0
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 636              		.loc 1 351 29 view .LVU202
+ 637 0198 0820     		movs	r0, #8
+ 638              	.LVL65:
+ 346:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg;
+ 639              		.loc 1 346 1 view .LVU203
+ 640 019a 0D46     		mov	r5, r1
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 641              		.loc 1 351 29 view .LVU204
+ 642 019c FFF7FEFF 		bl	memp_malloc
+ 643              	.LVL66:
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 644              		.loc 1 352 3 is_stmt 1 view .LVU205
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 645              		.loc 1 352 6 is_stmt 0 view .LVU206
+ 646 01a0 88B1     		cbz	r0, .L67
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 647              		.loc 1 356 3 is_stmt 1 view .LVU207
+ 648 01a2 0446     		mov	r4, r0
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 649              		.loc 1 356 13 is_stmt 0 view .LVU208
+ 650 01a4 0123     		movs	r3, #1
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 651              		.loc 1 360 7 view .LVU209
+ 652 01a6 0146     		mov	r1, r0
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 653              		.loc 1 358 19 view .LVU210
+ 654 01a8 C0E90165 		strd	r6, r5, [r0, #4]
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 655              		.loc 1 360 7 view .LVU211
+ 656 01ac 0748     		ldr	r0, .L73
+ 657              	.LVL67:
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 658              		.loc 1 356 13 view .LVU212
+ 659 01ae 2370     		strb	r3, [r4]
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 660              		.loc 1 357 3 is_stmt 1 view .LVU213
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 661              		.loc 1 358 3 view .LVU214
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 662              		.loc 1 360 3 view .LVU215
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 663              		.loc 1 360 7 is_stmt 0 view .LVU216
+ 664 01b0 FFF7FEFF 		bl	sys_mbox_trypost
+ 665              	.LVL68:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 666              		.loc 1 360 6 view .LVU217
+ 667 01b4 00B9     		cbnz	r0, .L72
+ 365:./lwip-2.1.2/src/api/tcpip.c **** 
+ 668              		.loc 1 365 1 view .LVU218
+ 669 01b6 70BD     		pop	{r4, r5, r6, pc}
+ 670              	.LVL69:
+ 671              	.L72:
+ 361:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 672              		.loc 1 361 5 is_stmt 1 view .LVU219
+ 673 01b8 2146     		mov	r1, r4
+ 674 01ba 0820     		movs	r0, #8
+ 675 01bc FFF7FEFF 		bl	memp_free
+ 676              	.LVL70:
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 677              		.loc 1 362 5 view .LVU220
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 678              		.loc 1 362 12 is_stmt 0 view .LVU221
+ 679 01c0 4FF0FF30 		mov	r0, #-1
+ 365:./lwip-2.1.2/src/api/tcpip.c **** 
+ 680              		.loc 1 365 1 view .LVU222
+ 681 01c4 70BD     		pop	{r4, r5, r6, pc}
+ 682              	.LVL71:
+ 683              	.L67:
+ 353:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 684              		.loc 1 353 12 view .LVU223
+ 685 01c6 4FF0FF30 		mov	r0, #-1
+ 686              	.LVL72:
+ 365:./lwip-2.1.2/src/api/tcpip.c **** 
+ 687              		.loc 1 365 1 view .LVU224
+ 688 01ca 70BD     		pop	{r4, r5, r6, pc}
+ 689              	.LVL73:
+ 690              	.L74:
+ 365:./lwip-2.1.2/src/api/tcpip.c **** 
+ 691              		.loc 1 365 1 view .LVU225
+ 692              		.align	2
+ 693              	.L73:
+ 694 01cc 0C000000 		.word	.LANCHOR0+12
+ 695              		.cfi_endproc
+ 696              	.LFE175:
+ 698              		.align	1
+ 699              		.p2align 2,,3
+ 700              		.global	tcpip_send_msg_wait_sem
+ 701              		.syntax unified
+ 702              		.thumb
+ 703              		.thumb_func
+ 704              		.fpu fpv5-d16
+ 706              	tcpip_send_msg_wait_sem:
+ 707              	.LVL74:
+ 708              	.LFB176:
+ 438:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 709              		.loc 1 438 1 is_stmt 1 view -0
+ 710              		.cfi_startproc
+ 711              		@ args = 0, pretend = 0, frame = 0
+ 712              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
+ 713              		.loc 1 440 3 view .LVU227
+ 441:./lwip-2.1.2/src/api/tcpip.c ****   fn(apimsg);
+ 714              		.loc 1 441 3 view .LVU228
+ 438:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 715              		.loc 1 438 1 is_stmt 0 view .LVU229
+ 716 01d0 70B5     		push	{r4, r5, r6, lr}
+ 717              	.LCFI6:
+ 718              		.cfi_def_cfa_offset 16
+ 719              		.cfi_offset 4, -16
+ 720              		.cfi_offset 5, -12
+ 721              		.cfi_offset 6, -8
+ 722              		.cfi_offset 14, -4
+ 441:./lwip-2.1.2/src/api/tcpip.c ****   fn(apimsg);
+ 723              		.loc 1 441 3 view .LVU230
+ 724 01d2 064E     		ldr	r6, .L77
+ 438:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 725              		.loc 1 438 1 view .LVU231
+ 726 01d4 0D46     		mov	r5, r1
+ 727 01d6 0446     		mov	r4, r0
+ 441:./lwip-2.1.2/src/api/tcpip.c ****   fn(apimsg);
+ 728              		.loc 1 441 3 view .LVU232
+ 729 01d8 3046     		mov	r0, r6
+ 730              	.LVL75:
+ 441:./lwip-2.1.2/src/api/tcpip.c ****   fn(apimsg);
+ 731              		.loc 1 441 3 view .LVU233
+ 732 01da FFF7FEFF 		bl	sys_mutex_lock
+ 733              	.LVL76:
+ 442:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
+ 734              		.loc 1 442 3 is_stmt 1 view .LVU234
+ 735 01de 2846     		mov	r0, r5
+ 736 01e0 A047     		blx	r4
+ 737              	.LVL77:
+ 443:./lwip-2.1.2/src/api/tcpip.c ****   return ERR_OK;
+ 738              		.loc 1 443 3 view .LVU235
+ 739 01e2 3046     		mov	r0, r6
+ 740 01e4 FFF7FEFF 		bl	sys_mutex_unlock
+ 741              	.LVL78:
+ 444:./lwip-2.1.2/src/api/tcpip.c **** #else /* LWIP_TCPIP_CORE_LOCKING */
+ 742              		.loc 1 444 3 view .LVU236
+ 460:./lwip-2.1.2/src/api/tcpip.c **** 
+ 743              		.loc 1 460 1 is_stmt 0 view .LVU237
+ 744 01e8 0020     		movs	r0, #0
+ 745 01ea 70BD     		pop	{r4, r5, r6, pc}
+ 746              	.LVL79:
+ 747              	.L78:
+ 460:./lwip-2.1.2/src/api/tcpip.c **** 
+ 748              		.loc 1 460 1 view .LVU238
+ 749              		.align	2
+ 750              	.L77:
+ 751 01ec 00000000 		.word	.LANCHOR0
+ 752              		.cfi_endproc
+ 753              	.LFE176:
+ 755              		.align	1
+ 756              		.p2align 2,,3
+ 757              		.global	tcpip_api_call
+ 758              		.syntax unified
+ 759              		.thumb
+ 760              		.thumb_func
+ 761              		.fpu fpv5-d16
+ 763              	tcpip_api_call:
+ 764              	.LVL80:
+ 765              	.LFB177:
+ 474:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 766              		.loc 1 474 1 is_stmt 1 view -0
+ 767              		.cfi_startproc
+ 768              		@ args = 0, pretend = 0, frame = 0
+ 769              		@ frame_needed = 0, uses_anonymous_args = 0
+ 476:./lwip-2.1.2/src/api/tcpip.c ****   LOCK_TCPIP_CORE();
+ 770              		.loc 1 476 3 view .LVU240
+ 477:./lwip-2.1.2/src/api/tcpip.c ****   err = fn(call);
+ 771              		.loc 1 477 3 view .LVU241
+ 474:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 772              		.loc 1 474 1 is_stmt 0 view .LVU242
+ 773 01f0 70B5     		push	{r4, r5, r6, lr}
+ 774              	.LCFI7:
+ 775              		.cfi_def_cfa_offset 16
+ 776              		.cfi_offset 4, -16
+ 777              		.cfi_offset 5, -12
+ 778              		.cfi_offset 6, -8
+ 779              		.cfi_offset 14, -4
+ 477:./lwip-2.1.2/src/api/tcpip.c ****   err = fn(call);
+ 780              		.loc 1 477 3 view .LVU243
+ 781 01f2 074E     		ldr	r6, .L81
+ 474:./lwip-2.1.2/src/api/tcpip.c **** #if LWIP_TCPIP_CORE_LOCKING
+ 782              		.loc 1 474 1 view .LVU244
+ 783 01f4 0D46     		mov	r5, r1
+ 784 01f6 0446     		mov	r4, r0
+ 477:./lwip-2.1.2/src/api/tcpip.c ****   err = fn(call);
+ 785              		.loc 1 477 3 view .LVU245
+ 786 01f8 3046     		mov	r0, r6
+ 787              	.LVL81:
+ 477:./lwip-2.1.2/src/api/tcpip.c ****   err = fn(call);
+ 788              		.loc 1 477 3 view .LVU246
+ 789 01fa FFF7FEFF 		bl	sys_mutex_lock
+ 790              	.LVL82:
+ 478:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
+ 791              		.loc 1 478 3 is_stmt 1 view .LVU247
+ 478:./lwip-2.1.2/src/api/tcpip.c ****   UNLOCK_TCPIP_CORE();
+ 792              		.loc 1 478 9 is_stmt 0 view .LVU248
+ 793 01fe 2846     		mov	r0, r5
+ 794 0200 A047     		blx	r4
+ 795              	.LVL83:
+ 796 0202 0446     		mov	r4, r0
+ 797              	.LVL84:
+ 479:./lwip-2.1.2/src/api/tcpip.c ****   return err;
+ 798              		.loc 1 479 3 view .LVU249
+ 799 0204 3046     		mov	r0, r6
+ 800              	.LVL85:
+ 479:./lwip-2.1.2/src/api/tcpip.c ****   return err;
+ 801              		.loc 1 479 3 is_stmt 1 view .LVU250
+ 802 0206 FFF7FEFF 		bl	sys_mutex_unlock
+ 803              	.LVL86:
+ 480:./lwip-2.1.2/src/api/tcpip.c **** #else /* LWIP_TCPIP_CORE_LOCKING */
+ 804              		.loc 1 480 3 view .LVU251
+ 512:./lwip-2.1.2/src/api/tcpip.c **** 
+ 805              		.loc 1 512 1 is_stmt 0 view .LVU252
+ 806 020a 2046     		mov	r0, r4
+ 807 020c 70BD     		pop	{r4, r5, r6, pc}
+ 808              	.LVL87:
+ 809              	.L82:
+ 512:./lwip-2.1.2/src/api/tcpip.c **** 
+ 810              		.loc 1 512 1 view .LVU253
+ 811 020e 00BF     		.align	2
+ 812              	.L81:
+ 813 0210 00000000 		.word	.LANCHOR0
+ 814              		.cfi_endproc
+ 815              	.LFE177:
+ 817              		.align	1
+ 818              		.p2align 2,,3
+ 819              		.global	tcpip_callbackmsg_new
+ 820              		.syntax unified
+ 821              		.thumb
+ 822              		.thumb_func
+ 823              		.fpu fpv5-d16
+ 825              	tcpip_callbackmsg_new:
+ 826              	.LVL88:
+ 827              	.LFB178:
+ 532:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
+ 828              		.loc 1 532 1 is_stmt 1 view -0
+ 829              		.cfi_startproc
+ 830              		@ args = 0, pretend = 0, frame = 0
+ 831              		@ frame_needed = 0, uses_anonymous_args = 0
+ 533:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 832              		.loc 1 533 3 view .LVU255
+ 532:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
+ 833              		.loc 1 532 1 is_stmt 0 view .LVU256
+ 834 0214 38B5     		push	{r3, r4, r5, lr}
+ 835              	.LCFI8:
+ 836              		.cfi_def_cfa_offset 16
+ 837              		.cfi_offset 3, -16
+ 838              		.cfi_offset 4, -12
+ 839              		.cfi_offset 5, -8
+ 840              		.cfi_offset 14, -4
+ 532:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
+ 841              		.loc 1 532 1 view .LVU257
+ 842 0216 0546     		mov	r5, r0
+ 533:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 843              		.loc 1 533 47 view .LVU258
+ 844 0218 0820     		movs	r0, #8
+ 845              	.LVL89:
+ 532:./lwip-2.1.2/src/api/tcpip.c ****   struct tcpip_msg *msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_API);
+ 846              		.loc 1 532 1 view .LVU259
+ 847 021a 0C46     		mov	r4, r1
+ 533:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 848              		.loc 1 533 47 view .LVU260
+ 849 021c FFF7FEFF 		bl	memp_malloc
+ 850              	.LVL90:
+ 534:./lwip-2.1.2/src/api/tcpip.c ****     return NULL;
+ 851              		.loc 1 534 3 is_stmt 1 view .LVU261
+ 534:./lwip-2.1.2/src/api/tcpip.c ****     return NULL;
+ 852              		.loc 1 534 6 is_stmt 0 view .LVU262
+ 853 0220 18B1     		cbz	r0, .L83
+ 537:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 854              		.loc 1 537 3 is_stmt 1 view .LVU263
+ 537:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 855              		.loc 1 537 13 is_stmt 0 view .LVU264
+ 856 0222 0223     		movs	r3, #2
+ 539:./lwip-2.1.2/src/api/tcpip.c ****   return (struct tcpip_callback_msg *)msg;
+ 857              		.loc 1 539 19 view .LVU265
+ 858 0224 C0E90154 		strd	r5, r4, [r0, #4]
+ 537:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 859              		.loc 1 537 13 view .LVU266
+ 860 0228 0370     		strb	r3, [r0]
+ 538:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 861              		.loc 1 538 3 is_stmt 1 view .LVU267
+ 539:./lwip-2.1.2/src/api/tcpip.c ****   return (struct tcpip_callback_msg *)msg;
+ 862              		.loc 1 539 3 view .LVU268
+ 540:./lwip-2.1.2/src/api/tcpip.c **** }
+ 863              		.loc 1 540 3 view .LVU269
+ 864              	.L83:
+ 541:./lwip-2.1.2/src/api/tcpip.c **** 
+ 865              		.loc 1 541 1 is_stmt 0 view .LVU270
+ 866 022a 38BD     		pop	{r3, r4, r5, pc}
+ 541:./lwip-2.1.2/src/api/tcpip.c **** 
+ 867              		.loc 1 541 1 view .LVU271
+ 868              		.cfi_endproc
+ 869              	.LFE178:
+ 871              		.align	1
+ 872              		.p2align 2,,3
+ 873              		.global	tcpip_callbackmsg_delete
+ 874              		.syntax unified
+ 875              		.thumb
+ 876              		.thumb_func
+ 877              		.fpu fpv5-d16
+ 879              	tcpip_callbackmsg_delete:
+ 880              	.LVL91:
+ 881              	.LFB179:
+ 553:./lwip-2.1.2/src/api/tcpip.c ****   memp_free(MEMP_TCPIP_MSG_API, msg);
+ 882              		.loc 1 553 1 is_stmt 1 view -0
+ 883              		.cfi_startproc
+ 884              		@ args = 0, pretend = 0, frame = 0
+ 885              		@ frame_needed = 0, uses_anonymous_args = 0
+ 886              		@ link register save eliminated.
+ 554:./lwip-2.1.2/src/api/tcpip.c **** }
+ 887              		.loc 1 554 3 view .LVU273
+ 553:./lwip-2.1.2/src/api/tcpip.c ****   memp_free(MEMP_TCPIP_MSG_API, msg);
+ 888              		.loc 1 553 1 is_stmt 0 view .LVU274
+ 889 022c 0146     		mov	r1, r0
+ 554:./lwip-2.1.2/src/api/tcpip.c **** }
+ 890              		.loc 1 554 3 view .LVU275
+ 891 022e 0820     		movs	r0, #8
+ 892              	.LVL92:
+ 554:./lwip-2.1.2/src/api/tcpip.c **** }
+ 893              		.loc 1 554 3 view .LVU276
+ 894 0230 FFF7FEBF 		b	memp_free
+ 895              	.LVL93:
+ 554:./lwip-2.1.2/src/api/tcpip.c **** }
+ 896              		.loc 1 554 3 view .LVU277
+ 897              		.cfi_endproc
+ 898              	.LFE179:
+ 900              		.align	1
+ 901              		.p2align 2,,3
+ 902              		.global	tcpip_callbackmsg_trycallback
+ 903              		.syntax unified
+ 904              		.thumb
+ 905              		.thumb_func
+ 906              		.fpu fpv5-d16
+ 908              	tcpip_callbackmsg_trycallback:
+ 909              	.LVL94:
+ 910              	.LFB180:
+ 568:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+ 911              		.loc 1 568 1 is_stmt 1 view -0
+ 912              		.cfi_startproc
+ 913              		@ args = 0, pretend = 0, frame = 0
+ 914              		@ frame_needed = 0, uses_anonymous_args = 0
+ 915              		@ link register save eliminated.
+ 569:./lwip-2.1.2/src/api/tcpip.c ****   return sys_mbox_trypost(&tcpip_mbox, msg);
+ 916              		.loc 1 569 62 view .LVU279
+ 570:./lwip-2.1.2/src/api/tcpip.c **** }
+ 917              		.loc 1 570 3 view .LVU280
+ 568:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+ 918              		.loc 1 568 1 is_stmt 0 view .LVU281
+ 919 0234 0146     		mov	r1, r0
+ 570:./lwip-2.1.2/src/api/tcpip.c **** }
+ 920              		.loc 1 570 10 view .LVU282
+ 921 0236 0148     		ldr	r0, .L91
+ 922              	.LVL95:
+ 570:./lwip-2.1.2/src/api/tcpip.c **** }
+ 923              		.loc 1 570 10 view .LVU283
+ 924 0238 FFF7FEBF 		b	sys_mbox_trypost
+ 925              	.LVL96:
+ 926              	.L92:
+ 570:./lwip-2.1.2/src/api/tcpip.c **** }
+ 927              		.loc 1 570 10 view .LVU284
+ 928              		.align	2
+ 929              	.L91:
+ 930 023c 0C000000 		.word	.LANCHOR0+12
+ 931              		.cfi_endproc
+ 932              	.LFE180:
+ 934              		.align	1
+ 935              		.p2align 2,,3
+ 936              		.global	tcpip_callbackmsg_trycallback_fromisr
+ 937              		.syntax unified
+ 938              		.thumb
+ 939              		.thumb_func
+ 940              		.fpu fpv5-d16
+ 942              	tcpip_callbackmsg_trycallback_fromisr:
+ 943              	.LVL97:
+ 944              	.LFB181:
+ 587:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+ 945              		.loc 1 587 1 is_stmt 1 view -0
+ 946              		.cfi_startproc
+ 947              		@ args = 0, pretend = 0, frame = 0
+ 948              		@ frame_needed = 0, uses_anonymous_args = 0
+ 949              		@ link register save eliminated.
+ 588:./lwip-2.1.2/src/api/tcpip.c ****   return sys_mbox_trypost_fromisr(&tcpip_mbox, msg);
+ 950              		.loc 1 588 62 view .LVU286
+ 589:./lwip-2.1.2/src/api/tcpip.c **** }
+ 951              		.loc 1 589 3 view .LVU287
+ 587:./lwip-2.1.2/src/api/tcpip.c ****   LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+ 952              		.loc 1 587 1 is_stmt 0 view .LVU288
+ 953 0240 0146     		mov	r1, r0
+ 589:./lwip-2.1.2/src/api/tcpip.c **** }
+ 954              		.loc 1 589 10 view .LVU289
+ 955 0242 0148     		ldr	r0, .L94
+ 956              	.LVL98:
+ 589:./lwip-2.1.2/src/api/tcpip.c **** }
+ 957              		.loc 1 589 10 view .LVU290
+ 958 0244 FFF7FEBF 		b	sys_mbox_trypost_fromisr
+ 959              	.LVL99:
+ 960              	.L95:
+ 589:./lwip-2.1.2/src/api/tcpip.c **** }
+ 961              		.loc 1 589 10 view .LVU291
+ 962              		.align	2
+ 963              	.L94:
+ 964 0248 0C000000 		.word	.LANCHOR0+12
+ 965              		.cfi_endproc
+ 966              	.LFE181:
+ 968              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 969              		.align	2
+ 970              	.LC0:
+ 971 0000 74637069 		.ascii	"tcpip_thread\000"
+ 971      705F7468 
+ 971      72656164 
+ 971      00
+ 972              		.text
+ 973              		.align	1
+ 974              		.p2align 2,,3
+ 975              		.global	tcpip_init
+ 976              		.syntax unified
+ 977              		.thumb
+ 978              		.thumb_func
+ 979              		.fpu fpv5-d16
+ 981              	tcpip_init:
+ 982              	.LVL100:
+ 983              	.LFB182:
+ 603:./lwip-2.1.2/src/api/tcpip.c ****   lwip_init();
+ 984              		.loc 1 603 1 is_stmt 1 view -0
+ 985              		.cfi_startproc
+ 986              		@ args = 0, pretend = 0, frame = 0
+ 987              		@ frame_needed = 0, uses_anonymous_args = 0
+ 604:./lwip-2.1.2/src/api/tcpip.c **** 
+ 988              		.loc 1 604 3 view .LVU293
+ 603:./lwip-2.1.2/src/api/tcpip.c ****   lwip_init();
+ 989              		.loc 1 603 1 is_stmt 0 view .LVU294
+ 990 024c 70B5     		push	{r4, r5, r6, lr}
+ 991              	.LCFI9:
+ 992              		.cfi_def_cfa_offset 16
+ 993              		.cfi_offset 4, -16
+ 994              		.cfi_offset 5, -12
+ 995              		.cfi_offset 6, -8
+ 996              		.cfi_offset 14, -4
+ 606:./lwip-2.1.2/src/api/tcpip.c ****   tcpip_init_done_arg = arg;
+ 997              		.loc 1 606 19 view .LVU295
+ 998 024e 0D4C     		ldr	r4, .L98
+ 603:./lwip-2.1.2/src/api/tcpip.c ****   lwip_init();
+ 999              		.loc 1 603 1 view .LVU296
+ 1000 0250 82B0     		sub	sp, sp, #8
+ 1001              	.LCFI10:
+ 1002              		.cfi_def_cfa_offset 24
+ 603:./lwip-2.1.2/src/api/tcpip.c ****   lwip_init();
+ 1003              		.loc 1 603 1 view .LVU297
+ 1004 0252 0646     		mov	r6, r0
+ 1005 0254 0D46     		mov	r5, r1
+ 604:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1006              		.loc 1 604 3 view .LVU298
+ 1007 0256 FFF7FEFF 		bl	lwip_init
+ 1008              	.LVL101:
+ 606:./lwip-2.1.2/src/api/tcpip.c ****   tcpip_init_done_arg = arg;
+ 1009              		.loc 1 606 3 is_stmt 1 view .LVU299
+ 608:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
+ 1010              		.loc 1 608 7 is_stmt 0 view .LVU300
+ 1011 025a 0621     		movs	r1, #6
+ 1012 025c 04F10C00 		add	r0, r4, #12
+ 607:./lwip-2.1.2/src/api/tcpip.c ****   if (sys_mbox_new(&tcpip_mbox, TCPIP_MBOX_SIZE) != ERR_OK) {
+ 1013              		.loc 1 607 23 view .LVU301
+ 1014 0260 C4E90165 		strd	r6, r5, [r4, #4]
+ 608:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
+ 1015              		.loc 1 608 3 is_stmt 1 view .LVU302
+ 608:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
+ 1016              		.loc 1 608 7 is_stmt 0 view .LVU303
+ 1017 0264 FFF7FEFF 		bl	sys_mbox_new
+ 1018              	.LVL102:
+ 609:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1019              		.loc 1 609 57 is_stmt 1 view .LVU304
+ 612:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create lock_tcpip_core", 0);
+ 1020              		.loc 1 612 3 view .LVU305
+ 612:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create lock_tcpip_core", 0);
+ 1021              		.loc 1 612 7 is_stmt 0 view .LVU306
+ 1022 0268 2046     		mov	r0, r4
+ 617:./lwip-2.1.2/src/api/tcpip.c **** }
+ 1023              		.loc 1 617 3 view .LVU307
+ 1024 026a 2024     		movs	r4, #32
+ 612:./lwip-2.1.2/src/api/tcpip.c ****     LWIP_ASSERT("failed to create lock_tcpip_core", 0);
+ 1025              		.loc 1 612 7 view .LVU308
+ 1026 026c FFF7FEFF 		bl	sys_mutex_new
+ 1027              	.LVL103:
+ 613:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1028              		.loc 1 613 55 is_stmt 1 view .LVU309
+ 617:./lwip-2.1.2/src/api/tcpip.c **** }
+ 1029              		.loc 1 617 3 view .LVU310
+ 1030 0270 4FF40063 		mov	r3, #2048
+ 1031 0274 0022     		movs	r2, #0
+ 1032 0276 0449     		ldr	r1, .L98+4
+ 1033 0278 0094     		str	r4, [sp]
+ 1034 027a 0448     		ldr	r0, .L98+8
+ 1035 027c FFF7FEFF 		bl	sys_thread_new
+ 1036              	.LVL104:
+ 618:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1037              		.loc 1 618 1 is_stmt 0 view .LVU311
+ 1038 0280 02B0     		add	sp, sp, #8
+ 1039              	.LCFI11:
+ 1040              		.cfi_def_cfa_offset 16
+ 1041              		@ sp needed
+ 1042 0282 70BD     		pop	{r4, r5, r6, pc}
+ 1043              	.LVL105:
+ 1044              	.L99:
+ 618:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1045              		.loc 1 618 1 view .LVU312
+ 1046              		.align	2
+ 1047              	.L98:
+ 1048 0284 00000000 		.word	.LANCHOR0
+ 1049 0288 00000000 		.word	tcpip_thread
+ 1050 028c 00000000 		.word	.LC0
+ 1051              		.cfi_endproc
+ 1052              	.LFE182:
+ 1054              		.align	1
+ 1055              		.p2align 2,,3
+ 1056              		.global	pbuf_free_callback
+ 1057              		.syntax unified
+ 1058              		.thumb
+ 1059              		.thumb_func
+ 1060              		.fpu fpv5-d16
+ 1062              	pbuf_free_callback:
+ 1063              	.LVL106:
+ 1064              	.LFB184:
  631:./lwip-2.1.2/src/api/tcpip.c **** }
- 1057              		.loc 1 631 1
- 1058 03da 00BF     		nop
- 1059 03dc 1037     		adds	r7, r7, #16
- 1060              	.LCFI71:
- 1061              		.cfi_def_cfa_offset 8
- 1062 03de BD46     		mov	sp, r7
- 1063              	.LCFI72:
- 1064              		.cfi_def_cfa_register 13
- 1065              		@ sp needed
- 1066 03e0 80BD     		pop	{r7, pc}
- 1067              		.cfi_endproc
- 1068              	.LFE183:
- 1070              		.align	1
- 1071              		.global	pbuf_free_callback
- 1072              		.syntax unified
- 1073              		.thumb
- 1074              		.thumb_func
- 1075              		.fpu fpv5-d16
- 1077              	pbuf_free_callback:
- 1078              	.LFB184:
  632:./lwip-2.1.2/src/api/tcpip.c **** 
  633:./lwip-2.1.2/src/api/tcpip.c **** /**
  634:./lwip-2.1.2/src/api/tcpip.c ****  * A simple wrapper function that allows you to free a pbuf from interrupt context.
@@ -1699,53 +1988,153 @@
  639:./lwip-2.1.2/src/api/tcpip.c **** err_t
  640:./lwip-2.1.2/src/api/tcpip.c **** pbuf_free_callback(struct pbuf *p)
  641:./lwip-2.1.2/src/api/tcpip.c **** {
- 1079              		.loc 1 641 1
- 1080              		.cfi_startproc
- 1081              		@ args = 0, pretend = 0, frame = 8
- 1082              		@ frame_needed = 1, uses_anonymous_args = 0
- 1083 03e2 80B5     		push	{r7, lr}
- 1084              	.LCFI73:
- 1085              		.cfi_def_cfa_offset 8
- 1086              		.cfi_offset 7, -8
- 1087              		.cfi_offset 14, -4
- 1088 03e4 82B0     		sub	sp, sp, #8
- 1089              	.LCFI74:
- 1090              		.cfi_def_cfa_offset 16
- 1091 03e6 00AF     		add	r7, sp, #0
- 1092              	.LCFI75:
- 1093              		.cfi_def_cfa_register 7
- 1094 03e8 7860     		str	r0, [r7, #4]
+ 1065              		.loc 1 641 1 is_stmt 1 view -0
+ 1066              		.cfi_startproc
+ 1067              		@ args = 0, pretend = 0, frame = 0
+ 1068              		@ frame_needed = 0, uses_anonymous_args = 0
  642:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(pbuf_free_int, p);
- 1095              		.loc 1 642 10
- 1096 03ea 7968     		ldr	r1, [r7, #4]
- 1097 03ec 0348     		ldr	r0, .L72
- 1098 03ee FFF7FEFF 		bl	tcpip_try_callback
- 1099 03f2 0346     		mov	r3, r0
+ 1069              		.loc 1 642 3 view .LVU314
+ 641:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(pbuf_free_int, p);
+ 1070              		.loc 1 641 1 is_stmt 0 view .LVU315
+ 1071 0290 38B5     		push	{r3, r4, r5, lr}
+ 1072              	.LCFI12:
+ 1073              		.cfi_def_cfa_offset 16
+ 1074              		.cfi_offset 3, -16
+ 1075              		.cfi_offset 4, -12
+ 1076              		.cfi_offset 5, -8
+ 1077              		.cfi_offset 14, -4
+ 641:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(pbuf_free_int, p);
+ 1078              		.loc 1 641 1 view .LVU316
+ 1079 0292 0546     		mov	r5, r0
+ 1080              	.LBB29:
+ 1081              	.LBB30:
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1082              		.loc 1 351 29 view .LVU317
+ 1083 0294 0820     		movs	r0, #8
+ 1084              	.LVL107:
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1085              		.loc 1 351 29 view .LVU318
+ 1086              	.LBE30:
+ 1087              	.LBI29:
+ 345:./lwip-2.1.2/src/api/tcpip.c **** {
+ 1088              		.loc 1 345 1 is_stmt 1 view .LVU319
+ 1089              	.LBB31:
+ 347:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1090              		.loc 1 347 3 view .LVU320
+ 349:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1091              		.loc 1 349 62 view .LVU321
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1092              		.loc 1 351 3 view .LVU322
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1093              		.loc 1 351 29 is_stmt 0 view .LVU323
+ 1094 0296 FFF7FEFF 		bl	memp_malloc
+ 1095              	.LVL108:
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1096              		.loc 1 352 3 is_stmt 1 view .LVU324
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1097              		.loc 1 352 6 is_stmt 0 view .LVU325
+ 1098 029a 90B1     		cbz	r0, .L102
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1099              		.loc 1 356 3 is_stmt 1 view .LVU326
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1100              		.loc 1 356 13 is_stmt 0 view .LVU327
+ 1101 029c 0122     		movs	r2, #1
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1102              		.loc 1 357 24 view .LVU328
+ 1103 029e 0A4B     		ldr	r3, .L108
+ 1104 02a0 0446     		mov	r4, r0
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1105              		.loc 1 360 7 view .LVU329
+ 1106 02a2 0146     		mov	r1, r0
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1107              		.loc 1 358 19 view .LVU330
+ 1108 02a4 8560     		str	r5, [r0, #8]
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1109              		.loc 1 356 13 view .LVU331
+ 1110 02a6 0270     		strb	r2, [r0]
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1111              		.loc 1 357 3 is_stmt 1 view .LVU332
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1112              		.loc 1 357 24 is_stmt 0 view .LVU333
+ 1113 02a8 4360     		str	r3, [r0, #4]
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1114              		.loc 1 358 3 is_stmt 1 view .LVU334
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1115              		.loc 1 360 3 view .LVU335
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1116              		.loc 1 360 7 is_stmt 0 view .LVU336
+ 1117 02aa 0848     		ldr	r0, .L108+4
+ 1118              	.LVL109:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1119              		.loc 1 360 7 view .LVU337
+ 1120 02ac FFF7FEFF 		bl	sys_mbox_trypost
+ 1121              	.LVL110:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1122              		.loc 1 360 6 view .LVU338
+ 1123 02b0 00B9     		cbnz	r0, .L107
+ 1124              	.LVL111:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1125              		.loc 1 360 6 view .LVU339
+ 1126              	.LBE31:
+ 1127              	.LBE29:
  643:./lwip-2.1.2/src/api/tcpip.c **** }
- 1100              		.loc 1 643 1
- 1101 03f4 1846     		mov	r0, r3
- 1102 03f6 0837     		adds	r7, r7, #8
- 1103              	.LCFI76:
- 1104              		.cfi_def_cfa_offset 8
- 1105 03f8 BD46     		mov	sp, r7
- 1106              	.LCFI77:
- 1107              		.cfi_def_cfa_register 13
- 1108              		@ sp needed
- 1109 03fa 80BD     		pop	{r7, pc}
- 1110              	.L73:
- 1111              		.align	2
- 1112              	.L72:
- 1113 03fc 00000000 		.word	pbuf_free_int
- 1114              		.cfi_endproc
- 1115              	.LFE184:
- 1117              		.align	1
- 1118              		.global	mem_free_callback
- 1119              		.syntax unified
- 1120              		.thumb
- 1121              		.thumb_func
- 1122              		.fpu fpv5-d16
- 1124              	mem_free_callback:
- 1125              	.LFB185:
+ 1128              		.loc 1 643 1 view .LVU340
+ 1129 02b2 38BD     		pop	{r3, r4, r5, pc}
+ 1130              	.LVL112:
+ 1131              	.L107:
+ 1132              	.LBB34:
+ 1133              	.LBB32:
+ 361:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1134              		.loc 1 361 5 is_stmt 1 view .LVU341
+ 1135 02b4 2146     		mov	r1, r4
+ 1136 02b6 0820     		movs	r0, #8
+ 1137 02b8 FFF7FEFF 		bl	memp_free
+ 1138              	.LVL113:
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1139              		.loc 1 362 5 view .LVU342
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1140              		.loc 1 362 12 is_stmt 0 view .LVU343
+ 1141 02bc 4FF0FF30 		mov	r0, #-1
+ 1142              	.LVL114:
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1143              		.loc 1 362 12 view .LVU344
+ 1144              	.LBE32:
+ 1145              	.LBE34:
+ 1146              		.loc 1 643 1 view .LVU345
+ 1147 02c0 38BD     		pop	{r3, r4, r5, pc}
+ 1148              	.LVL115:
+ 1149              	.L102:
+ 1150              	.LBB35:
+ 1151              	.LBB33:
+ 353:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1152              		.loc 1 353 12 view .LVU346
+ 1153 02c2 4FF0FF30 		mov	r0, #-1
+ 1154              	.LVL116:
+ 353:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1155              		.loc 1 353 12 view .LVU347
+ 1156              	.LBE33:
+ 1157              	.LBE35:
+ 1158              		.loc 1 643 1 view .LVU348
+ 1159 02c6 38BD     		pop	{r3, r4, r5, pc}
+ 1160              	.LVL117:
+ 1161              	.L109:
+ 1162              		.loc 1 643 1 view .LVU349
+ 1163              		.align	2
+ 1164              	.L108:
+ 1165 02c8 00000000 		.word	pbuf_free_int
+ 1166 02cc 0C000000 		.word	.LANCHOR0+12
+ 1167              		.cfi_endproc
+ 1168              	.LFE184:
+ 1170              		.align	1
+ 1171              		.p2align 2,,3
+ 1172              		.global	mem_free_callback
+ 1173              		.syntax unified
+ 1174              		.thumb
+ 1175              		.thumb_func
+ 1176              		.fpu fpv5-d16
+ 1178              	mem_free_callback:
+ 1179              	.LVL118:
+ 1180              	.LFB185:
  644:./lwip-2.1.2/src/api/tcpip.c **** 
  645:./lwip-2.1.2/src/api/tcpip.c **** /**
  646:./lwip-2.1.2/src/api/tcpip.c ****  * A simple wrapper function that allows you to free heap memory from
@@ -1757,118 +2146,228 @@
  652:./lwip-2.1.2/src/api/tcpip.c **** err_t
  653:./lwip-2.1.2/src/api/tcpip.c **** mem_free_callback(void *m)
  654:./lwip-2.1.2/src/api/tcpip.c **** {
- 1126              		.loc 1 654 1
- 1127              		.cfi_startproc
- 1128              		@ args = 0, pretend = 0, frame = 8
- 1129              		@ frame_needed = 1, uses_anonymous_args = 0
- 1130 0400 80B5     		push	{r7, lr}
- 1131              	.LCFI78:
- 1132              		.cfi_def_cfa_offset 8
- 1133              		.cfi_offset 7, -8
- 1134              		.cfi_offset 14, -4
- 1135 0402 82B0     		sub	sp, sp, #8
- 1136              	.LCFI79:
- 1137              		.cfi_def_cfa_offset 16
- 1138 0404 00AF     		add	r7, sp, #0
- 1139              	.LCFI80:
- 1140              		.cfi_def_cfa_register 7
- 1141 0406 7860     		str	r0, [r7, #4]
+ 1181              		.loc 1 654 1 is_stmt 1 view -0
+ 1182              		.cfi_startproc
+ 1183              		@ args = 0, pretend = 0, frame = 0
+ 1184              		@ frame_needed = 0, uses_anonymous_args = 0
  655:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(mem_free, m);
- 1142              		.loc 1 655 10
- 1143 0408 7968     		ldr	r1, [r7, #4]
- 1144 040a 0448     		ldr	r0, .L76
- 1145 040c FFF7FEFF 		bl	tcpip_try_callback
- 1146 0410 0346     		mov	r3, r0
+ 1185              		.loc 1 655 3 view .LVU351
+ 654:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(mem_free, m);
+ 1186              		.loc 1 654 1 is_stmt 0 view .LVU352
+ 1187 02d0 38B5     		push	{r3, r4, r5, lr}
+ 1188              	.LCFI13:
+ 1189              		.cfi_def_cfa_offset 16
+ 1190              		.cfi_offset 3, -16
+ 1191              		.cfi_offset 4, -12
+ 1192              		.cfi_offset 5, -8
+ 1193              		.cfi_offset 14, -4
+ 654:./lwip-2.1.2/src/api/tcpip.c ****   return tcpip_try_callback(mem_free, m);
+ 1194              		.loc 1 654 1 view .LVU353
+ 1195 02d2 0546     		mov	r5, r0
+ 1196              	.LBB38:
+ 1197              	.LBB39:
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1198              		.loc 1 351 29 view .LVU354
+ 1199 02d4 0820     		movs	r0, #8
+ 1200              	.LVL119:
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1201              		.loc 1 351 29 view .LVU355
+ 1202              	.LBE39:
+ 1203              	.LBI38:
+ 345:./lwip-2.1.2/src/api/tcpip.c **** {
+ 1204              		.loc 1 345 1 is_stmt 1 view .LVU356
+ 1205              	.LBB40:
+ 347:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1206              		.loc 1 347 3 view .LVU357
+ 349:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1207              		.loc 1 349 62 view .LVU358
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1208              		.loc 1 351 3 view .LVU359
+ 351:./lwip-2.1.2/src/api/tcpip.c ****   if (msg == NULL) {
+ 1209              		.loc 1 351 29 is_stmt 0 view .LVU360
+ 1210 02d6 FFF7FEFF 		bl	memp_malloc
+ 1211              	.LVL120:
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1212              		.loc 1 352 3 is_stmt 1 view .LVU361
+ 352:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1213              		.loc 1 352 6 is_stmt 0 view .LVU362
+ 1214 02da 90B1     		cbz	r0, .L112
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1215              		.loc 1 356 3 is_stmt 1 view .LVU363
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1216              		.loc 1 356 13 is_stmt 0 view .LVU364
+ 1217 02dc 0122     		movs	r2, #1
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1218              		.loc 1 357 24 view .LVU365
+ 1219 02de 0A4B     		ldr	r3, .L118
+ 1220 02e0 0446     		mov	r4, r0
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1221              		.loc 1 360 7 view .LVU366
+ 1222 02e2 0146     		mov	r1, r0
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1223              		.loc 1 358 19 view .LVU367
+ 1224 02e4 8560     		str	r5, [r0, #8]
+ 356:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.function = function;
+ 1225              		.loc 1 356 13 view .LVU368
+ 1226 02e6 0270     		strb	r2, [r0]
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1227              		.loc 1 357 3 is_stmt 1 view .LVU369
+ 357:./lwip-2.1.2/src/api/tcpip.c ****   msg->msg.cb.ctx = ctx;
+ 1228              		.loc 1 357 24 is_stmt 0 view .LVU370
+ 1229 02e8 4360     		str	r3, [r0, #4]
+ 358:./lwip-2.1.2/src/api/tcpip.c **** 
+ 1230              		.loc 1 358 3 is_stmt 1 view .LVU371
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1231              		.loc 1 360 3 view .LVU372
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1232              		.loc 1 360 7 is_stmt 0 view .LVU373
+ 1233 02ea 0848     		ldr	r0, .L118+4
+ 1234              	.LVL121:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1235              		.loc 1 360 7 view .LVU374
+ 1236 02ec FFF7FEFF 		bl	sys_mbox_trypost
+ 1237              	.LVL122:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1238              		.loc 1 360 6 view .LVU375
+ 1239 02f0 00B9     		cbnz	r0, .L117
+ 1240              	.LVL123:
+ 360:./lwip-2.1.2/src/api/tcpip.c ****     memp_free(MEMP_TCPIP_MSG_API, msg);
+ 1241              		.loc 1 360 6 view .LVU376
+ 1242              	.LBE40:
+ 1243              	.LBE38:
  656:./lwip-2.1.2/src/api/tcpip.c **** }
- 1147              		.loc 1 656 1
- 1148 0412 1846     		mov	r0, r3
- 1149 0414 0837     		adds	r7, r7, #8
- 1150              	.LCFI81:
- 1151              		.cfi_def_cfa_offset 8
- 1152 0416 BD46     		mov	sp, r7
- 1153              	.LCFI82:
- 1154              		.cfi_def_cfa_register 13
- 1155              		@ sp needed
- 1156 0418 80BD     		pop	{r7, pc}
- 1157              	.L77:
- 1158 041a 00BF     		.align	2
- 1159              	.L76:
- 1160 041c 00000000 		.word	mem_free
- 1161              		.cfi_endproc
- 1162              	.LFE185:
- 1164              	.Letext0:
- 1165              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1166              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1167              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
- 1168              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
- 1169              		.file 6 "./inc/cmsis_os2.h"
- 1170              		.file 7 "./inc/arch/sys_arch.h"
- 1171              		.file 8 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 1172              		.file 9 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 1173              		.file 10 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 1174              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
- 1175              		.file 12 "./lwip-2.1.2/src/include/lwip/netif.h"
- 1176              		.file 13 "./lwip-2.1.2/src/include/lwip/tcpip.h"
- 1177              		.file 14 "./lwip-2.1.2/src/include/lwip/priv/tcpip_priv.h"
+ 1244              		.loc 1 656 1 view .LVU377
+ 1245 02f2 38BD     		pop	{r3, r4, r5, pc}
+ 1246              	.LVL124:
+ 1247              	.L117:
+ 1248              	.LBB43:
+ 1249              	.LBB41:
+ 361:./lwip-2.1.2/src/api/tcpip.c ****     return ERR_MEM;
+ 1250              		.loc 1 361 5 is_stmt 1 view .LVU378
+ 1251 02f4 2146     		mov	r1, r4
+ 1252 02f6 0820     		movs	r0, #8
+ 1253 02f8 FFF7FEFF 		bl	memp_free
+ 1254              	.LVL125:
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1255              		.loc 1 362 5 view .LVU379
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1256              		.loc 1 362 12 is_stmt 0 view .LVU380
+ 1257 02fc 4FF0FF30 		mov	r0, #-1
+ 1258              	.LVL126:
+ 362:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1259              		.loc 1 362 12 view .LVU381
+ 1260              	.LBE41:
+ 1261              	.LBE43:
+ 1262              		.loc 1 656 1 view .LVU382
+ 1263 0300 38BD     		pop	{r3, r4, r5, pc}
+ 1264              	.LVL127:
+ 1265              	.L112:
+ 1266              	.LBB44:
+ 1267              	.LBB42:
+ 353:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1268              		.loc 1 353 12 view .LVU383
+ 1269 0302 4FF0FF30 		mov	r0, #-1
+ 1270              	.LVL128:
+ 353:./lwip-2.1.2/src/api/tcpip.c ****   }
+ 1271              		.loc 1 353 12 view .LVU384
+ 1272              	.LBE42:
+ 1273              	.LBE44:
+ 1274              		.loc 1 656 1 view .LVU385
+ 1275 0306 38BD     		pop	{r3, r4, r5, pc}
+ 1276              	.LVL129:
+ 1277              	.L119:
+ 1278              		.loc 1 656 1 view .LVU386
+ 1279              		.align	2
+ 1280              	.L118:
+ 1281 0308 00000000 		.word	mem_free
+ 1282 030c 0C000000 		.word	.LANCHOR0+12
+ 1283              		.cfi_endproc
+ 1284              	.LFE185:
+ 1286              		.global	lock_tcpip_core
+ 1287              		.bss
+ 1288              		.align	2
+ 1289              		.set	.LANCHOR0,. + 0
+ 1292              	lock_tcpip_core:
+ 1293 0000 00000000 		.space	4
+ 1296              	tcpip_init_done:
+ 1297 0004 00000000 		.space	4
+ 1300              	tcpip_init_done_arg:
+ 1301 0008 00000000 		.space	4
+ 1304              	tcpip_mbox:
+ 1305 000c 00000000 		.space	4
+ 1306              		.text
+ 1307              	.Letext0:
+ 1308              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1309              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1310              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1311              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1312              		.file 6 "./inc/cmsis_os2.h"
+ 1313              		.file 7 "./inc/arch/sys_arch.h"
+ 1314              		.file 8 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 1315              		.file 9 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 1316              		.file 10 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 1317              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1318              		.file 12 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 1319              		.file 13 "./lwip-2.1.2/src/include/lwip/tcpip.h"
+ 1320              		.file 14 "./lwip-2.1.2/src/include/lwip/priv/tcpip_priv.h"
+ 1321              		.file 15 "./lwip-2.1.2/src/include/lwip/sys.h"
+ 1322              		.file 16 "./lwip-2.1.2/src/include/lwip/init.h"
+ 1323              		.file 17 "./lwip-2.1.2/src/include/lwip/timeouts.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 tcpip.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:17     .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:18     .bss:00000000 tcpip_init_done
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:22     .bss:00000004 tcpip_init_done_arg
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:26     .bss:00000008 tcpip_mbox
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:33     .bss:0000000c lock_tcpip_core
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:36     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:43     .text:00000000 tcpip_timeouts_mbox_fetch
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:127    .text:00000068 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:131    .text:0000006c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:137    .text:0000006c tcpip_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:209    .text:000000c0 tcpip_thread_handle_msg
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:196    .text:000000b0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:203    .text:000000c0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:321    .text:00000136 tcpip_inpkt
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:401    .text:00000194 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:405    .text:00000198 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:412    .text:00000198 tcpip_input
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:467    .text:000001d4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:472    .text:000001dc $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:479    .text:000001dc tcpip_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:542    .text:00000220 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:546    .text:00000224 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:553    .text:00000224 tcpip_try_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:628    .text:0000027c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:632    .text:00000280 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:639    .text:00000280 tcpip_send_msg_wait_sem
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:685    .text:000002a8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:689    .text:000002ac $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:696    .text:000002ac tcpip_api_call
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:743    .text:000002d8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:747    .text:000002dc $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:754    .text:000002dc tcpip_callbackmsg_new
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:820    .text:00000314 tcpip_callbackmsg_delete
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:862    .text:0000032c tcpip_callbackmsg_trycallback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:898    .text:00000348 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:902    .text:0000034c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:909    .text:0000034c tcpip_callbackmsg_trycallback_fromisr
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:945    .text:00000368 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:950    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:954    .text:0000036c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:961    .text:0000036c tcpip_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1018   .text:000003b0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1027   .text:000003c8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1033   .text:000003c8 pbuf_free_int
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1077   .text:000003e2 pbuf_free_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1113   .text:000003fc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1117   .text:00000400 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1124   .text:00000400 mem_free_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc8Y3tpg.s:1160   .text:0000041c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:24     .text:00000000 pbuf_free_int
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:48     .text:00000004 tcpip_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:251    .text:000000ac $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:257    .text:000000b0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:265    .text:000000b0 tcpip_inpkt
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:351    .text:000000ec $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:355    .text:000000f0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:363    .text:000000f0 tcpip_input
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:526    .text:0000015c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:532    .text:00000168 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:540    .text:00000168 tcpip_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:604    .text:00000190 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:608    .text:00000194 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:616    .text:00000194 tcpip_try_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:694    .text:000001cc $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:698    .text:000001d0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:706    .text:000001d0 tcpip_send_msg_wait_sem
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:751    .text:000001ec $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:755    .text:000001f0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:763    .text:000001f0 tcpip_api_call
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:813    .text:00000210 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:817    .text:00000214 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:825    .text:00000214 tcpip_callbackmsg_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:879    .text:0000022c tcpip_callbackmsg_delete
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:908    .text:00000234 tcpip_callbackmsg_trycallback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:930    .text:0000023c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:934    .text:00000240 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:942    .text:00000240 tcpip_callbackmsg_trycallback_fromisr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:964    .text:00000248 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:969    .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:973    .text:0000024c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:981    .text:0000024c tcpip_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1048   .text:00000284 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1054   .text:00000290 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1062   .text:00000290 pbuf_free_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1165   .text:000002c8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1170   .text:000002d0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1178   .text:000002d0 mem_free_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1281   .text:00000308 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1292   .bss:00000000 lock_tcpip_core
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1288   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1296   .bss:00000004 tcpip_init_done
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1300   .bss:00000008 tcpip_init_done_arg
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccCe6zbe.s:1304   .bss:0000000c tcpip_mbox
 
 UNDEFINED SYMBOLS
-sys_timeouts_sleeptime
+pbuf_free
+sys_mutex_lock
 sys_mutex_unlock
 sys_arch_mbox_fetch
-sys_mutex_lock
 sys_check_timeouts
-pbuf_free
+sys_timeouts_sleeptime
 memp_free
 memp_malloc
 sys_mbox_trypost

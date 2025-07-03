@@ -23,7 +23,7 @@ MCU = cortex-m7
 FORMAT = ihex
 
 # Target file name (without extension).
-TARGET = example_webserver
+TARGET = example_webserver2
 
 # set folders for generated files here
 LST_FOLDER = ./lst
@@ -51,9 +51,6 @@ CSRC += $(SRC_FOLDER)/rtx_lib.c
 CSRC += $(SRC_FOLDER)/sys_arch.c
 CSRC += $(SRC_FOLDER)/ethernetif.c
 CSRC += $(SRC_FOLDER)/udp_total.c
-CSRC += $(SRC_FOLDER)/startDebug.c
-CSRC += $(SRC_FOLDER)/task01.c
-CSRC += $(SRC_FOLDER)/task02.c
 CSRC += $(SRC_FOLDER)/reset.c
 
 CSRC += ./lwip-2.1.2/src/apps/http/httpd.c
