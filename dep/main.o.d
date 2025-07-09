@@ -82,7 +82,7 @@ obj/main.o: src/main.c \
  lwip-2.1.2/src/include/lwip/prot/udp.h \
  lwip-2.1.2/src/include/lwip/apps/httpd.h \
  lwip-2.1.2/src/include/lwip/apps/httpd_opts.h \
- lwip-2.1.2/src/include/lwip/prot/iana.h inc/udp_total.h \
+ lwip-2.1.2/src/include/lwip/prot/iana.h inc/reset.h inc/udp_total.h \
  inc/stm32f7xx_hal_rcc_ex.h
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\lib\gcc\arm-none-eabi\10.2.1\include\stdint.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdint.h:
@@ -203,5 +203,6 @@ lwip-2.1.2/src/include/lwip/prot/udp.h:
 lwip-2.1.2/src/include/lwip/apps/httpd.h:
 lwip-2.1.2/src/include/lwip/apps/httpd_opts.h:
 lwip-2.1.2/src/include/lwip/prot/iana.h:
+inc/reset.h:
 inc/udp_total.h:
 inc/stm32f7xx_hal_rcc_ex.h:

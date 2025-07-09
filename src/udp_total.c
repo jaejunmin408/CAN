@@ -37,15 +37,13 @@ void udp_receive_callback(void *arg, struct udp_pcb *pcb, struct pbuf *p, const 
      buffer[p->len] = '\0'; // null terminate
      if(strcmp(buffer,JUMP_BOOT_STR) == 0)
      {
-      printf("[BOOT]  JUMP BOOT(soft RESET)\n");
-      osDelay(1000);
+      udp_client_send("[BOOT]  JUMP BOOT(soft RESET)\n");
       write_boot_flag_soft_reset();
       NVIC_SystemReset();
      }
      else if(strcmp(buffer,JUMP_FW_STR ) == 0)
      {
-    	 printf("[BOOT]  JUMP FW(RESET)\n");
-       osDelay(1000);
+    	 udp_client_send("[BOOT]  JUMP FW(RESET)\n");
        clear_boot_flag();
     	 NVIC_SystemReset();
      }
@@ -89,6 +87,6 @@ void udp_client_send(const char *msg)
     if (err != ERR_OK) {
         printf("[CHECK] udp_send failed: %d\n", err);
     }
-
+    osDelay(1);
     pbuf_free(p);
 }

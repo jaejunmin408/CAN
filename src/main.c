@@ -15,6 +15,7 @@
 #include "lwip/dhcp.h"
 #include "lwip/apps/httpd.h"
 
+#include "reset.h"
 #include "udp_total.h"
 #include "stm32f7xx_hal_rcc_ex.h"
 
@@ -89,7 +90,7 @@ static void  thread_main ( void  *argument)
   	IP_ADDRESS[0] = 192;
   	IP_ADDRESS[1] = 168;
   	IP_ADDRESS[2] = 20;
-  	IP_ADDRESS[3] = 70;
+  	IP_ADDRESS[3] = 72;
   	NETMASK_ADDRESS[0] = 255;
   	NETMASK_ADDRESS[1] = 255;
   	NETMASK_ADDRESS[2] = 255;
@@ -122,40 +123,23 @@ static void  thread_main ( void  *argument)
 		netif_set_down ( &gnetif);
 	}
 
+	udp_total_connect();
+	udp_client_send("Hello World!\n");
 
-	uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;
-	volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
-
-	printf("App MSP: 0x%08lX\n", isr_vector_addr);
-	printf("App Reset_Handler: 0x%08lX\n", app_sp_value);
-
-
-    __disable_irq();
-    SysTick->CTRL = 0;
-    SysTick->LOAD = 0;
-    SysTick->VAL  = 0;
-    for (uint32_t i = 0; i < 8; i++)
-    {
-        NVIC->ICER[i] = 0xFFFFFFFF;
-        NVIC->ICPR[i] = 0xFFFFFFFF;
-    }
-	SCB_DisableICache();
-	SCB_DisableDCache();
-	JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
-    JumpToApplication = (pFunction) JumpAddress;
-
-
-    /* Initialize user application's Stack Pointer */
-    __set_MSP(*(__IO uint32_t*) isr_vector_addr);
-	SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
-    JumpToApplication();
-
+    // /* Initialize
 	// // start dhcp
 	// dhcp_start ( &gnetif);
 
 	while ( 1)
 	{
 		osThreadSuspend(osThreadGetId());
+		//if ( is_soft_reset() == 0 )
+		//{
+
+		//}
+		osDelay(1);
+
+		//osThreadSuspend(osThreadGetId());
 	}
 
 }
@@ -172,53 +156,65 @@ int  main ( void)
 	SCB_DisableDCache();
 
 	// finalize initialization
-	HW_Init();
 	
-	uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;
-	volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
+	HW_Init();
 
-	HAL_RCC_DeInit();
-	//HAL_DeInit();
-    __disable_irq();
-    SysTick->CTRL = 0;
-    SysTick->LOAD = 0;
-    SysTick->VAL  = 0;
-    for (uint32_t i = 0; i < 8; i++)
-    {
-        NVIC->ICER[i] = 0xFFFFFFFF;
-        NVIC->ICPR[i] = 0xFFFFFFFF;
-    }
-	SCB_DisableICache();
-	SCB_DisableDCache();
-	JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
-    JumpToApplication = (pFunction) JumpAddress;
+	if ( is_soft_reset() == 0 )
+	{
+		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;  //+ 0x400;
+		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
+		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
+		{
+				//HAL_RCC_DeInit();
+				//HAL_DeInit();
+				//__disable_irq();
+				//SysTick->CTRL = 0;
+				//SysTick->LOAD = 0;
+				//SysTick->VAL  = 0;
+				//for (uint32_t i = 0; i < 8; i++)
+				//{
+					//NVIC->ICER[i] = 0xFFFFFFFF;
+					//NVIC->ICPR[i] = 0xFFFFFFFF;
+				//}
+				//SCB_DisableICache();
+				//SCB_DisableDCache();
+				JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
+				JumpToApplication = (pFunction) JumpAddress;
 
 
-    /* Initialize user application's Stack Pointer */
-    __set_MSP(*(__IO uint32_t*) isr_vector_addr);
-	SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
-    JumpToApplication();
+				/* Initialize user application's Stack Pointer */
+				__set_MSP(*(__IO uint32_t*) isr_vector_addr);
+				SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
+				JumpToApplication();
+		}
+		else
+		{
+			write_boot_flag_soft_reset();
+			//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
+		  	NVIC_SystemReset();
+		}
+	}
 
 	// initialize kernel
-	// osKernelInitialize();
+	osKernelInitialize();
 	
-	// // create primary thread
-	// {
-	// 	osThreadAttr_t  attr;
+	// create primary thread
+	{
+		osThreadAttr_t  attr;
 
 
-	// 	memset ( &attr, 0, sizeof ( attr));	//0
+		memset ( &attr, 0, sizeof ( attr));	//0
 
-	// 	attr.stack_size = 2*1024;
+		attr.stack_size = 4*1024;
 
-	// 	osThreadNew ( thread_main, NULL, &attr);
-	// }
+		osThreadNew ( thread_main, NULL, &attr);
+	}
 	
-	// // create a timer
-	// thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
+	// create a timer
+	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
 	
-	// // start thread execution
-	// osKernelStart();
+	// start thread execution
+	osKernelStart();
 
 
 	
