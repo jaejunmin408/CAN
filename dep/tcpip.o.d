@@ -58,6 +58,7 @@ obj/tcpip.o: lwip-2.1.2/src/api/tcpip.c lwip-2.1.2/src/include/lwip/opt.h \
  inc/stm32f7xx_hal_rcc_ex.h inc/stm32f7xx_hal_gpio.h \
  inc/stm32f7xx_hal_gpio_ex.h inc/stm32f7xx_hal_dma.h \
  inc/stm32f7xx_hal_dma_ex.h inc/stm32f7xx_hal_cortex.h \
+ inc/stm32f7xx_hal_crc.h inc/stm32f7xx_hal_crc_ex.h \
  inc/stm32f7xx_hal_eth.h inc/stm32f7xx_hal_flash.h \
  inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_sd.h \
  inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
@@ -158,6 +159,8 @@ inc/stm32f7xx_hal_gpio_ex.h:
 inc/stm32f7xx_hal_dma.h:
 inc/stm32f7xx_hal_dma_ex.h:
 inc/stm32f7xx_hal_cortex.h:
+inc/stm32f7xx_hal_crc.h:
+inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:

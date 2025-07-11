@@ -61,7 +61,8 @@ obj/memp.o: lwip-2.1.2/src/core/memp.c lwip-2.1.2/src/include/lwip/opt.h \
  inc/Legacy/stm32_hal_legacy.h inc/stm32f7xx_hal_rcc_ex.h \
  inc/stm32f7xx_hal_gpio.h inc/stm32f7xx_hal_gpio_ex.h \
  inc/stm32f7xx_hal_dma.h inc/stm32f7xx_hal_dma_ex.h \
- inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_eth.h \
+ inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_crc.h \
+ inc/stm32f7xx_hal_crc_ex.h inc/stm32f7xx_hal_eth.h \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
  inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\string.h \
@@ -182,6 +183,8 @@ inc/stm32f7xx_hal_gpio_ex.h:
 inc/stm32f7xx_hal_dma.h:
 inc/stm32f7xx_hal_dma_ex.h:
 inc/stm32f7xx_hal_cortex.h:
+inc/stm32f7xx_hal_crc.h:
+inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:

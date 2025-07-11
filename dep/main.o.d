@@ -29,7 +29,8 @@ obj/main.o: src/main.c \
  inc/Legacy/stm32_hal_legacy.h inc/stm32f7xx_hal_rcc_ex.h \
  inc/stm32f7xx_hal_gpio.h inc/stm32f7xx_hal_gpio_ex.h \
  inc/stm32f7xx_hal_dma.h inc/stm32f7xx_hal_dma_ex.h \
- inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_eth.h \
+ inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_crc.h \
+ inc/stm32f7xx_hal_crc_ex.h inc/stm32f7xx_hal_eth.h \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
  inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
  inc/main.h lwip-2.1.2/src/include/lwip/tcpip.h \
@@ -83,7 +84,8 @@ obj/main.o: src/main.c \
  lwip-2.1.2/src/include/lwip/apps/httpd.h \
  lwip-2.1.2/src/include/lwip/apps/httpd_opts.h \
  lwip-2.1.2/src/include/lwip/prot/iana.h inc/reset.h inc/udp_total.h \
- inc/stm32f7xx_hal_rcc_ex.h
+ inc/stm32f7xx_hal_rcc_ex.h inc/tftpserver.h inc/firmware_tag.h \
+ inc/backup.h
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\lib\gcc\arm-none-eabi\10.2.1\include\stdint.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdint.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\machine\_default_types.h:
@@ -130,6 +132,8 @@ inc/stm32f7xx_hal_gpio_ex.h:
 inc/stm32f7xx_hal_dma.h:
 inc/stm32f7xx_hal_dma_ex.h:
 inc/stm32f7xx_hal_cortex.h:
+inc/stm32f7xx_hal_crc.h:
+inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:
@@ -206,3 +210,6 @@ lwip-2.1.2/src/include/lwip/prot/iana.h:
 inc/reset.h:
 inc/udp_total.h:
 inc/stm32f7xx_hal_rcc_ex.h:
+inc/tftpserver.h:
+inc/firmware_tag.h:
+inc/backup.h:

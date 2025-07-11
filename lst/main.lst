@@ -44,54 +44,61 @@
   18:./src/main.c  **** #include "reset.h"
   19:./src/main.c  **** #include "udp_total.h"
   20:./src/main.c  **** #include "stm32f7xx_hal_rcc_ex.h"
-  21:./src/main.c  **** 
-  22:./src/main.c  **** 
-  23:./src/main.c  **** // abstract:
-  24:./src/main.c  **** // this example shows a http server based on the code from
-  25:./src/main.c  **** // the LwIP stack. For more information on lwIP see
-  26:./src/main.c  **** // https://savannah.nongnu.org/projects/lwip/
-  27:./src/main.c  **** 
-  28:./src/main.c  **** 
-  29:./src/main.c  **** 
+  21:./src/main.c  **** #include "tftpserver.h"
+  22:./src/main.c  **** #include "firmware_tag.h"
+  23:./src/main.c  **** #include "backup.h"
+  24:./src/main.c  **** 
+  25:./src/main.c  **** 
+  26:./src/main.c  **** // abstract:
+  27:./src/main.c  **** // this example shows a http server based on the code from
+  28:./src/main.c  **** // the LwIP stack. For more information on lwIP see
+  29:./src/main.c  **** // https://savannah.nongnu.org/projects/lwip/
   30:./src/main.c  **** 
   31:./src/main.c  **** 
   32:./src/main.c  **** 
-  33:./src/main.c  **** // identifier is needed by PEAKFlash.exe -> do not delete
-  34:./src/main.c  **** const char Ident[] __attribute__ ((used)) = { "PCAN-Router_Pro_FD"};
+  33:./src/main.c  **** 
+  34:./src/main.c  **** 
   35:./src/main.c  **** 
-  36:./src/main.c  **** 
-  37:./src/main.c  **** // threads/timer
-  38:./src/main.c  **** static osTimerId_t  thread_milli_timer_id;
+  36:./src/main.c  **** // identifier is needed by PEAKFlash.exe -> do not delete
+  37:./src/main.c  **** const char Ident[] __attribute__ ((used)) = { "PCAN-Router_Pro_FD"};
+  38:./src/main.c  **** 
   39:./src/main.c  **** 
-  40:./src/main.c  **** 
-  41:./src/main.c  **** // for lwip
-  42:./src/main.c  **** struct netif gnetif;
-  43:./src/main.c  **** ip4_addr_t ipaddr;
-  44:./src/main.c  **** ip4_addr_t netmask;
-  45:./src/main.c  **** ip4_addr_t gw;
-  46:./src/main.c  **** uint8_t IP_ADDRESS[4];
-  47:./src/main.c  **** uint8_t NETMASK_ADDRESS[4];
-  48:./src/main.c  **** uint8_t GATEWAY_ADDRESS[4];
-  49:./src/main.c  **** 
-  50:./src/main.c  **** 
-  51:./src/main.c  **** typedef  void (*pFunction)(void);
-  52:./src/main.c  **** #define USER_FLASH_FIRST_PAGE_ADDRESS 0x08040000;
-  53:./src/main.c  **** pFunction JumpToApplication;
-  54:./src/main.c  **** uint32_t JumpAddress;
-  55:./src/main.c  **** 
-  56:./src/main.c  **** //! @brief      a timer based on a high prio thread
-  57:./src/main.c  **** static void thread_milli_timer ( void *argument)
-  58:./src/main.c  **** {
-  28              		.loc 1 58 1 view -0
+  40:./src/main.c  **** // threads/timer
+  41:./src/main.c  **** static osTimerId_t  thread_milli_timer_id;
+  42:./src/main.c  **** 
+  43:./src/main.c  **** 
+  44:./src/main.c  **** // for lwip
+  45:./src/main.c  **** struct netif gnetif;
+  46:./src/main.c  **** ip4_addr_t ipaddr;
+  47:./src/main.c  **** ip4_addr_t netmask;
+  48:./src/main.c  **** ip4_addr_t gw;
+  49:./src/main.c  **** uint8_t IP_ADDRESS[4];
+  50:./src/main.c  **** uint8_t NETMASK_ADDRESS[4];
+  51:./src/main.c  **** uint8_t GATEWAY_ADDRESS[4];
+  52:./src/main.c  **** 
+  53:./src/main.c  **** uint8_t check = 1;
+  54:./src/main.c  **** 
+  55:./src/main.c  **** CRC_HandleTypeDef hcrc;
+  56:./src/main.c  **** 
+  57:./src/main.c  **** typedef  void (*pFunction)(void);
+  58:./src/main.c  **** #define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
+  59:./src/main.c  **** #define BACKUP_ADDRESS  ((FirmwareTag*) BACKUP_FLASH_FIRST_PAGE_ADDRESS)
+  60:./src/main.c  **** pFunction JumpToApplication;
+  61:./src/main.c  **** uint32_t JumpAddress;
+  62:./src/main.c  **** 
+  63:./src/main.c  **** //! @brief      a timer based on a high prio thread
+  64:./src/main.c  **** static void thread_milli_timer ( void *argument)
+  65:./src/main.c  **** {
+  28              		.loc 1 65 1 view -0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
-  59:./src/main.c  **** 	HAL_IncTick();
-  33              		.loc 1 59 2 view .LVU1
+  66:./src/main.c  **** 	HAL_IncTick();
+  33              		.loc 1 66 2 view .LVU1
   34 0000 FFF7FEBF 		b	HAL_IncTick
   35              	.LVL1:
-  36              		.loc 1 59 2 is_stmt 0 view .LVU2
+  36              		.loc 1 66 2 is_stmt 0 view .LVU2
   37              		.cfi_endproc
   38              	.LFE169:
   40              		.section	.rodata.str1.4,"aMS",%progbits,1
@@ -101,309 +108,558 @@
   43      6F20576F 
   43      726C6421 
   43      0A00
-  44              		.text
-  45              		.align	1
-  46              		.p2align 2,,3
-  47              		.syntax unified
-  48              		.thumb
-  49              		.thumb_func
-  50              		.fpu fpv5-d16
-  52              	thread_main:
-  53              	.LVL2:
-  54              	.LFB170:
-  60:./src/main.c  **** }
-  61:./src/main.c  **** 
-  62:./src/main.c  **** 
-  63:./src/main.c  **** 
-  64:./src/main.c  **** //! @brief      primary thread
-  65:./src/main.c  **** static void  thread_main ( void  *argument)
-  66:./src/main.c  **** {
-  55              		.loc 1 66 1 is_stmt 1 view -0
-  56              		.cfi_startproc
-  57              		@ args = 0, pretend = 0, frame = 8
-  58              		@ frame_needed = 0, uses_anonymous_args = 0
-  67:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  68:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));
-  59              		.loc 1 68 2 view .LVU4
-  66:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  60              		.loc 1 66 1 is_stmt 0 view .LVU5
-  61 0004 F0B5     		push	{r4, r5, r6, r7, lr}
-  62              	.LCFI0:
-  63              		.cfi_def_cfa_offset 20
-  64              		.cfi_offset 4, -20
-  65              		.cfi_offset 5, -16
-  66              		.cfi_offset 6, -12
-  67              		.cfi_offset 7, -8
-  68              		.cfi_offset 14, -4
-  69              		.loc 1 68 2 view .LVU6
-  70 0006 364D     		ldr	r5, .L12
-  66:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  71              		.loc 1 66 1 view .LVU7
-  72 0008 87B0     		sub	sp, sp, #28
-  73              	.LCFI1:
-  74              		.cfi_def_cfa_offset 48
-  75              		.loc 1 68 2 view .LVU8
-  76 000a 0521     		movs	r1, #5
-  69:./src/main.c  **** 	
-  70:./src/main.c  **** 	// init CAN
-  71:./src/main.c  **** 	CAN_UserInit();
-  72:./src/main.c  **** 
-  73:./src/main.c  **** 	// put 100Base-T1 PHY into slave mode
-  74:./src/main.c  **** 	#if _PHY_IS_T1_
-  75:./src/main.c  **** 	HW_BR_REACH_SLAVE;
-  76:./src/main.c  **** 	#else
-  77:./src/main.c  **** 	//HW_BR_REACH_MASTER;
-  78:./src/main.c  **** 	#endif
-  79:./src/main.c  **** 
-  80:./src/main.c  **** 	// enable PHY, deassert reset
-  81:./src/main.c  **** 	HW_ENA_ETH_PHY;
-  82:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
-  83:./src/main.c  **** 	
-  84:./src/main.c  **** 	
-  85:./src/main.c  **** 	// init lwip stack
-  86:./src/main.c  **** 	tcpip_init( NULL, NULL );
-  87:./src/main.c  **** 
-  88:./src/main.c  **** 
-  89:./src/main.c  **** 	// init ip address, requested later by dhcp
-  90:./src/main.c  ****   	IP_ADDRESS[0] = 192;
-  91:./src/main.c  ****   	IP_ADDRESS[1] = 168;
-  92:./src/main.c  ****   	IP_ADDRESS[2] = 20;
-  93:./src/main.c  ****   	IP_ADDRESS[3] = 72;
-  94:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
-  95:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
-  96:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
-  97:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
-  98:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
-  99:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 100:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
- 101:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
- 102:./src/main.c  **** 
- 103:./src/main.c  **** 
- 104:./src/main.c  **** 	IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
- 105:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 106:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 107:./src/main.c  **** 	// add the network interface
- 108:./src/main.c  **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
-  77              		.loc 1 108 2 view .LVU9
-  78 000c 354C     		ldr	r4, .L12+4
-  68:./src/main.c  **** 	
-  79              		.loc 1 68 2 view .LVU10
-  80 000e 2868     		ldr	r0, [r5]
-  81              	.LVL3:
-  68:./src/main.c  **** 	
-  82              		.loc 1 68 2 view .LVU11
-  83 0010 FFF7FEFF 		bl	osTimerStart
-  84              	.LVL4:
+  44 000e 0000     		.align	2
+  45              	.LC1:
+  46 0010 5B424F4F 		.ascii	"[BOOT]  START BOOT...\012\000"
+  46      545D2020 
+  46      53544152 
+  46      5420424F 
+  46      4F542E2E 
+  47              		.text
+  48              		.align	1
+  49              		.p2align 2,,3
+  50              		.syntax unified
+  51              		.thumb
+  52              		.thumb_func
+  53              		.fpu fpv5-d16
+  55              	thread_main:
+  56              	.LVL2:
+  57              	.LFB171:
+  67:./src/main.c  **** }
+  68:./src/main.c  **** 
+  69:./src/main.c  **** static void MX_CRC_Init(void)
+  70:./src/main.c  **** {
   71:./src/main.c  **** 
-  85              		.loc 1 71 2 is_stmt 1 view .LVU12
-  86 0014 FFF7FEFF 		bl	CAN_UserInit
-  87              	.LVL5:
-  81:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
-  88              		.loc 1 81 2 view .LVU13
-  89 0018 334B     		ldr	r3, .L12+8
-  90 001a 4FF44052 		mov	r2, #12288
-  82:./src/main.c  **** 	
-  91              		.loc 1 82 2 is_stmt 0 view .LVU14
-  92 001e 40F27710 		movw	r0, #375
-  81:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
-  93              		.loc 1 81 2 view .LVU15
-  94 0022 9A61     		str	r2, [r3, #24]
-  82:./src/main.c  **** 	
-  95              		.loc 1 82 2 is_stmt 1 view .LVU16
-  96 0024 FFF7FEFF 		bl	osDelay
-  97              	.LVL6:
-  86:./src/main.c  **** 
-  98              		.loc 1 86 2 view .LVU17
-  99 0028 0021     		movs	r1, #0
- 100 002a 0846     		mov	r0, r1
- 101 002c FFF7FEFF 		bl	tcpip_init
- 102              	.LVL7:
-  90:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 103              		.loc 1 90 4 view .LVU18
-  91:./src/main.c  ****   	IP_ADDRESS[2] = 20;
- 104              		.loc 1 91 4 view .LVU19
-  92:./src/main.c  ****   	IP_ADDRESS[3] = 72;
- 105              		.loc 1 92 4 view .LVU20
-  93:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
- 106              		.loc 1 93 4 view .LVU21
- 106:./src/main.c  **** 	// add the network interface
- 107              		.loc 1 106 4 is_stmt 0 view .LVU22
- 108 0030 2B46     		mov	r3, r5
-  98:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 109              		.loc 1 98 23 view .LVU23
- 110 0032 2E4A     		ldr	r2, .L12+12
- 111              		.loc 1 108 2 view .LVU24
- 112 0034 2E48     		ldr	r0, .L12+16
- 106:./src/main.c  **** 	// add the network interface
- 113              		.loc 1 106 4 view .LVU25
- 114 0036 43F8182F 		str	r2, [r3, #24]!
-  90:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 115              		.loc 1 90 18 view .LVU26
- 116 003a 2E49     		ldr	r1, .L12+20
- 117              		.loc 1 108 2 view .LVU27
- 118 003c 0190     		str	r0, [sp, #4]
- 119 003e 0020     		movs	r0, #0
- 120 0040 0294     		str	r4, [sp, #8]
-  94:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 121              		.loc 1 94 23 view .LVU28
- 122 0042 6FF07F44 		mvn	r4, #-16777216
-  98:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 123              		.loc 1 98 23 view .LVU29
- 124 0046 EA60     		str	r2, [r5, #12]
- 125              		.loc 1 108 2 view .LVU30
- 126 0048 05F11402 		add	r2, r5, #20
-  90:./src/main.c  ****   	IP_ADDRESS[1] = 168;
- 127              		.loc 1 90 18 view .LVU31
- 128 004c 6960     		str	r1, [r5, #4]
-  94:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 129              		.loc 1 94 4 is_stmt 1 view .LVU32
-  95:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
- 130              		.loc 1 95 4 view .LVU33
-  96:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
- 131              		.loc 1 96 4 view .LVU34
-  97:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
- 132              		.loc 1 97 4 view .LVU35
- 104:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 133              		.loc 1 104 2 is_stmt 0 view .LVU36
- 134 004e 2961     		str	r1, [r5, #16]
- 135              		.loc 1 108 2 view .LVU37
- 136 0050 05F11001 		add	r1, r5, #16
- 137 0054 0090     		str	r0, [sp]
- 138 0056 05F11C00 		add	r0, r5, #28
-  94:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
- 139              		.loc 1 94 23 view .LVU38
- 140 005a AC60     		str	r4, [r5, #8]
-  98:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
- 141              		.loc 1 98 4 is_stmt 1 view .LVU39
-  99:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
- 142              		.loc 1 99 4 view .LVU40
- 100:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
- 143              		.loc 1 100 4 view .LVU41
- 101:./src/main.c  **** 
- 144              		.loc 1 101 4 view .LVU42
- 104:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
- 145              		.loc 1 104 2 view .LVU43
- 105:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 146              		.loc 1 105 4 view .LVU44
- 147 005c 6C61     		str	r4, [r5, #20]
- 106:./src/main.c  **** 	// add the network interface
- 148              		.loc 1 106 4 view .LVU45
- 149              		.loc 1 108 2 view .LVU46
- 150 005e FFF7FEFF 		bl	netif_add
- 151              	.LVL8:
- 109:./src/main.c  **** 
- 110:./src/main.c  **** 
- 111:./src/main.c  **** 	// set default netif
- 112:./src/main.c  **** 	netif_set_default ( &gnetif);
- 152              		.loc 1 112 2 view .LVU47
- 153 0062 05F11C00 		add	r0, r5, #28
- 154 0066 FFF7FEFF 		bl	netif_set_default
- 155              	.LVL9:
- 113:./src/main.c  **** 
- 114:./src/main.c  **** 	if ( netif_is_link_up ( &gnetif))
- 156              		.loc 1 114 2 view .LVU48
- 157              		.loc 1 114 7 is_stmt 0 view .LVU49
- 158 006a 95F84930 		ldrb	r3, [r5, #73]	@ zero_extendqisi2
- 115:./src/main.c  **** 	{
- 116:./src/main.c  **** 		/* When the netif is fully configured this function must be called */
- 117:./src/main.c  **** 		netif_set_up ( &gnetif);
- 159              		.loc 1 117 3 view .LVU50
- 160 006e 05F11C00 		add	r0, r5, #28
- 114:./src/main.c  **** 	{
- 161              		.loc 1 114 5 view .LVU51
- 162 0072 5B07     		lsls	r3, r3, #29
- 163 0074 31D5     		bpl	.L4
- 164              		.loc 1 117 3 is_stmt 1 view .LVU52
- 165 0076 FFF7FEFF 		bl	netif_set_up
- 166              	.LVL10:
- 167              	.L5:
- 118:./src/main.c  **** 	}
- 119:./src/main.c  **** 
- 120:./src/main.c  **** 	else
- 121:./src/main.c  **** 	{
- 122:./src/main.c  **** 		/* When the netif link is down this function must be called */
- 123:./src/main.c  **** 		netif_set_down ( &gnetif);
- 124:./src/main.c  **** 	}
- 125:./src/main.c  **** 
- 126:./src/main.c  **** 	udp_total_connect();
- 168              		.loc 1 126 2 view .LVU53
- 169 007a FFF7FEFF 		bl	udp_total_connect
- 170              	.LVL11:
- 127:./src/main.c  **** 	udp_client_send("Hello World!\n");
- 171              		.loc 1 127 2 view .LVU54
- 172 007e 1E48     		ldr	r0, .L12+24
- 173              	.LBB37:
- 128:./src/main.c  **** 
- 129:./src/main.c  ****     // /* Initialize
- 130:./src/main.c  **** 	// // start dhcp
- 131:./src/main.c  **** 	// dhcp_start ( &gnetif);
- 132:./src/main.c  **** 
- 133:./src/main.c  **** 	while ( 1)
- 134:./src/main.c  **** 	{
- 135:./src/main.c  **** 		//osThreadSuspend(osThreadGetId());
- 136:./src/main.c  **** 	if ( is_soft_reset() == 0 )
- 137:./src/main.c  **** 	{
- 138:./src/main.c  **** 		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;  //+ 0x400;
- 139:./src/main.c  **** 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
- 174              		.loc 1 139 36 is_stmt 0 view .LVU55
- 175 0080 1E4C     		ldr	r4, .L12+28
- 140:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 176              		.loc 1 140 34 view .LVU56
- 177 0082 1F4E     		ldr	r6, .L12+32
- 141:./src/main.c  **** 		{
- 142:./src/main.c  **** 				//HAL_RCC_DeInit();
- 143:./src/main.c  **** 				//HAL_DeInit();
- 144:./src/main.c  **** 				//__disable_irq();
- 145:./src/main.c  **** 				//SysTick->CTRL = 0;
- 146:./src/main.c  **** 				//SysTick->LOAD = 0;
- 147:./src/main.c  **** 				//SysTick->VAL  = 0;
- 148:./src/main.c  **** 				//for (uint32_t i = 0; i < 8; i++)
- 149:./src/main.c  **** 				//{
- 150:./src/main.c  **** 					//NVIC->ICER[i] = 0xFFFFFFFF;
- 151:./src/main.c  **** 					//NVIC->ICPR[i] = 0xFFFFFFFF;
- 152:./src/main.c  **** 				//}
- 153:./src/main.c  **** 				//SCB_DisableICache();
- 154:./src/main.c  **** 				//SCB_DisableDCache();
- 155:./src/main.c  **** 				JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
- 156:./src/main.c  **** 				JumpToApplication = (pFunction) JumpAddress;
- 157:./src/main.c  **** 
+  72:./src/main.c  ****   /* USER CODE BEGIN CRC_Init 0 */
+  73:./src/main.c  **** 
+  74:./src/main.c  ****   /* USER CODE END CRC_Init 0 */
+  75:./src/main.c  **** 
+  76:./src/main.c  ****   /* USER CODE BEGIN CRC_Init 1 */
+  77:./src/main.c  **** 
+  78:./src/main.c  ****   /* USER CODE END CRC_Init 1 */
+  79:./src/main.c  ****   __HAL_RCC_CRC_CLK_ENABLE();
+  80:./src/main.c  ****   hcrc.Instance = CRC;
+  81:./src/main.c  ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+  82:./src/main.c  ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+  83:./src/main.c  ****   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+  84:./src/main.c  ****   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+  85:./src/main.c  ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+  86:./src/main.c  ****   HAL_CRC_Init(&hcrc);
+  87:./src/main.c  ****   /* USER CODE BEGIN CRC_Init 2 */
+  88:./src/main.c  **** 
+  89:./src/main.c  ****   /* USER CODE END CRC_Init 2 */
+  90:./src/main.c  **** 
+  91:./src/main.c  **** }
+  92:./src/main.c  **** 
+  93:./src/main.c  **** 
+  94:./src/main.c  **** 
+  95:./src/main.c  **** //! @brief      primary thread
+  96:./src/main.c  **** static void  thread_main ( void  *argument)
+  97:./src/main.c  **** {
+  58              		.loc 1 97 1 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ Volatile: function does not return.
+  61              		@ args = 0, pretend = 0, frame = 8
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  98:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
+  99:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));
+  63              		.loc 1 99 2 view .LVU4
+  64 0004 364C     		ldr	r4, .L15
+  65 0006 0521     		movs	r1, #5
+  66              	.LBB13:
+  67              	.LBB14:
+  81:./src/main.c  ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+  68              		.loc 1 81 34 is_stmt 0 view .LVU5
+  69 0008 0025     		movs	r5, #0
+  70              	.LBE14:
+  71              	.LBE13:
+  72              		.loc 1 99 2 view .LVU6
+  73 000a 2068     		ldr	r0, [r4]
+  74              	.LVL3:
+  97:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
+  75              		.loc 1 97 1 view .LVU7
+  76 000c 00B5     		push	{lr}
+  77              	.LCFI0:
+  78              		.cfi_def_cfa_offset 4
+  79              		.cfi_offset 14, -4
+  80 000e 87B0     		sub	sp, sp, #28
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 32
+  83              		.loc 1 99 2 view .LVU8
+  84 0010 FFF7FEFF 		bl	osTimerStart
+  85              	.LVL4:
+ 100:./src/main.c  **** 	
+ 101:./src/main.c  **** 	// init CAN
+ 102:./src/main.c  **** 	CAN_UserInit();
+  86              		.loc 1 102 2 is_stmt 1 view .LVU9
+  87 0014 FFF7FEFF 		bl	CAN_UserInit
+  88              	.LVL5:
+ 103:./src/main.c  **** 
+ 104:./src/main.c  **** 	MX_CRC_Init();
+  89              		.loc 1 104 2 view .LVU10
+  90              	.LBB21:
+  91              	.LBI13:
+  69:./src/main.c  **** {
+  92              		.loc 1 69 13 view .LVU11
+  93              	.LBB20:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+  94              		.loc 1 79 3 view .LVU12
+  95              	.LBB15:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+  96              		.loc 1 79 3 view .LVU13
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+  97              		.loc 1 79 3 view .LVU14
+  98 0018 324B     		ldr	r3, .L15+4
+  99              	.LBE15:
+  81:./src/main.c  ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+ 100              		.loc 1 81 34 is_stmt 0 view .LVU15
+ 101 001a 2581     		strh	r5, [r4, #8]	@ movhi
+  85:./src/main.c  ****   HAL_CRC_Init(&hcrc);
+ 102              		.loc 1 85 24 view .LVU16
+ 103 001c 0121     		movs	r1, #1
+ 104              	.LBB16:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 105              		.loc 1 79 3 view .LVU17
+ 106 001e 1A6B     		ldr	r2, [r3, #48]
+ 107              	.LBE16:
+  80:./src/main.c  ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 108              		.loc 1 80 17 view .LVU18
+ 109 0020 3148     		ldr	r0, .L15+8
+ 110              	.LBB17:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 111              		.loc 1 79 3 view .LVU19
+ 112 0022 42F48052 		orr	r2, r2, #4096
+ 113              	.LBE17:
+  80:./src/main.c  ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 114              		.loc 1 80 17 view .LVU20
+ 115 0026 6060     		str	r0, [r4, #4]
+  86:./src/main.c  ****   /* USER CODE BEGIN CRC_Init 2 */
+ 116              		.loc 1 86 3 view .LVU21
+ 117 0028 201D     		adds	r0, r4, #4
+  84:./src/main.c  ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+ 118              		.loc 1 84 37 view .LVU22
+ 119 002a C4E90655 		strd	r5, r5, [r4, #24]
+ 120              	.LBB18:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 121              		.loc 1 79 3 view .LVU23
+ 122 002e 1A63     		str	r2, [r3, #48]
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 123              		.loc 1 79 3 is_stmt 1 view .LVU24
+ 124 0030 1B6B     		ldr	r3, [r3, #48]
+ 125              	.LBE18:
+  85:./src/main.c  ****   HAL_CRC_Init(&hcrc);
+ 126              		.loc 1 85 24 is_stmt 0 view .LVU25
+ 127 0032 6162     		str	r1, [r4, #36]
+ 128              	.LBB19:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 129              		.loc 1 79 3 view .LVU26
+ 130 0034 03F48053 		and	r3, r3, #4096
+ 131 0038 0593     		str	r3, [sp, #20]
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 132              		.loc 1 79 3 is_stmt 1 view .LVU27
+ 133 003a 059B     		ldr	r3, [sp, #20]
+ 134              	.LBE19:
+  79:./src/main.c  ****   hcrc.Instance = CRC;
+ 135              		.loc 1 79 3 view .LVU28
+  80:./src/main.c  ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 136              		.loc 1 80 3 view .LVU29
+  81:./src/main.c  ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+ 137              		.loc 1 81 3 view .LVU30
+  82:./src/main.c  ****   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+ 138              		.loc 1 82 3 view .LVU31
+  83:./src/main.c  ****   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+ 139              		.loc 1 83 3 view .LVU32
+  84:./src/main.c  ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+ 140              		.loc 1 84 3 view .LVU33
+  85:./src/main.c  ****   HAL_CRC_Init(&hcrc);
+ 141              		.loc 1 85 3 view .LVU34
+  86:./src/main.c  ****   /* USER CODE BEGIN CRC_Init 2 */
+ 142              		.loc 1 86 3 view .LVU35
+ 143 003c FFF7FEFF 		bl	HAL_CRC_Init
+ 144              	.LVL6:
+ 145              	.LBE20:
+ 146              	.LBE21:
+ 105:./src/main.c  **** 
+ 106:./src/main.c  **** 	// put 100Base-T1 PHY into slave mode
+ 107:./src/main.c  **** 	#if _PHY_IS_T1_
+ 108:./src/main.c  **** 	HW_BR_REACH_SLAVE;
+ 109:./src/main.c  **** 	#else
+ 110:./src/main.c  **** 	//HW_BR_REACH_MASTER;
+ 111:./src/main.c  **** 	#endif
+ 112:./src/main.c  **** 
+ 113:./src/main.c  **** 	// enable PHY, deassert reset
+ 114:./src/main.c  **** 	HW_ENA_ETH_PHY;
+ 147              		.loc 1 114 2 view .LVU36
+ 148 0040 2A4B     		ldr	r3, .L15+12
+ 149 0042 4FF44052 		mov	r2, #12288
+ 115:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
+ 150              		.loc 1 115 2 is_stmt 0 view .LVU37
+ 151 0046 40F27710 		movw	r0, #375
+ 114:./src/main.c  **** 	osDelay ( DLY_MS(75));	// for 100Base-TX
+ 152              		.loc 1 114 2 view .LVU38
+ 153 004a 9A61     		str	r2, [r3, #24]
+ 154              		.loc 1 115 2 is_stmt 1 view .LVU39
+ 155 004c FFF7FEFF 		bl	osDelay
+ 156              	.LVL7:
+ 116:./src/main.c  **** 	
+ 117:./src/main.c  **** 	
+ 118:./src/main.c  **** 	// init lwip stack
+ 119:./src/main.c  **** 	tcpip_init( NULL, NULL );
+ 157              		.loc 1 119 2 view .LVU40
+ 158 0050 2946     		mov	r1, r5
+ 159 0052 2846     		mov	r0, r5
+ 160 0054 FFF7FEFF 		bl	tcpip_init
+ 161              	.LVL8:
+ 120:./src/main.c  **** 
+ 121:./src/main.c  **** 
+ 122:./src/main.c  **** 	// init ip address, requested later by dhcp
+ 123:./src/main.c  ****   	IP_ADDRESS[0] = 192;
+ 162              		.loc 1 123 4 view .LVU41
+ 124:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+ 163              		.loc 1 124 4 view .LVU42
+ 125:./src/main.c  ****   	IP_ADDRESS[2] = 20;
+ 164              		.loc 1 125 4 view .LVU43
+ 126:./src/main.c  ****   	IP_ADDRESS[3] = 72;
+ 165              		.loc 1 126 4 view .LVU44
+ 127:./src/main.c  ****   	NETMASK_ADDRESS[0] = 255;
+ 128:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 129:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
+ 130:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
+ 131:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
+ 132:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 133:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
+ 134:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
+ 135:./src/main.c  **** 
+ 136:./src/main.c  **** 
+ 137:./src/main.c  **** 	IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
+ 138:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 139:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+ 166              		.loc 1 139 4 is_stmt 0 view .LVU45
+ 167 0058 2346     		mov	r3, r4
+ 131:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 168              		.loc 1 131 23 view .LVU46
+ 169 005a 254A     		ldr	r2, .L15+16
+ 140:./src/main.c  **** 	// add the network interface
+ 141:./src/main.c  **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
+ 170              		.loc 1 141 2 view .LVU47
+ 171 005c 2548     		ldr	r0, .L15+20
+ 139:./src/main.c  **** 	// add the network interface
+ 172              		.loc 1 139 4 view .LVU48
+ 173 005e 43F83C2F 		str	r2, [r3, #60]!
+ 131:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 174              		.loc 1 131 23 view .LVU49
+ 175 0062 2263     		str	r2, [r4, #48]
+ 176              		.loc 1 141 2 view .LVU50
+ 177 0064 04F13802 		add	r2, r4, #56
+ 178 0068 0290     		str	r0, [sp, #8]
+ 179 006a 0095     		str	r5, [sp]
+ 127:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 180              		.loc 1 127 23 view .LVU51
+ 181 006c 6FF07F45 		mvn	r5, #-16777216
+ 123:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+ 182              		.loc 1 123 18 view .LVU52
+ 183 0070 2149     		ldr	r1, .L15+24
+ 184              		.loc 1 141 2 view .LVU53
+ 185 0072 2248     		ldr	r0, .L15+28
+ 123:./src/main.c  ****   	IP_ADDRESS[1] = 168;
+ 186              		.loc 1 123 18 view .LVU54
+ 187 0074 A162     		str	r1, [r4, #40]
+ 127:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 188              		.loc 1 127 4 is_stmt 1 view .LVU55
+ 128:./src/main.c  ****   	NETMASK_ADDRESS[2] = 255;
+ 189              		.loc 1 128 4 view .LVU56
+ 129:./src/main.c  ****   	NETMASK_ADDRESS[3] = 0;
+ 190              		.loc 1 129 4 view .LVU57
+ 130:./src/main.c  ****   	GATEWAY_ADDRESS[0] = 192;
+ 191              		.loc 1 130 4 view .LVU58
+ 137:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 192              		.loc 1 137 2 is_stmt 0 view .LVU59
+ 193 0076 6163     		str	r1, [r4, #52]
+ 194              		.loc 1 141 2 view .LVU60
+ 195 0078 04F13401 		add	r1, r4, #52
+ 196 007c 0190     		str	r0, [sp, #4]
+ 197 007e 04F14000 		add	r0, r4, #64
+ 127:./src/main.c  ****   	NETMASK_ADDRESS[1] = 255;
+ 198              		.loc 1 127 23 view .LVU61
+ 199 0082 E562     		str	r5, [r4, #44]
+ 131:./src/main.c  ****   	GATEWAY_ADDRESS[1] = 168;
+ 200              		.loc 1 131 4 is_stmt 1 view .LVU62
+ 132:./src/main.c  ****   	GATEWAY_ADDRESS[2] = 20;
+ 201              		.loc 1 132 4 view .LVU63
+ 133:./src/main.c  ****   	GATEWAY_ADDRESS[3] = 1;
+ 202              		.loc 1 133 4 view .LVU64
+ 134:./src/main.c  **** 
+ 203              		.loc 1 134 4 view .LVU65
+ 137:./src/main.c  ****   	IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[
+ 204              		.loc 1 137 2 view .LVU66
+ 138:./src/main.c  ****   	IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+ 205              		.loc 1 138 4 view .LVU67
+ 206 0084 A563     		str	r5, [r4, #56]
+ 139:./src/main.c  **** 	// add the network interface
+ 207              		.loc 1 139 4 view .LVU68
+ 208              		.loc 1 141 2 view .LVU69
+ 209 0086 FFF7FEFF 		bl	netif_add
+ 210              	.LVL9:
+ 142:./src/main.c  **** 
+ 143:./src/main.c  **** 
+ 144:./src/main.c  **** 	// set default netif
+ 145:./src/main.c  **** 	netif_set_default ( &gnetif);
+ 211              		.loc 1 145 2 view .LVU70
+ 212 008a 04F14000 		add	r0, r4, #64
+ 213 008e FFF7FEFF 		bl	netif_set_default
+ 214              	.LVL10:
+ 146:./src/main.c  **** 
+ 147:./src/main.c  **** 	if ( netif_is_link_up ( &gnetif))
+ 215              		.loc 1 147 2 view .LVU71
+ 216              		.loc 1 147 7 is_stmt 0 view .LVU72
+ 217 0092 94F86D30 		ldrb	r3, [r4, #109]	@ zero_extendqisi2
+ 148:./src/main.c  **** 	{
+ 149:./src/main.c  **** 		/* When the netif is fully configured this function must be called */
+ 150:./src/main.c  **** 		netif_set_up ( &gnetif);
+ 218              		.loc 1 150 3 view .LVU73
+ 219 0096 04F14000 		add	r0, r4, #64
+ 147:./src/main.c  **** 	{
+ 220              		.loc 1 147 5 view .LVU74
+ 221 009a 5B07     		lsls	r3, r3, #29
+ 222 009c 1CD5     		bpl	.L4
+ 223              		.loc 1 150 3 is_stmt 1 view .LVU75
+ 224 009e FFF7FEFF 		bl	netif_set_up
+ 225              	.LVL11:
+ 226              	.L5:
+ 151:./src/main.c  **** 	}
+ 152:./src/main.c  **** 
+ 153:./src/main.c  **** 	else
+ 154:./src/main.c  **** 	{
+ 155:./src/main.c  **** 		/* When the netif link is down this function must be called */
+ 156:./src/main.c  **** 		netif_set_down ( &gnetif);
+ 157:./src/main.c  **** 	}
  158:./src/main.c  **** 
- 159:./src/main.c  **** 				/* Initialize user application's Stack Pointer */
- 160:./src/main.c  **** 				__set_MSP(*(__IO uint32_t*) isr_vector_addr);
- 161:./src/main.c  **** 				SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
- 178              		.loc 1 161 15 view .LVU57
- 179 0084 1F4F     		ldr	r7, .L12+36
- 180              	.LBE37:
- 127:./src/main.c  **** 
- 181              		.loc 1 127 2 view .LVU58
- 182 0086 FFF7FEFF 		bl	udp_client_send
- 183              	.LVL12:
- 184 008a 0DE0     		b	.L9
- 185              	.LVL13:
- 186              	.L11:
- 187              	.LBB46:
- 140:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 188              		.loc 1 140 50 discriminator 1 view .LVU59
- 189 008c 059B     		ldr	r3, [sp, #20]
- 140:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 190              		.loc 1 140 34 discriminator 1 view .LVU60
- 191 008e B342     		cmp	r3, r6
- 192 0090 14D8     		bhi	.L7
- 155:./src/main.c  **** 				JumpToApplication = (pFunction) JumpAddress;
- 193              		.loc 1 155 19 view .LVU61
- 194 0092 6368     		ldr	r3, [r4, #4]
- 160:./src/main.c  **** 				SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
- 195              		.loc 1 160 5 view .LVU62
- 196 0094 2268     		ldr	r2, [r4]
- 156:./src/main.c  **** 
- 197              		.loc 1 156 23 view .LVU63
- 198 0096 C5E91433 		strd	r3, r3, [r5, #80]
- 160:./src/main.c  **** 				SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
- 199              		.loc 1 160 5 is_stmt 1 view .LVU64
- 200              	.LVL14:
- 201              	.LBB38:
- 202              	.LBI38:
- 203              		.file 2 "./inc/cmsis_gcc.h"
+ 159:./src/main.c  **** 	udp_total_connect();
+ 227              		.loc 1 159 2 view .LVU76
+ 228 00a2 FFF7FEFF 		bl	udp_total_connect
+ 229              	.LVL12:
+ 160:./src/main.c  **** 	udp_client_send("Hello World!\n");
+ 230              		.loc 1 160 2 view .LVU77
+ 231 00a6 1648     		ldr	r0, .L15+32
+ 232 00a8 FFF7FEFF 		bl	udp_client_send
+ 233              	.LVL13:
+ 161:./src/main.c  **** 
+ 162:./src/main.c  **** 	IAP_tftpd_init();
+ 234              		.loc 1 162 2 view .LVU78
+ 235 00ac 154C     		ldr	r4, .L15+36
+ 236 00ae FFF7FEFF 		bl	IAP_tftpd_init
+ 237              	.LVL14:
+ 163:./src/main.c  **** 	osDelay(1000);
+ 238              		.loc 1 163 2 view .LVU79
+ 239 00b2 4FF47A70 		mov	r0, #1000
+ 164:./src/main.c  **** 
+ 165:./src/main.c  ****     // /* Initialize
+ 166:./src/main.c  **** 	// // start dhcp
+ 167:./src/main.c  **** 	// dhcp_start ( &gnetif);
+ 168:./src/main.c  **** 
+ 169:./src/main.c  **** 	while ( 1)
+ 170:./src/main.c  **** 	{
+ 171:./src/main.c  **** 		//osThreadSuspend(osThreadGetId());
+ 172:./src/main.c  **** 		if ( is_soft_reset() != 0 )
+ 173:./src/main.c  **** 		{
+ 174:./src/main.c  **** 			if(check)
+ 175:./src/main.c  ****         	{
+ 176:./src/main.c  **** 				udp_client_send("[BOOT]  START BOOT...\n");
+ 240              		.loc 1 176 5 is_stmt 0 view .LVU80
+ 241 00b6 144D     		ldr	r5, .L15+40
+ 177:./src/main.c  ****           		check = 0;
+ 242              		.loc 1 177 19 view .LVU81
+ 243 00b8 0026     		movs	r6, #0
+ 163:./src/main.c  **** 	osDelay(1000);
+ 244              		.loc 1 163 2 view .LVU82
+ 245 00ba FFF7FEFF 		bl	osDelay
+ 246              	.LVL15:
+ 247              	.L7:
+ 169:./src/main.c  **** 	{
+ 248              		.loc 1 169 2 is_stmt 1 view .LVU83
+ 172:./src/main.c  **** 		{
+ 249              		.loc 1 172 3 view .LVU84
+ 172:./src/main.c  **** 		{
+ 250              		.loc 1 172 8 is_stmt 0 view .LVU85
+ 251 00be FFF7FEFF 		bl	is_soft_reset
+ 252              	.LVL16:
+ 174:./src/main.c  ****         	{
+ 253              		.loc 1 174 4 is_stmt 1 view .LVU86
+ 172:./src/main.c  **** 		{
+ 254              		.loc 1 172 6 is_stmt 0 view .LVU87
+ 255 00c2 28B1     		cbz	r0, .L6
+ 176:./src/main.c  ****           		check = 0;
+ 256              		.loc 1 176 5 is_stmt 1 view .LVU88
+ 174:./src/main.c  ****         	{
+ 257              		.loc 1 174 6 is_stmt 0 view .LVU89
+ 258 00c4 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 176:./src/main.c  ****           		check = 0;
+ 259              		.loc 1 176 5 view .LVU90
+ 260 00c6 2846     		mov	r0, r5
+ 174:./src/main.c  ****         	{
+ 261              		.loc 1 174 6 view .LVU91
+ 262 00c8 13B1     		cbz	r3, .L6
+ 176:./src/main.c  ****           		check = 0;
+ 263              		.loc 1 176 5 view .LVU92
+ 264 00ca FFF7FEFF 		bl	udp_client_send
+ 265              	.LVL17:
+ 266              		.loc 1 177 13 is_stmt 1 view .LVU93
+ 267              		.loc 1 177 19 is_stmt 0 view .LVU94
+ 268 00ce 2670     		strb	r6, [r4]
+ 269              	.L6:
+ 178:./src/main.c  ****         	}
+ 179:./src/main.c  **** 		}
+ 180:./src/main.c  **** 		osDelay(1);
+ 270              		.loc 1 180 3 is_stmt 1 view .LVU95
+ 271 00d0 0120     		movs	r0, #1
+ 272 00d2 FFF7FEFF 		bl	osDelay
+ 273              	.LVL18:
+ 169:./src/main.c  **** 	{
+ 274              		.loc 1 169 8 view .LVU96
+ 172:./src/main.c  **** 		{
+ 275              		.loc 1 172 6 is_stmt 0 view .LVU97
+ 276 00d6 F2E7     		b	.L7
+ 277              	.L4:
+ 156:./src/main.c  **** 	}
+ 278              		.loc 1 156 3 is_stmt 1 view .LVU98
+ 279 00d8 FFF7FEFF 		bl	netif_set_down
+ 280              	.LVL19:
+ 281 00dc E1E7     		b	.L5
+ 282              	.L16:
+ 283 00de 00BF     		.align	2
+ 284              	.L15:
+ 285 00e0 00000000 		.word	.LANCHOR0
+ 286 00e4 00380240 		.word	1073887232
+ 287 00e8 00300240 		.word	1073885184
+ 288 00ec 00040240 		.word	1073873920
+ 289 00f0 C0A81401 		.word	18131136
+ 290 00f4 00000000 		.word	tcpip_input
+ 291 00f8 C0A81448 		.word	1209313472
+ 292 00fc 00000000 		.word	ethernetif_init
+ 293 0100 00000000 		.word	.LC0
+ 294 0104 00000000 		.word	.LANCHOR1
+ 295 0108 10000000 		.word	.LC1
+ 296              		.cfi_endproc
+ 297              	.LFE171:
+ 299              		.section	.text.startup,"ax",%progbits
+ 300              		.align	1
+ 301              		.p2align 2,,3
+ 302              		.global	main
+ 303              		.syntax unified
+ 304              		.thumb
+ 305              		.thumb_func
+ 306              		.fpu fpv5-d16
+ 308              	main:
+ 309              	.LFB172:
+ 181:./src/main.c  **** 
+ 182:./src/main.c  **** 		//osThreadSuspend(osThreadGetId());
+ 183:./src/main.c  **** 	}
+ 184:./src/main.c  **** 
+ 185:./src/main.c  **** }
+ 186:./src/main.c  **** 
+ 187:./src/main.c  **** 
+ 188:./src/main.c  **** 
+ 189:./src/main.c  **** 
+ 190:./src/main.c  **** 
+ 191:./src/main.c  **** 
+ 192:./src/main.c  **** //! @brief      entry point
+ 193:./src/main.c  **** int  main ( void)
+ 194:./src/main.c  **** {
+ 310              		.loc 1 194 1 view -0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 40
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
+ 196:./src/main.c  **** 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
+ 197:./src/main.c  **** 
+ 198:./src/main.c  **** 	//SCB_DisableDCache(); 	//check this!!!
+ 199:./src/main.c  **** 
+ 200:./src/main.c  **** 	// finalize initialization
+ 201:./src/main.c  **** 	
+ 202:./src/main.c  **** 	HW_Init();
+ 314              		.loc 1 202 2 view .LVU100
+ 194:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
+ 315              		.loc 1 194 1 is_stmt 0 view .LVU101
+ 316 0000 10B5     		push	{r4, lr}
+ 317              	.LCFI2:
+ 318              		.cfi_def_cfa_offset 8
+ 319              		.cfi_offset 4, -8
+ 320              		.cfi_offset 14, -4
+ 321 0002 8AB0     		sub	sp, sp, #40
+ 322              	.LCFI3:
+ 323              		.cfi_def_cfa_offset 48
+ 324              		.loc 1 202 2 view .LVU102
+ 325 0004 FFF7FEFF 		bl	HW_Init
+ 326              	.LVL20:
+ 203:./src/main.c  **** 
+ 204:./src/main.c  **** 	if ( is_soft_reset() == 0 )
+ 327              		.loc 1 204 2 is_stmt 1 view .LVU103
+ 328              		.loc 1 204 7 is_stmt 0 view .LVU104
+ 329 0008 FFF7FEFF 		bl	is_soft_reset
+ 330              	.LVL21:
+ 331              		.loc 1 204 5 view .LVU105
+ 332 000c 0028     		cmp	r0, #0
+ 333 000e 3FD1     		bne	.L25
+ 334              	.LBB32:
+ 205:./src/main.c  **** 	{
+ 206:./src/main.c  **** 		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS + 0x400;
+ 335              		.loc 1 206 3 is_stmt 1 view .LVU106
+ 336              	.LVL22:
+ 207:./src/main.c  **** 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
+ 337              		.loc 1 207 3 view .LVU107
+ 338              		.loc 1 207 36 is_stmt 0 view .LVU108
+ 339 0010 204B     		ldr	r3, .L26
+ 340 0012 D3F80024 		ldr	r2, [r3, #1024]
+ 341              		.loc 1 207 21 view .LVU109
+ 342 0016 0092     		str	r2, [sp]
+ 208:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
+ 343              		.loc 1 208 3 is_stmt 1 view .LVU110
+ 344              		.loc 1 208 20 is_stmt 0 view .LVU111
+ 345 0018 009A     		ldr	r2, [sp]
+ 346              		.loc 1 208 6 view .LVU112
+ 347 001a B2F1005F 		cmp	r2, #536870912
+ 348 001e 28D3     		bcc	.L19
+ 349              		.loc 1 208 50 discriminator 1 view .LVU113
+ 350 0020 0099     		ldr	r1, [sp]
+ 351              		.loc 1 208 34 discriminator 1 view .LVU114
+ 352 0022 1D4A     		ldr	r2, .L26+4
+ 353 0024 9142     		cmp	r1, r2
+ 354 0026 24D8     		bhi	.L19
+ 209:./src/main.c  **** 		{
+ 210:./src/main.c  **** 
+ 211:./src/main.c  **** 				// HAL_RCC_DeInit();
+ 212:./src/main.c  **** 				// HAL_DeInit();
+ 213:./src/main.c  **** 				// __disable_irq();
+ 214:./src/main.c  **** 				// SysTick->CTRL = 0;
+ 215:./src/main.c  **** 				// SysTick->LOAD = 0;
+ 216:./src/main.c  **** 				// SysTick->VAL  = 0;
+ 217:./src/main.c  **** 				// for (uint32_t i = 0; i < 8; i++)
+ 218:./src/main.c  **** 				// {
+ 219:./src/main.c  **** 				// 	NVIC->ICER[i] = 0xFFFFFFFF;
+ 220:./src/main.c  **** 				// 	NVIC->ICPR[i] = 0xFFFFFFFF;
+ 221:./src/main.c  **** 				// }
+ 222:./src/main.c  **** 				// SCB_DisableICache();
+ 223:./src/main.c  **** 				// SCB_DisableDCache();
+ 224:./src/main.c  **** 
+ 225:./src/main.c  **** 				JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
+ 355              		.loc 1 225 5 is_stmt 1 view .LVU115
+ 356              		.loc 1 225 19 is_stmt 0 view .LVU116
+ 357 0028 D3F80424 		ldr	r2, [r3, #1028]
+ 358              		.loc 1 225 17 view .LVU117
+ 359 002c 1B4C     		ldr	r4, .L26+8
+ 226:./src/main.c  **** 				JumpToApplication = (pFunction) JumpAddress;
+ 360              		.loc 1 226 23 view .LVU118
+ 361 002e C4E91D22 		strd	r2, r2, [r4, #116]
+ 227:./src/main.c  **** 
+ 228:./src/main.c  **** 
+ 229:./src/main.c  **** 				/* Initialize user application's Stack Pointer */
+ 230:./src/main.c  **** 				__set_MSP(*(__IO uint32_t*) isr_vector_addr);
+ 362              		.loc 1 230 5 is_stmt 1 view .LVU119
+ 363 0032 D3F80014 		ldr	r1, [r3, #1024]
+ 364              	.LVL23:
+ 365              	.LBB33:
+ 366              	.LBI33:
+ 367              		.file 2 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -802,96 +1058,129 @@
  396:./inc/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
  397:./inc/cmsis_gcc.h ****  */
  398:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
- 204              		.loc 2 398 27 view .LVU65
- 205              	.LBB39:
+ 368              		.loc 2 398 27 view .LVU120
+ 369              	.LBB34:
  399:./inc/cmsis_gcc.h **** {
  400:./inc/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
- 206              		.loc 2 400 3 view .LVU66
- 207              		.syntax unified
- 208              	@ 400 "./inc/cmsis_gcc.h" 1
- 209 009a 82F30888 		MSR msp, r2
- 210              	@ 0 "" 2
- 211              	.LVL15:
- 212              		.loc 2 400 3 is_stmt 0 view .LVU67
- 213              		.thumb
- 214              		.syntax unified
- 215              	.LBE39:
- 216              	.LBE38:
- 217              		.loc 1 161 5 is_stmt 1 view .LVU68
- 218              		.loc 1 161 15 is_stmt 0 view .LVU69
- 219 009e BC60     		str	r4, [r7, #8]
- 220              		.loc 1 161 46 is_stmt 1 view .LVU70
- 162:./src/main.c  **** 				JumpToApplication();
- 221              		.loc 1 162 5 view .LVU71
- 222 00a0 9847     		blx	r3
- 223              	.LVL16:
- 224              	.L6:
- 225              	.LBE46:
- 163:./src/main.c  **** 		}
- 164:./src/main.c  **** 		else
- 165:./src/main.c  **** 		{
- 166:./src/main.c  **** 			write_boot_flag_soft_reset();
- 167:./src/main.c  **** 			//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
- 168:./src/main.c  **** 		  	NVIC_SystemReset();
- 169:./src/main.c  **** 		}
- 170:./src/main.c  **** 	}
- 171:./src/main.c  **** 
- 172:./src/main.c  **** 		osDelay(1);
- 226              		.loc 1 172 3 view .LVU72
- 227 00a2 0120     		movs	r0, #1
- 228 00a4 FFF7FEFF 		bl	osDelay
- 229              	.LVL17:
- 133:./src/main.c  **** 	{
- 230              		.loc 1 133 8 view .LVU73
- 231              	.L9:
- 133:./src/main.c  **** 	{
- 232              		.loc 1 133 2 view .LVU74
- 136:./src/main.c  **** 	{
- 233              		.loc 1 136 2 view .LVU75
- 136:./src/main.c  **** 	{
- 234              		.loc 1 136 7 is_stmt 0 view .LVU76
- 235 00a8 FFF7FEFF 		bl	is_soft_reset
- 236              	.LVL18:
- 237              	.LBB47:
- 138:./src/main.c  **** 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
- 238              		.loc 1 138 3 is_stmt 1 view .LVU77
- 138:./src/main.c  **** 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
- 239              		.loc 1 138 59 view .LVU78
- 139:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 240              		.loc 1 139 3 view .LVU79
- 155:./src/main.c  **** 				JumpToApplication = (pFunction) JumpAddress;
- 241              		.loc 1 155 5 view .LVU80
- 242              	.LBE47:
- 136:./src/main.c  **** 	{
- 243              		.loc 1 136 5 is_stmt 0 view .LVU81
- 244 00ac 0028     		cmp	r0, #0
- 245 00ae F8D1     		bne	.L6
- 246              	.LBB48:
- 139:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 247              		.loc 1 139 36 view .LVU82
- 248 00b0 2368     		ldr	r3, [r4]
- 139:./src/main.c  **** 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 249              		.loc 1 139 21 view .LVU83
- 250 00b2 0593     		str	r3, [sp, #20]
- 140:./src/main.c  **** 		{
- 251              		.loc 1 140 3 is_stmt 1 view .LVU84
- 140:./src/main.c  **** 		{
- 252              		.loc 1 140 20 is_stmt 0 view .LVU85
- 253 00b4 059B     		ldr	r3, [sp, #20]
- 140:./src/main.c  **** 		{
- 254              		.loc 1 140 6 view .LVU86
- 255 00b6 B3F1005F 		cmp	r3, #536870912
- 256 00ba E7D2     		bcs	.L11
- 257              	.L7:
- 166:./src/main.c  **** 			//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
- 258              		.loc 1 166 4 is_stmt 1 view .LVU87
- 259 00bc FFF7FEFF 		bl	write_boot_flag_soft_reset
- 260              	.LVL19:
- 168:./src/main.c  **** 		}
- 261              		.loc 1 168 6 view .LVU88
- 262              	.LBB40:
- 263              	.LBI40:
- 264              		.file 3 "./inc/core_cm7.h"
+ 370              		.loc 2 400 3 view .LVU121
+ 371              		.syntax unified
+ 372              	@ 400 "./inc/cmsis_gcc.h" 1
+ 373 0036 81F30888 		MSR msp, r1
+ 374              	@ 0 "" 2
+ 375              	.LVL24:
+ 376              		.loc 2 400 3 is_stmt 0 view .LVU122
+ 377              		.thumb
+ 378              		.syntax unified
+ 379              	.LBE34:
+ 380              	.LBE33:
+ 231:./src/main.c  **** 				SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
+ 381              		.loc 1 231 5 is_stmt 1 view .LVU123
+ 382              		.loc 1 231 15 is_stmt 0 view .LVU124
+ 383 003a 1949     		ldr	r1, .L26+12
+ 384 003c 8B60     		str	r3, [r1, #8]
+ 232:./src/main.c  **** 				JumpToApplication();
+ 385              		.loc 1 232 5 is_stmt 1 view .LVU125
+ 386 003e 9047     		blx	r2
+ 387              	.LVL25:
+ 388              	.L18:
+ 389              		.loc 1 232 5 is_stmt 0 view .LVU126
+ 390              	.LBE32:
+ 233:./src/main.c  **** 		}
+ 234:./src/main.c  **** 		else
+ 235:./src/main.c  **** 		{
+ 236:./src/main.c  **** 			write_boot_flag_soft_reset();
+ 237:./src/main.c  **** 			//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
+ 238:./src/main.c  **** 		  	NVIC_SystemReset();
+ 239:./src/main.c  **** 		}
+ 240:./src/main.c  **** 	}
+ 241:./src/main.c  **** 
+ 242:./src/main.c  **** 	// initialize kernel
+ 243:./src/main.c  **** 	osKernelInitialize();
+ 391              		.loc 1 243 2 is_stmt 1 view .LVU127
+ 392 0040 FFF7FEFF 		bl	osKernelInitialize
+ 393              	.LVL26:
+ 394              	.LBB41:
+ 244:./src/main.c  **** 	
+ 245:./src/main.c  **** 	// create primary thread
+ 246:./src/main.c  **** 	{
+ 247:./src/main.c  **** 		osThreadAttr_t  attr;
+ 395              		.loc 1 247 3 view .LVU128
+ 248:./src/main.c  **** 
+ 249:./src/main.c  **** 
+ 250:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	//0
+ 396              		.loc 1 250 3 view .LVU129
+ 397 0044 2422     		movs	r2, #36
+ 398 0046 0021     		movs	r1, #0
+ 399 0048 01A8     		add	r0, sp, #4
+ 400 004a FFF7FEFF 		bl	memset
+ 401              	.LVL27:
+ 251:./src/main.c  **** 
+ 252:./src/main.c  **** 		attr.stack_size = 4*1024;
+ 402              		.loc 1 252 3 view .LVU130
+ 403              		.loc 1 252 19 is_stmt 0 view .LVU131
+ 404 004e 4FF48053 		mov	r3, #4096
+ 253:./src/main.c  **** 
+ 254:./src/main.c  **** 		osThreadNew ( thread_main, NULL, &attr);
+ 405              		.loc 1 254 3 view .LVU132
+ 406 0052 01AA     		add	r2, sp, #4
+ 407 0054 0021     		movs	r1, #0
+ 408 0056 1348     		ldr	r0, .L26+16
+ 252:./src/main.c  **** 
+ 409              		.loc 1 252 19 view .LVU133
+ 410 0058 0693     		str	r3, [sp, #24]
+ 411              		.loc 1 254 3 is_stmt 1 view .LVU134
+ 412 005a FFF7FEFF 		bl	osThreadNew
+ 413              	.LVL28:
+ 414              	.LBE41:
+ 255:./src/main.c  **** 	}
+ 256:./src/main.c  **** 	
+ 257:./src/main.c  **** 	// create a timer
+ 258:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
+ 415              		.loc 1 258 2 view .LVU135
+ 416              		.loc 1 258 26 is_stmt 0 view .LVU136
+ 417 005e 0023     		movs	r3, #0
+ 418 0060 0121     		movs	r1, #1
+ 419 0062 1148     		ldr	r0, .L26+20
+ 420 0064 1A46     		mov	r2, r3
+ 421 0066 FFF7FEFF 		bl	osTimerNew
+ 422              	.LVL29:
+ 423              		.loc 1 258 24 view .LVU137
+ 424 006a 2060     		str	r0, [r4]
+ 259:./src/main.c  **** 	
+ 260:./src/main.c  **** 	// start thread execution
+ 261:./src/main.c  **** 	osKernelStart();
+ 425              		.loc 1 261 2 is_stmt 1 view .LVU138
+ 426 006c FFF7FEFF 		bl	osKernelStart
+ 427              	.LVL30:
+ 428              	.L21:
+ 262:./src/main.c  **** 
+ 263:./src/main.c  **** 
+ 264:./src/main.c  **** 	
+ 265:./src/main.c  **** 	// should not reach this point !
+ 266:./src/main.c  **** 	while(1)
+ 429              		.loc 1 266 2 discriminator 1 view .LVU139
+ 267:./src/main.c  **** 	 {}
+ 430              		.loc 1 267 4 discriminator 1 view .LVU140
+ 266:./src/main.c  **** 	 {}
+ 431              		.loc 1 266 7 discriminator 1 view .LVU141
+ 266:./src/main.c  **** 	 {}
+ 432              		.loc 1 266 2 discriminator 1 view .LVU142
+ 433              		.loc 1 267 4 discriminator 1 view .LVU143
+ 266:./src/main.c  **** 	 {}
+ 434              		.loc 1 266 7 discriminator 1 view .LVU144
+ 435 0070 FEE7     		b	.L21
+ 436              	.LVL31:
+ 437              	.L19:
+ 438              	.LBB42:
+ 236:./src/main.c  **** 			//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
+ 439              		.loc 1 236 4 view .LVU145
+ 440 0072 FFF7FEFF 		bl	write_boot_flag_soft_reset
+ 441              	.LVL32:
+ 238:./src/main.c  **** 		}
+ 442              		.loc 1 238 6 view .LVU146
+ 443              	.LBB35:
+ 444              	.LBI35:
+ 445              		.file 3 "./inc/core_cm7.h"
    1:./inc/core_cm7.h **** /**************************************************************************//**
    2:./inc/core_cm7.h ****  * @file     core_cm7.h
    3:./inc/core_cm7.h ****  * @brief    CMSIS Cortex-M7 Core Peripheral Access Layer Header File
@@ -3048,13 +3337,13 @@
 2154:./inc/core_cm7.h ****   \details Initiates a system reset request to reset the MCU.
 2155:./inc/core_cm7.h ****  */
 2156:./inc/core_cm7.h **** __NO_RETURN __STATIC_INLINE void __NVIC_SystemReset(void)
- 265              		.loc 3 2156 34 view .LVU89
- 266              	.LBB41:
+ 446              		.loc 3 2156 34 view .LVU147
+ 447              	.LBB36:
 2157:./inc/core_cm7.h **** {
 2158:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure all outstanding memor
- 267              		.loc 3 2158 3 view .LVU90
- 268              	.LBB42:
- 269              	.LBI42:
+ 448              		.loc 3 2158 3 view .LVU148
+ 449              	.LBB37:
+ 450              	.LBI37:
  401:./inc/cmsis_gcc.h **** }
  402:./inc/cmsis_gcc.h **** 
  403:./inc/cmsis_gcc.h **** 
@@ -3599,736 +3888,203 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
- 270              		.loc 2 944 27 view .LVU91
- 271              	.LBB43:
+ 451              		.loc 2 944 27 view .LVU149
+ 452              	.LBB38:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 272              		.loc 2 946 3 view .LVU92
- 273              		.syntax unified
- 274              	@ 946 "./inc/cmsis_gcc.h" 1
- 275 00c0 BFF34F8F 		dsb 0xF
- 276              	@ 0 "" 2
- 277              		.thumb
- 278              		.syntax unified
- 279              	.LBE43:
- 280              	.LBE42:
+ 453              		.loc 2 946 3 view .LVU150
+ 454              		.syntax unified
+ 455              	@ 946 "./inc/cmsis_gcc.h" 1
+ 456 0076 BFF34F8F 		dsb 0xF
+ 457              	@ 0 "" 2
+ 458              		.thumb
+ 459              		.syntax unified
+ 460              	.LBE38:
+ 461              	.LBE37:
 2159:./inc/core_cm7.h ****                                                                        buffered write are completed
 2160:./inc/core_cm7.h ****   SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
- 281              		.loc 3 2160 3 view .LVU93
+ 462              		.loc 3 2160 3 view .LVU151
 2161:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 282              		.loc 3 2161 32 is_stmt 0 view .LVU94
- 283 00c4 0F49     		ldr	r1, .L12+36
+ 463              		.loc 3 2161 32 is_stmt 0 view .LVU152
+ 464 007a 0949     		ldr	r1, .L26+12
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 284              		.loc 3 2160 17 view .LVU95
- 285 00c6 104B     		ldr	r3, .L12+40
- 286              		.loc 3 2161 32 view .LVU96
- 287 00c8 CA68     		ldr	r2, [r1, #12]
- 288              		.loc 3 2161 40 view .LVU97
- 289 00ca 02F4E062 		and	r2, r2, #1792
+ 465              		.loc 3 2160 17 view .LVU153
+ 466 007c 0B4B     		ldr	r3, .L26+24
+ 467              		.loc 3 2161 32 view .LVU154
+ 468 007e CA68     		ldr	r2, [r1, #12]
+ 469              		.loc 3 2161 40 view .LVU155
+ 470 0080 02F4E062 		and	r2, r2, #1792
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 290              		.loc 3 2160 17 view .LVU98
- 291 00ce 1343     		orrs	r3, r3, r2
+ 471              		.loc 3 2160 17 view .LVU156
+ 472 0084 1343     		orrs	r3, r3, r2
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 292              		.loc 3 2160 15 view .LVU99
- 293 00d0 CB60     		str	r3, [r1, #12]
+ 473              		.loc 3 2160 15 view .LVU157
+ 474 0086 CB60     		str	r3, [r1, #12]
 2162:./inc/core_cm7.h ****                             SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchange
 2163:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure completion of memory 
- 294              		.loc 3 2163 3 is_stmt 1 view .LVU100
- 295              	.LBB44:
- 296              	.LBI44:
+ 475              		.loc 3 2163 3 is_stmt 1 view .LVU158
+ 476              	.LBB39:
+ 477              	.LBI39:
  944:./inc/cmsis_gcc.h **** {
- 297              		.loc 2 944 27 view .LVU101
- 298              	.LBB45:
- 299              		.loc 2 946 3 view .LVU102
- 300              		.syntax unified
- 301              	@ 946 "./inc/cmsis_gcc.h" 1
- 302 00d2 BFF34F8F 		dsb 0xF
- 303              	@ 0 "" 2
- 304              		.thumb
- 305              		.syntax unified
- 306              	.L8:
- 307              	.LBE45:
- 308              	.LBE44:
+ 478              		.loc 2 944 27 view .LVU159
+ 479              	.LBB40:
+ 480              		.loc 2 946 3 view .LVU160
+ 481              		.syntax unified
+ 482              	@ 946 "./inc/cmsis_gcc.h" 1
+ 483 0088 BFF34F8F 		dsb 0xF
+ 484              	@ 0 "" 2
+ 485              		.thumb
+ 486              		.syntax unified
+ 487              	.L20:
+ 488              	.LBE40:
+ 489              	.LBE39:
 2164:./inc/core_cm7.h **** 
 2165:./inc/core_cm7.h ****   for(;;)                                                           /* wait until reset */
- 309              		.loc 3 2165 3 view .LVU103
+ 490              		.loc 3 2165 3 view .LVU161
 2166:./inc/core_cm7.h ****   {
 2167:./inc/core_cm7.h ****     __NOP();
- 310              		.loc 3 2167 5 view .LVU104
- 311              		.syntax unified
- 312              	@ 2167 "./inc/core_cm7.h" 1
- 313 00d6 00BF     		nop
- 314              	@ 0 "" 2
-2165:./inc/core_cm7.h ****   {
- 315              		.loc 3 2165 8 view .LVU105
- 316              		.thumb
- 317              		.syntax unified
- 318 00d8 FDE7     		b	.L8
- 319              	.LVL20:
- 320              	.L4:
-2165:./inc/core_cm7.h ****   {
- 321              		.loc 3 2165 8 is_stmt 0 view .LVU106
- 322              	.LBE41:
- 323              	.LBE40:
- 324              	.LBE48:
- 123:./src/main.c  **** 	}
- 325              		.loc 1 123 3 is_stmt 1 view .LVU107
- 326 00da FFF7FEFF 		bl	netif_set_down
- 327              	.LVL21:
- 328 00de CCE7     		b	.L5
- 329              	.L13:
- 330              		.align	2
- 331              	.L12:
- 332 00e0 00000000 		.word	.LANCHOR0
- 333 00e4 00000000 		.word	tcpip_input
- 334 00e8 00040240 		.word	1073873920
- 335 00ec C0A81401 		.word	18131136
- 336 00f0 00000000 		.word	ethernetif_init
- 337 00f4 C0A81448 		.word	1209313472
- 338 00f8 00000000 		.word	.LC0
- 339 00fc 00000408 		.word	134479872
- 340 0100 00000820 		.word	537395200
- 341 0104 00ED00E0 		.word	-536810240
- 342 0108 0400FA05 		.word	100270084
- 343              		.cfi_endproc
- 344              	.LFE170:
- 346              		.section	.text.startup,"ax",%progbits
- 347              		.align	1
- 348              		.p2align 2,,3
- 349              		.global	main
- 350              		.syntax unified
- 351              		.thumb
- 352              		.thumb_func
- 353              		.fpu fpv5-d16
- 355              	main:
- 356              	.LFB171:
- 173:./src/main.c  **** 
- 174:./src/main.c  **** 		//osThreadSuspend(osThreadGetId());
- 175:./src/main.c  **** 	}
- 176:./src/main.c  **** 
- 177:./src/main.c  **** }
- 178:./src/main.c  **** 
- 179:./src/main.c  **** 
- 180:./src/main.c  **** 
- 181:./src/main.c  **** 
- 182:./src/main.c  **** 
- 183:./src/main.c  **** //! @brief      entry point
- 184:./src/main.c  **** int  main ( void)
- 185:./src/main.c  **** {
- 357              		.loc 1 185 1 view -0
- 358              		.cfi_startproc
- 359              		@ Volatile: function does not return.
- 360              		@ args = 0, pretend = 0, frame = 40
- 361              		@ frame_needed = 0, uses_anonymous_args = 0
- 186:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 187:./src/main.c  **** 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
- 188:./src/main.c  **** 	SCB_DisableDCache();
- 362              		.loc 1 188 2 view .LVU109
- 363              	.LBB49:
- 364              	.LBI49:
-2168:./inc/core_cm7.h ****   }
-2169:./inc/core_cm7.h **** }
-2170:./inc/core_cm7.h **** 
-2171:./inc/core_cm7.h **** /*@} end of CMSIS_Core_NVICFunctions */
-2172:./inc/core_cm7.h **** 
-2173:./inc/core_cm7.h **** 
-2174:./inc/core_cm7.h **** /* ##########################  MPU functions  #################################### */
-2175:./inc/core_cm7.h **** 
-2176:./inc/core_cm7.h **** #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
-2177:./inc/core_cm7.h **** 
-2178:./inc/core_cm7.h **** #include "mpu_armv7.h"
-2179:./inc/core_cm7.h **** 
-2180:./inc/core_cm7.h **** #endif
-2181:./inc/core_cm7.h **** 
-2182:./inc/core_cm7.h **** 
-2183:./inc/core_cm7.h **** /* ##########################  FPU functions  #################################### */
-2184:./inc/core_cm7.h **** /**
-2185:./inc/core_cm7.h ****   \ingroup  CMSIS_Core_FunctionInterface
-2186:./inc/core_cm7.h ****   \defgroup CMSIS_Core_FpuFunctions FPU Functions
-2187:./inc/core_cm7.h ****   \brief    Function that provides FPU type.
-2188:./inc/core_cm7.h ****   @{
-2189:./inc/core_cm7.h ****  */
-2190:./inc/core_cm7.h **** 
-2191:./inc/core_cm7.h **** /**
-2192:./inc/core_cm7.h ****   \brief   get FPU type
-2193:./inc/core_cm7.h ****   \details returns the FPU type
-2194:./inc/core_cm7.h ****   \returns
-2195:./inc/core_cm7.h ****    - \b  0: No FPU
-2196:./inc/core_cm7.h ****    - \b  1: Single precision FPU
-2197:./inc/core_cm7.h ****    - \b  2: Double + Single precision FPU
-2198:./inc/core_cm7.h ****  */
-2199:./inc/core_cm7.h **** __STATIC_INLINE uint32_t SCB_GetFPUType(void)
-2200:./inc/core_cm7.h **** {
-2201:./inc/core_cm7.h ****   uint32_t mvfr0;
-2202:./inc/core_cm7.h **** 
-2203:./inc/core_cm7.h ****   mvfr0 = SCB->MVFR0;
-2204:./inc/core_cm7.h ****   if      ((mvfr0 & (FPU_MVFR0_Single_precision_Msk | FPU_MVFR0_Double_precision_Msk)) == 0x220U)
-2205:./inc/core_cm7.h ****   {
-2206:./inc/core_cm7.h ****     return 2U;           /* Double + Single precision FPU */
-2207:./inc/core_cm7.h ****   }
-2208:./inc/core_cm7.h ****   else if ((mvfr0 & (FPU_MVFR0_Single_precision_Msk | FPU_MVFR0_Double_precision_Msk)) == 0x020U)
-2209:./inc/core_cm7.h ****   {
-2210:./inc/core_cm7.h ****     return 1U;           /* Single precision FPU */
-2211:./inc/core_cm7.h ****   }
-2212:./inc/core_cm7.h ****   else
-2213:./inc/core_cm7.h ****   {
-2214:./inc/core_cm7.h ****     return 0U;           /* No FPU */
-2215:./inc/core_cm7.h ****   }
-2216:./inc/core_cm7.h **** }
-2217:./inc/core_cm7.h **** 
-2218:./inc/core_cm7.h **** /*@} end of CMSIS_Core_FpuFunctions */
-2219:./inc/core_cm7.h **** 
-2220:./inc/core_cm7.h **** 
-2221:./inc/core_cm7.h **** 
-2222:./inc/core_cm7.h **** /* ##########################  Cache functions  #################################### */
-2223:./inc/core_cm7.h **** /**
-2224:./inc/core_cm7.h ****   \ingroup  CMSIS_Core_FunctionInterface
-2225:./inc/core_cm7.h ****   \defgroup CMSIS_Core_CacheFunctions Cache Functions
-2226:./inc/core_cm7.h ****   \brief    Functions that configure Instruction and Data cache.
-2227:./inc/core_cm7.h ****   @{
-2228:./inc/core_cm7.h ****  */
-2229:./inc/core_cm7.h **** 
-2230:./inc/core_cm7.h **** /* Cache Size ID Register Macros */
-2231:./inc/core_cm7.h **** #define CCSIDR_WAYS(x)         (((x) & SCB_CCSIDR_ASSOCIATIVITY_Msk) >> SCB_CCSIDR_ASSOCIATIVITY_Po
-2232:./inc/core_cm7.h **** #define CCSIDR_SETS(x)         (((x) & SCB_CCSIDR_NUMSETS_Msk      ) >> SCB_CCSIDR_NUMSETS_Pos     
-2233:./inc/core_cm7.h **** 
-2234:./inc/core_cm7.h **** #define __SCB_DCACHE_LINE_SIZE  32U /*!< Cortex-M7 cache line size is fixed to 32 bytes (8 words). 
-2235:./inc/core_cm7.h **** #define __SCB_ICACHE_LINE_SIZE  32U /*!< Cortex-M7 cache line size is fixed to 32 bytes (8 words). 
-2236:./inc/core_cm7.h **** 
-2237:./inc/core_cm7.h **** /**
-2238:./inc/core_cm7.h ****   \brief   Enable I-Cache
-2239:./inc/core_cm7.h ****   \details Turns on I-Cache
-2240:./inc/core_cm7.h ****   */
-2241:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_EnableICache (void)
-2242:./inc/core_cm7.h **** {
-2243:./inc/core_cm7.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
-2244:./inc/core_cm7.h ****     if (SCB->CCR & SCB_CCR_IC_Msk) return;  /* return if ICache is already enabled */
-2245:./inc/core_cm7.h **** 
-2246:./inc/core_cm7.h ****     __DSB();
-2247:./inc/core_cm7.h ****     __ISB();
-2248:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
-2249:./inc/core_cm7.h ****     __DSB();
-2250:./inc/core_cm7.h ****     __ISB();
-2251:./inc/core_cm7.h ****     SCB->CCR |=  (uint32_t)SCB_CCR_IC_Msk;  /* enable I-Cache */
-2252:./inc/core_cm7.h ****     __DSB();
-2253:./inc/core_cm7.h ****     __ISB();
-2254:./inc/core_cm7.h ****   #endif
-2255:./inc/core_cm7.h **** }
-2256:./inc/core_cm7.h **** 
-2257:./inc/core_cm7.h **** 
-2258:./inc/core_cm7.h **** /**
-2259:./inc/core_cm7.h ****   \brief   Disable I-Cache
-2260:./inc/core_cm7.h ****   \details Turns off I-Cache
-2261:./inc/core_cm7.h ****   */
-2262:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_DisableICache (void)
-2263:./inc/core_cm7.h **** {
-2264:./inc/core_cm7.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
-2265:./inc/core_cm7.h ****     __DSB();
-2266:./inc/core_cm7.h ****     __ISB();
-2267:./inc/core_cm7.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_IC_Msk;  /* disable I-Cache */
-2268:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
-2269:./inc/core_cm7.h ****     __DSB();
-2270:./inc/core_cm7.h ****     __ISB();
-2271:./inc/core_cm7.h ****   #endif
-2272:./inc/core_cm7.h **** }
-2273:./inc/core_cm7.h **** 
-2274:./inc/core_cm7.h **** 
-2275:./inc/core_cm7.h **** /**
-2276:./inc/core_cm7.h ****   \brief   Invalidate I-Cache
-2277:./inc/core_cm7.h ****   \details Invalidates I-Cache
-2278:./inc/core_cm7.h ****   */
-2279:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_InvalidateICache (void)
-2280:./inc/core_cm7.h **** {
-2281:./inc/core_cm7.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
-2282:./inc/core_cm7.h ****     __DSB();
-2283:./inc/core_cm7.h ****     __ISB();
-2284:./inc/core_cm7.h ****     SCB->ICIALLU = 0UL;
-2285:./inc/core_cm7.h ****     __DSB();
-2286:./inc/core_cm7.h ****     __ISB();
-2287:./inc/core_cm7.h ****   #endif
-2288:./inc/core_cm7.h **** }
-2289:./inc/core_cm7.h **** 
-2290:./inc/core_cm7.h **** 
-2291:./inc/core_cm7.h **** /**
-2292:./inc/core_cm7.h ****   \brief   I-Cache Invalidate by address
-2293:./inc/core_cm7.h ****   \details Invalidates I-Cache for the given address.
-2294:./inc/core_cm7.h ****            I-Cache is invalidated starting from a 32 byte aligned address in 32 byte granularity.
-2295:./inc/core_cm7.h ****            I-Cache memory blocks which are part of given address + given size are invalidated.
-2296:./inc/core_cm7.h ****   \param[in]   addr    address
-2297:./inc/core_cm7.h ****   \param[in]   isize   size of memory block (in number of bytes)
-2298:./inc/core_cm7.h **** */
-2299:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_InvalidateICache_by_Addr (void *addr, int32_t isize)
-2300:./inc/core_cm7.h **** {
-2301:./inc/core_cm7.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
-2302:./inc/core_cm7.h ****     if ( isize > 0 ) {
-2303:./inc/core_cm7.h ****        int32_t op_size = isize + (((uint32_t)addr) & (__SCB_ICACHE_LINE_SIZE - 1U));
-2304:./inc/core_cm7.h ****       uint32_t op_addr = (uint32_t)addr /* & ~(__SCB_ICACHE_LINE_SIZE - 1U) */;
-2305:./inc/core_cm7.h **** 
-2306:./inc/core_cm7.h ****       __DSB();
-2307:./inc/core_cm7.h **** 
-2308:./inc/core_cm7.h ****       do {
-2309:./inc/core_cm7.h ****         SCB->ICIMVAU = op_addr;             /* register accepts only 32byte aligned values, only bi
-2310:./inc/core_cm7.h ****         op_addr += __SCB_ICACHE_LINE_SIZE;
-2311:./inc/core_cm7.h ****         op_size -= __SCB_ICACHE_LINE_SIZE;
-2312:./inc/core_cm7.h ****       } while ( op_size > 0 );
-2313:./inc/core_cm7.h **** 
-2314:./inc/core_cm7.h ****       __DSB();
-2315:./inc/core_cm7.h ****       __ISB();
-2316:./inc/core_cm7.h ****     }
-2317:./inc/core_cm7.h ****   #endif
-2318:./inc/core_cm7.h **** }
-2319:./inc/core_cm7.h **** 
-2320:./inc/core_cm7.h **** 
-2321:./inc/core_cm7.h **** /**
-2322:./inc/core_cm7.h ****   \brief   Enable D-Cache
-2323:./inc/core_cm7.h ****   \details Turns on D-Cache
-2324:./inc/core_cm7.h ****   */
-2325:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_EnableDCache (void)
-2326:./inc/core_cm7.h **** {
-2327:./inc/core_cm7.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
-2328:./inc/core_cm7.h ****     uint32_t ccsidr;
-2329:./inc/core_cm7.h ****     uint32_t sets;
-2330:./inc/core_cm7.h ****     uint32_t ways;
-2331:./inc/core_cm7.h **** 
-2332:./inc/core_cm7.h ****     if (SCB->CCR & SCB_CCR_DC_Msk) return;  /* return if DCache is already enabled */
-2333:./inc/core_cm7.h **** 
-2334:./inc/core_cm7.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
-2335:./inc/core_cm7.h ****     __DSB();
-2336:./inc/core_cm7.h **** 
-2337:./inc/core_cm7.h ****     ccsidr = SCB->CCSIDR;
-2338:./inc/core_cm7.h **** 
-2339:./inc/core_cm7.h ****                                             /* invalidate D-Cache */
-2340:./inc/core_cm7.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
-2341:./inc/core_cm7.h ****     do {
-2342:./inc/core_cm7.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
-2343:./inc/core_cm7.h ****       do {
-2344:./inc/core_cm7.h ****         SCB->DCISW = (((sets << SCB_DCISW_SET_Pos) & SCB_DCISW_SET_Msk) |
-2345:./inc/core_cm7.h ****                       ((ways << SCB_DCISW_WAY_Pos) & SCB_DCISW_WAY_Msk)  );
-2346:./inc/core_cm7.h ****         #if defined ( __CC_ARM )
-2347:./inc/core_cm7.h ****           __schedule_barrier();
-2348:./inc/core_cm7.h ****         #endif
-2349:./inc/core_cm7.h ****       } while (ways-- != 0U);
-2350:./inc/core_cm7.h ****     } while(sets-- != 0U);
-2351:./inc/core_cm7.h ****     __DSB();
-2352:./inc/core_cm7.h **** 
-2353:./inc/core_cm7.h ****     SCB->CCR |=  (uint32_t)SCB_CCR_DC_Msk;  /* enable D-Cache */
-2354:./inc/core_cm7.h **** 
-2355:./inc/core_cm7.h ****     __DSB();
-2356:./inc/core_cm7.h ****     __ISB();
-2357:./inc/core_cm7.h ****   #endif
-2358:./inc/core_cm7.h **** }
-2359:./inc/core_cm7.h **** 
-2360:./inc/core_cm7.h **** 
-2361:./inc/core_cm7.h **** /**
-2362:./inc/core_cm7.h ****   \brief   Disable D-Cache
-2363:./inc/core_cm7.h ****   \details Turns off D-Cache
-2364:./inc/core_cm7.h ****   */
-2365:./inc/core_cm7.h **** __STATIC_FORCEINLINE void SCB_DisableDCache (void)
- 365              		.loc 3 2365 27 view .LVU110
- 366              	.LBB50:
-2366:./inc/core_cm7.h **** {
-2367:./inc/core_cm7.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
-2368:./inc/core_cm7.h ****     uint32_t ccsidr;
- 367              		.loc 3 2368 5 view .LVU111
-2369:./inc/core_cm7.h ****     uint32_t sets;
- 368              		.loc 3 2369 5 view .LVU112
-2370:./inc/core_cm7.h ****     uint32_t ways;
- 369              		.loc 3 2370 5 view .LVU113
-2371:./inc/core_cm7.h **** 
-2372:./inc/core_cm7.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
- 370              		.loc 3 2372 5 view .LVU114
- 371              		.loc 3 2372 17 is_stmt 0 view .LVU115
- 372 0000 2348     		ldr	r0, .L21
- 373 0002 0023     		movs	r3, #0
- 374              	.LBE50:
- 375              	.LBE49:
- 185:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 376              		.loc 1 185 1 view .LVU116
- 377 0004 00B5     		push	{lr}
- 378              	.LCFI2:
- 379              		.cfi_def_cfa_offset 4
- 380              		.cfi_offset 14, -4
- 381              	.LBB63:
- 382              	.LBB61:
- 383              		.loc 3 2372 17 view .LVU117
- 384 0006 C0F88430 		str	r3, [r0, #132]
-2373:./inc/core_cm7.h ****     __DSB();
- 385              		.loc 3 2373 5 is_stmt 1 view .LVU118
- 386              	.LBB51:
- 387              	.LBI51:
- 944:./inc/cmsis_gcc.h **** {
- 388              		.loc 2 944 27 view .LVU119
- 389              	.LBB52:
- 390              		.loc 2 946 3 view .LVU120
- 391              	.LBE52:
- 392              	.LBE51:
- 393              	.LBE61:
- 394              	.LBE63:
- 185:./src/main.c  **** 	// disable DCache. To use DCache you have to place ethernet buffers
- 395              		.loc 1 185 1 is_stmt 0 view .LVU121
- 396 000a 8BB0     		sub	sp, sp, #44
- 397              	.LCFI3:
- 398              		.cfi_def_cfa_offset 48
- 399              	.LBB64:
- 400              	.LBB62:
- 401              	.LBB54:
- 402              	.LBB53:
- 403              		.loc 2 946 3 view .LVU122
- 404              		.syntax unified
- 405              	@ 946 "./inc/cmsis_gcc.h" 1
- 406 000c BFF34F8F 		dsb 0xF
- 407              	@ 0 "" 2
- 408              		.thumb
- 409              		.syntax unified
- 410              	.LBE53:
- 411              	.LBE54:
-2374:./inc/core_cm7.h **** 
-2375:./inc/core_cm7.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  /* disable D-Cache */
- 412              		.loc 3 2375 5 is_stmt 1 view .LVU123
- 413              		.loc 3 2375 14 is_stmt 0 view .LVU124
- 414 0010 4369     		ldr	r3, [r0, #20]
- 415 0012 23F48033 		bic	r3, r3, #65536
- 416 0016 4361     		str	r3, [r0, #20]
-2376:./inc/core_cm7.h ****     __DSB();
- 417              		.loc 3 2376 5 is_stmt 1 view .LVU125
- 418              	.LBB55:
- 419              	.LBI55:
- 944:./inc/cmsis_gcc.h **** {
- 420              		.loc 2 944 27 view .LVU126
- 421              	.LBB56:
- 422              		.loc 2 946 3 view .LVU127
- 423              		.syntax unified
- 424              	@ 946 "./inc/cmsis_gcc.h" 1
- 425 0018 BFF34F8F 		dsb 0xF
- 426              	@ 0 "" 2
- 427              		.thumb
- 428              		.syntax unified
- 429              	.LBE56:
- 430              	.LBE55:
-2377:./inc/core_cm7.h **** 
-2378:./inc/core_cm7.h ****     ccsidr = SCB->CCSIDR;
- 431              		.loc 3 2378 5 view .LVU128
- 432              		.loc 3 2378 12 is_stmt 0 view .LVU129
- 433 001c D0F88030 		ldr	r3, [r0, #128]
- 434              	.LVL22:
-2379:./inc/core_cm7.h **** 
-2380:./inc/core_cm7.h ****                                             /* clean & invalidate D-Cache */
-2381:./inc/core_cm7.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
- 435              		.loc 3 2381 5 is_stmt 1 view .LVU130
-2382:./inc/core_cm7.h ****     do {
-2383:./inc/core_cm7.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
-2384:./inc/core_cm7.h ****       do {
-2385:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 436              		.loc 3 2385 54 is_stmt 0 view .LVU131
- 437 0020 43F6E074 		movw	r4, #16352
-2381:./inc/core_cm7.h ****     do {
- 438              		.loc 3 2381 10 view .LVU132
- 439 0024 C3F34E3C 		ubfx	ip, r3, #13, #15
-2383:./inc/core_cm7.h ****       do {
- 440              		.loc 3 2383 12 view .LVU133
- 441 0028 C3F3C90E 		ubfx	lr, r3, #3, #10
- 442 002c 4FEA4C1C 		lsl	ip, ip, #5
- 443              	.LVL23:
- 444              	.L16:
-2382:./inc/core_cm7.h ****     do {
- 445              		.loc 3 2382 5 is_stmt 1 view .LVU134
-2383:./inc/core_cm7.h ****       do {
- 446              		.loc 3 2383 7 view .LVU135
- 447              		.loc 3 2385 54 is_stmt 0 view .LVU136
- 448 0030 0CEA0401 		and	r1, ip, r4
-2383:./inc/core_cm7.h ****       do {
- 449              		.loc 3 2383 12 view .LVU137
- 450 0034 7346     		mov	r3, lr
- 451              	.L15:
- 452              	.LVL24:
-2384:./inc/core_cm7.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
- 453              		.loc 3 2384 7 is_stmt 1 view .LVU138
- 454              		.loc 3 2385 9 view .LVU139
- 455              		.loc 3 2385 76 is_stmt 0 view .LVU140
- 456 0036 41EA8372 		orr	r2, r1, r3, lsl #30
-2386:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
-2387:./inc/core_cm7.h ****         #if defined ( __CC_ARM )
-2388:./inc/core_cm7.h ****           __schedule_barrier();
-2389:./inc/core_cm7.h ****         #endif
-2390:./inc/core_cm7.h ****       } while (ways-- != 0U);
- 457              		.loc 3 2390 20 view .LVU141
- 458 003a 013B     		subs	r3, r3, #1
- 459              	.LVL25:
-2385:./inc/core_cm7.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
- 460              		.loc 3 2385 21 view .LVU142
- 461 003c C0F87422 		str	r2, [r0, #628]
- 462              		.loc 3 2390 15 is_stmt 1 view .LVU143
- 463              	.LVL26:
- 464              		.loc 3 2390 7 is_stmt 0 view .LVU144
- 465 0040 5A1C     		adds	r2, r3, #1
- 466 0042 F8D1     		bne	.L15
-2391:./inc/core_cm7.h ****     } while(sets-- != 0U);
- 467              		.loc 3 2391 12 is_stmt 1 view .LVU145
- 468              		.loc 3 2391 5 is_stmt 0 view .LVU146
- 469 0044 ACF1200C 		sub	ip, ip, #32
- 470 0048 1CF1200F 		cmn	ip, #32
- 471 004c F0D1     		bne	.L16
-2392:./inc/core_cm7.h **** 
-2393:./inc/core_cm7.h ****     __DSB();
- 472              		.loc 3 2393 5 is_stmt 1 view .LVU147
- 473              	.LBB57:
- 474              	.LBI57:
- 944:./inc/cmsis_gcc.h **** {
- 475              		.loc 2 944 27 view .LVU148
- 476              	.LBB58:
- 477              		.loc 2 946 3 view .LVU149
- 478              		.syntax unified
- 479              	@ 946 "./inc/cmsis_gcc.h" 1
- 480 004e BFF34F8F 		dsb 0xF
- 481              	@ 0 "" 2
- 482              		.thumb
- 483              		.syntax unified
- 484              	.LBE58:
- 485              	.LBE57:
-2394:./inc/core_cm7.h ****     __ISB();
- 486              		.loc 3 2394 5 view .LVU150
- 487              	.LBB59:
- 488              	.LBI59:
- 933:./inc/cmsis_gcc.h **** {
- 489              		.loc 2 933 27 view .LVU151
- 490              	.LBB60:
- 935:./inc/cmsis_gcc.h **** }
- 491              		.loc 2 935 3 view .LVU152
+ 491              		.loc 3 2167 5 view .LVU162
  492              		.syntax unified
- 493              	@ 935 "./inc/cmsis_gcc.h" 1
- 494 0052 BFF36F8F 		isb 0xF
+ 493              	@ 2167 "./inc/core_cm7.h" 1
+ 494 008c 00BF     		nop
  495              	@ 0 "" 2
- 496              	.LVL27:
- 935:./inc/cmsis_gcc.h **** }
- 497              		.loc 2 935 3 is_stmt 0 view .LVU153
- 498              		.thumb
- 499              		.syntax unified
- 500              	.LBE60:
- 501              	.LBE59:
- 502              	.LBE62:
- 503              	.LBE64:
- 189:./src/main.c  **** 
- 190:./src/main.c  **** 	// finalize initialization
- 191:./src/main.c  **** 	
- 192:./src/main.c  **** 	HW_Init();
- 504              		.loc 1 192 2 is_stmt 1 view .LVU154
- 505 0056 FFF7FEFF 		bl	HW_Init
- 506              	.LVL28:
- 193:./src/main.c  **** 
- 194:./src/main.c  **** 	// if ( is_soft_reset() == 0 )
- 195:./src/main.c  **** 	// {
- 196:./src/main.c  **** 	// 	uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;  //+ 0x400;
- 197:./src/main.c  **** 	// 	volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
- 198:./src/main.c  **** 	// 	if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
- 199:./src/main.c  **** 	// 	{
- 200:./src/main.c  **** 	// 			//HAL_RCC_DeInit();
- 201:./src/main.c  **** 	// 			//HAL_DeInit();
- 202:./src/main.c  **** 	// 			//__disable_irq();
- 203:./src/main.c  **** 	// 			//SysTick->CTRL = 0;
- 204:./src/main.c  **** 	// 			//SysTick->LOAD = 0;
- 205:./src/main.c  **** 	// 			//SysTick->VAL  = 0;
- 206:./src/main.c  **** 	// 			//for (uint32_t i = 0; i < 8; i++)
- 207:./src/main.c  **** 	// 			//{
- 208:./src/main.c  **** 	// 				//NVIC->ICER[i] = 0xFFFFFFFF;
- 209:./src/main.c  **** 	// 				//NVIC->ICPR[i] = 0xFFFFFFFF;
- 210:./src/main.c  **** 	// 			//}
- 211:./src/main.c  **** 	// 			//SCB_DisableICache();
- 212:./src/main.c  **** 	// 			//SCB_DisableDCache();
- 213:./src/main.c  **** 	// 			JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
- 214:./src/main.c  **** 	// 			JumpToApplication = (pFunction) JumpAddress;
- 215:./src/main.c  **** 
- 216:./src/main.c  **** 
- 217:./src/main.c  **** 	// 			/* Initialize user application's Stack Pointer */
- 218:./src/main.c  **** 	// 			__set_MSP(*(__IO uint32_t*) isr_vector_addr);
- 219:./src/main.c  **** 	// 			SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS;   
- 220:./src/main.c  **** 	// 			JumpToApplication();
- 221:./src/main.c  **** 	// 	}
- 222:./src/main.c  **** 	// 	else
- 223:./src/main.c  **** 	// 	{
- 224:./src/main.c  **** 	// 		write_boot_flag_soft_reset();
- 225:./src/main.c  **** 	// 		//udp_client_send("[BOOT]  No FW in flash, back to BOOT\n");
- 226:./src/main.c  **** 	// 	  	NVIC_SystemReset();
- 227:./src/main.c  **** 	// 	}
- 228:./src/main.c  **** 	// }
- 229:./src/main.c  **** 
- 230:./src/main.c  **** 	// initialize kernel
- 231:./src/main.c  **** 	osKernelInitialize();
- 507              		.loc 1 231 2 view .LVU155
- 508 005a FFF7FEFF 		bl	osKernelInitialize
- 509              	.LVL29:
- 510              	.LBB65:
- 232:./src/main.c  **** 	
- 233:./src/main.c  **** 	// create primary thread
- 234:./src/main.c  **** 	{
- 235:./src/main.c  **** 		osThreadAttr_t  attr;
- 511              		.loc 1 235 3 view .LVU156
- 236:./src/main.c  **** 
- 237:./src/main.c  **** 
- 238:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	//0
- 512              		.loc 1 238 3 view .LVU157
- 513 005e 2422     		movs	r2, #36
- 514 0060 0021     		movs	r1, #0
- 515 0062 01A8     		add	r0, sp, #4
- 516 0064 FFF7FEFF 		bl	memset
- 517              	.LVL30:
- 239:./src/main.c  **** 
- 240:./src/main.c  **** 		attr.stack_size = 4*1024;
- 518              		.loc 1 240 3 view .LVU158
- 519              		.loc 1 240 19 is_stmt 0 view .LVU159
- 520 0068 4FF48053 		mov	r3, #4096
- 241:./src/main.c  **** 
- 242:./src/main.c  **** 		osThreadNew ( thread_main, NULL, &attr);
- 521              		.loc 1 242 3 view .LVU160
- 522 006c 01AA     		add	r2, sp, #4
- 523 006e 0021     		movs	r1, #0
- 524 0070 0848     		ldr	r0, .L21+4
- 240:./src/main.c  **** 
- 525              		.loc 1 240 19 view .LVU161
- 526 0072 0693     		str	r3, [sp, #24]
- 527              		.loc 1 242 3 is_stmt 1 view .LVU162
- 528 0074 FFF7FEFF 		bl	osThreadNew
- 529              	.LVL31:
- 530              	.LBE65:
- 243:./src/main.c  **** 	}
- 244:./src/main.c  **** 	
- 245:./src/main.c  **** 	// create a timer
- 246:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
- 531              		.loc 1 246 2 view .LVU163
- 532              		.loc 1 246 26 is_stmt 0 view .LVU164
- 533 0078 0023     		movs	r3, #0
- 534 007a 0121     		movs	r1, #1
- 535 007c 0648     		ldr	r0, .L21+8
- 536 007e 1A46     		mov	r2, r3
- 537 0080 FFF7FEFF 		bl	osTimerNew
- 538              	.LVL32:
- 539              		.loc 1 246 24 view .LVU165
- 540 0084 054B     		ldr	r3, .L21+12
- 541 0086 1860     		str	r0, [r3]
- 247:./src/main.c  **** 	
- 248:./src/main.c  **** 	// start thread execution
- 249:./src/main.c  **** 	osKernelStart();
- 542              		.loc 1 249 2 is_stmt 1 view .LVU166
- 543 0088 FFF7FEFF 		bl	osKernelStart
- 544              	.LVL33:
- 545              	.L17:
- 250:./src/main.c  **** 
- 251:./src/main.c  **** 
- 252:./src/main.c  **** 	
- 253:./src/main.c  **** 	// should not reach this point !
- 254:./src/main.c  **** 	while(1)
- 546              		.loc 1 254 2 discriminator 1 view .LVU167
- 255:./src/main.c  **** 	 {}
- 547              		.loc 1 255 4 discriminator 1 view .LVU168
- 254:./src/main.c  **** 	 {}
- 548              		.loc 1 254 7 discriminator 1 view .LVU169
- 254:./src/main.c  **** 	 {}
- 549              		.loc 1 254 2 discriminator 1 view .LVU170
- 550              		.loc 1 255 4 discriminator 1 view .LVU171
- 254:./src/main.c  **** 	 {}
- 551              		.loc 1 254 7 discriminator 1 view .LVU172
- 552 008c FEE7     		b	.L17
- 553              	.L22:
- 554 008e 00BF     		.align	2
- 555              	.L21:
- 556 0090 00ED00E0 		.word	-536810240
- 557 0094 00000000 		.word	thread_main
- 558 0098 00000000 		.word	thread_milli_timer
- 559 009c 00000000 		.word	.LANCHOR0
- 560              		.cfi_endproc
- 561              	.LFE171:
- 563              		.global	JumpAddress
- 564              		.global	JumpToApplication
- 565              		.global	GATEWAY_ADDRESS
- 566              		.global	NETMASK_ADDRESS
- 567              		.global	IP_ADDRESS
- 568              		.global	gw
- 569              		.global	netmask
- 570              		.global	ipaddr
- 571              		.global	gnetif
- 572              		.global	Ident
- 573              		.section	.rodata
- 574              		.align	2
- 577              	Ident:
- 578 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
- 578      2D526F75 
- 578      7465725F 
- 578      50726F5F 
- 578      464400
- 579              		.bss
- 580              		.align	2
- 581              		.set	.LANCHOR0,. + 0
- 584              	thread_milli_timer_id:
- 585 0000 00000000 		.space	4
- 588              	IP_ADDRESS:
- 589 0004 00000000 		.space	4
- 592              	NETMASK_ADDRESS:
- 593 0008 00000000 		.space	4
- 596              	GATEWAY_ADDRESS:
- 597 000c 00000000 		.space	4
- 600              	ipaddr:
- 601 0010 00000000 		.space	4
- 604              	netmask:
- 605 0014 00000000 		.space	4
- 608              	gw:
- 609 0018 00000000 		.space	4
- 612              	gnetif:
- 613 001c 00000000 		.space	52
- 613      00000000 
- 613      00000000 
- 613      00000000 
- 613      00000000 
- 616              	JumpAddress:
- 617 0050 00000000 		.space	4
- 620              	JumpToApplication:
- 621 0054 00000000 		.space	4
- 622              		.text
- 623              	.Letext0:
- 624              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 625              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 626              		.file 6 "./inc/cmsis_os2.h"
- 627              		.file 7 "./inc/stm32f765xx.h"
- 628              		.file 8 "./lwip-2.1.2/src/include/lwip/arch.h"
- 629              		.file 9 "./lwip-2.1.2/src/include/lwip/err.h"
- 630              		.file 10 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 631              		.file 11 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 632              		.file 12 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 633              		.file 13 "./lwip-2.1.2/src/include/lwip/memp.h"
- 634              		.file 14 "./lwip-2.1.2/src/include/lwip/netif.h"
- 635              		.file 15 "./inc/hardware.h"
- 636              		.file 16 "./inc/reset.h"
- 637              		.file 17 "./inc/can_user.h"
- 638              		.file 18 "./lwip-2.1.2/src/include/lwip/tcpip.h"
- 639              		.file 19 "./inc/udp_total.h"
- 640              		.file 20 "./inc/stm32f7xx_hal.h"
- 641              		.file 21 "<built-in>"
+2165:./inc/core_cm7.h ****   {
+ 496              		.loc 3 2165 8 view .LVU163
+ 497              		.thumb
+ 498              		.syntax unified
+ 499 008e FDE7     		b	.L20
+ 500              	.LVL33:
+ 501              	.L25:
+2165:./inc/core_cm7.h ****   {
+ 502              		.loc 3 2165 8 is_stmt 0 view .LVU164
+ 503 0090 024C     		ldr	r4, .L26+8
+ 504 0092 D5E7     		b	.L18
+ 505              	.L27:
+ 506              		.align	2
+ 507              	.L26:
+ 508 0094 00000408 		.word	134479872
+ 509 0098 00000820 		.word	537395200
+ 510 009c 00000000 		.word	.LANCHOR0
+ 511 00a0 00ED00E0 		.word	-536810240
+ 512 00a4 00000000 		.word	thread_main
+ 513 00a8 00000000 		.word	thread_milli_timer
+ 514 00ac 0400FA05 		.word	100270084
+ 515              	.LBE36:
+ 516              	.LBE35:
+ 517              	.LBE42:
+ 518              		.cfi_endproc
+ 519              	.LFE172:
+ 521              		.global	JumpAddress
+ 522              		.global	JumpToApplication
+ 523              		.global	hcrc
+ 524              		.global	check
+ 525              		.global	GATEWAY_ADDRESS
+ 526              		.global	NETMASK_ADDRESS
+ 527              		.global	IP_ADDRESS
+ 528              		.global	gw
+ 529              		.global	netmask
+ 530              		.global	ipaddr
+ 531              		.global	gnetif
+ 532              		.global	Ident
+ 533              		.section	.rodata
+ 534              		.align	2
+ 537              	Ident:
+ 538 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
+ 538      2D526F75 
+ 538      7465725F 
+ 538      50726F5F 
+ 538      464400
+ 539              		.data
+ 540              		.set	.LANCHOR1,. + 0
+ 543              	check:
+ 544 0000 01       		.byte	1
+ 545              		.bss
+ 546              		.align	2
+ 547              		.set	.LANCHOR0,. + 0
+ 550              	thread_milli_timer_id:
+ 551 0000 00000000 		.space	4
+ 554              	hcrc:
+ 555 0004 00000000 		.space	36
+ 555      00000000 
+ 555      00000000 
+ 555      00000000 
+ 555      00000000 
+ 558              	IP_ADDRESS:
+ 559 0028 00000000 		.space	4
+ 562              	NETMASK_ADDRESS:
+ 563 002c 00000000 		.space	4
+ 566              	GATEWAY_ADDRESS:
+ 567 0030 00000000 		.space	4
+ 570              	ipaddr:
+ 571 0034 00000000 		.space	4
+ 574              	netmask:
+ 575 0038 00000000 		.space	4
+ 578              	gw:
+ 579 003c 00000000 		.space	4
+ 582              	gnetif:
+ 583 0040 00000000 		.space	52
+ 583      00000000 
+ 583      00000000 
+ 583      00000000 
+ 583      00000000 
+ 586              	JumpAddress:
+ 587 0074 00000000 		.space	4
+ 590              	JumpToApplication:
+ 591 0078 00000000 		.space	4
+ 592              		.text
+ 593              	.Letext0:
+ 594              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 595              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 596              		.file 6 "./inc/cmsis_os2.h"
+ 597              		.file 7 "./inc/stm32f765xx.h"
+ 598              		.file 8 "./inc/stm32f7xx_hal_def.h"
+ 599              		.file 9 "./inc/stm32f7xx_hal_crc.h"
+ 600              		.file 10 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 601              		.file 11 "./lwip-2.1.2/src/include/lwip/err.h"
+ 602              		.file 12 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 603              		.file 13 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 604              		.file 14 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 605              		.file 15 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 606              		.file 16 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 607              		.file 17 "./inc/reset.h"
+ 608              		.file 18 "./inc/hardware.h"
+ 609              		.file 19 "./inc/can_user.h"
+ 610              		.file 20 "./lwip-2.1.2/src/include/lwip/tcpip.h"
+ 611              		.file 21 "./inc/udp_total.h"
+ 612              		.file 22 "./inc/tftpserver.h"
+ 613              		.file 23 "./inc/stm32f7xx_hal.h"
+ 614              		.file 24 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:24     .text:00000000 thread_milli_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:41     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:52     .text:00000004 thread_main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:332    .text:000000e0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:347    .text.startup:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:355    .text.startup:00000000 main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:556    .text.startup:00000090 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:616    .bss:00000050 JumpAddress
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:620    .bss:00000054 JumpToApplication
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:596    .bss:0000000c GATEWAY_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:592    .bss:00000008 NETMASK_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:588    .bss:00000004 IP_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:608    .bss:00000018 gw
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:604    .bss:00000014 netmask
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:600    .bss:00000010 ipaddr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:612    .bss:0000001c gnetif
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:577    .rodata:00000000 Ident
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:574    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:580    .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccCXOy0a.s:584    .bss:00000000 thread_milli_timer_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:24     .text:00000000 thread_milli_timer
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:41     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:55     .text:00000004 thread_main
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:285    .text:000000e0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:300    .text.startup:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:308    .text.startup:00000000 main
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:508    .text.startup:00000094 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:586    .bss:00000074 JumpAddress
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:590    .bss:00000078 JumpToApplication
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:554    .bss:00000004 hcrc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:543    .data:00000000 check
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:566    .bss:00000030 GATEWAY_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:562    .bss:0000002c NETMASK_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:558    .bss:00000028 IP_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:578    .bss:0000003c gw
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:574    .bss:00000038 netmask
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:570    .bss:00000034 ipaddr
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:582    .bss:00000040 gnetif
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:537    .rodata:00000000 Ident
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:534    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:546    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccjpavNz.s:550    .bss:00000000 thread_milli_timer_id
 
 UNDEFINED SYMBOLS
 HAL_IncTick
 osTimerStart
 CAN_UserInit
+HAL_CRC_Init
 osDelay
 tcpip_init
 netif_add
@@ -4336,8 +4092,8 @@ netif_set_default
 netif_set_up
 udp_total_connect
 udp_client_send
+IAP_tftpd_init
 is_soft_reset
-write_boot_flag_soft_reset
 netif_set_down
 tcpip_input
 ethernetif_init
@@ -4347,3 +4103,4 @@ memset
 osThreadNew
 osTimerNew
 osKernelStart
+write_boot_flag_soft_reset

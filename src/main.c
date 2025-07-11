@@ -18,6 +18,9 @@
 #include "reset.h"
 #include "udp_total.h"
 #include "stm32f7xx_hal_rcc_ex.h"
+#include "tftpserver.h"
+#include "firmware_tag.h"
+#include "backup.h"
 
 
 // abstract:
@@ -47,9 +50,13 @@ uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 
+uint8_t check = 1;
+
+CRC_HandleTypeDef hcrc;
 
 typedef  void (*pFunction)(void);
-#define USER_FLASH_FIRST_PAGE_ADDRESS 0x08040000;
+#define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
+#define BACKUP_ADDRESS  ((FirmwareTag*) BACKUP_FLASH_FIRST_PAGE_ADDRESS)
 pFunction JumpToApplication;
 uint32_t JumpAddress;
 
@@ -57,6 +64,30 @@ uint32_t JumpAddress;
 static void thread_milli_timer ( void *argument)
 {
 	HAL_IncTick();
+}
+
+static void MX_CRC_Init(void)
+{
+
+  /* USER CODE BEGIN CRC_Init 0 */
+
+  /* USER CODE END CRC_Init 0 */
+
+  /* USER CODE BEGIN CRC_Init 1 */
+
+  /* USER CODE END CRC_Init 1 */
+  __HAL_RCC_CRC_CLK_ENABLE();
+  hcrc.Instance = CRC;
+  hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+  hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+  hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+  hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+  HAL_CRC_Init(&hcrc);
+  /* USER CODE BEGIN CRC_Init 2 */
+
+  /* USER CODE END CRC_Init 2 */
+
 }
 
 
@@ -69,6 +100,8 @@ static void  thread_main ( void  *argument)
 	
 	// init CAN
 	CAN_UserInit();
+
+	MX_CRC_Init();
 
 	// put 100Base-T1 PHY into slave mode
 	#if _PHY_IS_T1_
@@ -126,17 +159,24 @@ static void  thread_main ( void  *argument)
 	udp_total_connect();
 	udp_client_send("Hello World!\n");
 
+	IAP_tftpd_init();
+	osDelay(1000);
+
     // /* Initialize
 	// // start dhcp
 	// dhcp_start ( &gnetif);
 
 	while ( 1)
 	{
-		osThreadSuspend(osThreadGetId());
-		//if ( is_soft_reset() == 0 )
-		//{
-
-		//}
+		//osThreadSuspend(osThreadGetId());
+		if ( is_soft_reset() != 0 )
+		{
+			if(check)
+        	{
+				udp_client_send("[BOOT]  START BOOT...\n");
+          		check = 0;
+        	}
+		}
 		osDelay(1);
 
 		//osThreadSuspend(osThreadGetId());
@@ -148,12 +188,14 @@ static void  thread_main ( void  *argument)
 
 
 
+
 //! @brief      entry point
 int  main ( void)
 {
 	// disable DCache. To use DCache you have to place ethernet buffers
 	// into DTCM memory cause CPU cache is not visible to ETH DMA controller.
-	SCB_DisableDCache();
+
+	//SCB_DisableDCache(); 	//check this!!!
 
 	// finalize initialization
 	
@@ -161,23 +203,25 @@ int  main ( void)
 
 	if ( is_soft_reset() == 0 )
 	{
-		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS;  //+ 0x400;
+		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS + 0x400;
 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
 		{
-				//HAL_RCC_DeInit();
-				//HAL_DeInit();
-				//__disable_irq();
-				//SysTick->CTRL = 0;
-				//SysTick->LOAD = 0;
-				//SysTick->VAL  = 0;
-				//for (uint32_t i = 0; i < 8; i++)
-				//{
-					//NVIC->ICER[i] = 0xFFFFFFFF;
-					//NVIC->ICPR[i] = 0xFFFFFFFF;
-				//}
-				//SCB_DisableICache();
-				//SCB_DisableDCache();
+
+				// HAL_RCC_DeInit();
+				// HAL_DeInit();
+				// __disable_irq();
+				// SysTick->CTRL = 0;
+				// SysTick->LOAD = 0;
+				// SysTick->VAL  = 0;
+				// for (uint32_t i = 0; i < 8; i++)
+				// {
+				// 	NVIC->ICER[i] = 0xFFFFFFFF;
+				// 	NVIC->ICPR[i] = 0xFFFFFFFF;
+				// }
+				// SCB_DisableICache();
+				// SCB_DisableDCache();
+
 				JumpAddress = *(__IO uint32_t*) (isr_vector_addr + 4);
 				JumpToApplication = (pFunction) JumpAddress;
 

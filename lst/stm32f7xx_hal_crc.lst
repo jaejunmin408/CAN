@@ -1,0 +1,1537 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"stm32f7xx_hal_crc.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.arch armv7e-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv5-d16
+  24              	CRC_Handle_8:
+  25              	.LVL0:
+  26              	.LFB151:
+  27              		.file 1 "./src/stm32f7xx_hal_crc.c"
+   1:./src/stm32f7xx_hal_crc.c **** /**
+   2:./src/stm32f7xx_hal_crc.c ****   ******************************************************************************
+   3:./src/stm32f7xx_hal_crc.c ****   * @file    stm32f7xx_hal_crc.c
+   4:./src/stm32f7xx_hal_crc.c ****   * @author  MCD Application Team
+   5:./src/stm32f7xx_hal_crc.c ****   * @brief   CRC HAL module driver.
+   6:./src/stm32f7xx_hal_crc.c ****   *          This file provides firmware functions to manage the following
+   7:./src/stm32f7xx_hal_crc.c ****   *          functionalities of the Cyclic Redundancy Check (CRC) peripheral:
+   8:./src/stm32f7xx_hal_crc.c ****   *           + Initialization and de-initialization functions
+   9:./src/stm32f7xx_hal_crc.c ****   *           + Peripheral Control functions
+  10:./src/stm32f7xx_hal_crc.c ****   *           + Peripheral State functions
+  11:./src/stm32f7xx_hal_crc.c ****   *
+  12:./src/stm32f7xx_hal_crc.c ****   ******************************************************************************
+  13:./src/stm32f7xx_hal_crc.c ****   * @attention
+  14:./src/stm32f7xx_hal_crc.c ****   *
+  15:./src/stm32f7xx_hal_crc.c ****   * Copyright (c) 2017 STMicroelectronics.
+  16:./src/stm32f7xx_hal_crc.c ****   * All rights reserved.
+  17:./src/stm32f7xx_hal_crc.c ****   *
+  18:./src/stm32f7xx_hal_crc.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  19:./src/stm32f7xx_hal_crc.c ****   * in the root directory of this software component.
+  20:./src/stm32f7xx_hal_crc.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  21:./src/stm32f7xx_hal_crc.c ****   *
+  22:./src/stm32f7xx_hal_crc.c ****   ******************************************************************************
+  23:./src/stm32f7xx_hal_crc.c ****   @verbatim
+  24:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+  25:./src/stm32f7xx_hal_crc.c ****                      ##### How to use this driver #####
+  26:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+  27:./src/stm32f7xx_hal_crc.c ****     [..]
+  28:./src/stm32f7xx_hal_crc.c ****          (+) Enable CRC AHB clock using __HAL_RCC_CRC_CLK_ENABLE();
+  29:./src/stm32f7xx_hal_crc.c ****          (+) Initialize CRC calculator
+  30:./src/stm32f7xx_hal_crc.c ****              (++) specify generating polynomial (peripheral default or non-default one)
+  31:./src/stm32f7xx_hal_crc.c ****              (++) specify initialization value (peripheral default or non-default one)
+  32:./src/stm32f7xx_hal_crc.c ****              (++) specify input data format
+  33:./src/stm32f7xx_hal_crc.c ****              (++) specify input or output data inversion mode if any
+  34:./src/stm32f7xx_hal_crc.c ****          (+) Use HAL_CRC_Accumulate() function to compute the CRC value of the
+  35:./src/stm32f7xx_hal_crc.c ****              input data buffer starting with the previously computed CRC as
+  36:./src/stm32f7xx_hal_crc.c ****              initialization value
+  37:./src/stm32f7xx_hal_crc.c ****          (+) Use HAL_CRC_Calculate() function to compute the CRC value of the
+  38:./src/stm32f7xx_hal_crc.c ****              input data buffer starting with the defined initialization value
+  39:./src/stm32f7xx_hal_crc.c ****              (default or non-default) to initiate CRC calculation
+  40:./src/stm32f7xx_hal_crc.c **** 
+  41:./src/stm32f7xx_hal_crc.c ****   @endverbatim
+  42:./src/stm32f7xx_hal_crc.c ****   ******************************************************************************
+  43:./src/stm32f7xx_hal_crc.c ****   */
+  44:./src/stm32f7xx_hal_crc.c **** 
+  45:./src/stm32f7xx_hal_crc.c **** /* Includes ------------------------------------------------------------------*/
+  46:./src/stm32f7xx_hal_crc.c **** #include "stm32f7xx_hal.h"
+  47:./src/stm32f7xx_hal_crc.c **** 
+  48:./src/stm32f7xx_hal_crc.c **** /** @addtogroup STM32F7xx_HAL_Driver
+  49:./src/stm32f7xx_hal_crc.c ****   * @{
+  50:./src/stm32f7xx_hal_crc.c ****   */
+  51:./src/stm32f7xx_hal_crc.c **** 
+  52:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC CRC
+  53:./src/stm32f7xx_hal_crc.c ****   * @brief CRC HAL module driver.
+  54:./src/stm32f7xx_hal_crc.c ****   * @{
+  55:./src/stm32f7xx_hal_crc.c ****   */
+  56:./src/stm32f7xx_hal_crc.c **** 
+  57:./src/stm32f7xx_hal_crc.c **** #ifdef HAL_CRC_MODULE_ENABLED
+  58:./src/stm32f7xx_hal_crc.c **** 
+  59:./src/stm32f7xx_hal_crc.c **** /* Private typedef -----------------------------------------------------------*/
+  60:./src/stm32f7xx_hal_crc.c **** /* Private define ------------------------------------------------------------*/
+  61:./src/stm32f7xx_hal_crc.c **** /* Private macro -------------------------------------------------------------*/
+  62:./src/stm32f7xx_hal_crc.c **** /* Private variables ---------------------------------------------------------*/
+  63:./src/stm32f7xx_hal_crc.c **** /* Private function prototypes -----------------------------------------------*/
+  64:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC_Private_Functions CRC Private Functions
+  65:./src/stm32f7xx_hal_crc.c ****   * @{
+  66:./src/stm32f7xx_hal_crc.c ****   */
+  67:./src/stm32f7xx_hal_crc.c **** static uint32_t CRC_Handle_8(CRC_HandleTypeDef *hcrc, uint8_t pBuffer[], uint32_t BufferLength);
+  68:./src/stm32f7xx_hal_crc.c **** static uint32_t CRC_Handle_16(CRC_HandleTypeDef *hcrc, uint16_t pBuffer[], uint32_t BufferLength);
+  69:./src/stm32f7xx_hal_crc.c **** /**
+  70:./src/stm32f7xx_hal_crc.c ****   * @}
+  71:./src/stm32f7xx_hal_crc.c ****   */
+  72:./src/stm32f7xx_hal_crc.c **** 
+  73:./src/stm32f7xx_hal_crc.c **** /* Exported functions --------------------------------------------------------*/
+  74:./src/stm32f7xx_hal_crc.c **** 
+  75:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC_Exported_Functions CRC Exported Functions
+  76:./src/stm32f7xx_hal_crc.c ****   * @{
+  77:./src/stm32f7xx_hal_crc.c ****   */
+  78:./src/stm32f7xx_hal_crc.c **** 
+  79:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC_Exported_Functions_Group1 Initialization and de-initialization functions
+  80:./src/stm32f7xx_hal_crc.c ****   *  @brief    Initialization and Configuration functions.
+  81:./src/stm32f7xx_hal_crc.c ****   *
+  82:./src/stm32f7xx_hal_crc.c **** @verbatim
+  83:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+  84:./src/stm32f7xx_hal_crc.c ****             ##### Initialization and de-initialization functions #####
+  85:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+  86:./src/stm32f7xx_hal_crc.c ****     [..]  This section provides functions allowing to:
+  87:./src/stm32f7xx_hal_crc.c ****       (+) Initialize the CRC according to the specified parameters
+  88:./src/stm32f7xx_hal_crc.c ****           in the CRC_InitTypeDef and create the associated handle
+  89:./src/stm32f7xx_hal_crc.c ****       (+) DeInitialize the CRC peripheral
+  90:./src/stm32f7xx_hal_crc.c ****       (+) Initialize the CRC MSP (MCU Specific Package)
+  91:./src/stm32f7xx_hal_crc.c ****       (+) DeInitialize the CRC MSP
+  92:./src/stm32f7xx_hal_crc.c **** 
+  93:./src/stm32f7xx_hal_crc.c **** @endverbatim
+  94:./src/stm32f7xx_hal_crc.c ****   * @{
+  95:./src/stm32f7xx_hal_crc.c ****   */
+  96:./src/stm32f7xx_hal_crc.c **** 
+  97:./src/stm32f7xx_hal_crc.c **** /**
+  98:./src/stm32f7xx_hal_crc.c ****   * @brief  Initialize the CRC according to the specified
+  99:./src/stm32f7xx_hal_crc.c ****   *         parameters in the CRC_InitTypeDef and create the associated handle.
+ 100:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 101:./src/stm32f7xx_hal_crc.c ****   * @retval HAL status
+ 102:./src/stm32f7xx_hal_crc.c ****   */
+ 103:./src/stm32f7xx_hal_crc.c **** HAL_StatusTypeDef HAL_CRC_Init(CRC_HandleTypeDef *hcrc)
+ 104:./src/stm32f7xx_hal_crc.c **** {
+ 105:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 106:./src/stm32f7xx_hal_crc.c ****   if (hcrc == NULL)
+ 107:./src/stm32f7xx_hal_crc.c ****   {
+ 108:./src/stm32f7xx_hal_crc.c ****     return HAL_ERROR;
+ 109:./src/stm32f7xx_hal_crc.c ****   }
+ 110:./src/stm32f7xx_hal_crc.c **** 
+ 111:./src/stm32f7xx_hal_crc.c ****   /* Check the parameters */
+ 112:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_CRC_ALL_INSTANCE(hcrc->Instance));
+ 113:./src/stm32f7xx_hal_crc.c **** 
+ 114:./src/stm32f7xx_hal_crc.c ****   if (hcrc->State == HAL_CRC_STATE_RESET)
+ 115:./src/stm32f7xx_hal_crc.c ****   {
+ 116:./src/stm32f7xx_hal_crc.c ****     /* Allocate lock resource and initialize it */
+ 117:./src/stm32f7xx_hal_crc.c ****     hcrc->Lock = HAL_UNLOCKED;
+ 118:./src/stm32f7xx_hal_crc.c ****     /* Init the low level hardware */
+ 119:./src/stm32f7xx_hal_crc.c ****     HAL_CRC_MspInit(hcrc);
+ 120:./src/stm32f7xx_hal_crc.c ****   }
+ 121:./src/stm32f7xx_hal_crc.c **** 
+ 122:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 123:./src/stm32f7xx_hal_crc.c **** 
+ 124:./src/stm32f7xx_hal_crc.c ****   /* check whether or not non-default generating polynomial has been
+ 125:./src/stm32f7xx_hal_crc.c ****    * picked up by user */
+ 126:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_DEFAULT_POLYNOMIAL(hcrc->Init.DefaultPolynomialUse));
+ 127:./src/stm32f7xx_hal_crc.c ****   if (hcrc->Init.DefaultPolynomialUse == DEFAULT_POLYNOMIAL_ENABLE)
+ 128:./src/stm32f7xx_hal_crc.c ****   {
+ 129:./src/stm32f7xx_hal_crc.c ****     /* initialize peripheral with default generating polynomial */
+ 130:./src/stm32f7xx_hal_crc.c ****     WRITE_REG(hcrc->Instance->POL, DEFAULT_CRC32_POLY);
+ 131:./src/stm32f7xx_hal_crc.c ****     MODIFY_REG(hcrc->Instance->CR, CRC_CR_POLYSIZE, CRC_POLYLENGTH_32B);
+ 132:./src/stm32f7xx_hal_crc.c ****   }
+ 133:./src/stm32f7xx_hal_crc.c ****   else
+ 134:./src/stm32f7xx_hal_crc.c ****   {
+ 135:./src/stm32f7xx_hal_crc.c ****     /* initialize CRC peripheral with generating polynomial defined by user */
+ 136:./src/stm32f7xx_hal_crc.c ****     if (HAL_CRCEx_Polynomial_Set(hcrc, hcrc->Init.GeneratingPolynomial, hcrc->Init.CRCLength) != HA
+ 137:./src/stm32f7xx_hal_crc.c ****     {
+ 138:./src/stm32f7xx_hal_crc.c ****       return HAL_ERROR;
+ 139:./src/stm32f7xx_hal_crc.c ****     }
+ 140:./src/stm32f7xx_hal_crc.c ****   }
+ 141:./src/stm32f7xx_hal_crc.c **** 
+ 142:./src/stm32f7xx_hal_crc.c ****   /* check whether or not non-default CRC initial value has been
+ 143:./src/stm32f7xx_hal_crc.c ****    * picked up by user */
+ 144:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_DEFAULT_INIT_VALUE(hcrc->Init.DefaultInitValueUse));
+ 145:./src/stm32f7xx_hal_crc.c ****   if (hcrc->Init.DefaultInitValueUse == DEFAULT_INIT_VALUE_ENABLE)
+ 146:./src/stm32f7xx_hal_crc.c ****   {
+ 147:./src/stm32f7xx_hal_crc.c ****     WRITE_REG(hcrc->Instance->INIT, DEFAULT_CRC_INITVALUE);
+ 148:./src/stm32f7xx_hal_crc.c ****   }
+ 149:./src/stm32f7xx_hal_crc.c ****   else
+ 150:./src/stm32f7xx_hal_crc.c ****   {
+ 151:./src/stm32f7xx_hal_crc.c ****     WRITE_REG(hcrc->Instance->INIT, hcrc->Init.InitValue);
+ 152:./src/stm32f7xx_hal_crc.c ****   }
+ 153:./src/stm32f7xx_hal_crc.c **** 
+ 154:./src/stm32f7xx_hal_crc.c **** 
+ 155:./src/stm32f7xx_hal_crc.c ****   /* set input data inversion mode */
+ 156:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_CRC_INPUTDATA_INVERSION_MODE(hcrc->Init.InputDataInversionMode));
+ 157:./src/stm32f7xx_hal_crc.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_IN, hcrc->Init.InputDataInversionMode);
+ 158:./src/stm32f7xx_hal_crc.c **** 
+ 159:./src/stm32f7xx_hal_crc.c ****   /* set output data inversion mode */
+ 160:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_CRC_OUTPUTDATA_INVERSION_MODE(hcrc->Init.OutputDataInversionMode));
+ 161:./src/stm32f7xx_hal_crc.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_OUT, hcrc->Init.OutputDataInversionMode);
+ 162:./src/stm32f7xx_hal_crc.c **** 
+ 163:./src/stm32f7xx_hal_crc.c ****   /* makes sure the input data format (bytes, halfwords or words stream)
+ 164:./src/stm32f7xx_hal_crc.c ****    * is properly specified by user */
+ 165:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_CRC_INPUTDATA_FORMAT(hcrc->InputDataFormat));
+ 166:./src/stm32f7xx_hal_crc.c **** 
+ 167:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 168:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_READY;
+ 169:./src/stm32f7xx_hal_crc.c **** 
+ 170:./src/stm32f7xx_hal_crc.c ****   /* Return function status */
+ 171:./src/stm32f7xx_hal_crc.c ****   return HAL_OK;
+ 172:./src/stm32f7xx_hal_crc.c **** }
+ 173:./src/stm32f7xx_hal_crc.c **** 
+ 174:./src/stm32f7xx_hal_crc.c **** /**
+ 175:./src/stm32f7xx_hal_crc.c ****   * @brief  DeInitialize the CRC peripheral.
+ 176:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 177:./src/stm32f7xx_hal_crc.c ****   * @retval HAL status
+ 178:./src/stm32f7xx_hal_crc.c ****   */
+ 179:./src/stm32f7xx_hal_crc.c **** HAL_StatusTypeDef HAL_CRC_DeInit(CRC_HandleTypeDef *hcrc)
+ 180:./src/stm32f7xx_hal_crc.c **** {
+ 181:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 182:./src/stm32f7xx_hal_crc.c ****   if (hcrc == NULL)
+ 183:./src/stm32f7xx_hal_crc.c ****   {
+ 184:./src/stm32f7xx_hal_crc.c ****     return HAL_ERROR;
+ 185:./src/stm32f7xx_hal_crc.c ****   }
+ 186:./src/stm32f7xx_hal_crc.c **** 
+ 187:./src/stm32f7xx_hal_crc.c ****   /* Check the parameters */
+ 188:./src/stm32f7xx_hal_crc.c ****   assert_param(IS_CRC_ALL_INSTANCE(hcrc->Instance));
+ 189:./src/stm32f7xx_hal_crc.c **** 
+ 190:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC peripheral state */
+ 191:./src/stm32f7xx_hal_crc.c ****   if (hcrc->State == HAL_CRC_STATE_BUSY)
+ 192:./src/stm32f7xx_hal_crc.c ****   {
+ 193:./src/stm32f7xx_hal_crc.c ****     return HAL_BUSY;
+ 194:./src/stm32f7xx_hal_crc.c ****   }
+ 195:./src/stm32f7xx_hal_crc.c **** 
+ 196:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 197:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 198:./src/stm32f7xx_hal_crc.c **** 
+ 199:./src/stm32f7xx_hal_crc.c ****   /* Reset CRC calculation unit */
+ 200:./src/stm32f7xx_hal_crc.c ****   __HAL_CRC_DR_RESET(hcrc);
+ 201:./src/stm32f7xx_hal_crc.c **** 
+ 202:./src/stm32f7xx_hal_crc.c ****   /* Reset IDR register content */
+ 203:./src/stm32f7xx_hal_crc.c ****   __HAL_CRC_SET_IDR(hcrc, 0);
+ 204:./src/stm32f7xx_hal_crc.c **** 
+ 205:./src/stm32f7xx_hal_crc.c ****   /* DeInit the low level hardware */
+ 206:./src/stm32f7xx_hal_crc.c ****   HAL_CRC_MspDeInit(hcrc);
+ 207:./src/stm32f7xx_hal_crc.c **** 
+ 208:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 209:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_RESET;
+ 210:./src/stm32f7xx_hal_crc.c **** 
+ 211:./src/stm32f7xx_hal_crc.c ****   /* Process unlocked */
+ 212:./src/stm32f7xx_hal_crc.c ****   __HAL_UNLOCK(hcrc);
+ 213:./src/stm32f7xx_hal_crc.c **** 
+ 214:./src/stm32f7xx_hal_crc.c ****   /* Return function status */
+ 215:./src/stm32f7xx_hal_crc.c ****   return HAL_OK;
+ 216:./src/stm32f7xx_hal_crc.c **** }
+ 217:./src/stm32f7xx_hal_crc.c **** 
+ 218:./src/stm32f7xx_hal_crc.c **** /**
+ 219:./src/stm32f7xx_hal_crc.c ****   * @brief  Initializes the CRC MSP.
+ 220:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 221:./src/stm32f7xx_hal_crc.c ****   * @retval None
+ 222:./src/stm32f7xx_hal_crc.c ****   */
+ 223:./src/stm32f7xx_hal_crc.c **** __weak void HAL_CRC_MspInit(CRC_HandleTypeDef *hcrc)
+ 224:./src/stm32f7xx_hal_crc.c **** {
+ 225:./src/stm32f7xx_hal_crc.c ****   /* Prevent unused argument(s) compilation warning */
+ 226:./src/stm32f7xx_hal_crc.c ****   UNUSED(hcrc);
+ 227:./src/stm32f7xx_hal_crc.c **** 
+ 228:./src/stm32f7xx_hal_crc.c ****   /* NOTE : This function should not be modified, when the callback is needed,
+ 229:./src/stm32f7xx_hal_crc.c ****             the HAL_CRC_MspInit can be implemented in the user file
+ 230:./src/stm32f7xx_hal_crc.c ****    */
+ 231:./src/stm32f7xx_hal_crc.c **** }
+ 232:./src/stm32f7xx_hal_crc.c **** 
+ 233:./src/stm32f7xx_hal_crc.c **** /**
+ 234:./src/stm32f7xx_hal_crc.c ****   * @brief  DeInitialize the CRC MSP.
+ 235:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 236:./src/stm32f7xx_hal_crc.c ****   * @retval None
+ 237:./src/stm32f7xx_hal_crc.c ****   */
+ 238:./src/stm32f7xx_hal_crc.c **** __weak void HAL_CRC_MspDeInit(CRC_HandleTypeDef *hcrc)
+ 239:./src/stm32f7xx_hal_crc.c **** {
+ 240:./src/stm32f7xx_hal_crc.c ****   /* Prevent unused argument(s) compilation warning */
+ 241:./src/stm32f7xx_hal_crc.c ****   UNUSED(hcrc);
+ 242:./src/stm32f7xx_hal_crc.c **** 
+ 243:./src/stm32f7xx_hal_crc.c ****   /* NOTE : This function should not be modified, when the callback is needed,
+ 244:./src/stm32f7xx_hal_crc.c ****             the HAL_CRC_MspDeInit can be implemented in the user file
+ 245:./src/stm32f7xx_hal_crc.c ****    */
+ 246:./src/stm32f7xx_hal_crc.c **** }
+ 247:./src/stm32f7xx_hal_crc.c **** 
+ 248:./src/stm32f7xx_hal_crc.c **** /**
+ 249:./src/stm32f7xx_hal_crc.c ****   * @}
+ 250:./src/stm32f7xx_hal_crc.c ****   */
+ 251:./src/stm32f7xx_hal_crc.c **** 
+ 252:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC_Exported_Functions_Group2 Peripheral Control functions
+ 253:./src/stm32f7xx_hal_crc.c ****   *  @brief    management functions.
+ 254:./src/stm32f7xx_hal_crc.c ****   *
+ 255:./src/stm32f7xx_hal_crc.c **** @verbatim
+ 256:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+ 257:./src/stm32f7xx_hal_crc.c ****                       ##### Peripheral Control functions #####
+ 258:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+ 259:./src/stm32f7xx_hal_crc.c ****     [..]  This section provides functions allowing to:
+ 260:./src/stm32f7xx_hal_crc.c ****       (+) compute the 7, 8, 16 or 32-bit CRC value of an 8, 16 or 32-bit data buffer
+ 261:./src/stm32f7xx_hal_crc.c ****           using combination of the previous CRC value and the new one.
+ 262:./src/stm32f7xx_hal_crc.c **** 
+ 263:./src/stm32f7xx_hal_crc.c ****        [..]  or
+ 264:./src/stm32f7xx_hal_crc.c **** 
+ 265:./src/stm32f7xx_hal_crc.c ****       (+) compute the 7, 8, 16 or 32-bit CRC value of an 8, 16 or 32-bit data buffer
+ 266:./src/stm32f7xx_hal_crc.c ****           independently of the previous CRC value.
+ 267:./src/stm32f7xx_hal_crc.c **** 
+ 268:./src/stm32f7xx_hal_crc.c **** @endverbatim
+ 269:./src/stm32f7xx_hal_crc.c ****   * @{
+ 270:./src/stm32f7xx_hal_crc.c ****   */
+ 271:./src/stm32f7xx_hal_crc.c **** 
+ 272:./src/stm32f7xx_hal_crc.c **** /**
+ 273:./src/stm32f7xx_hal_crc.c ****   * @brief  Compute the 7, 8, 16 or 32-bit CRC value of an 8, 16 or 32-bit data buffer
+ 274:./src/stm32f7xx_hal_crc.c ****   *         starting with the previously computed CRC as initialization value.
+ 275:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 276:./src/stm32f7xx_hal_crc.c ****   * @param  pBuffer pointer to the input data buffer, exact input data format is
+ 277:./src/stm32f7xx_hal_crc.c ****   *         provided by hcrc->InputDataFormat.
+ 278:./src/stm32f7xx_hal_crc.c ****   * @param  BufferLength input data buffer length (number of bytes if pBuffer
+ 279:./src/stm32f7xx_hal_crc.c ****   *         type is * uint8_t, number of half-words if pBuffer type is * uint16_t,
+ 280:./src/stm32f7xx_hal_crc.c ****   *         number of words if pBuffer type is * uint32_t).
+ 281:./src/stm32f7xx_hal_crc.c ****   * @note  By default, the API expects a uint32_t pointer as input buffer parameter.
+ 282:./src/stm32f7xx_hal_crc.c ****   *        Input buffer pointers with other types simply need to be cast in uint32_t
+ 283:./src/stm32f7xx_hal_crc.c ****   *        and the API will internally adjust its input data processing based on the
+ 284:./src/stm32f7xx_hal_crc.c ****   *        handle field hcrc->InputDataFormat.
+ 285:./src/stm32f7xx_hal_crc.c ****   * @retval uint32_t CRC (returned value LSBs for CRC shorter than 32 bits)
+ 286:./src/stm32f7xx_hal_crc.c ****   */
+ 287:./src/stm32f7xx_hal_crc.c **** uint32_t HAL_CRC_Accumulate(CRC_HandleTypeDef *hcrc, uint32_t pBuffer[], uint32_t BufferLength)
+ 288:./src/stm32f7xx_hal_crc.c **** {
+ 289:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 290:./src/stm32f7xx_hal_crc.c ****   uint32_t temp = 0U;  /* CRC output (read from hcrc->Instance->DR register) */
+ 291:./src/stm32f7xx_hal_crc.c **** 
+ 292:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 293:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 294:./src/stm32f7xx_hal_crc.c **** 
+ 295:./src/stm32f7xx_hal_crc.c ****   switch (hcrc->InputDataFormat)
+ 296:./src/stm32f7xx_hal_crc.c ****   {
+ 297:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_WORDS:
+ 298:./src/stm32f7xx_hal_crc.c ****       /* Enter Data to the CRC calculator */
+ 299:./src/stm32f7xx_hal_crc.c ****       for (index = 0U; index < BufferLength; index++)
+ 300:./src/stm32f7xx_hal_crc.c ****       {
+ 301:./src/stm32f7xx_hal_crc.c ****         hcrc->Instance->DR = pBuffer[index];
+ 302:./src/stm32f7xx_hal_crc.c ****       }
+ 303:./src/stm32f7xx_hal_crc.c ****       temp = hcrc->Instance->DR;
+ 304:./src/stm32f7xx_hal_crc.c ****       break;
+ 305:./src/stm32f7xx_hal_crc.c **** 
+ 306:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_BYTES:
+ 307:./src/stm32f7xx_hal_crc.c ****       temp = CRC_Handle_8(hcrc, (uint8_t *)pBuffer, BufferLength);
+ 308:./src/stm32f7xx_hal_crc.c ****       break;
+ 309:./src/stm32f7xx_hal_crc.c **** 
+ 310:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_HALFWORDS:
+ 311:./src/stm32f7xx_hal_crc.c ****       temp = CRC_Handle_16(hcrc, (uint16_t *)(void *)pBuffer, BufferLength);    /* Derogation Misra
+ 312:./src/stm32f7xx_hal_crc.c ****       break;
+ 313:./src/stm32f7xx_hal_crc.c ****     default:
+ 314:./src/stm32f7xx_hal_crc.c ****       break;
+ 315:./src/stm32f7xx_hal_crc.c ****   }
+ 316:./src/stm32f7xx_hal_crc.c **** 
+ 317:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 318:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_READY;
+ 319:./src/stm32f7xx_hal_crc.c **** 
+ 320:./src/stm32f7xx_hal_crc.c ****   /* Return the CRC computed value */
+ 321:./src/stm32f7xx_hal_crc.c ****   return temp;
+ 322:./src/stm32f7xx_hal_crc.c **** }
+ 323:./src/stm32f7xx_hal_crc.c **** 
+ 324:./src/stm32f7xx_hal_crc.c **** /**
+ 325:./src/stm32f7xx_hal_crc.c ****   * @brief  Compute the 7, 8, 16 or 32-bit CRC value of an 8, 16 or 32-bit data buffer
+ 326:./src/stm32f7xx_hal_crc.c ****   *         starting with hcrc->Instance->INIT as initialization value.
+ 327:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 328:./src/stm32f7xx_hal_crc.c ****   * @param  pBuffer pointer to the input data buffer, exact input data format is
+ 329:./src/stm32f7xx_hal_crc.c ****   *         provided by hcrc->InputDataFormat.
+ 330:./src/stm32f7xx_hal_crc.c ****   * @param  BufferLength input data buffer length (number of bytes if pBuffer
+ 331:./src/stm32f7xx_hal_crc.c ****   *         type is * uint8_t, number of half-words if pBuffer type is * uint16_t,
+ 332:./src/stm32f7xx_hal_crc.c ****   *         number of words if pBuffer type is * uint32_t).
+ 333:./src/stm32f7xx_hal_crc.c ****   * @note  By default, the API expects a uint32_t pointer as input buffer parameter.
+ 334:./src/stm32f7xx_hal_crc.c ****   *        Input buffer pointers with other types simply need to be cast in uint32_t
+ 335:./src/stm32f7xx_hal_crc.c ****   *        and the API will internally adjust its input data processing based on the
+ 336:./src/stm32f7xx_hal_crc.c ****   *        handle field hcrc->InputDataFormat.
+ 337:./src/stm32f7xx_hal_crc.c ****   * @retval uint32_t CRC (returned value LSBs for CRC shorter than 32 bits)
+ 338:./src/stm32f7xx_hal_crc.c ****   */
+ 339:./src/stm32f7xx_hal_crc.c **** uint32_t HAL_CRC_Calculate(CRC_HandleTypeDef *hcrc, uint32_t pBuffer[], uint32_t BufferLength)
+ 340:./src/stm32f7xx_hal_crc.c **** {
+ 341:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 342:./src/stm32f7xx_hal_crc.c ****   uint32_t temp = 0U;  /* CRC output (read from hcrc->Instance->DR register) */
+ 343:./src/stm32f7xx_hal_crc.c **** 
+ 344:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 345:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 346:./src/stm32f7xx_hal_crc.c **** 
+ 347:./src/stm32f7xx_hal_crc.c ****   /* Reset CRC Calculation Unit (hcrc->Instance->INIT is
+ 348:./src/stm32f7xx_hal_crc.c ****   *  written in hcrc->Instance->DR) */
+ 349:./src/stm32f7xx_hal_crc.c ****   __HAL_CRC_DR_RESET(hcrc);
+ 350:./src/stm32f7xx_hal_crc.c **** 
+ 351:./src/stm32f7xx_hal_crc.c ****   switch (hcrc->InputDataFormat)
+ 352:./src/stm32f7xx_hal_crc.c ****   {
+ 353:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_WORDS:
+ 354:./src/stm32f7xx_hal_crc.c ****       /* Enter 32-bit input data to the CRC calculator */
+ 355:./src/stm32f7xx_hal_crc.c ****       for (index = 0U; index < BufferLength; index++)
+ 356:./src/stm32f7xx_hal_crc.c ****       {
+ 357:./src/stm32f7xx_hal_crc.c ****         hcrc->Instance->DR = pBuffer[index];
+ 358:./src/stm32f7xx_hal_crc.c ****       }
+ 359:./src/stm32f7xx_hal_crc.c ****       temp = hcrc->Instance->DR;
+ 360:./src/stm32f7xx_hal_crc.c ****       break;
+ 361:./src/stm32f7xx_hal_crc.c **** 
+ 362:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_BYTES:
+ 363:./src/stm32f7xx_hal_crc.c ****       /* Specific 8-bit input data handling  */
+ 364:./src/stm32f7xx_hal_crc.c ****       temp = CRC_Handle_8(hcrc, (uint8_t *)pBuffer, BufferLength);
+ 365:./src/stm32f7xx_hal_crc.c ****       break;
+ 366:./src/stm32f7xx_hal_crc.c **** 
+ 367:./src/stm32f7xx_hal_crc.c ****     case CRC_INPUTDATA_FORMAT_HALFWORDS:
+ 368:./src/stm32f7xx_hal_crc.c ****       /* Specific 16-bit input data handling  */
+ 369:./src/stm32f7xx_hal_crc.c ****       temp = CRC_Handle_16(hcrc, (uint16_t *)(void *)pBuffer, BufferLength);    /* Derogation Misra
+ 370:./src/stm32f7xx_hal_crc.c ****       break;
+ 371:./src/stm32f7xx_hal_crc.c **** 
+ 372:./src/stm32f7xx_hal_crc.c ****     default:
+ 373:./src/stm32f7xx_hal_crc.c ****       break;
+ 374:./src/stm32f7xx_hal_crc.c ****   }
+ 375:./src/stm32f7xx_hal_crc.c **** 
+ 376:./src/stm32f7xx_hal_crc.c ****   /* Change CRC peripheral state */
+ 377:./src/stm32f7xx_hal_crc.c ****   hcrc->State = HAL_CRC_STATE_READY;
+ 378:./src/stm32f7xx_hal_crc.c **** 
+ 379:./src/stm32f7xx_hal_crc.c ****   /* Return the CRC computed value */
+ 380:./src/stm32f7xx_hal_crc.c ****   return temp;
+ 381:./src/stm32f7xx_hal_crc.c **** }
+ 382:./src/stm32f7xx_hal_crc.c **** 
+ 383:./src/stm32f7xx_hal_crc.c **** /**
+ 384:./src/stm32f7xx_hal_crc.c ****   * @}
+ 385:./src/stm32f7xx_hal_crc.c ****   */
+ 386:./src/stm32f7xx_hal_crc.c **** 
+ 387:./src/stm32f7xx_hal_crc.c **** /** @defgroup CRC_Exported_Functions_Group3 Peripheral State functions
+ 388:./src/stm32f7xx_hal_crc.c ****   *  @brief    Peripheral State functions.
+ 389:./src/stm32f7xx_hal_crc.c ****   *
+ 390:./src/stm32f7xx_hal_crc.c **** @verbatim
+ 391:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+ 392:./src/stm32f7xx_hal_crc.c ****                       ##### Peripheral State functions #####
+ 393:./src/stm32f7xx_hal_crc.c ****  ===============================================================================
+ 394:./src/stm32f7xx_hal_crc.c ****     [..]
+ 395:./src/stm32f7xx_hal_crc.c ****     This subsection permits to get in run-time the status of the peripheral.
+ 396:./src/stm32f7xx_hal_crc.c **** 
+ 397:./src/stm32f7xx_hal_crc.c **** @endverbatim
+ 398:./src/stm32f7xx_hal_crc.c ****   * @{
+ 399:./src/stm32f7xx_hal_crc.c ****   */
+ 400:./src/stm32f7xx_hal_crc.c **** 
+ 401:./src/stm32f7xx_hal_crc.c **** /**
+ 402:./src/stm32f7xx_hal_crc.c ****   * @brief  Return the CRC handle state.
+ 403:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 404:./src/stm32f7xx_hal_crc.c ****   * @retval HAL state
+ 405:./src/stm32f7xx_hal_crc.c ****   */
+ 406:./src/stm32f7xx_hal_crc.c **** HAL_CRC_StateTypeDef HAL_CRC_GetState(const CRC_HandleTypeDef *hcrc)
+ 407:./src/stm32f7xx_hal_crc.c **** {
+ 408:./src/stm32f7xx_hal_crc.c ****   /* Return CRC handle state */
+ 409:./src/stm32f7xx_hal_crc.c ****   return hcrc->State;
+ 410:./src/stm32f7xx_hal_crc.c **** }
+ 411:./src/stm32f7xx_hal_crc.c **** 
+ 412:./src/stm32f7xx_hal_crc.c **** /**
+ 413:./src/stm32f7xx_hal_crc.c ****   * @}
+ 414:./src/stm32f7xx_hal_crc.c ****   */
+ 415:./src/stm32f7xx_hal_crc.c **** 
+ 416:./src/stm32f7xx_hal_crc.c **** /**
+ 417:./src/stm32f7xx_hal_crc.c ****   * @}
+ 418:./src/stm32f7xx_hal_crc.c ****   */
+ 419:./src/stm32f7xx_hal_crc.c **** 
+ 420:./src/stm32f7xx_hal_crc.c **** /** @addtogroup CRC_Private_Functions
+ 421:./src/stm32f7xx_hal_crc.c ****   * @{
+ 422:./src/stm32f7xx_hal_crc.c ****   */
+ 423:./src/stm32f7xx_hal_crc.c **** 
+ 424:./src/stm32f7xx_hal_crc.c **** /**
+ 425:./src/stm32f7xx_hal_crc.c ****   * @brief  Enter 8-bit input data to the CRC calculator.
+ 426:./src/stm32f7xx_hal_crc.c ****   *         Specific data handling to optimize processing time.
+ 427:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 428:./src/stm32f7xx_hal_crc.c ****   * @param  pBuffer pointer to the input data buffer
+ 429:./src/stm32f7xx_hal_crc.c ****   * @param  BufferLength input data buffer length
+ 430:./src/stm32f7xx_hal_crc.c ****   * @retval uint32_t CRC (returned value LSBs for CRC shorter than 32 bits)
+ 431:./src/stm32f7xx_hal_crc.c ****   */
+ 432:./src/stm32f7xx_hal_crc.c **** static uint32_t CRC_Handle_8(CRC_HandleTypeDef *hcrc, uint8_t pBuffer[], uint32_t BufferLength)
+ 433:./src/stm32f7xx_hal_crc.c **** {
+  28              		.loc 1 433 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+ 434:./src/stm32f7xx_hal_crc.c ****   uint32_t i; /* input data buffer index */
+  32              		.loc 1 434 3 view .LVU1
+ 435:./src/stm32f7xx_hal_crc.c ****   uint16_t data;
+  33              		.loc 1 435 3 view .LVU2
+ 436:./src/stm32f7xx_hal_crc.c ****   __IO uint16_t *pReg;
+  34              		.loc 1 436 3 view .LVU3
+ 437:./src/stm32f7xx_hal_crc.c **** 
+ 438:./src/stm32f7xx_hal_crc.c ****   /* Processing time optimization: 4 bytes are entered in a row with a single word write,
+ 439:./src/stm32f7xx_hal_crc.c ****    * last bytes must be carefully fed to the CRC calculator to ensure a correct type
+ 440:./src/stm32f7xx_hal_crc.c ****    * handling by the peripheral */
+ 441:./src/stm32f7xx_hal_crc.c ****   for (i = 0U; i < (BufferLength / 4U); i++)
+  35              		.loc 1 441 3 view .LVU4
+  36              		.loc 1 441 16 view .LVU5
+ 433:./src/stm32f7xx_hal_crc.c ****   uint32_t i; /* input data buffer index */
+  37              		.loc 1 433 1 is_stmt 0 view .LVU6
+  38 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 24
+  41              		.cfi_offset 4, -24
+  42              		.cfi_offset 5, -20
+  43              		.cfi_offset 6, -16
+  44              		.cfi_offset 7, -12
+  45              		.cfi_offset 8, -8
+  46              		.cfi_offset 14, -4
+  47              		.loc 1 441 3 view .LVU7
+  48 0004 9708     		lsrs	r7, r2, #2
+ 442:./src/stm32f7xx_hal_crc.c ****   {
+ 443:./src/stm32f7xx_hal_crc.c ****     hcrc->Instance->DR = ((uint32_t)pBuffer[4U * i] << 24U) | \
+  49              		.loc 1 443 9 view .LVU8
+  50 0006 0568     		ldr	r5, [r0]
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  51              		.loc 1 441 3 view .LVU9
+  52 0008 16D0     		beq	.L4
+  53 000a 8C46     		mov	ip, r1
+  54 000c 01EB8706 		add	r6, r1, r7, lsl #2
+  55              	.LVL1:
+  56              	.L3:
+  57              		.loc 1 443 5 is_stmt 1 discriminator 3 view .LVU10
+ 444:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 1U] << 16U) | \
+  58              		.loc 1 444 27 is_stmt 0 discriminator 3 view .LVU11
+  59 0010 9CF80130 		ldrb	r3, [ip, #1]	@ zero_extendqisi2
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  60              		.loc 1 441 3 discriminator 3 view .LVU12
+  61 0014 0CF1040C 		add	ip, ip, #4
+ 443:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 1U] << 16U) | \
+  62              		.loc 1 443 27 discriminator 3 view .LVU13
+  63 0018 1CF8048C 		ldrb	r8, [ip, #-4]	@ zero_extendqisi2
+  64              		.loc 1 444 60 discriminator 3 view .LVU14
+  65 001c 1B04     		lsls	r3, r3, #16
+ 445:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 2U] << 8U)  | \
+ 446:./src/stm32f7xx_hal_crc.c ****                          (uint32_t)pBuffer[(4U * i) + 3U];
+  66              		.loc 1 446 26 discriminator 3 view .LVU15
+  67 001e 1CF8014C 		ldrb	r4, [ip, #-1]	@ zero_extendqisi2
+ 445:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 2U] << 8U)  | \
+  68              		.loc 1 445 27 discriminator 3 view .LVU16
+  69 0022 1CF802EC 		ldrb	lr, [ip, #-2]	@ zero_extendqisi2
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  70              		.loc 1 441 3 discriminator 3 view .LVU17
+  71 0026 6645     		cmp	r6, ip
+ 445:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 2U] << 8U)  | \
+  72              		.loc 1 445 68 discriminator 3 view .LVU18
+  73 0028 43EA0863 		orr	r3, r3, r8, lsl #24
+  74 002c 43EA0403 		orr	r3, r3, r4
+  75 0030 43EA0E23 		orr	r3, r3, lr, lsl #8
+ 443:./src/stm32f7xx_hal_crc.c ****                          ((uint32_t)pBuffer[(4U * i) + 1U] << 16U) | \
+  76              		.loc 1 443 24 discriminator 3 view .LVU19
+  77 0034 2B60     		str	r3, [r5]
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  78              		.loc 1 441 41 is_stmt 1 discriminator 3 view .LVU20
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  79              		.loc 1 441 16 discriminator 3 view .LVU21
+ 441:./src/stm32f7xx_hal_crc.c ****   {
+  80              		.loc 1 441 3 is_stmt 0 discriminator 3 view .LVU22
+  81 0036 EBD1     		bne	.L3
+  82              	.L4:
+ 447:./src/stm32f7xx_hal_crc.c ****   }
+ 448:./src/stm32f7xx_hal_crc.c ****   /* last bytes specific handling */
+ 449:./src/stm32f7xx_hal_crc.c ****   if ((BufferLength % 4U) != 0U)
+  83              		.loc 1 449 3 is_stmt 1 view .LVU23
+  84              		.loc 1 449 6 is_stmt 0 view .LVU24
+  85 0038 12F00302 		ands	r2, r2, #3
+  86              	.LVL2:
+  87              		.loc 1 449 6 view .LVU25
+  88 003c 0ED0     		beq	.L5
+ 450:./src/stm32f7xx_hal_crc.c ****   {
+ 451:./src/stm32f7xx_hal_crc.c ****     if ((BufferLength % 4U) == 1U)
+  89              		.loc 1 451 5 is_stmt 1 view .LVU26
+  90              		.loc 1 451 8 is_stmt 0 view .LVU27
+  91 003e 012A     		cmp	r2, #1
+  92 0040 0FD0     		beq	.L14
+ 452:./src/stm32f7xx_hal_crc.c ****     {
+ 453:./src/stm32f7xx_hal_crc.c ****       *(__IO uint8_t *)(__IO void *)(&hcrc->Instance->DR) = pBuffer[4U * i];         /* Derogation 
+ 454:./src/stm32f7xx_hal_crc.c ****     }
+ 455:./src/stm32f7xx_hal_crc.c ****     else if ((BufferLength % 4U) == 2U)
+  93              		.loc 1 455 10 is_stmt 1 view .LVU28
+  94              		.loc 1 455 13 is_stmt 0 view .LVU29
+  95 0042 022A     		cmp	r2, #2
+  96 0044 14D0     		beq	.L15
+ 456:./src/stm32f7xx_hal_crc.c ****     {
+ 457:./src/stm32f7xx_hal_crc.c ****       data = ((uint16_t)(pBuffer[4U * i]) << 8U) | (uint16_t)pBuffer[(4U * i) + 1U];
+ 458:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 459:./src/stm32f7xx_hal_crc.c ****       *pReg = data;
+ 460:./src/stm32f7xx_hal_crc.c ****     }
+ 461:./src/stm32f7xx_hal_crc.c ****     else if ((BufferLength % 4U) == 3U)
+  97              		.loc 1 461 10 is_stmt 1 view .LVU30
+ 462:./src/stm32f7xx_hal_crc.c ****     {
+ 463:./src/stm32f7xx_hal_crc.c ****       data = ((uint16_t)(pBuffer[4U * i]) << 8U) | (uint16_t)pBuffer[(4U * i) + 1U];
+  98              		.loc 1 463 7 view .LVU31
+  99              		.loc 1 463 15 is_stmt 0 view .LVU32
+ 100 0046 11F82720 		ldrb	r2, [r1, r7, lsl #2]	@ zero_extendqisi2
+ 101              		.loc 1 463 69 view .LVU33
+ 102 004a 01EB8701 		add	r1, r1, r7, lsl #2
+ 103              	.LVL3:
+ 104              		.loc 1 463 69 view .LVU34
+ 105 004e 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 106              		.loc 1 463 12 view .LVU35
+ 107 0050 43EA0223 		orr	r3, r3, r2, lsl #8
+ 108              	.LVL4:
+ 464:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 109              		.loc 1 464 7 is_stmt 1 view .LVU36
+ 465:./src/stm32f7xx_hal_crc.c ****       *pReg = data;
+ 110              		.loc 1 465 7 view .LVU37
+ 111              		.loc 1 465 13 is_stmt 0 view .LVU38
+ 112 0054 2B80     		strh	r3, [r5]	@ movhi
+ 466:./src/stm32f7xx_hal_crc.c **** 
+ 467:./src/stm32f7xx_hal_crc.c ****       *(__IO uint8_t *)(__IO void *)(&hcrc->Instance->DR) = pBuffer[(4U * i) + 2U];  /* Derogation 
+ 113              		.loc 1 467 7 is_stmt 1 view .LVU39
+ 114              		.loc 1 467 68 is_stmt 0 view .LVU40
+ 115 0056 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+ 116              	.LVL5:
+ 117              		.loc 1 467 59 view .LVU41
+ 118 0058 2B70     		strb	r3, [r5]
+ 119              	.LVL6:
+ 468:./src/stm32f7xx_hal_crc.c ****     }
+ 469:./src/stm32f7xx_hal_crc.c ****     else
+ 470:./src/stm32f7xx_hal_crc.c ****     {
+ 471:./src/stm32f7xx_hal_crc.c ****       /* Nothing to do */
+ 472:./src/stm32f7xx_hal_crc.c ****     }
+ 473:./src/stm32f7xx_hal_crc.c ****   }
+ 474:./src/stm32f7xx_hal_crc.c **** 
+ 475:./src/stm32f7xx_hal_crc.c ****   /* Return the CRC computed value */
+ 476:./src/stm32f7xx_hal_crc.c ****   return hcrc->Instance->DR;
+ 120              		.loc 1 476 14 view .LVU42
+ 121 005a 0568     		ldr	r5, [r0]
+ 122              	.L5:
+ 472:./src/stm32f7xx_hal_crc.c ****   }
+ 123              		.loc 1 472 5 is_stmt 1 view .LVU43
+ 124              		.loc 1 476 3 view .LVU44
+ 125              		.loc 1 476 24 is_stmt 0 view .LVU45
+ 126 005c 2868     		ldr	r0, [r5]
+ 127              	.LVL7:
+ 477:./src/stm32f7xx_hal_crc.c **** }
+ 128              		.loc 1 477 1 view .LVU46
+ 129 005e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 130              	.LVL8:
+ 131              	.L14:
+ 453:./src/stm32f7xx_hal_crc.c ****     }
+ 132              		.loc 1 453 7 is_stmt 1 view .LVU47
+ 453:./src/stm32f7xx_hal_crc.c ****     }
+ 133              		.loc 1 453 68 is_stmt 0 view .LVU48
+ 134 0062 11F82730 		ldrb	r3, [r1, r7, lsl #2]	@ zero_extendqisi2
+ 453:./src/stm32f7xx_hal_crc.c ****     }
+ 135              		.loc 1 453 59 view .LVU49
+ 136 0066 2B70     		strb	r3, [r5]
+ 476:./src/stm32f7xx_hal_crc.c **** }
+ 137              		.loc 1 476 14 view .LVU50
+ 138 0068 0568     		ldr	r5, [r0]
+ 472:./src/stm32f7xx_hal_crc.c ****   }
+ 139              		.loc 1 472 5 is_stmt 1 view .LVU51
+ 476:./src/stm32f7xx_hal_crc.c **** }
+ 140              		.loc 1 476 3 view .LVU52
+ 476:./src/stm32f7xx_hal_crc.c **** }
+ 141              		.loc 1 476 24 is_stmt 0 view .LVU53
+ 142 006a 2868     		ldr	r0, [r5]
+ 143              	.LVL9:
+ 144              		.loc 1 477 1 view .LVU54
+ 145 006c BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 146              	.LVL10:
+ 147              	.L15:
+ 457:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 148              		.loc 1 457 7 is_stmt 1 view .LVU55
+ 457:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 149              		.loc 1 457 69 is_stmt 0 view .LVU56
+ 150 0070 01EB8703 		add	r3, r1, r7, lsl #2
+ 457:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 151              		.loc 1 457 15 view .LVU57
+ 152 0074 11F82720 		ldrb	r2, [r1, r7, lsl #2]	@ zero_extendqisi2
+ 457:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 153              		.loc 1 457 69 view .LVU58
+ 154 0078 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 457:./src/stm32f7xx_hal_crc.c ****       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation 
+ 155              		.loc 1 457 12 view .LVU59
+ 156 007a 43EA0223 		orr	r3, r3, r2, lsl #8
+ 157              	.LVL11:
+ 458:./src/stm32f7xx_hal_crc.c ****       *pReg = data;
+ 158              		.loc 1 458 7 is_stmt 1 view .LVU60
+ 459:./src/stm32f7xx_hal_crc.c ****     }
+ 159              		.loc 1 459 7 view .LVU61
+ 459:./src/stm32f7xx_hal_crc.c ****     }
+ 160              		.loc 1 459 13 is_stmt 0 view .LVU62
+ 161 007e 2B80     		strh	r3, [r5]	@ movhi
+ 472:./src/stm32f7xx_hal_crc.c ****   }
+ 162              		.loc 1 472 5 is_stmt 1 view .LVU63
+ 476:./src/stm32f7xx_hal_crc.c **** }
+ 163              		.loc 1 476 3 view .LVU64
+ 476:./src/stm32f7xx_hal_crc.c **** }
+ 164              		.loc 1 476 24 is_stmt 0 view .LVU65
+ 165 0080 2868     		ldr	r0, [r5]
+ 166              	.LVL12:
+ 167              		.loc 1 477 1 view .LVU66
+ 168 0082 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 169              		.cfi_endproc
+ 170              	.LFE151:
+ 172              		.align	1
+ 173 0086 00BF     		.p2align 2,,3
+ 174              		.syntax unified
+ 175              		.thumb
+ 176              		.thumb_func
+ 177              		.fpu fpv5-d16
+ 179              	CRC_Handle_16:
+ 180              	.LVL13:
+ 181              	.LFB152:
+ 478:./src/stm32f7xx_hal_crc.c **** 
+ 479:./src/stm32f7xx_hal_crc.c **** /**
+ 480:./src/stm32f7xx_hal_crc.c ****   * @brief  Enter 16-bit input data to the CRC calculator.
+ 481:./src/stm32f7xx_hal_crc.c ****   *         Specific data handling to optimize processing time.
+ 482:./src/stm32f7xx_hal_crc.c ****   * @param  hcrc CRC handle
+ 483:./src/stm32f7xx_hal_crc.c ****   * @param  pBuffer pointer to the input data buffer
+ 484:./src/stm32f7xx_hal_crc.c ****   * @param  BufferLength input data buffer length
+ 485:./src/stm32f7xx_hal_crc.c ****   * @retval uint32_t CRC (returned value LSBs for CRC shorter than 32 bits)
+ 486:./src/stm32f7xx_hal_crc.c ****   */
+ 487:./src/stm32f7xx_hal_crc.c **** static uint32_t CRC_Handle_16(CRC_HandleTypeDef *hcrc, uint16_t pBuffer[], uint32_t BufferLength)
+ 488:./src/stm32f7xx_hal_crc.c **** {
+ 182              		.loc 1 488 1 is_stmt 1 view -0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 0
+ 185              		@ frame_needed = 0, uses_anonymous_args = 0
+ 489:./src/stm32f7xx_hal_crc.c ****   uint32_t i;  /* input data buffer index */
+ 186              		.loc 1 489 3 view .LVU68
+ 490:./src/stm32f7xx_hal_crc.c ****   __IO uint16_t *pReg;
+ 187              		.loc 1 490 3 view .LVU69
+ 491:./src/stm32f7xx_hal_crc.c **** 
+ 492:./src/stm32f7xx_hal_crc.c ****   /* Processing time optimization: 2 HalfWords are entered in a row with a single word write,
+ 493:./src/stm32f7xx_hal_crc.c ****    * in case of odd length, last HalfWord must be carefully fed to the CRC calculator to ensure
+ 494:./src/stm32f7xx_hal_crc.c ****    * a correct type handling by the peripheral */
+ 495:./src/stm32f7xx_hal_crc.c ****   for (i = 0U; i < (BufferLength / 2U); i++)
+ 188              		.loc 1 495 3 view .LVU70
+ 189              		.loc 1 495 16 view .LVU71
+ 488:./src/stm32f7xx_hal_crc.c ****   uint32_t i;  /* input data buffer index */
+ 190              		.loc 1 488 1 is_stmt 0 view .LVU72
+ 191 0088 30B5     		push	{r4, r5, lr}
+ 192              	.LCFI1:
+ 193              		.cfi_def_cfa_offset 12
+ 194              		.cfi_offset 4, -12
+ 195              		.cfi_offset 5, -8
+ 196              		.cfi_offset 14, -4
+ 197              		.loc 1 495 3 view .LVU73
+ 198 008a 5FEA520E 		lsrs	lr, r2, #1
+ 496:./src/stm32f7xx_hal_crc.c ****   {
+ 497:./src/stm32f7xx_hal_crc.c ****     hcrc->Instance->DR = ((uint32_t)pBuffer[2U * i] << 16U) | (uint32_t)pBuffer[(2U * i) + 1U];
+ 199              		.loc 1 497 9 view .LVU74
+ 200 008e 0468     		ldr	r4, [r0]
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 201              		.loc 1 495 3 view .LVU75
+ 202 0090 0BD0     		beq	.L19
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 203              		.loc 1 495 10 view .LVU76
+ 204 0092 0023     		movs	r3, #0
+ 205 0094 8D1C     		adds	r5, r1, #2
+ 206              	.LVL14:
+ 207              	.L18:
+ 208              		.loc 1 497 5 is_stmt 1 discriminator 3 view .LVU77
+ 209              		.loc 1 497 27 is_stmt 0 discriminator 3 view .LVU78
+ 210 0096 31F823C0 		ldrh	ip, [r1, r3, lsl #2]
+ 211              		.loc 1 497 63 discriminator 3 view .LVU79
+ 212 009a 35F82300 		ldrh	r0, [r5, r3, lsl #2]
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 213              		.loc 1 495 42 discriminator 3 view .LVU80
+ 214 009e 0133     		adds	r3, r3, #1
+ 215              	.LVL15:
+ 216              		.loc 1 497 61 discriminator 3 view .LVU81
+ 217 00a0 40EA0C40 		orr	r0, r0, ip, lsl #16
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 218              		.loc 1 495 3 discriminator 3 view .LVU82
+ 219 00a4 7345     		cmp	r3, lr
+ 220              		.loc 1 497 24 discriminator 3 view .LVU83
+ 221 00a6 2060     		str	r0, [r4]
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 222              		.loc 1 495 41 is_stmt 1 discriminator 3 view .LVU84
+ 223              	.LVL16:
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 224              		.loc 1 495 16 discriminator 3 view .LVU85
+ 495:./src/stm32f7xx_hal_crc.c ****   {
+ 225              		.loc 1 495 3 is_stmt 0 discriminator 3 view .LVU86
+ 226 00a8 F5D1     		bne	.L18
+ 227              	.LVL17:
+ 228              	.L19:
+ 498:./src/stm32f7xx_hal_crc.c ****   }
+ 499:./src/stm32f7xx_hal_crc.c ****   if ((BufferLength % 2U) != 0U)
+ 229              		.loc 1 499 3 is_stmt 1 view .LVU87
+ 230              		.loc 1 499 6 is_stmt 0 view .LVU88
+ 231 00aa D307     		lsls	r3, r2, #31
+ 232 00ac 02D5     		bpl	.L20
+ 500:./src/stm32f7xx_hal_crc.c ****   {
+ 501:./src/stm32f7xx_hal_crc.c ****     pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                 /* Derogation Misra
+ 233              		.loc 1 501 5 is_stmt 1 view .LVU89
+ 234              	.LVL18:
+ 502:./src/stm32f7xx_hal_crc.c ****     *pReg = pBuffer[2U * i];
+ 235              		.loc 1 502 5 view .LVU90
+ 236              		.loc 1 502 20 is_stmt 0 view .LVU91
+ 237 00ae 31F82E30 		ldrh	r3, [r1, lr, lsl #2]
+ 238              		.loc 1 502 11 view .LVU92
+ 239 00b2 2380     		strh	r3, [r4]	@ movhi
+ 240              	.LVL19:
+ 241              	.L20:
+ 503:./src/stm32f7xx_hal_crc.c ****   }
+ 504:./src/stm32f7xx_hal_crc.c **** 
+ 505:./src/stm32f7xx_hal_crc.c ****   /* Return the CRC computed value */
+ 506:./src/stm32f7xx_hal_crc.c ****   return hcrc->Instance->DR;
+ 242              		.loc 1 506 3 is_stmt 1 view .LVU93
+ 243              		.loc 1 506 24 is_stmt 0 view .LVU94
+ 244 00b4 2068     		ldr	r0, [r4]
+ 507:./src/stm32f7xx_hal_crc.c **** }
+ 245              		.loc 1 507 1 view .LVU95
+ 246 00b6 30BD     		pop	{r4, r5, pc}
+ 247              		.cfi_endproc
+ 248              	.LFE152:
+ 250              		.align	1
+ 251              		.p2align 2,,3
+ 252              		.weak	HAL_CRC_MspInit
+ 253              		.syntax unified
+ 254              		.thumb
+ 255              		.thumb_func
+ 256              		.fpu fpv5-d16
+ 258              	HAL_CRC_MspInit:
+ 259              	.LVL20:
+ 260              	.LFB146:
+ 224:./src/stm32f7xx_hal_crc.c ****   /* Prevent unused argument(s) compilation warning */
+ 261              		.loc 1 224 1 is_stmt 1 view -0
+ 262              		.cfi_startproc
+ 263              		@ args = 0, pretend = 0, frame = 0
+ 264              		@ frame_needed = 0, uses_anonymous_args = 0
+ 265              		@ link register save eliminated.
+ 226:./src/stm32f7xx_hal_crc.c **** 
+ 266              		.loc 1 226 3 view .LVU97
+ 231:./src/stm32f7xx_hal_crc.c **** 
+ 267              		.loc 1 231 1 is_stmt 0 view .LVU98
+ 268 00b8 7047     		bx	lr
+ 269              		.cfi_endproc
+ 270              	.LFE146:
+ 272              		.align	1
+ 273 00ba 00BF     		.p2align 2,,3
+ 274              		.global	HAL_CRC_Init
+ 275              		.syntax unified
+ 276              		.thumb
+ 277              		.thumb_func
+ 278              		.fpu fpv5-d16
+ 280              	HAL_CRC_Init:
+ 281              	.LVL21:
+ 282              	.LFB144:
+ 104:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 283              		.loc 1 104 1 is_stmt 1 view -0
+ 284              		.cfi_startproc
+ 285              		@ args = 0, pretend = 0, frame = 0
+ 286              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106:./src/stm32f7xx_hal_crc.c ****   {
+ 287              		.loc 1 106 3 view .LVU100
+ 106:./src/stm32f7xx_hal_crc.c ****   {
+ 288              		.loc 1 106 6 is_stmt 0 view .LVU101
+ 289 00bc 0028     		cmp	r0, #0
+ 290 00be 36D0     		beq	.L39
+ 112:./src/stm32f7xx_hal_crc.c **** 
+ 291              		.loc 1 112 3 is_stmt 1 view .LVU102
+ 114:./src/stm32f7xx_hal_crc.c ****   {
+ 292              		.loc 1 114 3 view .LVU103
+ 104:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 293              		.loc 1 104 1 is_stmt 0 view .LVU104
+ 294 00c0 10B5     		push	{r4, lr}
+ 295              	.LCFI2:
+ 296              		.cfi_def_cfa_offset 8
+ 297              		.cfi_offset 4, -8
+ 298              		.cfi_offset 14, -4
+ 114:./src/stm32f7xx_hal_crc.c ****   {
+ 299              		.loc 1 114 11 view .LVU105
+ 300 00c2 437F     		ldrb	r3, [r0, #29]	@ zero_extendqisi2
+ 301 00c4 0446     		mov	r4, r0
+ 114:./src/stm32f7xx_hal_crc.c ****   {
+ 302              		.loc 1 114 6 view .LVU106
+ 303 00c6 03F0FF02 		and	r2, r3, #255
+ 304 00ca 63B3     		cbz	r3, .L40
+ 305              	.LVL22:
+ 306              	.L30:
+ 122:./src/stm32f7xx_hal_crc.c **** 
+ 307              		.loc 1 122 3 is_stmt 1 view .LVU107
+ 122:./src/stm32f7xx_hal_crc.c **** 
+ 308              		.loc 1 122 15 is_stmt 0 view .LVU108
+ 309 00cc 0222     		movs	r2, #2
+ 127:./src/stm32f7xx_hal_crc.c ****   {
+ 310              		.loc 1 127 6 view .LVU109
+ 311 00ce 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 122:./src/stm32f7xx_hal_crc.c **** 
+ 312              		.loc 1 122 15 view .LVU110
+ 313 00d0 6277     		strb	r2, [r4, #29]
+ 126:./src/stm32f7xx_hal_crc.c ****   if (hcrc->Init.DefaultPolynomialUse == DEFAULT_POLYNOMIAL_ENABLE)
+ 314              		.loc 1 126 3 is_stmt 1 view .LVU111
+ 127:./src/stm32f7xx_hal_crc.c ****   {
+ 315              		.loc 1 127 3 view .LVU112
+ 127:./src/stm32f7xx_hal_crc.c ****   {
+ 316              		.loc 1 127 6 is_stmt 0 view .LVU113
+ 317 00d2 F3B9     		cbnz	r3, .L31
+ 130:./src/stm32f7xx_hal_crc.c ****     MODIFY_REG(hcrc->Instance->CR, CRC_CR_POLYSIZE, CRC_POLYLENGTH_32B);
+ 318              		.loc 1 130 5 is_stmt 1 view .LVU114
+ 319 00d4 2368     		ldr	r3, [r4]
+ 320 00d6 174A     		ldr	r2, .L42
+ 321 00d8 5A61     		str	r2, [r3, #20]
+ 131:./src/stm32f7xx_hal_crc.c ****   }
+ 322              		.loc 1 131 5 view .LVU115
+ 323 00da 9A68     		ldr	r2, [r3, #8]
+ 324 00dc 22F01802 		bic	r2, r2, #24
+ 325 00e0 9A60     		str	r2, [r3, #8]
+ 326              	.L32:
+ 144:./src/stm32f7xx_hal_crc.c ****   if (hcrc->Init.DefaultInitValueUse == DEFAULT_INIT_VALUE_ENABLE)
+ 327              		.loc 1 144 3 view .LVU116
+ 145:./src/stm32f7xx_hal_crc.c ****   {
+ 328              		.loc 1 145 3 view .LVU117
+ 145:./src/stm32f7xx_hal_crc.c ****   {
+ 329              		.loc 1 145 6 is_stmt 0 view .LVU118
+ 330 00e2 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 331 00e4 8AB1     		cbz	r2, .L41
+ 151:./src/stm32f7xx_hal_crc.c ****   }
+ 332              		.loc 1 151 5 is_stmt 1 view .LVU119
+ 333 00e6 2269     		ldr	r2, [r4, #16]
+ 334 00e8 1A61     		str	r2, [r3, #16]
+ 335              	.L35:
+ 156:./src/stm32f7xx_hal_crc.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_IN, hcrc->Init.InputDataInversionMode);
+ 336              		.loc 1 156 3 view .LVU120
+ 157:./src/stm32f7xx_hal_crc.c **** 
+ 337              		.loc 1 157 3 view .LVU121
+ 338 00ea 9968     		ldr	r1, [r3, #8]
+ 161:./src/stm32f7xx_hal_crc.c **** 
+ 339              		.loc 1 161 3 is_stmt 0 view .LVU122
+ 340 00ec D4E90520 		ldrd	r2, r0, [r4, #20]
+ 157:./src/stm32f7xx_hal_crc.c **** 
+ 341              		.loc 1 157 3 view .LVU123
+ 342 00f0 21F06001 		bic	r1, r1, #96
+ 343 00f4 1143     		orrs	r1, r1, r2
+ 344 00f6 9960     		str	r1, [r3, #8]
+ 160:./src/stm32f7xx_hal_crc.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_OUT, hcrc->Init.OutputDataInversionMode);
+ 345              		.loc 1 160 3 is_stmt 1 view .LVU124
+ 161:./src/stm32f7xx_hal_crc.c **** 
+ 346              		.loc 1 161 3 view .LVU125
+ 168:./src/stm32f7xx_hal_crc.c **** 
+ 347              		.loc 1 168 15 is_stmt 0 view .LVU126
+ 348 00f8 0121     		movs	r1, #1
+ 161:./src/stm32f7xx_hal_crc.c **** 
+ 349              		.loc 1 161 3 view .LVU127
+ 350 00fa 9A68     		ldr	r2, [r3, #8]
+ 351 00fc 22F08002 		bic	r2, r2, #128
+ 352 0100 0243     		orrs	r2, r2, r0
+ 171:./src/stm32f7xx_hal_crc.c **** }
+ 353              		.loc 1 171 10 view .LVU128
+ 354 0102 0020     		movs	r0, #0
+ 161:./src/stm32f7xx_hal_crc.c **** 
+ 355              		.loc 1 161 3 view .LVU129
+ 356 0104 9A60     		str	r2, [r3, #8]
+ 165:./src/stm32f7xx_hal_crc.c **** 
+ 357              		.loc 1 165 3 is_stmt 1 view .LVU130
+ 168:./src/stm32f7xx_hal_crc.c **** 
+ 358              		.loc 1 168 3 view .LVU131
+ 168:./src/stm32f7xx_hal_crc.c **** 
+ 359              		.loc 1 168 15 is_stmt 0 view .LVU132
+ 360 0106 6177     		strb	r1, [r4, #29]
+ 171:./src/stm32f7xx_hal_crc.c **** }
+ 361              		.loc 1 171 3 is_stmt 1 view .LVU133
+ 172:./src/stm32f7xx_hal_crc.c **** 
+ 362              		.loc 1 172 1 is_stmt 0 view .LVU134
+ 363 0108 10BD     		pop	{r4, pc}
+ 364              	.LVL23:
+ 365              	.L41:
+ 147:./src/stm32f7xx_hal_crc.c ****   }
+ 366              		.loc 1 147 5 is_stmt 1 view .LVU135
+ 367 010a 4FF0FF32 		mov	r2, #-1
+ 368 010e 1A61     		str	r2, [r3, #16]
+ 369 0110 EBE7     		b	.L35
+ 370              	.L31:
+ 136:./src/stm32f7xx_hal_crc.c ****     {
+ 371              		.loc 1 136 5 view .LVU136
+ 136:./src/stm32f7xx_hal_crc.c ****     {
+ 372              		.loc 1 136 9 is_stmt 0 view .LVU137
+ 373 0112 D4E90212 		ldrd	r1, r2, [r4, #8]
+ 374 0116 2046     		mov	r0, r4
+ 375 0118 FFF7FEFF 		bl	HAL_CRCEx_Polynomial_Set
+ 376              	.LVL24:
+ 136:./src/stm32f7xx_hal_crc.c ****     {
+ 377              		.loc 1 136 8 view .LVU138
+ 378 011c 08B9     		cbnz	r0, .L33
+ 147:./src/stm32f7xx_hal_crc.c ****   }
+ 379              		.loc 1 147 5 view .LVU139
+ 380 011e 2368     		ldr	r3, [r4]
+ 381 0120 DFE7     		b	.L32
+ 382              	.L33:
+ 108:./src/stm32f7xx_hal_crc.c ****   }
+ 383              		.loc 1 108 12 view .LVU140
+ 384 0122 0120     		movs	r0, #1
+ 172:./src/stm32f7xx_hal_crc.c **** 
+ 385              		.loc 1 172 1 view .LVU141
+ 386 0124 10BD     		pop	{r4, pc}
+ 387              	.LVL25:
+ 388              	.L40:
+ 117:./src/stm32f7xx_hal_crc.c ****     /* Init the low level hardware */
+ 389              		.loc 1 117 5 is_stmt 1 view .LVU142
+ 117:./src/stm32f7xx_hal_crc.c ****     /* Init the low level hardware */
+ 390              		.loc 1 117 16 is_stmt 0 view .LVU143
+ 391 0126 0277     		strb	r2, [r0, #28]
+ 119:./src/stm32f7xx_hal_crc.c ****   }
+ 392              		.loc 1 119 5 is_stmt 1 view .LVU144
+ 393 0128 FFF7FEFF 		bl	HAL_CRC_MspInit
+ 394              	.LVL26:
+ 119:./src/stm32f7xx_hal_crc.c ****   }
+ 395              		.loc 1 119 5 is_stmt 0 view .LVU145
+ 396 012c CEE7     		b	.L30
+ 397              	.LVL27:
+ 398              	.L39:
+ 399              	.LCFI3:
+ 400              		.cfi_def_cfa_offset 0
+ 401              		.cfi_restore 4
+ 402              		.cfi_restore 14
+ 108:./src/stm32f7xx_hal_crc.c ****   }
+ 403              		.loc 1 108 12 view .LVU146
+ 404 012e 0120     		movs	r0, #1
+ 405              	.LVL28:
+ 172:./src/stm32f7xx_hal_crc.c **** 
+ 406              		.loc 1 172 1 view .LVU147
+ 407 0130 7047     		bx	lr
+ 408              	.L43:
+ 409 0132 00BF     		.align	2
+ 410              	.L42:
+ 411 0134 B71DC104 		.word	79764919
+ 412              		.cfi_endproc
+ 413              	.LFE144:
+ 415              		.align	1
+ 416              		.p2align 2,,3
+ 417              		.weak	HAL_CRC_MspDeInit
+ 418              		.syntax unified
+ 419              		.thumb
+ 420              		.thumb_func
+ 421              		.fpu fpv5-d16
+ 423              	HAL_CRC_MspDeInit:
+ 424              	.LFB154:
+ 425              		.cfi_startproc
+ 426              		@ args = 0, pretend = 0, frame = 0
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428              		@ link register save eliminated.
+ 429 0138 7047     		bx	lr
+ 430              		.cfi_endproc
+ 431              	.LFE154:
+ 433              		.align	1
+ 434 013a 00BF     		.p2align 2,,3
+ 435              		.global	HAL_CRC_DeInit
+ 436              		.syntax unified
+ 437              		.thumb
+ 438              		.thumb_func
+ 439              		.fpu fpv5-d16
+ 441              	HAL_CRC_DeInit:
+ 442              	.LVL29:
+ 443              	.LFB145:
+ 180:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 444              		.loc 1 180 1 is_stmt 1 view -0
+ 445              		.cfi_startproc
+ 446              		@ args = 0, pretend = 0, frame = 0
+ 447              		@ frame_needed = 0, uses_anonymous_args = 0
+ 182:./src/stm32f7xx_hal_crc.c ****   {
+ 448              		.loc 1 182 3 view .LVU149
+ 180:./src/stm32f7xx_hal_crc.c ****   /* Check the CRC handle allocation */
+ 449              		.loc 1 180 1 is_stmt 0 view .LVU150
+ 450 013c 38B5     		push	{r3, r4, r5, lr}
+ 451              	.LCFI4:
+ 452              		.cfi_def_cfa_offset 16
+ 453              		.cfi_offset 3, -16
+ 454              		.cfi_offset 4, -12
+ 455              		.cfi_offset 5, -8
+ 456              		.cfi_offset 14, -4
+ 182:./src/stm32f7xx_hal_crc.c ****   {
+ 457              		.loc 1 182 6 view .LVU151
+ 458 013e A0B1     		cbz	r0, .L47
+ 191:./src/stm32f7xx_hal_crc.c ****   {
+ 459              		.loc 1 191 11 view .LVU152
+ 460 0140 427F     		ldrb	r2, [r0, #29]	@ zero_extendqisi2
+ 461 0142 0446     		mov	r4, r0
+ 188:./src/stm32f7xx_hal_crc.c **** 
+ 462              		.loc 1 188 3 is_stmt 1 view .LVU153
+ 191:./src/stm32f7xx_hal_crc.c ****   {
+ 463              		.loc 1 191 3 view .LVU154
+ 191:./src/stm32f7xx_hal_crc.c ****   {
+ 464              		.loc 1 191 6 is_stmt 0 view .LVU155
+ 465 0144 022A     		cmp	r2, #2
+ 191:./src/stm32f7xx_hal_crc.c ****   {
+ 466              		.loc 1 191 11 view .LVU156
+ 467 0146 D3B2     		uxtb	r3, r2
+ 191:./src/stm32f7xx_hal_crc.c ****   {
+ 468              		.loc 1 191 6 view .LVU157
+ 469 0148 0DD0     		beq	.L46
+ 197:./src/stm32f7xx_hal_crc.c **** 
+ 470              		.loc 1 197 3 is_stmt 1 view .LVU158
+ 200:./src/stm32f7xx_hal_crc.c **** 
+ 471              		.loc 1 200 3 is_stmt 0 view .LVU159
+ 472 014a 0368     		ldr	r3, [r0]
+ 197:./src/stm32f7xx_hal_crc.c **** 
+ 473              		.loc 1 197 15 view .LVU160
+ 474 014c 0222     		movs	r2, #2
+ 203:./src/stm32f7xx_hal_crc.c **** 
+ 475              		.loc 1 203 3 view .LVU161
+ 476 014e 0025     		movs	r5, #0
+ 197:./src/stm32f7xx_hal_crc.c **** 
+ 477              		.loc 1 197 15 view .LVU162
+ 478 0150 4277     		strb	r2, [r0, #29]
+ 200:./src/stm32f7xx_hal_crc.c **** 
+ 479              		.loc 1 200 3 is_stmt 1 view .LVU163
+ 480 0152 9A68     		ldr	r2, [r3, #8]
+ 481 0154 42F00102 		orr	r2, r2, #1
+ 482 0158 9A60     		str	r2, [r3, #8]
+ 203:./src/stm32f7xx_hal_crc.c **** 
+ 483              		.loc 1 203 3 view .LVU164
+ 484 015a 1D71     		strb	r5, [r3, #4]
+ 206:./src/stm32f7xx_hal_crc.c **** 
+ 485              		.loc 1 206 3 view .LVU165
+ 486 015c FFF7FEFF 		bl	HAL_CRC_MspDeInit
+ 487              	.LVL30:
+ 209:./src/stm32f7xx_hal_crc.c **** 
+ 488              		.loc 1 209 3 view .LVU166
+ 215:./src/stm32f7xx_hal_crc.c **** }
+ 489              		.loc 1 215 10 is_stmt 0 view .LVU167
+ 490 0160 2B46     		mov	r3, r5
+ 209:./src/stm32f7xx_hal_crc.c **** 
+ 491              		.loc 1 209 15 view .LVU168
+ 492 0162 6577     		strb	r5, [r4, #29]
+ 212:./src/stm32f7xx_hal_crc.c **** 
+ 493              		.loc 1 212 3 is_stmt 1 view .LVU169
+ 212:./src/stm32f7xx_hal_crc.c **** 
+ 494              		.loc 1 212 3 view .LVU170
+ 495 0164 2577     		strb	r5, [r4, #28]
+ 212:./src/stm32f7xx_hal_crc.c **** 
+ 496              		.loc 1 212 3 view .LVU171
+ 215:./src/stm32f7xx_hal_crc.c **** }
+ 497              		.loc 1 215 3 view .LVU172
+ 498              	.L46:
+ 216:./src/stm32f7xx_hal_crc.c **** 
+ 499              		.loc 1 216 1 is_stmt 0 view .LVU173
+ 500 0166 1846     		mov	r0, r3
+ 501 0168 38BD     		pop	{r3, r4, r5, pc}
+ 502              	.LVL31:
+ 503              	.L47:
+ 184:./src/stm32f7xx_hal_crc.c ****   }
+ 504              		.loc 1 184 12 view .LVU174
+ 505 016a 0123     		movs	r3, #1
+ 216:./src/stm32f7xx_hal_crc.c **** 
+ 506              		.loc 1 216 1 view .LVU175
+ 507 016c 1846     		mov	r0, r3
+ 508              	.LVL32:
+ 216:./src/stm32f7xx_hal_crc.c **** 
+ 509              		.loc 1 216 1 view .LVU176
+ 510 016e 38BD     		pop	{r3, r4, r5, pc}
+ 511              		.cfi_endproc
+ 512              	.LFE145:
+ 514              		.align	1
+ 515              		.p2align 2,,3
+ 516              		.global	HAL_CRC_Accumulate
+ 517              		.syntax unified
+ 518              		.thumb
+ 519              		.thumb_func
+ 520              		.fpu fpv5-d16
+ 522              	HAL_CRC_Accumulate:
+ 523              	.LVL33:
+ 524              	.LFB148:
+ 288:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 525              		.loc 1 288 1 is_stmt 1 view -0
+ 526              		.cfi_startproc
+ 527              		@ args = 0, pretend = 0, frame = 0
+ 528              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289:./src/stm32f7xx_hal_crc.c ****   uint32_t temp = 0U;  /* CRC output (read from hcrc->Instance->DR register) */
+ 529              		.loc 1 289 3 view .LVU178
+ 290:./src/stm32f7xx_hal_crc.c **** 
+ 530              		.loc 1 290 3 view .LVU179
+ 293:./src/stm32f7xx_hal_crc.c **** 
+ 531              		.loc 1 293 3 view .LVU180
+ 288:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 532              		.loc 1 288 1 is_stmt 0 view .LVU181
+ 533 0170 70B5     		push	{r4, r5, r6, lr}
+ 534              	.LCFI5:
+ 535              		.cfi_def_cfa_offset 16
+ 536              		.cfi_offset 4, -16
+ 537              		.cfi_offset 5, -12
+ 538              		.cfi_offset 6, -8
+ 539              		.cfi_offset 14, -4
+ 293:./src/stm32f7xx_hal_crc.c **** 
+ 540              		.loc 1 293 15 view .LVU182
+ 541 0172 0226     		movs	r6, #2
+ 288:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 542              		.loc 1 288 1 view .LVU183
+ 543 0174 0446     		mov	r4, r0
+ 293:./src/stm32f7xx_hal_crc.c **** 
+ 544              		.loc 1 293 15 view .LVU184
+ 545 0176 4677     		strb	r6, [r0, #29]
+ 295:./src/stm32f7xx_hal_crc.c ****   {
+ 546              		.loc 1 295 3 is_stmt 1 view .LVU185
+ 295:./src/stm32f7xx_hal_crc.c ****   {
+ 547              		.loc 1 295 15 is_stmt 0 view .LVU186
+ 548 0178 066A     		ldr	r6, [r0, #32]
+ 295:./src/stm32f7xx_hal_crc.c ****   {
+ 549              		.loc 1 295 3 view .LVU187
+ 550 017a 022E     		cmp	r6, #2
+ 551 017c 07D0     		beq	.L53
+ 552 017e 032E     		cmp	r6, #3
+ 553 0180 0FD0     		beq	.L54
+ 554 0182 012E     		cmp	r6, #1
+ 555 0184 08D0     		beq	.L55
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 556              		.loc 1 318 15 view .LVU188
+ 557 0186 0123     		movs	r3, #1
+ 295:./src/stm32f7xx_hal_crc.c ****   {
+ 558              		.loc 1 295 3 view .LVU189
+ 559 0188 0020     		movs	r0, #0
+ 560              	.LVL34:
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 561              		.loc 1 318 3 is_stmt 1 view .LVU190
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 562              		.loc 1 318 15 is_stmt 0 view .LVU191
+ 563 018a 6377     		strb	r3, [r4, #29]
+ 321:./src/stm32f7xx_hal_crc.c **** }
+ 564              		.loc 1 321 3 is_stmt 1 view .LVU192
+ 322:./src/stm32f7xx_hal_crc.c **** 
+ 565              		.loc 1 322 1 is_stmt 0 view .LVU193
+ 566 018c 70BD     		pop	{r4, r5, r6, pc}
+ 567              	.LVL35:
+ 568              	.L53:
+ 311:./src/stm32f7xx_hal_crc.c ****       break;
+ 569              		.loc 1 311 7 is_stmt 1 view .LVU194
+ 311:./src/stm32f7xx_hal_crc.c ****       break;
+ 570              		.loc 1 311 14 is_stmt 0 view .LVU195
+ 571 018e FFF77BFF 		bl	CRC_Handle_16
+ 572              	.LVL36:
+ 312:./src/stm32f7xx_hal_crc.c ****     default:
+ 573              		.loc 1 312 7 is_stmt 1 view .LVU196
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 574              		.loc 1 318 3 view .LVU197
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 575              		.loc 1 318 15 is_stmt 0 view .LVU198
+ 576 0192 0123     		movs	r3, #1
+ 577 0194 6377     		strb	r3, [r4, #29]
+ 321:./src/stm32f7xx_hal_crc.c **** }
+ 578              		.loc 1 321 3 is_stmt 1 view .LVU199
+ 322:./src/stm32f7xx_hal_crc.c **** 
+ 579              		.loc 1 322 1 is_stmt 0 view .LVU200
+ 580 0196 70BD     		pop	{r4, r5, r6, pc}
+ 581              	.LVL37:
+ 582              	.L55:
+ 307:./src/stm32f7xx_hal_crc.c ****       break;
+ 583              		.loc 1 307 7 is_stmt 1 view .LVU201
+ 307:./src/stm32f7xx_hal_crc.c ****       break;
+ 584              		.loc 1 307 14 is_stmt 0 view .LVU202
+ 585 0198 FFF732FF 		bl	CRC_Handle_8
+ 586              	.LVL38:
+ 308:./src/stm32f7xx_hal_crc.c **** 
+ 587              		.loc 1 308 7 is_stmt 1 view .LVU203
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 588              		.loc 1 318 3 view .LVU204
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 589              		.loc 1 318 15 is_stmt 0 view .LVU205
+ 590 019c 0123     		movs	r3, #1
+ 591 019e 6377     		strb	r3, [r4, #29]
+ 321:./src/stm32f7xx_hal_crc.c **** }
+ 592              		.loc 1 321 3 is_stmt 1 view .LVU206
+ 322:./src/stm32f7xx_hal_crc.c **** 
+ 593              		.loc 1 322 1 is_stmt 0 view .LVU207
+ 594 01a0 70BD     		pop	{r4, r5, r6, pc}
+ 595              	.LVL39:
+ 596              	.L54:
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 597              		.loc 1 299 24 is_stmt 1 view .LVU208
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 598              		.loc 1 299 7 is_stmt 0 view .LVU209
+ 599 01a2 62B1     		cbz	r2, .L57
+ 600 01a4 0439     		subs	r1, r1, #4
+ 601              	.LVL40:
+ 301:./src/stm32f7xx_hal_crc.c ****       }
+ 602              		.loc 1 301 13 view .LVU210
+ 603 01a6 0068     		ldr	r0, [r0]
+ 604              	.LVL41:
+ 301:./src/stm32f7xx_hal_crc.c ****       }
+ 605              		.loc 1 301 13 view .LVU211
+ 606 01a8 01EB8202 		add	r2, r1, r2, lsl #2
+ 607              	.LVL42:
+ 608              	.L58:
+ 301:./src/stm32f7xx_hal_crc.c ****       }
+ 609              		.loc 1 301 9 is_stmt 1 discriminator 3 view .LVU212
+ 301:./src/stm32f7xx_hal_crc.c ****       }
+ 610              		.loc 1 301 37 is_stmt 0 discriminator 3 view .LVU213
+ 611 01ac 51F8043F 		ldr	r3, [r1, #4]!
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 612              		.loc 1 299 7 discriminator 3 view .LVU214
+ 613 01b0 9142     		cmp	r1, r2
+ 301:./src/stm32f7xx_hal_crc.c ****       }
+ 614              		.loc 1 301 28 discriminator 3 view .LVU215
+ 615 01b2 0360     		str	r3, [r0]
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 616              		.loc 1 299 46 is_stmt 1 discriminator 3 view .LVU216
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 617              		.loc 1 299 24 discriminator 3 view .LVU217
+ 299:./src/stm32f7xx_hal_crc.c ****       {
+ 618              		.loc 1 299 7 is_stmt 0 discriminator 3 view .LVU218
+ 619 01b4 FAD1     		bne	.L58
+ 620              	.L59:
+ 303:./src/stm32f7xx_hal_crc.c ****       break;
+ 621              		.loc 1 303 7 is_stmt 1 view .LVU219
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 622              		.loc 1 318 15 is_stmt 0 view .LVU220
+ 623 01b6 0123     		movs	r3, #1
+ 303:./src/stm32f7xx_hal_crc.c ****       break;
+ 624              		.loc 1 303 12 view .LVU221
+ 625 01b8 0068     		ldr	r0, [r0]
+ 626              	.LVL43:
+ 304:./src/stm32f7xx_hal_crc.c **** 
+ 627              		.loc 1 304 7 is_stmt 1 view .LVU222
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 628              		.loc 1 318 3 view .LVU223
+ 318:./src/stm32f7xx_hal_crc.c **** 
+ 629              		.loc 1 318 15 is_stmt 0 view .LVU224
+ 630 01ba 6377     		strb	r3, [r4, #29]
+ 321:./src/stm32f7xx_hal_crc.c **** }
+ 631              		.loc 1 321 3 is_stmt 1 view .LVU225
+ 322:./src/stm32f7xx_hal_crc.c **** 
+ 632              		.loc 1 322 1 is_stmt 0 view .LVU226
+ 633 01bc 70BD     		pop	{r4, r5, r6, pc}
+ 634              	.LVL44:
+ 635              	.L57:
+ 303:./src/stm32f7xx_hal_crc.c ****       break;
+ 636              		.loc 1 303 18 view .LVU227
+ 637 01be 0068     		ldr	r0, [r0]
+ 638              	.LVL45:
+ 303:./src/stm32f7xx_hal_crc.c ****       break;
+ 639              		.loc 1 303 18 view .LVU228
+ 640 01c0 F9E7     		b	.L59
+ 641              		.cfi_endproc
+ 642              	.LFE148:
+ 644              		.align	1
+ 645 01c2 00BF     		.p2align 2,,3
+ 646              		.global	HAL_CRC_Calculate
+ 647              		.syntax unified
+ 648              		.thumb
+ 649              		.thumb_func
+ 650              		.fpu fpv5-d16
+ 652              	HAL_CRC_Calculate:
+ 653              	.LVL46:
+ 654              	.LFB149:
+ 340:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 655              		.loc 1 340 1 is_stmt 1 view -0
+ 656              		.cfi_startproc
+ 657              		@ args = 0, pretend = 0, frame = 0
+ 658              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341:./src/stm32f7xx_hal_crc.c ****   uint32_t temp = 0U;  /* CRC output (read from hcrc->Instance->DR register) */
+ 659              		.loc 1 341 3 view .LVU230
+ 342:./src/stm32f7xx_hal_crc.c **** 
+ 660              		.loc 1 342 3 view .LVU231
+ 345:./src/stm32f7xx_hal_crc.c **** 
+ 661              		.loc 1 345 3 view .LVU232
+ 340:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 662              		.loc 1 340 1 is_stmt 0 view .LVU233
+ 663 01c4 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 664              	.LCFI6:
+ 665              		.cfi_def_cfa_offset 24
+ 666              		.cfi_offset 3, -24
+ 667              		.cfi_offset 4, -20
+ 668              		.cfi_offset 5, -16
+ 669              		.cfi_offset 6, -12
+ 670              		.cfi_offset 7, -8
+ 671              		.cfi_offset 14, -4
+ 349:./src/stm32f7xx_hal_crc.c **** 
+ 672              		.loc 1 349 3 view .LVU234
+ 673 01c6 0668     		ldr	r6, [r0]
+ 345:./src/stm32f7xx_hal_crc.c **** 
+ 674              		.loc 1 345 15 view .LVU235
+ 675 01c8 0225     		movs	r5, #2
+ 340:./src/stm32f7xx_hal_crc.c ****   uint32_t index;      /* CRC input data buffer index */
+ 676              		.loc 1 340 1 view .LVU236
+ 677 01ca 0446     		mov	r4, r0
+ 345:./src/stm32f7xx_hal_crc.c **** 
+ 678              		.loc 1 345 15 view .LVU237
+ 679 01cc 4577     		strb	r5, [r0, #29]
+ 349:./src/stm32f7xx_hal_crc.c **** 
+ 680              		.loc 1 349 3 is_stmt 1 view .LVU238
+ 681 01ce B768     		ldr	r7, [r6, #8]
+ 682 01d0 47F00107 		orr	r7, r7, #1
+ 683 01d4 B760     		str	r7, [r6, #8]
+ 351:./src/stm32f7xx_hal_crc.c ****   {
+ 684              		.loc 1 351 3 view .LVU239
+ 351:./src/stm32f7xx_hal_crc.c ****   {
+ 685              		.loc 1 351 15 is_stmt 0 view .LVU240
+ 686 01d6 076A     		ldr	r7, [r0, #32]
+ 351:./src/stm32f7xx_hal_crc.c ****   {
+ 687              		.loc 1 351 3 view .LVU241
+ 688 01d8 022F     		cmp	r7, #2
+ 689 01da 07D0     		beq	.L63
+ 690 01dc 032F     		cmp	r7, #3
+ 691 01de 0FD0     		beq	.L64
+ 692 01e0 012F     		cmp	r7, #1
+ 693 01e2 08D0     		beq	.L65
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 694              		.loc 1 377 15 view .LVU242
+ 695 01e4 0123     		movs	r3, #1
+ 351:./src/stm32f7xx_hal_crc.c ****   {
+ 696              		.loc 1 351 3 view .LVU243
+ 697 01e6 0020     		movs	r0, #0
+ 698              	.LVL47:
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 699              		.loc 1 377 3 is_stmt 1 view .LVU244
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 700              		.loc 1 377 15 is_stmt 0 view .LVU245
+ 701 01e8 6377     		strb	r3, [r4, #29]
+ 380:./src/stm32f7xx_hal_crc.c **** }
+ 702              		.loc 1 380 3 is_stmt 1 view .LVU246
+ 381:./src/stm32f7xx_hal_crc.c **** 
+ 703              		.loc 1 381 1 is_stmt 0 view .LVU247
+ 704 01ea F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 705              	.LVL48:
+ 706              	.L63:
+ 369:./src/stm32f7xx_hal_crc.c ****       break;
+ 707              		.loc 1 369 7 is_stmt 1 view .LVU248
+ 369:./src/stm32f7xx_hal_crc.c ****       break;
+ 708              		.loc 1 369 14 is_stmt 0 view .LVU249
+ 709 01ec FFF74CFF 		bl	CRC_Handle_16
+ 710              	.LVL49:
+ 370:./src/stm32f7xx_hal_crc.c **** 
+ 711              		.loc 1 370 7 is_stmt 1 view .LVU250
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 712              		.loc 1 377 3 view .LVU251
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 713              		.loc 1 377 15 is_stmt 0 view .LVU252
+ 714 01f0 0123     		movs	r3, #1
+ 715 01f2 6377     		strb	r3, [r4, #29]
+ 380:./src/stm32f7xx_hal_crc.c **** }
+ 716              		.loc 1 380 3 is_stmt 1 view .LVU253
+ 381:./src/stm32f7xx_hal_crc.c **** 
+ 717              		.loc 1 381 1 is_stmt 0 view .LVU254
+ 718 01f4 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 719              	.LVL50:
+ 720              	.L65:
+ 364:./src/stm32f7xx_hal_crc.c ****       break;
+ 721              		.loc 1 364 7 is_stmt 1 view .LVU255
+ 364:./src/stm32f7xx_hal_crc.c ****       break;
+ 722              		.loc 1 364 14 is_stmt 0 view .LVU256
+ 723 01f6 FFF703FF 		bl	CRC_Handle_8
+ 724              	.LVL51:
+ 365:./src/stm32f7xx_hal_crc.c **** 
+ 725              		.loc 1 365 7 is_stmt 1 view .LVU257
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 726              		.loc 1 377 3 view .LVU258
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 727              		.loc 1 377 15 is_stmt 0 view .LVU259
+ 728 01fa 0123     		movs	r3, #1
+ 729 01fc 6377     		strb	r3, [r4, #29]
+ 380:./src/stm32f7xx_hal_crc.c **** }
+ 730              		.loc 1 380 3 is_stmt 1 view .LVU260
+ 381:./src/stm32f7xx_hal_crc.c **** 
+ 731              		.loc 1 381 1 is_stmt 0 view .LVU261
+ 732 01fe F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 733              	.LVL52:
+ 734              	.L64:
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 735              		.loc 1 355 24 is_stmt 1 view .LVU262
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 736              		.loc 1 355 7 is_stmt 0 view .LVU263
+ 737 0200 3AB1     		cbz	r2, .L67
+ 738 0202 0439     		subs	r1, r1, #4
+ 739              	.LVL53:
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 740              		.loc 1 355 7 view .LVU264
+ 741 0204 01EB8202 		add	r2, r1, r2, lsl #2
+ 742              	.LVL54:
+ 743              	.L68:
+ 357:./src/stm32f7xx_hal_crc.c ****       }
+ 744              		.loc 1 357 9 is_stmt 1 discriminator 3 view .LVU265
+ 357:./src/stm32f7xx_hal_crc.c ****       }
+ 745              		.loc 1 357 37 is_stmt 0 discriminator 3 view .LVU266
+ 746 0208 51F8043F 		ldr	r3, [r1, #4]!
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 747              		.loc 1 355 7 discriminator 3 view .LVU267
+ 748 020c 9142     		cmp	r1, r2
+ 357:./src/stm32f7xx_hal_crc.c ****       }
+ 749              		.loc 1 357 28 discriminator 3 view .LVU268
+ 750 020e 3360     		str	r3, [r6]
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 751              		.loc 1 355 46 is_stmt 1 discriminator 3 view .LVU269
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 752              		.loc 1 355 24 discriminator 3 view .LVU270
+ 355:./src/stm32f7xx_hal_crc.c ****       {
+ 753              		.loc 1 355 7 is_stmt 0 discriminator 3 view .LVU271
+ 754 0210 FAD1     		bne	.L68
+ 755              	.L67:
+ 359:./src/stm32f7xx_hal_crc.c ****       break;
+ 756              		.loc 1 359 7 is_stmt 1 view .LVU272
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 757              		.loc 1 377 15 is_stmt 0 view .LVU273
+ 758 0212 0123     		movs	r3, #1
+ 359:./src/stm32f7xx_hal_crc.c ****       break;
+ 759              		.loc 1 359 12 view .LVU274
+ 760 0214 3068     		ldr	r0, [r6]
+ 761              	.LVL55:
+ 360:./src/stm32f7xx_hal_crc.c **** 
+ 762              		.loc 1 360 7 is_stmt 1 view .LVU275
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 763              		.loc 1 377 3 view .LVU276
+ 377:./src/stm32f7xx_hal_crc.c **** 
+ 764              		.loc 1 377 15 is_stmt 0 view .LVU277
+ 765 0216 6377     		strb	r3, [r4, #29]
+ 380:./src/stm32f7xx_hal_crc.c **** }
+ 766              		.loc 1 380 3 is_stmt 1 view .LVU278
+ 381:./src/stm32f7xx_hal_crc.c **** 
+ 767              		.loc 1 381 1 is_stmt 0 view .LVU279
+ 768 0218 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 381:./src/stm32f7xx_hal_crc.c **** 
+ 769              		.loc 1 381 1 view .LVU280
+ 770              		.cfi_endproc
+ 771              	.LFE149:
+ 773              		.align	1
+ 774 021a 00BF     		.p2align 2,,3
+ 775              		.global	HAL_CRC_GetState
+ 776              		.syntax unified
+ 777              		.thumb
+ 778              		.thumb_func
+ 779              		.fpu fpv5-d16
+ 781              	HAL_CRC_GetState:
+ 782              	.LVL56:
+ 783              	.LFB150:
+ 407:./src/stm32f7xx_hal_crc.c ****   /* Return CRC handle state */
+ 784              		.loc 1 407 1 is_stmt 1 view -0
+ 785              		.cfi_startproc
+ 786              		@ args = 0, pretend = 0, frame = 0
+ 787              		@ frame_needed = 0, uses_anonymous_args = 0
+ 788              		@ link register save eliminated.
+ 409:./src/stm32f7xx_hal_crc.c **** }
+ 789              		.loc 1 409 3 view .LVU282
+ 409:./src/stm32f7xx_hal_crc.c **** }
+ 790              		.loc 1 409 14 is_stmt 0 view .LVU283
+ 791 021c 407F     		ldrb	r0, [r0, #29]	@ zero_extendqisi2
+ 792              	.LVL57:
+ 410:./src/stm32f7xx_hal_crc.c **** 
+ 793              		.loc 1 410 1 view .LVU284
+ 794 021e 7047     		bx	lr
+ 795              		.cfi_endproc
+ 796              	.LFE150:
+ 798              	.Letext0:
+ 799              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 800              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 801              		.file 4 "./inc/stm32f765xx.h"
+ 802              		.file 5 "./inc/stm32f7xx_hal_def.h"
+ 803              		.file 6 "./inc/stm32f7xx_hal_crc.h"
+ 804              		.file 7 "./inc/stm32f7xx_hal_crc_ex.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f7xx_hal_crc.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:24     .text:00000000 CRC_Handle_8
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:179    .text:00000088 CRC_Handle_16
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:258    .text:000000b8 HAL_CRC_MspInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:280    .text:000000bc HAL_CRC_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:411    .text:00000134 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:415    .text:00000138 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:423    .text:00000138 HAL_CRC_MspDeInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:441    .text:0000013c HAL_CRC_DeInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:522    .text:00000170 HAL_CRC_Accumulate
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:652    .text:000001c4 HAL_CRC_Calculate
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccVDF5sC.s:781    .text:0000021c HAL_CRC_GetState
+
+UNDEFINED SYMBOLS
+HAL_CRCEx_Polynomial_Set

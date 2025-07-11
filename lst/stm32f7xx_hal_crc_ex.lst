@@ -1,0 +1,544 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"stm32f7xx_hal_crc_ex.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	HAL_CRCEx_Polynomial_Set
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	HAL_CRCEx_Polynomial_Set:
+  26              	.LVL0:
+  27              	.LFB144:
+  28              		.file 1 "./src/stm32f7xx_hal_crc_ex.c"
+   1:./src/stm32f7xx_hal_crc_ex.c **** /**
+   2:./src/stm32f7xx_hal_crc_ex.c ****   ******************************************************************************
+   3:./src/stm32f7xx_hal_crc_ex.c ****   * @file    stm32f7xx_hal_crc_ex.c
+   4:./src/stm32f7xx_hal_crc_ex.c ****   * @author  MCD Application Team
+   5:./src/stm32f7xx_hal_crc_ex.c ****   * @brief   Extended CRC HAL module driver.
+   6:./src/stm32f7xx_hal_crc_ex.c ****   *          This file provides firmware functions to manage the extended
+   7:./src/stm32f7xx_hal_crc_ex.c ****   *          functionalities of the CRC peripheral.
+   8:./src/stm32f7xx_hal_crc_ex.c ****   *
+   9:./src/stm32f7xx_hal_crc_ex.c ****   ******************************************************************************
+  10:./src/stm32f7xx_hal_crc_ex.c ****   * @attention
+  11:./src/stm32f7xx_hal_crc_ex.c ****   *
+  12:./src/stm32f7xx_hal_crc_ex.c ****   * Copyright (c) 2017 STMicroelectronics.
+  13:./src/stm32f7xx_hal_crc_ex.c ****   * All rights reserved.
+  14:./src/stm32f7xx_hal_crc_ex.c ****   *
+  15:./src/stm32f7xx_hal_crc_ex.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  16:./src/stm32f7xx_hal_crc_ex.c ****   * in the root directory of this software component.
+  17:./src/stm32f7xx_hal_crc_ex.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  18:./src/stm32f7xx_hal_crc_ex.c ****   *
+  19:./src/stm32f7xx_hal_crc_ex.c ****   ******************************************************************************
+  20:./src/stm32f7xx_hal_crc_ex.c ****   @verbatim
+  21:./src/stm32f7xx_hal_crc_ex.c **** ================================================================================
+  22:./src/stm32f7xx_hal_crc_ex.c ****             ##### How to use this driver #####
+  23:./src/stm32f7xx_hal_crc_ex.c **** ================================================================================
+  24:./src/stm32f7xx_hal_crc_ex.c ****     [..]
+  25:./src/stm32f7xx_hal_crc_ex.c ****          (+) Set user-defined generating polynomial through HAL_CRCEx_Polynomial_Set()
+  26:./src/stm32f7xx_hal_crc_ex.c ****          (+) Configure Input or Output data inversion
+  27:./src/stm32f7xx_hal_crc_ex.c **** 
+  28:./src/stm32f7xx_hal_crc_ex.c ****   @endverbatim
+  29:./src/stm32f7xx_hal_crc_ex.c ****   ******************************************************************************
+  30:./src/stm32f7xx_hal_crc_ex.c ****   */
+  31:./src/stm32f7xx_hal_crc_ex.c **** 
+  32:./src/stm32f7xx_hal_crc_ex.c **** /* Includes ------------------------------------------------------------------*/
+  33:./src/stm32f7xx_hal_crc_ex.c **** #include "stm32f7xx_hal.h"
+  34:./src/stm32f7xx_hal_crc_ex.c **** 
+  35:./src/stm32f7xx_hal_crc_ex.c **** /** @addtogroup STM32F7xx_HAL_Driver
+  36:./src/stm32f7xx_hal_crc_ex.c ****   * @{
+  37:./src/stm32f7xx_hal_crc_ex.c ****   */
+  38:./src/stm32f7xx_hal_crc_ex.c **** 
+  39:./src/stm32f7xx_hal_crc_ex.c **** /** @defgroup CRCEx CRCEx
+  40:./src/stm32f7xx_hal_crc_ex.c ****   * @brief CRC Extended HAL module driver
+  41:./src/stm32f7xx_hal_crc_ex.c ****   * @{
+  42:./src/stm32f7xx_hal_crc_ex.c ****   */
+  43:./src/stm32f7xx_hal_crc_ex.c **** 
+  44:./src/stm32f7xx_hal_crc_ex.c **** #ifdef HAL_CRC_MODULE_ENABLED
+  45:./src/stm32f7xx_hal_crc_ex.c **** 
+  46:./src/stm32f7xx_hal_crc_ex.c **** /* Private typedef -----------------------------------------------------------*/
+  47:./src/stm32f7xx_hal_crc_ex.c **** /* Private define ------------------------------------------------------------*/
+  48:./src/stm32f7xx_hal_crc_ex.c **** /* Private macro -------------------------------------------------------------*/
+  49:./src/stm32f7xx_hal_crc_ex.c **** /* Private variables ---------------------------------------------------------*/
+  50:./src/stm32f7xx_hal_crc_ex.c **** /* Private function prototypes -----------------------------------------------*/
+  51:./src/stm32f7xx_hal_crc_ex.c **** /* Exported functions --------------------------------------------------------*/
+  52:./src/stm32f7xx_hal_crc_ex.c **** 
+  53:./src/stm32f7xx_hal_crc_ex.c **** /** @defgroup CRCEx_Exported_Functions CRC Extended Exported Functions
+  54:./src/stm32f7xx_hal_crc_ex.c ****   * @{
+  55:./src/stm32f7xx_hal_crc_ex.c ****   */
+  56:./src/stm32f7xx_hal_crc_ex.c **** 
+  57:./src/stm32f7xx_hal_crc_ex.c **** /** @defgroup CRCEx_Exported_Functions_Group1 Extended Initialization/de-initialization functions
+  58:./src/stm32f7xx_hal_crc_ex.c ****   * @brief    Extended Initialization and Configuration functions.
+  59:./src/stm32f7xx_hal_crc_ex.c ****   *
+  60:./src/stm32f7xx_hal_crc_ex.c **** @verbatim
+  61:./src/stm32f7xx_hal_crc_ex.c ****  ===============================================================================
+  62:./src/stm32f7xx_hal_crc_ex.c ****             ##### Extended configuration functions #####
+  63:./src/stm32f7xx_hal_crc_ex.c ****  ===============================================================================
+  64:./src/stm32f7xx_hal_crc_ex.c ****     [..]  This section provides functions allowing to:
+  65:./src/stm32f7xx_hal_crc_ex.c ****       (+) Configure the generating polynomial
+  66:./src/stm32f7xx_hal_crc_ex.c ****       (+) Configure the input data inversion
+  67:./src/stm32f7xx_hal_crc_ex.c ****       (+) Configure the output data inversion
+  68:./src/stm32f7xx_hal_crc_ex.c **** 
+  69:./src/stm32f7xx_hal_crc_ex.c **** @endverbatim
+  70:./src/stm32f7xx_hal_crc_ex.c ****   * @{
+  71:./src/stm32f7xx_hal_crc_ex.c ****   */
+  72:./src/stm32f7xx_hal_crc_ex.c **** 
+  73:./src/stm32f7xx_hal_crc_ex.c **** 
+  74:./src/stm32f7xx_hal_crc_ex.c **** /**
+  75:./src/stm32f7xx_hal_crc_ex.c ****   * @brief  Initialize the CRC polynomial if different from default one.
+  76:./src/stm32f7xx_hal_crc_ex.c ****   * @param  hcrc CRC handle
+  77:./src/stm32f7xx_hal_crc_ex.c ****   * @param  Pol CRC generating polynomial (7, 8, 16 or 32-bit long).
+  78:./src/stm32f7xx_hal_crc_ex.c ****   *         This parameter is written in normal representation, e.g.
+  79:./src/stm32f7xx_hal_crc_ex.c ****   *         @arg for a polynomial of degree 7, X^7 + X^6 + X^5 + X^2 + 1 is written 0x65
+  80:./src/stm32f7xx_hal_crc_ex.c ****   *         @arg for a polynomial of degree 16, X^16 + X^12 + X^5 + 1 is written 0x1021
+  81:./src/stm32f7xx_hal_crc_ex.c ****   * @param  PolyLength CRC polynomial length.
+  82:./src/stm32f7xx_hal_crc_ex.c ****   *         This parameter can be one of the following values:
+  83:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_POLYLENGTH_7B  7-bit long CRC (generating polynomial of degree 7)
+  84:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_POLYLENGTH_8B  8-bit long CRC (generating polynomial of degree 8)
+  85:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_POLYLENGTH_16B 16-bit long CRC (generating polynomial of degree 16)
+  86:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_POLYLENGTH_32B 32-bit long CRC (generating polynomial of degree 32)
+  87:./src/stm32f7xx_hal_crc_ex.c ****   * @retval HAL status
+  88:./src/stm32f7xx_hal_crc_ex.c ****   */
+  89:./src/stm32f7xx_hal_crc_ex.c **** HAL_StatusTypeDef HAL_CRCEx_Polynomial_Set(CRC_HandleTypeDef *hcrc, uint32_t Pol, uint32_t PolyLeng
+  90:./src/stm32f7xx_hal_crc_ex.c **** {
+  29              		.loc 1 90 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  91:./src/stm32f7xx_hal_crc_ex.c ****   HAL_StatusTypeDef status = HAL_OK;
+  34              		.loc 1 91 3 view .LVU1
+  92:./src/stm32f7xx_hal_crc_ex.c ****   uint32_t msb = 31U; /* polynomial degree is 32 at most, so msb is initialized to max value */
+  35              		.loc 1 92 3 view .LVU2
+  93:./src/stm32f7xx_hal_crc_ex.c **** 
+  94:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+  95:./src/stm32f7xx_hal_crc_ex.c ****   assert_param(IS_CRC_POL_LENGTH(PolyLength));
+  36              		.loc 1 95 3 view .LVU3
+  96:./src/stm32f7xx_hal_crc_ex.c **** 
+  97:./src/stm32f7xx_hal_crc_ex.c ****   /* Ensure that the generating polynomial is odd */
+  98:./src/stm32f7xx_hal_crc_ex.c ****   if ((Pol & (uint32_t)(0x1U)) ==  0U)
+  37              		.loc 1 98 3 view .LVU4
+  38              		.loc 1 98 6 is_stmt 0 view .LVU5
+  39 0000 CB07     		lsls	r3, r1, #31
+  40 0002 1AD5     		bpl	.L11
+  99:./src/stm32f7xx_hal_crc_ex.c ****   {
+ 100:./src/stm32f7xx_hal_crc_ex.c ****     status =  HAL_ERROR;
+ 101:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 102:./src/stm32f7xx_hal_crc_ex.c ****   else
+ 103:./src/stm32f7xx_hal_crc_ex.c ****   {
+ 104:./src/stm32f7xx_hal_crc_ex.c ****     /* check polynomial definition vs polynomial size:
+ 105:./src/stm32f7xx_hal_crc_ex.c ****      * polynomial length must be aligned with polynomial
+ 106:./src/stm32f7xx_hal_crc_ex.c ****      * definition. HAL_ERROR is reported if Pol degree is
+ 107:./src/stm32f7xx_hal_crc_ex.c ****      * larger than that indicated by PolyLength.
+ 108:./src/stm32f7xx_hal_crc_ex.c ****      * Look for MSB position: msb will contain the degree of
+ 109:./src/stm32f7xx_hal_crc_ex.c ****      *  the second to the largest polynomial member. E.g., for
+ 110:./src/stm32f7xx_hal_crc_ex.c ****      *  X^7 + X^6 + X^5 + X^2 + 1, msb = 6. */
+ 111:./src/stm32f7xx_hal_crc_ex.c ****     while ((msb-- > 0U) && ((Pol & ((uint32_t)(0x1U) << (msb & 0x1FU))) == 0U))
+  41              		.loc 1 111 16 view .LVU6
+  42 0004 1E23     		movs	r3, #30
+  90:./src/stm32f7xx_hal_crc_ex.c ****   HAL_StatusTypeDef status = HAL_OK;
+  43              		.loc 1 90 1 view .LVU7
+  44 0006 10B4     		push	{r4}
+  45              	.LCFI0:
+  46              		.cfi_def_cfa_offset 4
+  47              		.cfi_offset 4, -4
+  48 0008 01E0     		b	.L3
+  49              	.LVL1:
+  50              	.L5:
+  51              		.loc 1 111 11 discriminator 2 view .LVU8
+  52 000a 013B     		subs	r3, r3, #1
+  53              	.LVL2:
+  54              		.loc 1 111 11 discriminator 2 view .LVU9
+  55 000c 17D3     		bcc	.L4
+  56              	.LVL3:
+  57              	.L3:
+ 112:./src/stm32f7xx_hal_crc_ex.c ****     {
+ 113:./src/stm32f7xx_hal_crc_ex.c ****     }
+  58              		.loc 1 113 5 is_stmt 1 discriminator 1 view .LVU10
+ 111:./src/stm32f7xx_hal_crc_ex.c ****     {
+  59              		.loc 1 111 11 discriminator 1 view .LVU11
+ 111:./src/stm32f7xx_hal_crc_ex.c ****     {
+  60              		.loc 1 111 73 is_stmt 0 discriminator 1 view .LVU12
+  61 000e 21FA03FC 		lsr	ip, r1, r3
+ 111:./src/stm32f7xx_hal_crc_ex.c ****     {
+  62              		.loc 1 111 25 discriminator 1 view .LVU13
+  63 0012 1CF0010F 		tst	ip, #1
+  64 0016 F8D0     		beq	.L5
+ 114:./src/stm32f7xx_hal_crc_ex.c **** 
+ 115:./src/stm32f7xx_hal_crc_ex.c ****     switch (PolyLength)
+  65              		.loc 1 115 5 is_stmt 1 view .LVU14
+  66 0018 182A     		cmp	r2, #24
+  67 001a 11D8     		bhi	.L25
+  68 001c DFE802F0 		tbb	[pc, r2]
+  69              	.L7:
+  70 0020 16       		.byte	(.L10-.L7)/2
+  71 0021 10       		.byte	(.L25-.L7)/2
+  72 0022 10       		.byte	(.L25-.L7)/2
+  73 0023 10       		.byte	(.L25-.L7)/2
+  74 0024 10       		.byte	(.L25-.L7)/2
+  75 0025 10       		.byte	(.L25-.L7)/2
+  76 0026 10       		.byte	(.L25-.L7)/2
+  77 0027 10       		.byte	(.L25-.L7)/2
+  78 0028 24       		.byte	(.L9-.L7)/2
+  79 0029 10       		.byte	(.L25-.L7)/2
+  80 002a 10       		.byte	(.L25-.L7)/2
+  81 002b 10       		.byte	(.L25-.L7)/2
+  82 002c 10       		.byte	(.L25-.L7)/2
+  83 002d 10       		.byte	(.L25-.L7)/2
+  84 002e 10       		.byte	(.L25-.L7)/2
+  85 002f 10       		.byte	(.L25-.L7)/2
+  86 0030 21       		.byte	(.L8-.L7)/2
+  87 0031 10       		.byte	(.L25-.L7)/2
+  88 0032 10       		.byte	(.L25-.L7)/2
+  89 0033 10       		.byte	(.L25-.L7)/2
+  90 0034 10       		.byte	(.L25-.L7)/2
+  91 0035 10       		.byte	(.L25-.L7)/2
+  92 0036 10       		.byte	(.L25-.L7)/2
+  93 0037 10       		.byte	(.L25-.L7)/2
+  94 0038 14       		.byte	(.L6-.L7)/2
+  95              	.LVL4:
+  96 0039 00       		.p2align 1
+  97              	.L11:
+  98              	.LCFI1:
+  99              		.cfi_def_cfa_offset 0
+ 100              		.cfi_restore 4
+ 100:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 101              		.loc 1 100 12 is_stmt 0 view .LVU15
+ 102 003a 0120     		movs	r0, #1
+ 103              	.LVL5:
+ 116:./src/stm32f7xx_hal_crc_ex.c ****     {
+ 117:./src/stm32f7xx_hal_crc_ex.c **** 
+ 118:./src/stm32f7xx_hal_crc_ex.c ****       case CRC_POLYLENGTH_7B:
+ 119:./src/stm32f7xx_hal_crc_ex.c ****         if (msb >= HAL_CRC_LENGTH_7B)
+ 120:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 121:./src/stm32f7xx_hal_crc_ex.c ****           status =   HAL_ERROR;
+ 122:./src/stm32f7xx_hal_crc_ex.c ****         }
+ 123:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 124:./src/stm32f7xx_hal_crc_ex.c ****       case CRC_POLYLENGTH_8B:
+ 125:./src/stm32f7xx_hal_crc_ex.c ****         if (msb >= HAL_CRC_LENGTH_8B)
+ 126:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 127:./src/stm32f7xx_hal_crc_ex.c ****           status =   HAL_ERROR;
+ 128:./src/stm32f7xx_hal_crc_ex.c ****         }
+ 129:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 130:./src/stm32f7xx_hal_crc_ex.c ****       case CRC_POLYLENGTH_16B:
+ 131:./src/stm32f7xx_hal_crc_ex.c ****         if (msb >= HAL_CRC_LENGTH_16B)
+ 132:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 133:./src/stm32f7xx_hal_crc_ex.c ****           status =   HAL_ERROR;
+ 134:./src/stm32f7xx_hal_crc_ex.c ****         }
+ 135:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 136:./src/stm32f7xx_hal_crc_ex.c **** 
+ 137:./src/stm32f7xx_hal_crc_ex.c ****       case CRC_POLYLENGTH_32B:
+ 138:./src/stm32f7xx_hal_crc_ex.c ****         /* no polynomial definition vs. polynomial length issue possible */
+ 139:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 140:./src/stm32f7xx_hal_crc_ex.c ****       default:
+ 141:./src/stm32f7xx_hal_crc_ex.c ****         status =  HAL_ERROR;
+ 142:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 143:./src/stm32f7xx_hal_crc_ex.c ****     }
+ 144:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 145:./src/stm32f7xx_hal_crc_ex.c ****   if (status == HAL_OK)
+ 146:./src/stm32f7xx_hal_crc_ex.c ****   {
+ 147:./src/stm32f7xx_hal_crc_ex.c ****     /* set generating polynomial */
+ 148:./src/stm32f7xx_hal_crc_ex.c ****     WRITE_REG(hcrc->Instance->POL, Pol);
+ 149:./src/stm32f7xx_hal_crc_ex.c **** 
+ 150:./src/stm32f7xx_hal_crc_ex.c ****     /* set generating polynomial size */
+ 151:./src/stm32f7xx_hal_crc_ex.c ****     MODIFY_REG(hcrc->Instance->CR, CRC_CR_POLYSIZE, PolyLength);
+ 152:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 153:./src/stm32f7xx_hal_crc_ex.c ****   /* Return function status */
+ 154:./src/stm32f7xx_hal_crc_ex.c ****   return status;
+ 155:./src/stm32f7xx_hal_crc_ex.c **** }
+ 104              		.loc 1 155 1 view .LVU16
+ 105 003c 7047     		bx	lr
+ 106              	.LVL6:
+ 107              	.L4:
+ 108              	.LCFI2:
+ 109              		.cfi_def_cfa_offset 4
+ 110              		.cfi_offset 4, -4
+ 115:./src/stm32f7xx_hal_crc_ex.c ****     {
+ 111              		.loc 1 115 5 is_stmt 1 view .LVU17
+ 112 003e 2AB1     		cbz	r2, .L10
+ 113              	.LVL7:
+ 114              	.L25:
+ 141:./src/stm32f7xx_hal_crc_ex.c ****         break;
+ 115              		.loc 1 141 16 is_stmt 0 view .LVU18
+ 116 0040 0120     		movs	r0, #1
+ 117              	.LVL8:
+ 154:./src/stm32f7xx_hal_crc_ex.c **** }
+ 118              		.loc 1 154 3 is_stmt 1 view .LVU19
+ 119              		.loc 1 155 1 is_stmt 0 view .LVU20
+ 120 0042 5DF8044B 		ldr	r4, [sp], #4
+ 121              	.LCFI3:
+ 122              		.cfi_remember_state
+ 123              		.cfi_restore 4
+ 124              		.cfi_def_cfa_offset 0
+ 125 0046 7047     		bx	lr
+ 126              	.LVL9:
+ 127              	.L6:
+ 128              	.LCFI4:
+ 129              		.cfi_restore_state
+ 119:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 130              		.loc 1 119 9 is_stmt 1 view .LVU21
+ 119:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 131              		.loc 1 119 12 is_stmt 0 view .LVU22
+ 132 0048 062B     		cmp	r3, #6
+ 133 004a F9D8     		bhi	.L25
+ 134              	.LVL10:
+ 135              	.L10:
+ 148:./src/stm32f7xx_hal_crc_ex.c **** 
+ 136              		.loc 1 148 5 is_stmt 1 view .LVU23
+ 137 004c 0468     		ldr	r4, [r0]
+ 151:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 138              		.loc 1 151 5 is_stmt 0 view .LVU24
+ 139 004e 0020     		movs	r0, #0
+ 140              	.LVL11:
+ 148:./src/stm32f7xx_hal_crc_ex.c **** 
+ 141              		.loc 1 148 5 view .LVU25
+ 142 0050 6161     		str	r1, [r4, #20]
+ 151:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 143              		.loc 1 151 5 is_stmt 1 view .LVU26
+ 144 0052 A368     		ldr	r3, [r4, #8]
+ 145 0054 23F01803 		bic	r3, r3, #24
+ 146 0058 1A43     		orrs	r2, r2, r3
+ 147              	.LVL12:
+ 151:./src/stm32f7xx_hal_crc_ex.c ****   }
+ 148              		.loc 1 151 5 is_stmt 0 view .LVU27
+ 149 005a A260     		str	r2, [r4, #8]
+ 150              		.loc 1 155 1 view .LVU28
+ 151 005c 5DF8044B 		ldr	r4, [sp], #4
+ 152              	.LCFI5:
+ 153              		.cfi_remember_state
+ 154              		.cfi_restore 4
+ 155              		.cfi_def_cfa_offset 0
+ 156 0060 7047     		bx	lr
+ 157              	.LVL13:
+ 158              	.L8:
+ 159              	.LCFI6:
+ 160              		.cfi_restore_state
+ 125:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 161              		.loc 1 125 9 is_stmt 1 view .LVU29
+ 125:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 162              		.loc 1 125 12 is_stmt 0 view .LVU30
+ 163 0062 072B     		cmp	r3, #7
+ 164 0064 F2D9     		bls	.L10
+ 165 0066 EBE7     		b	.L25
+ 166              	.L9:
+ 131:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 167              		.loc 1 131 9 is_stmt 1 view .LVU31
+ 131:./src/stm32f7xx_hal_crc_ex.c ****         {
+ 168              		.loc 1 131 12 is_stmt 0 view .LVU32
+ 169 0068 0F2B     		cmp	r3, #15
+ 170 006a EFD9     		bls	.L10
+ 171 006c E8E7     		b	.L25
+ 172              		.cfi_endproc
+ 173              	.LFE144:
+ 175              		.align	1
+ 176 006e 00BF     		.p2align 2,,3
+ 177              		.global	HAL_CRCEx_Input_Data_Reverse
+ 178              		.syntax unified
+ 179              		.thumb
+ 180              		.thumb_func
+ 181              		.fpu fpv5-d16
+ 183              	HAL_CRCEx_Input_Data_Reverse:
+ 184              	.LVL14:
+ 185              	.LFB145:
+ 156:./src/stm32f7xx_hal_crc_ex.c **** 
+ 157:./src/stm32f7xx_hal_crc_ex.c **** /**
+ 158:./src/stm32f7xx_hal_crc_ex.c ****   * @brief  Set the Reverse Input data mode.
+ 159:./src/stm32f7xx_hal_crc_ex.c ****   * @param  hcrc CRC handle
+ 160:./src/stm32f7xx_hal_crc_ex.c ****   * @param  InputReverseMode Input Data inversion mode.
+ 161:./src/stm32f7xx_hal_crc_ex.c ****   *         This parameter can be one of the following values:
+ 162:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_INPUTDATA_INVERSION_NONE     no change in bit order (default value)
+ 163:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_INPUTDATA_INVERSION_BYTE     Byte-wise bit reversal
+ 164:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_INPUTDATA_INVERSION_HALFWORD HalfWord-wise bit reversal
+ 165:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_INPUTDATA_INVERSION_WORD     Word-wise bit reversal
+ 166:./src/stm32f7xx_hal_crc_ex.c ****   * @retval HAL status
+ 167:./src/stm32f7xx_hal_crc_ex.c ****   */
+ 168:./src/stm32f7xx_hal_crc_ex.c **** HAL_StatusTypeDef HAL_CRCEx_Input_Data_Reverse(CRC_HandleTypeDef *hcrc, uint32_t InputReverseMode)
+ 169:./src/stm32f7xx_hal_crc_ex.c **** {
+ 186              		.loc 1 169 1 is_stmt 1 view -0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190              		@ link register save eliminated.
+ 170:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 171:./src/stm32f7xx_hal_crc_ex.c ****   assert_param(IS_CRC_INPUTDATA_INVERSION_MODE(InputReverseMode));
+ 191              		.loc 1 171 3 view .LVU34
+ 172:./src/stm32f7xx_hal_crc_ex.c **** 
+ 173:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 174:./src/stm32f7xx_hal_crc_ex.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 192              		.loc 1 174 3 view .LVU35
+ 169:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 193              		.loc 1 169 1 is_stmt 0 view .LVU36
+ 194 0070 0346     		mov	r3, r0
+ 195              		.loc 1 174 15 view .LVU37
+ 196 0072 0222     		movs	r2, #2
+ 175:./src/stm32f7xx_hal_crc_ex.c **** 
+ 176:./src/stm32f7xx_hal_crc_ex.c ****   /* set input data inversion mode */
+ 177:./src/stm32f7xx_hal_crc_ex.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_IN, InputReverseMode);
+ 178:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 179:./src/stm32f7xx_hal_crc_ex.c ****   hcrc->State = HAL_CRC_STATE_READY;
+ 197              		.loc 1 179 15 view .LVU38
+ 198 0074 4FF0010C 		mov	ip, #1
+ 180:./src/stm32f7xx_hal_crc_ex.c **** 
+ 181:./src/stm32f7xx_hal_crc_ex.c ****   /* Return function status */
+ 182:./src/stm32f7xx_hal_crc_ex.c ****   return HAL_OK;
+ 183:./src/stm32f7xx_hal_crc_ex.c **** }
+ 199              		.loc 1 183 1 view .LVU39
+ 200 0078 0020     		movs	r0, #0
+ 201              	.LVL15:
+ 169:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 202              		.loc 1 169 1 view .LVU40
+ 203 007a 10B4     		push	{r4}
+ 204              	.LCFI7:
+ 205              		.cfi_def_cfa_offset 4
+ 206              		.cfi_offset 4, -4
+ 177:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 207              		.loc 1 177 3 view .LVU41
+ 208 007c 1C68     		ldr	r4, [r3]
+ 174:./src/stm32f7xx_hal_crc_ex.c **** 
+ 209              		.loc 1 174 15 view .LVU42
+ 210 007e 5A77     		strb	r2, [r3, #29]
+ 177:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 211              		.loc 1 177 3 is_stmt 1 view .LVU43
+ 212 0080 A268     		ldr	r2, [r4, #8]
+ 213 0082 22F06002 		bic	r2, r2, #96
+ 214 0086 1143     		orrs	r1, r1, r2
+ 215              	.LVL16:
+ 177:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 216              		.loc 1 177 3 is_stmt 0 view .LVU44
+ 217 0088 A160     		str	r1, [r4, #8]
+ 179:./src/stm32f7xx_hal_crc_ex.c **** 
+ 218              		.loc 1 179 3 is_stmt 1 view .LVU45
+ 179:./src/stm32f7xx_hal_crc_ex.c **** 
+ 219              		.loc 1 179 15 is_stmt 0 view .LVU46
+ 220 008a 83F81DC0 		strb	ip, [r3, #29]
+ 182:./src/stm32f7xx_hal_crc_ex.c **** }
+ 221              		.loc 1 182 3 is_stmt 1 view .LVU47
+ 222              		.loc 1 183 1 is_stmt 0 view .LVU48
+ 223 008e 5DF8044B 		ldr	r4, [sp], #4
+ 224              	.LCFI8:
+ 225              		.cfi_restore 4
+ 226              		.cfi_def_cfa_offset 0
+ 227 0092 7047     		bx	lr
+ 228              		.cfi_endproc
+ 229              	.LFE145:
+ 231              		.align	1
+ 232              		.p2align 2,,3
+ 233              		.global	HAL_CRCEx_Output_Data_Reverse
+ 234              		.syntax unified
+ 235              		.thumb
+ 236              		.thumb_func
+ 237              		.fpu fpv5-d16
+ 239              	HAL_CRCEx_Output_Data_Reverse:
+ 240              	.LVL17:
+ 241              	.LFB146:
+ 184:./src/stm32f7xx_hal_crc_ex.c **** 
+ 185:./src/stm32f7xx_hal_crc_ex.c **** /**
+ 186:./src/stm32f7xx_hal_crc_ex.c ****   * @brief  Set the Reverse Output data mode.
+ 187:./src/stm32f7xx_hal_crc_ex.c ****   * @param  hcrc CRC handle
+ 188:./src/stm32f7xx_hal_crc_ex.c ****   * @param  OutputReverseMode Output Data inversion mode.
+ 189:./src/stm32f7xx_hal_crc_ex.c ****   *         This parameter can be one of the following values:
+ 190:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_OUTPUTDATA_INVERSION_DISABLE no CRC inversion (default value)
+ 191:./src/stm32f7xx_hal_crc_ex.c ****   *          @arg @ref CRC_OUTPUTDATA_INVERSION_ENABLE  bit-level inversion (e.g. for a 8-bit CRC: 
+ 192:./src/stm32f7xx_hal_crc_ex.c ****   * @retval HAL status
+ 193:./src/stm32f7xx_hal_crc_ex.c ****   */
+ 194:./src/stm32f7xx_hal_crc_ex.c **** HAL_StatusTypeDef HAL_CRCEx_Output_Data_Reverse(CRC_HandleTypeDef *hcrc, uint32_t OutputReverseMode
+ 195:./src/stm32f7xx_hal_crc_ex.c **** {
+ 242              		.loc 1 195 1 is_stmt 1 view -0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 196:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 197:./src/stm32f7xx_hal_crc_ex.c ****   assert_param(IS_CRC_OUTPUTDATA_INVERSION_MODE(OutputReverseMode));
+ 247              		.loc 1 197 3 view .LVU50
+ 198:./src/stm32f7xx_hal_crc_ex.c **** 
+ 199:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 200:./src/stm32f7xx_hal_crc_ex.c ****   hcrc->State = HAL_CRC_STATE_BUSY;
+ 248              		.loc 1 200 3 view .LVU51
+ 195:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 249              		.loc 1 195 1 is_stmt 0 view .LVU52
+ 250 0094 0346     		mov	r3, r0
+ 251              		.loc 1 200 15 view .LVU53
+ 252 0096 0222     		movs	r2, #2
+ 201:./src/stm32f7xx_hal_crc_ex.c **** 
+ 202:./src/stm32f7xx_hal_crc_ex.c ****   /* set output data inversion mode */
+ 203:./src/stm32f7xx_hal_crc_ex.c ****   MODIFY_REG(hcrc->Instance->CR, CRC_CR_REV_OUT, OutputReverseMode);
+ 204:./src/stm32f7xx_hal_crc_ex.c **** 
+ 205:./src/stm32f7xx_hal_crc_ex.c ****   /* Change CRC peripheral state */
+ 206:./src/stm32f7xx_hal_crc_ex.c ****   hcrc->State = HAL_CRC_STATE_READY;
+ 253              		.loc 1 206 15 view .LVU54
+ 254 0098 4FF0010C 		mov	ip, #1
+ 207:./src/stm32f7xx_hal_crc_ex.c **** 
+ 208:./src/stm32f7xx_hal_crc_ex.c ****   /* Return function status */
+ 209:./src/stm32f7xx_hal_crc_ex.c ****   return HAL_OK;
+ 210:./src/stm32f7xx_hal_crc_ex.c **** }
+ 255              		.loc 1 210 1 view .LVU55
+ 256 009c 0020     		movs	r0, #0
+ 257              	.LVL18:
+ 195:./src/stm32f7xx_hal_crc_ex.c ****   /* Check the parameters */
+ 258              		.loc 1 195 1 view .LVU56
+ 259 009e 10B4     		push	{r4}
+ 260              	.LCFI9:
+ 261              		.cfi_def_cfa_offset 4
+ 262              		.cfi_offset 4, -4
+ 203:./src/stm32f7xx_hal_crc_ex.c **** 
+ 263              		.loc 1 203 3 view .LVU57
+ 264 00a0 1C68     		ldr	r4, [r3]
+ 200:./src/stm32f7xx_hal_crc_ex.c **** 
+ 265              		.loc 1 200 15 view .LVU58
+ 266 00a2 5A77     		strb	r2, [r3, #29]
+ 203:./src/stm32f7xx_hal_crc_ex.c **** 
+ 267              		.loc 1 203 3 is_stmt 1 view .LVU59
+ 268 00a4 A268     		ldr	r2, [r4, #8]
+ 269 00a6 22F08002 		bic	r2, r2, #128
+ 270 00aa 1143     		orrs	r1, r1, r2
+ 271              	.LVL19:
+ 203:./src/stm32f7xx_hal_crc_ex.c **** 
+ 272              		.loc 1 203 3 is_stmt 0 view .LVU60
+ 273 00ac A160     		str	r1, [r4, #8]
+ 206:./src/stm32f7xx_hal_crc_ex.c **** 
+ 274              		.loc 1 206 3 is_stmt 1 view .LVU61
+ 206:./src/stm32f7xx_hal_crc_ex.c **** 
+ 275              		.loc 1 206 15 is_stmt 0 view .LVU62
+ 276 00ae 83F81DC0 		strb	ip, [r3, #29]
+ 209:./src/stm32f7xx_hal_crc_ex.c **** }
+ 277              		.loc 1 209 3 is_stmt 1 view .LVU63
+ 278              		.loc 1 210 1 is_stmt 0 view .LVU64
+ 279 00b2 5DF8044B 		ldr	r4, [sp], #4
+ 280              	.LCFI10:
+ 281              		.cfi_restore 4
+ 282              		.cfi_def_cfa_offset 0
+ 283 00b6 7047     		bx	lr
+ 284              		.cfi_endproc
+ 285              	.LFE146:
+ 287              	.Letext0:
+ 288              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 289              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 290              		.file 4 "./inc/stm32f765xx.h"
+ 291              		.file 5 "./inc/stm32f7xx_hal_def.h"
+ 292              		.file 6 "./inc/stm32f7xx_hal_crc.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f7xx_hal_crc_ex.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:25     .text:00000000 HAL_CRCEx_Polynomial_Set
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:70     .text:00000020 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:183    .text:00000070 HAL_CRCEx_Input_Data_Reverse
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:239    .text:00000094 HAL_CRCEx_Output_Data_Reverse
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:96     .text:00000039 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccv9kf9e.s:96     .text:0000003a $t
+
+NO UNDEFINED SYMBOLS

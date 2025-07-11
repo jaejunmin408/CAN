@@ -52,6 +52,9 @@ CSRC += $(SRC_FOLDER)/sys_arch.c
 CSRC += $(SRC_FOLDER)/ethernetif.c
 CSRC += $(SRC_FOLDER)/udp_total.c
 CSRC += $(SRC_FOLDER)/reset.c
+CSRC += $(SRC_FOLDER)/backup.c
+CSRC += $(SRC_FOLDER)/flash_if.c
+CSRC += $(SRC_FOLDER)/tftpserver.c
 
 CSRC += ./lwip-2.1.2/src/apps/http/httpd.c
 CSRC += ./lwip-2.1.2/src/apps/http/fs.c
@@ -83,6 +86,11 @@ CSRC += ./lwip-2.1.2/src/netif/ethernet.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_eth.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_gpio.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_rcc.c
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_crc.c
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_crc_ex.c
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_flash.c
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_flash_ex.c
+
 
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_cortex.c

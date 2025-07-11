@@ -1,0 +1,612 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"flash_if.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	GetSectorNumber
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	GetSectorNumber:
+  26              	.LVL0:
+  27              	.LFB144:
+  28              		.file 1 "./src/flash_if.c"
+   1:./src/flash_if.c **** /**
+   2:./src/flash_if.c ****  ******************************************************************************
+   3:./src/flash_if.c ****  * @file    LwIP/LwIP_IAP/Src/flash_if.c
+   4:./src/flash_if.c ****  * @author  MCD Application Team
+   5:./src/flash_if.c ****  * @brief   This file provides high level routines to manage internal Flash
+   6:./src/flash_if.c ****  *          programming (erase and write).
+   7:./src/flash_if.c ****  ******************************************************************************
+   8:./src/flash_if.c ****  * @attention
+   9:./src/flash_if.c ****  *
+  10:./src/flash_if.c ****  * Copyright (c) 2017 STMicroelectronics.
+  11:./src/flash_if.c ****  * All rights reserved.
+  12:./src/flash_if.c ****  *
+  13:./src/flash_if.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  14:./src/flash_if.c ****  * in the root directory of this software component.
+  15:./src/flash_if.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:./src/flash_if.c ****  *
+  17:./src/flash_if.c ****  ******************************************************************************
+  18:./src/flash_if.c ****  */
+  19:./src/flash_if.c **** 
+  20:./src/flash_if.c **** /* Includes ------------------------------------------------------------------*/
+  21:./src/flash_if.c **** #include "flash_if.h"
+  22:./src/flash_if.c **** #include "stm32f7xx_hal_flash.h"
+  23:./src/flash_if.c **** #include <stdint.h>
+  24:./src/flash_if.c **** 
+  25:./src/flash_if.c **** /* Private typedef -----------------------------------------------------------*/
+  26:./src/flash_if.c **** /* Private define ------------------------------------------------------------*/
+  27:./src/flash_if.c **** /* Private macro -------------------------------------------------------------*/
+  28:./src/flash_if.c **** /* Private variables ---------------------------------------------------------*/
+  29:./src/flash_if.c **** /* Private function prototypes -----------------------------------------------*/
+  30:./src/flash_if.c **** 
+  31:./src/flash_if.c **** /* Private functions ---------------------------------------------------------*/
+  32:./src/flash_if.c **** 
+  33:./src/flash_if.c **** /**
+  34:./src/flash_if.c ****  * @brief  Unlocks Flash for write access
+  35:./src/flash_if.c ****  * @param  None
+  36:./src/flash_if.c ****  * @retval None
+  37:./src/flash_if.c ****  */
+  38:./src/flash_if.c **** uint32_t GetSectorNumber(uint32_t Address)
+  39:./src/flash_if.c **** {
+  29              		.loc 1 39 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  40:./src/flash_if.c ****     if (Address < 0x08008000) return FLASH_SECTOR_0;  // 32KB
+  34              		.loc 1 40 5 view .LVU1
+  35              		.loc 1 40 8 is_stmt 0 view .LVU2
+  36 0000 1E4B     		ldr	r3, .L15
+  37 0002 9842     		cmp	r0, r3
+  38 0004 28D3     		bcc	.L3
+  41:./src/flash_if.c ****     if (Address < 0x08010000) return FLASH_SECTOR_1;  // 32KB
+  39              		.loc 1 41 5 is_stmt 1 view .LVU3
+  40              		.loc 1 41 8 is_stmt 0 view .LVU4
+  41 0006 1E4B     		ldr	r3, .L15+4
+  42 0008 9842     		cmp	r0, r3
+  43 000a 23D9     		bls	.L4
+  42:./src/flash_if.c ****     if (Address < 0x08018000) return FLASH_SECTOR_2;  // 32KB
+  44              		.loc 1 42 5 is_stmt 1 view .LVU5
+  45              		.loc 1 42 8 is_stmt 0 view .LVU6
+  46 000c 1D4B     		ldr	r3, .L15+8
+  47 000e 9842     		cmp	r0, r3
+  48 0010 24D3     		bcc	.L5
+  43:./src/flash_if.c ****     if (Address < 0x08020000) return FLASH_SECTOR_3;  // 32KB
+  49              		.loc 1 43 5 is_stmt 1 view .LVU7
+  50              		.loc 1 43 8 is_stmt 0 view .LVU8
+  51 0012 1D4B     		ldr	r3, .L15+12
+  52 0014 9842     		cmp	r0, r3
+  53 0016 23D9     		bls	.L6
+  44:./src/flash_if.c ****     if (Address < 0x08040000) return FLASH_SECTOR_4;  // 128KB
+  54              		.loc 1 44 5 is_stmt 1 view .LVU9
+  55              		.loc 1 44 8 is_stmt 0 view .LVU10
+  56 0018 03F50033 		add	r3, r3, #131072
+  57 001c 9842     		cmp	r0, r3
+  58 001e 21D9     		bls	.L7
+  45:./src/flash_if.c ****     if (Address < 0x08080000) return FLASH_SECTOR_5;  // 256KB
+  59              		.loc 1 45 5 is_stmt 1 view .LVU11
+  60              		.loc 1 45 8 is_stmt 0 view .LVU12
+  61 0020 03F58023 		add	r3, r3, #262144
+  62 0024 9842     		cmp	r0, r3
+  63 0026 1FD9     		bls	.L8
+  46:./src/flash_if.c ****     if (Address < 0x080C0000) return FLASH_SECTOR_6;  // 256KB
+  64              		.loc 1 46 5 is_stmt 1 view .LVU13
+  65              		.loc 1 46 8 is_stmt 0 view .LVU14
+  66 0028 03F58023 		add	r3, r3, #262144
+  67 002c 9842     		cmp	r0, r3
+  68 002e 1DD9     		bls	.L9
+  47:./src/flash_if.c ****     if (Address < 0x08100000) return FLASH_SECTOR_7;  // 256KB
+  69              		.loc 1 47 5 is_stmt 1 view .LVU15
+  70              		.loc 1 47 8 is_stmt 0 view .LVU16
+  71 0030 B0F1016F 		cmp	r0, #135266304
+  72 0034 1CD3     		bcc	.L10
+  48:./src/flash_if.c **** 	if (Address < 0x08140000) return FLASH_SECTOR_8;  // 256KB
+  73              		.loc 1 48 2 is_stmt 1 view .LVU17
+  74              		.loc 1 48 5 is_stmt 0 view .LVU18
+  75 0036 03F50023 		add	r3, r3, #524288
+  76 003a 9842     		cmp	r0, r3
+  77 003c 1AD9     		bls	.L11
+  49:./src/flash_if.c **** 	if (Address < 0x08180000) return FLASH_SECTOR_9;  // 256KB
+  78              		.loc 1 49 2 is_stmt 1 view .LVU19
+  79              		.loc 1 49 5 is_stmt 0 view .LVU20
+  80 003e 03F58023 		add	r3, r3, #262144
+  81 0042 9842     		cmp	r0, r3
+  82 0044 18D9     		bls	.L12
+  83              	.LVL1:
+  84              	.LBB7:
+  85              	.LBI7:
+  38:./src/flash_if.c **** {
+  86              		.loc 1 38 10 is_stmt 1 view .LVU21
+  87              	.LBB8:
+  50:./src/flash_if.c **** 	if (Address < 0x081C0000) return FLASH_SECTOR_10;  // 256KB
+  88              		.loc 1 50 2 view .LVU22
+  89              		.loc 1 50 5 is_stmt 0 view .LVU23
+  90 0046 03F58023 		add	r3, r3, #262144
+  51:./src/flash_if.c **** 	if (Address < 0x08200000) return FLASH_SECTOR_11;  // 256KB
+  52:./src/flash_if.c ****     return FLASH_SECTOR_11; //
+  91              		.loc 1 52 12 view .LVU24
+  92 004a 9842     		cmp	r0, r3
+  93 004c 94BF     		ite	ls
+  94 004e 0A20     		movls	r0, #10
+  95 0050 0B20     		movhi	r0, #11
+  96              	.LVL2:
+  97              		.loc 1 52 12 view .LVU25
+  98 0052 7047     		bx	lr
+  99              	.LVL3:
+ 100              	.L4:
+ 101              		.loc 1 52 12 view .LVU26
+ 102              	.LBE8:
+ 103              	.LBE7:
+  41:./src/flash_if.c ****     if (Address < 0x08018000) return FLASH_SECTOR_2;  // 32KB
+ 104              		.loc 1 41 38 view .LVU27
+ 105 0054 0120     		movs	r0, #1
+ 106              	.LVL4:
+  41:./src/flash_if.c ****     if (Address < 0x08018000) return FLASH_SECTOR_2;  // 32KB
+ 107              		.loc 1 41 38 view .LVU28
+ 108 0056 7047     		bx	lr
+ 109              	.LVL5:
+ 110              	.L3:
+  40:./src/flash_if.c ****     if (Address < 0x08010000) return FLASH_SECTOR_1;  // 32KB
+ 111              		.loc 1 40 38 view .LVU29
+ 112 0058 0020     		movs	r0, #0
+ 113              	.LVL6:
+  40:./src/flash_if.c ****     if (Address < 0x08010000) return FLASH_SECTOR_1;  // 32KB
+ 114              		.loc 1 40 38 view .LVU30
+ 115 005a 7047     		bx	lr
+ 116              	.LVL7:
+ 117              	.L5:
+  42:./src/flash_if.c ****     if (Address < 0x08020000) return FLASH_SECTOR_3;  // 32KB
+ 118              		.loc 1 42 38 view .LVU31
+ 119 005c 0220     		movs	r0, #2
+ 120              	.LVL8:
+  42:./src/flash_if.c ****     if (Address < 0x08020000) return FLASH_SECTOR_3;  // 32KB
+ 121              		.loc 1 42 38 view .LVU32
+ 122 005e 7047     		bx	lr
+ 123              	.LVL9:
+ 124              	.L6:
+  43:./src/flash_if.c ****     if (Address < 0x08040000) return FLASH_SECTOR_4;  // 128KB
+ 125              		.loc 1 43 38 view .LVU33
+ 126 0060 0320     		movs	r0, #3
+ 127              	.LVL10:
+  43:./src/flash_if.c ****     if (Address < 0x08040000) return FLASH_SECTOR_4;  // 128KB
+ 128              		.loc 1 43 38 view .LVU34
+ 129 0062 7047     		bx	lr
+ 130              	.LVL11:
+ 131              	.L7:
+  44:./src/flash_if.c ****     if (Address < 0x08080000) return FLASH_SECTOR_5;  // 256KB
+ 132              		.loc 1 44 38 view .LVU35
+ 133 0064 0420     		movs	r0, #4
+ 134              	.LVL12:
+  44:./src/flash_if.c ****     if (Address < 0x08080000) return FLASH_SECTOR_5;  // 256KB
+ 135              		.loc 1 44 38 view .LVU36
+ 136 0066 7047     		bx	lr
+ 137              	.LVL13:
+ 138              	.L8:
+  45:./src/flash_if.c ****     if (Address < 0x080C0000) return FLASH_SECTOR_6;  // 256KB
+ 139              		.loc 1 45 38 view .LVU37
+ 140 0068 0520     		movs	r0, #5
+ 141              	.LVL14:
+  45:./src/flash_if.c ****     if (Address < 0x080C0000) return FLASH_SECTOR_6;  // 256KB
+ 142              		.loc 1 45 38 view .LVU38
+ 143 006a 7047     		bx	lr
+ 144              	.LVL15:
+ 145              	.L9:
+  46:./src/flash_if.c ****     if (Address < 0x08100000) return FLASH_SECTOR_7;  // 256KB
+ 146              		.loc 1 46 38 view .LVU39
+ 147 006c 0620     		movs	r0, #6
+ 148              	.LVL16:
+  46:./src/flash_if.c ****     if (Address < 0x08100000) return FLASH_SECTOR_7;  // 256KB
+ 149              		.loc 1 46 38 view .LVU40
+ 150 006e 7047     		bx	lr
+ 151              	.LVL17:
+ 152              	.L10:
+  47:./src/flash_if.c **** 	if (Address < 0x08140000) return FLASH_SECTOR_8;  // 256KB
+ 153              		.loc 1 47 38 view .LVU41
+ 154 0070 0720     		movs	r0, #7
+ 155              	.LVL18:
+  47:./src/flash_if.c **** 	if (Address < 0x08140000) return FLASH_SECTOR_8;  // 256KB
+ 156              		.loc 1 47 38 view .LVU42
+ 157 0072 7047     		bx	lr
+ 158              	.LVL19:
+ 159              	.L11:
+  48:./src/flash_if.c **** 	if (Address < 0x08180000) return FLASH_SECTOR_9;  // 256KB
+ 160              		.loc 1 48 35 view .LVU43
+ 161 0074 0820     		movs	r0, #8
+ 162              	.LVL20:
+  48:./src/flash_if.c **** 	if (Address < 0x08180000) return FLASH_SECTOR_9;  // 256KB
+ 163              		.loc 1 48 35 view .LVU44
+ 164 0076 7047     		bx	lr
+ 165              	.LVL21:
+ 166              	.L12:
+  49:./src/flash_if.c **** 	if (Address < 0x081C0000) return FLASH_SECTOR_10;  // 256KB
+ 167              		.loc 1 49 35 view .LVU45
+ 168 0078 0920     		movs	r0, #9
+ 169              	.LVL22:
+  53:./src/flash_if.c **** }
+ 170              		.loc 1 53 1 view .LVU46
+ 171 007a 7047     		bx	lr
+ 172              	.L16:
+ 173              		.align	2
+ 174              	.L15:
+ 175 007c 00800008 		.word	134250496
+ 176 0080 FFFF0008 		.word	134283263
+ 177 0084 00800108 		.word	134316032
+ 178 0088 FFFF0108 		.word	134348799
+ 179              		.cfi_endproc
+ 180              	.LFE144:
+ 182              		.align	1
+ 183              		.p2align 2,,3
+ 184              		.global	FLASH_If_Init
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 188              		.fpu fpv5-d16
+ 190              	FLASH_If_Init:
+ 191              	.LFB145:
+  54:./src/flash_if.c **** 
+  55:./src/flash_if.c **** 
+  56:./src/flash_if.c **** void FLASH_If_Init(void) {
+ 192              		.loc 1 56 26 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		@ link register save eliminated.
+  57:./src/flash_if.c **** 	HAL_FLASH_Unlock();
+ 197              		.loc 1 57 2 view .LVU48
+ 198 008c FFF7FEBF 		b	HAL_FLASH_Unlock
+ 199              	.LVL23:
+ 200              		.cfi_endproc
+ 201              	.LFE145:
+ 203              		.align	1
+ 204              		.p2align 2,,3
+ 205              		.global	FLASH_If_Erase
+ 206              		.syntax unified
+ 207              		.thumb
+ 208              		.thumb_func
+ 209              		.fpu fpv5-d16
+ 211              	FLASH_If_Erase:
+ 212              	.LVL24:
+ 213              	.LFB146:
+  58:./src/flash_if.c **** }
+  59:./src/flash_if.c **** 
+  60:./src/flash_if.c **** /**
+  61:./src/flash_if.c ****  * @brief  This function does an erase of all user flash area
+  62:./src/flash_if.c ****  * @param  StartSector: start of user flash area
+  63:./src/flash_if.c ****  * @retval 0: user flash area successfully erased
+  64:./src/flash_if.c ****  *         1: error occured
+  65:./src/flash_if.c ****  */
+  66:./src/flash_if.c **** int8_t FLASH_If_Erase(uint32_t StartSector) {
+ 214              		.loc 1 66 45 view -0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 24
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+  67:./src/flash_if.c **** 	uint32_t FlashAddress;
+ 218              		.loc 1 67 2 view .LVU50
+  68:./src/flash_if.c **** 
+  69:./src/flash_if.c **** 	FlashAddress = StartSector;
+ 219              		.loc 1 69 2 view .LVU51
+  70:./src/flash_if.c **** 
+  71:./src/flash_if.c **** 	/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+  72:./src/flash_if.c **** 	 be done by word */
+  73:./src/flash_if.c **** 
+  74:./src/flash_if.c **** 	if (FlashAddress <= (uint32_t) USER_FLASH_LAST_PAGE_ADDRESS) {
+ 220              		.loc 1 74 2 view .LVU52
+ 221              		.loc 1 74 5 is_stmt 0 view .LVU53
+ 222 0090 0E4B     		ldr	r3, .L27
+ 223 0092 9842     		cmp	r0, r3
+ 224 0094 01D9     		bls	.L26
+  75:./src/flash_if.c **** 		FLASH_EraseInitTypeDef FLASH_EraseInitStruct;
+  76:./src/flash_if.c **** 		uint32_t sectornb = 0;
+  77:./src/flash_if.c **** 
+  78:./src/flash_if.c **** 		FLASH_EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+  79:./src/flash_if.c **** 		FLASH_EraseInitStruct.Sector = GetSectorNumber(FlashAddress);
+  80:./src/flash_if.c **** 		FLASH_EraseInitStruct.NbSectors = GetSectorNumber(USER_FLASH_LAST_PAGE_ADDRESS) - GetSectorNumber
+  81:./src/flash_if.c **** 		FLASH_EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+  82:./src/flash_if.c **** 
+  83:./src/flash_if.c **** 		if (HAL_FLASHEx_Erase(&FLASH_EraseInitStruct, &sectornb) != HAL_OK)
+  84:./src/flash_if.c **** 			return (1);
+  85:./src/flash_if.c **** 	} else {
+  86:./src/flash_if.c **** 		return (1);
+ 225              		.loc 1 86 10 view .LVU54
+ 226 0096 0120     		movs	r0, #1
+ 227              	.LVL25:
+  87:./src/flash_if.c **** 	}
+  88:./src/flash_if.c **** 
+  89:./src/flash_if.c **** 	return (0);
+  90:./src/flash_if.c **** }
+ 228              		.loc 1 90 1 view .LVU55
+ 229 0098 7047     		bx	lr
+ 230              	.LVL26:
+ 231              	.L26:
+ 232              	.LBB9:
+  75:./src/flash_if.c **** 		FLASH_EraseInitTypeDef FLASH_EraseInitStruct;
+ 233              		.loc 1 75 3 is_stmt 1 view .LVU56
+  76:./src/flash_if.c **** 
+ 234              		.loc 1 76 3 view .LVU57
+ 235              	.LBE9:
+  66:./src/flash_if.c **** 	uint32_t FlashAddress;
+ 236              		.loc 1 66 45 is_stmt 0 view .LVU58
+ 237 009a 00B5     		push	{lr}
+ 238              	.LCFI0:
+ 239              		.cfi_def_cfa_offset 4
+ 240              		.cfi_offset 14, -4
+ 241              	.LBB10:
+  76:./src/flash_if.c **** 
+ 242              		.loc 1 76 12 view .LVU59
+ 243 009c 0023     		movs	r3, #0
+ 244              	.LBE10:
+  66:./src/flash_if.c **** 	uint32_t FlashAddress;
+ 245              		.loc 1 66 45 view .LVU60
+ 246 009e 87B0     		sub	sp, sp, #28
+ 247              	.LCFI1:
+ 248              		.cfi_def_cfa_offset 32
+ 249              	.LBB11:
+  81:./src/flash_if.c **** 
+ 250              		.loc 1 81 38 view .LVU61
+ 251 00a0 0222     		movs	r2, #2
+  83:./src/flash_if.c **** 			return (1);
+ 252              		.loc 1 83 7 view .LVU62
+ 253 00a2 6946     		mov	r1, sp
+  78:./src/flash_if.c **** 		FLASH_EraseInitStruct.Sector = GetSectorNumber(FlashAddress);
+ 254              		.loc 1 78 35 view .LVU63
+ 255 00a4 CDE90033 		strd	r3, r3, [sp]
+  79:./src/flash_if.c **** 		FLASH_EraseInitStruct.NbSectors = GetSectorNumber(USER_FLASH_LAST_PAGE_ADDRESS) - GetSectorNumber
+ 256              		.loc 1 79 3 is_stmt 1 view .LVU64
+  79:./src/flash_if.c **** 		FLASH_EraseInitStruct.NbSectors = GetSectorNumber(USER_FLASH_LAST_PAGE_ADDRESS) - GetSectorNumber
+ 257              		.loc 1 79 34 is_stmt 0 view .LVU65
+ 258 00a8 FFF7FEFF 		bl	GetSectorNumber
+ 259              	.LVL27:
+  79:./src/flash_if.c **** 		FLASH_EraseInitStruct.NbSectors = GetSectorNumber(USER_FLASH_LAST_PAGE_ADDRESS) - GetSectorNumber
+ 260              		.loc 1 79 34 view .LVU66
+ 261 00ac 0346     		mov	r3, r0
+  81:./src/flash_if.c **** 
+ 262              		.loc 1 81 38 view .LVU67
+ 263 00ae 0592     		str	r2, [sp, #20]
+  83:./src/flash_if.c **** 			return (1);
+ 264              		.loc 1 83 7 view .LVU68
+ 265 00b0 01A8     		add	r0, sp, #4
+  80:./src/flash_if.c **** 		FLASH_EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+ 266              		.loc 1 80 115 view .LVU69
+ 267 00b2 C3F10802 		rsb	r2, r3, #8
+  80:./src/flash_if.c **** 		FLASH_EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+ 268              		.loc 1 80 35 view .LVU70
+ 269 00b6 CDE90332 		strd	r3, r2, [sp, #12]
+  81:./src/flash_if.c **** 
+ 270              		.loc 1 81 3 is_stmt 1 view .LVU71
+  83:./src/flash_if.c **** 			return (1);
+ 271              		.loc 1 83 3 view .LVU72
+  83:./src/flash_if.c **** 			return (1);
+ 272              		.loc 1 83 7 is_stmt 0 view .LVU73
+ 273 00ba FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 274              	.LVL28:
+  84:./src/flash_if.c **** 	} else {
+ 275              		.loc 1 84 11 view .LVU74
+ 276 00be 0038     		subs	r0, r0, #0
+ 277 00c0 18BF     		it	ne
+ 278 00c2 0120     		movne	r0, #1
+ 279              	.LBE11:
+ 280              		.loc 1 90 1 view .LVU75
+ 281 00c4 07B0     		add	sp, sp, #28
+ 282              	.LCFI2:
+ 283              		.cfi_def_cfa_offset 4
+ 284              		@ sp needed
+ 285 00c6 5DF804FB 		ldr	pc, [sp], #4
+ 286              	.L28:
+ 287 00ca 00BF     		.align	2
+ 288              	.L27:
+ 289 00cc FFFF0C08 		.word	135069695
+ 290              		.cfi_endproc
+ 291              	.LFE146:
+ 293              		.align	1
+ 294              		.p2align 2,,3
+ 295              		.global	FLASH_If_Write
+ 296              		.syntax unified
+ 297              		.thumb
+ 298              		.thumb_func
+ 299              		.fpu fpv5-d16
+ 301              	FLASH_If_Write:
+ 302              	.LVL29:
+ 303              	.LFB147:
+  91:./src/flash_if.c **** /**
+  92:./src/flash_if.c ****  * @brief  This function writes a data buffer in flash (data are 32-bit aligned).
+  93:./src/flash_if.c ****  * @note   After writing data buffer, the flash content is checked.
+  94:./src/flash_if.c ****  * @param  FlashAddress: start address for writing data buffer
+  95:./src/flash_if.c ****  * @param  Data: pointer on data buffer
+  96:./src/flash_if.c ****  * @param  DataLength: length of data buffer (unit is 32-bit word)
+  97:./src/flash_if.c ****  * @retval 0: Data successfully written to Flash memory
+  98:./src/flash_if.c ****  *         1: Error occurred while writing data in Flash memory
+  99:./src/flash_if.c ****  *         2: Written Data in flash memory is different from expected one
+ 100:./src/flash_if.c ****  */
+ 101:./src/flash_if.c **** uint32_t FLASH_If_Write(__IO uint32_t *FlashAddress, uint32_t *Data,
+ 102:./src/flash_if.c **** 		uint16_t DataLength) {
+ 304              		.loc 1 102 24 is_stmt 1 view -0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 0, uses_anonymous_args = 0
+ 103:./src/flash_if.c **** 	uint32_t i = 0;
+ 308              		.loc 1 103 2 view .LVU77
+ 104:./src/flash_if.c **** 
+ 105:./src/flash_if.c **** 	for (i = 0;
+ 309              		.loc 1 105 2 view .LVU78
+ 106:./src/flash_if.c **** 			(i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS - 4));
+ 310              		.loc 1 106 4 view .LVU79
+ 105:./src/flash_if.c **** 			(i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS - 4));
+ 311              		.loc 1 105 2 is_stmt 0 view .LVU80
+ 312 00d0 42B3     		cbz	r2, .L40
+ 102:./src/flash_if.c **** 	uint32_t i = 0;
+ 313              		.loc 1 102 24 view .LVU81
+ 314 00d2 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 315              	.LCFI3:
+ 316              		.cfi_def_cfa_offset 24
+ 317              		.cfi_offset 4, -24
+ 318              		.cfi_offset 5, -20
+ 319              		.cfi_offset 6, -16
+ 320              		.cfi_offset 7, -12
+ 321              		.cfi_offset 8, -8
+ 322              		.cfi_offset 14, -4
+ 323 00d6 0446     		mov	r4, r0
+ 324 00d8 1746     		mov	r7, r2
+ 325 00da 0D1F     		subs	r5, r1, #4
+ 105:./src/flash_if.c **** 			(i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS - 4));
+ 326              		.loc 1 105 9 view .LVU82
+ 327 00dc 0026     		movs	r6, #0
+ 328              		.loc 1 106 21 view .LVU83
+ 329 00de DFF84880 		ldr	r8, .L41
+ 330 00e2 10E0     		b	.L32
+ 331              	.LVL30:
+ 332              	.L34:
+ 107:./src/flash_if.c **** 			i++) {
+ 108:./src/flash_if.c **** 		/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+ 109:./src/flash_if.c **** 		 be done by word */
+ 110:./src/flash_if.c **** 		if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, *FlashAddress,
+ 333              		.loc 1 110 7 view .LVU84
+ 334 00e4 2168     		ldr	r1, [r4]
+ 335 00e6 6A68     		ldr	r2, [r5, #4]
+ 336 00e8 FFF7FEFF 		bl	HAL_FLASH_Program
+ 337              	.LVL31:
+ 111:./src/flash_if.c **** 				*(uint32_t*) (Data + i)) == HAL_OK) {
+ 112:./src/flash_if.c **** 			/* Check the written value */
+ 113:./src/flash_if.c **** 			if (*(uint32_t*) *FlashAddress != *(uint32_t*) (Data + i)) {
+ 338              		.loc 1 113 4 is_stmt 1 view .LVU85
+ 114:./src/flash_if.c **** 				/* Flash content doesn't match SRAM content */
+ 115:./src/flash_if.c **** 				return (2);
+ 116:./src/flash_if.c **** 			}
+ 117:./src/flash_if.c **** 			/* Increment FLASH destination address */
+ 118:./src/flash_if.c **** 			*FlashAddress += 4;
+ 339              		.loc 1 118 4 view .LVU86
+ 110:./src/flash_if.c **** 				*(uint32_t*) (Data + i)) == HAL_OK) {
+ 340              		.loc 1 110 6 is_stmt 0 view .LVU87
+ 341 00ec A0B9     		cbnz	r0, .L35
+ 113:./src/flash_if.c **** 				/* Flash content doesn't match SRAM content */
+ 342              		.loc 1 113 21 view .LVU88
+ 343 00ee 2268     		ldr	r2, [r4]
+ 113:./src/flash_if.c **** 				/* Flash content doesn't match SRAM content */
+ 344              		.loc 1 113 7 view .LVU89
+ 345 00f0 55F8043F 		ldr	r3, [r5, #4]!
+ 346 00f4 1268     		ldr	r2, [r2]
+ 347 00f6 9A42     		cmp	r2, r3
+ 348 00f8 11D1     		bne	.L36
+ 349              		.loc 1 118 18 view .LVU90
+ 350 00fa 2368     		ldr	r3, [r4]
+ 105:./src/flash_if.c **** 			(i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS - 4));
+ 351              		.loc 1 105 2 view .LVU91
+ 352 00fc BE42     		cmp	r6, r7
+ 353              		.loc 1 118 18 view .LVU92
+ 354 00fe 03F10403 		add	r3, r3, #4
+ 355 0102 2360     		str	r3, [r4]
+ 107:./src/flash_if.c **** 		/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+ 356              		.loc 1 107 4 is_stmt 1 view .LVU93
+ 357              	.LVL32:
+ 106:./src/flash_if.c **** 			i++) {
+ 358              		.loc 1 106 4 view .LVU94
+ 105:./src/flash_if.c **** 			(i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS - 4));
+ 359              		.loc 1 105 2 is_stmt 0 view .LVU95
+ 360 0104 05D0     		beq	.L33
+ 361              	.LVL33:
+ 362              	.L32:
+ 110:./src/flash_if.c **** 				*(uint32_t*) (Data + i)) == HAL_OK) {
+ 363              		.loc 1 110 3 is_stmt 1 view .LVU96
+ 106:./src/flash_if.c **** 			i++) {
+ 364              		.loc 1 106 25 is_stmt 0 view .LVU97
+ 365 0106 2168     		ldr	r1, [r4]
+ 107:./src/flash_if.c **** 		/* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+ 366              		.loc 1 107 5 view .LVU98
+ 367 0108 0136     		adds	r6, r6, #1
+ 368              	.LVL34:
+ 110:./src/flash_if.c **** 				*(uint32_t*) (Data + i)) == HAL_OK) {
+ 369              		.loc 1 110 7 view .LVU99
+ 370 010a 0023     		movs	r3, #0
+ 371 010c 0220     		movs	r0, #2
+ 106:./src/flash_if.c **** 			i++) {
+ 372              		.loc 1 106 21 view .LVU100
+ 373 010e 4145     		cmp	r1, r8
+ 374 0110 E8D3     		bcc	.L34
+ 375              	.LVL35:
+ 376              	.L33:
+ 119:./src/flash_if.c **** 		} else {
+ 120:./src/flash_if.c **** 			/* Error occurred while writing data in Flash memory */
+ 121:./src/flash_if.c **** 			return (1);
+ 122:./src/flash_if.c **** 		}
+ 123:./src/flash_if.c **** 	}
+ 124:./src/flash_if.c **** 
+ 125:./src/flash_if.c **** 	return (0);
+ 377              		.loc 1 125 9 view .LVU101
+ 378 0112 0020     		movs	r0, #0
+ 126:./src/flash_if.c **** }
+ 379              		.loc 1 126 1 view .LVU102
+ 380 0114 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 381              	.LVL36:
+ 382              	.L35:
+ 121:./src/flash_if.c **** 		}
+ 383              		.loc 1 121 11 view .LVU103
+ 384 0118 0120     		movs	r0, #1
+ 385              		.loc 1 126 1 view .LVU104
+ 386 011a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 387              	.LVL37:
+ 388              	.L36:
+ 115:./src/flash_if.c **** 			}
+ 389              		.loc 1 115 12 view .LVU105
+ 390 011e 0220     		movs	r0, #2
+ 391              		.loc 1 126 1 view .LVU106
+ 392 0120 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 393              	.LVL38:
+ 394              	.L40:
+ 395              	.LCFI4:
+ 396              		.cfi_def_cfa_offset 0
+ 397              		.cfi_restore 4
+ 398              		.cfi_restore 5
+ 399              		.cfi_restore 6
+ 400              		.cfi_restore 7
+ 401              		.cfi_restore 8
+ 402              		.cfi_restore 14
+ 125:./src/flash_if.c **** }
+ 403              		.loc 1 125 9 view .LVU107
+ 404 0124 0020     		movs	r0, #0
+ 405              	.LVL39:
+ 406              		.loc 1 126 1 view .LVU108
+ 407 0126 7047     		bx	lr
+ 408              	.L42:
+ 409              		.align	2
+ 410              	.L41:
+ 411 0128 FCFF1B08 		.word	136052732
+ 412              		.cfi_endproc
+ 413              	.LFE147:
+ 415              	.Letext0:
+ 416              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 417              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 418              		.file 4 "./inc/stm32f7xx_hal_flash_ex.h"
+ 419              		.file 5 "./inc/stm32f7xx_hal_flash.h"
+ 420              		.file 6 "./inc/stm32f7xx_hal_def.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 flash_if.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:25     .text:00000000 GetSectorNumber
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:175    .text:0000007c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:182    .text:0000008c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:190    .text:0000008c FLASH_If_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:211    .text:00000090 FLASH_If_Erase
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:289    .text:000000cc $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:293    .text:000000d0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:301    .text:000000d0 FLASH_If_Write
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccurq2vZ.s:411    .text:00000128 $d
+
+UNDEFINED SYMBOLS
+HAL_FLASH_Unlock
+HAL_FLASHEx_Erase
+HAL_FLASH_Program
