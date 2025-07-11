@@ -90,7 +90,7 @@ CSRC += $(SRC_FOLDER)/stm32f7xx_hal_crc.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_crc_ex.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_flash.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_flash_ex.c
-
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_iwdg.c
 
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_cortex.c

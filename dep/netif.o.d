@@ -85,8 +85,8 @@ obj/netif.o: lwip-2.1.2/src/core/netif.c \
  inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_crc.h \
  inc/stm32f7xx_hal_crc_ex.h inc/stm32f7xx_hal_eth.h \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
- inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
- lwip-2.1.2/src/include/netif/ethernet.h \
+ inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h \
+ inc/stm32f7xx_hal_mmc.h lwip-2.1.2/src/include/netif/ethernet.h \
  lwip-2.1.2/src/include/lwip/dhcp.h
 lwip-2.1.2/src/include/lwip/opt.h:
 inc/lwipopts.h:
@@ -206,6 +206,7 @@ inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:
+inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:

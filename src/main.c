@@ -18,6 +18,7 @@
 #include "reset.h"
 #include "udp_total.h"
 #include "stm32f7xx_hal_rcc_ex.h"
+#include "stm32f7xx_hal_iwdg.h"
 #include "tftpserver.h"
 #include "firmware_tag.h"
 #include "backup.h"
@@ -53,6 +54,7 @@ uint8_t GATEWAY_ADDRESS[4];
 uint8_t check = 1;
 
 CRC_HandleTypeDef hcrc;
+IWDG_HandleTypeDef hiwdg;
 
 typedef  void (*pFunction)(void);
 #define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
@@ -90,6 +92,30 @@ static void MX_CRC_Init(void)
 
 }
 
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Window = 4095;
+  hiwdg.Init.Reload = 4095;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+     //Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
+
+}
+
 
 
 //! @brief      primary thread
@@ -113,6 +139,7 @@ static void  thread_main ( void  *argument)
 	// enable PHY, deassert reset
 	HW_ENA_ETH_PHY;
 	osDelay ( DLY_MS(75));	// for 100Base-TX
+	HAL_IWDG_Refresh(&hiwdg);
 	
 	
 	// init lwip stack
@@ -160,7 +187,10 @@ static void  thread_main ( void  *argument)
 	udp_client_send("Hello World!\n");
 
 	IAP_tftpd_init();
+
+	HAL_IWDG_Refresh(&hiwdg);
 	osDelay(1000);
+	HAL_IWDG_Refresh(&hiwdg);
 
     // /* Initialize
 	// // start dhcp
@@ -169,6 +199,14 @@ static void  thread_main ( void  *argument)
 	while ( 1)
 	{
 		//osThreadSuspend(osThreadGetId());
+      if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST))
+		  {
+			  HAL_IWDG_Refresh(&hiwdg);
+			  udp_client_send("----CATCH WDG---- back to before FW\n");
+        	  osDelay(500);
+			  WDGbackup();
+		  }
+
 		if ( is_soft_reset() != 0 )
 		{
 			if(check)
@@ -177,9 +215,9 @@ static void  thread_main ( void  *argument)
           		check = 0;
         	}
 		}
+		HAL_IWDG_Refresh(&hiwdg);
 		osDelay(1);
 
-		//osThreadSuspend(osThreadGetId());
 	}
 
 }
@@ -200,14 +238,15 @@ int  main ( void)
 	// finalize initialization
 	
 	HW_Init();
+	MX_IWDG_Init();
 
-	if ( is_soft_reset() == 0 )
+	if ( is_soft_reset() == 0 && !(__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)))
 	{
 		uint32_t isr_vector_addr = USER_FLASH_FIRST_PAGE_ADDRESS + 0x400;
 		volatile uint32_t app_sp_value = *(__IO uint32_t*) isr_vector_addr;
 		if (app_sp_value >= 0x20000000 && app_sp_value <= 0x20080000)
 		{
-
+				HAL_IWDG_Refresh(&hiwdg);
 				// HAL_RCC_DeInit();
 				// HAL_DeInit();
 				// __disable_irq();

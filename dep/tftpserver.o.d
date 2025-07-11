@@ -70,7 +70,9 @@ obj/tftpserver.o: src/tftpserver.c inc/tftpserver.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\string.h \
  inc/main.h inc/backup.h inc/firmware_tag.h inc/udp_total.h \
  inc/stm32f7xx_hal_crc.h inc/stm32f7xx_hal_crc_ex.h \
- inc/stm32f7xx_hal_crc.h inc/stm32f7xx_hal_crc_ex.h
+ inc/stm32f7xx_hal_crc.h inc/stm32f7xx_hal_crc_ex.h \
+ inc/stm32f7xx_hal_rcc.h inc/stm32f7xx_hal_rcc_ex.h \
+ inc/stm32f7xx_hal_iwdg.h
 inc/tftpserver.h:
 lwip-2.1.2/src/include/lwip/mem.h:
 lwip-2.1.2/src/include/lwip/opt.h:
@@ -171,3 +173,6 @@ inc/stm32f7xx_hal_crc.h:
 inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_crc.h:
 inc/stm32f7xx_hal_crc_ex.h:
+inc/stm32f7xx_hal_rcc.h:
+inc/stm32f7xx_hal_rcc_ex.h:
+inc/stm32f7xx_hal_iwdg.h:

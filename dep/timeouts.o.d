@@ -60,8 +60,8 @@ obj/timeouts.o: lwip-2.1.2/src/core/timeouts.c \
  inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_crc.h \
  inc/stm32f7xx_hal_crc_ex.h inc/stm32f7xx_hal_eth.h \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
- inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
- lwip-2.1.2/src/include/lwip/priv/tcp_priv.h \
+ inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h \
+ inc/stm32f7xx_hal_mmc.h lwip-2.1.2/src/include/lwip/priv/tcp_priv.h \
  lwip-2.1.2/src/include/lwip/tcp.h lwip-2.1.2/src/include/lwip/tcpbase.h \
  lwip-2.1.2/src/include/lwip/mem.h lwip-2.1.2/src/include/lwip/pbuf.h \
  lwip-2.1.2/src/include/lwip/ip.h lwip-2.1.2/src/include/lwip/def.h \
@@ -174,6 +174,7 @@ inc/stm32f7xx_hal_crc_ex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:
+inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:

@@ -1,0 +1,506 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"stm32f7xx_hal_iwdg.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	HAL_IWDG_Init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	HAL_IWDG_Init:
+  26              	.LVL0:
+  27              	.LFB144:
+  28              		.file 1 "./src/stm32f7xx_hal_iwdg.c"
+   1:./src/stm32f7xx_hal_iwdg.c **** /**
+   2:./src/stm32f7xx_hal_iwdg.c ****   ******************************************************************************
+   3:./src/stm32f7xx_hal_iwdg.c ****   * @file    stm32f7xx_hal_iwdg.c
+   4:./src/stm32f7xx_hal_iwdg.c ****   * @author  MCD Application Team
+   5:./src/stm32f7xx_hal_iwdg.c ****   * @brief   IWDG HAL module driver.
+   6:./src/stm32f7xx_hal_iwdg.c ****   *          This file provides firmware functions to manage the following
+   7:./src/stm32f7xx_hal_iwdg.c ****   *          functionalities of the Independent Watchdog (IWDG) peripheral:
+   8:./src/stm32f7xx_hal_iwdg.c ****   *           + Initialization and Start functions
+   9:./src/stm32f7xx_hal_iwdg.c ****   *           + IO operation functions
+  10:./src/stm32f7xx_hal_iwdg.c ****   *
+  11:./src/stm32f7xx_hal_iwdg.c ****   ******************************************************************************
+  12:./src/stm32f7xx_hal_iwdg.c ****   * @attention
+  13:./src/stm32f7xx_hal_iwdg.c ****   *
+  14:./src/stm32f7xx_hal_iwdg.c ****   * Copyright (c) 2017 STMicroelectronics.
+  15:./src/stm32f7xx_hal_iwdg.c ****   * All rights reserved.
+  16:./src/stm32f7xx_hal_iwdg.c ****   *
+  17:./src/stm32f7xx_hal_iwdg.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  18:./src/stm32f7xx_hal_iwdg.c ****   * in the root directory of this software component.
+  19:./src/stm32f7xx_hal_iwdg.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  20:./src/stm32f7xx_hal_iwdg.c ****   *
+  21:./src/stm32f7xx_hal_iwdg.c ****   ******************************************************************************
+  22:./src/stm32f7xx_hal_iwdg.c ****   @verbatim
+  23:./src/stm32f7xx_hal_iwdg.c ****   ==============================================================================
+  24:./src/stm32f7xx_hal_iwdg.c ****                     ##### IWDG Generic features #####
+  25:./src/stm32f7xx_hal_iwdg.c ****   ==============================================================================
+  26:./src/stm32f7xx_hal_iwdg.c ****   [..]
+  27:./src/stm32f7xx_hal_iwdg.c ****     (+) The IWDG can be started by either software or hardware (configurable
+  28:./src/stm32f7xx_hal_iwdg.c ****         through option byte).
+  29:./src/stm32f7xx_hal_iwdg.c **** 
+  30:./src/stm32f7xx_hal_iwdg.c ****     (+) The IWDG is clocked by the Low-Speed Internal clock (LSI) and thus stays
+  31:./src/stm32f7xx_hal_iwdg.c ****         active even if the main clock fails.
+  32:./src/stm32f7xx_hal_iwdg.c **** 
+  33:./src/stm32f7xx_hal_iwdg.c ****     (+) Once the IWDG is started, the LSI is forced ON and both cannot be
+  34:./src/stm32f7xx_hal_iwdg.c ****         disabled. The counter starts counting down from the reset value (0xFFF).
+  35:./src/stm32f7xx_hal_iwdg.c ****         When it reaches the end of count value (0x000) a reset signal is
+  36:./src/stm32f7xx_hal_iwdg.c ****         generated (IWDG reset).
+  37:./src/stm32f7xx_hal_iwdg.c **** 
+  38:./src/stm32f7xx_hal_iwdg.c ****     (+) Whenever the key value 0x0000 AAAA is written in the IWDG_KR register,
+  39:./src/stm32f7xx_hal_iwdg.c ****         the IWDG_RLR value is reloaded into the counter and the watchdog reset
+  40:./src/stm32f7xx_hal_iwdg.c ****         is prevented.
+  41:./src/stm32f7xx_hal_iwdg.c **** 
+  42:./src/stm32f7xx_hal_iwdg.c ****     (+) The IWDG is implemented in the VDD voltage domain that is still functional
+  43:./src/stm32f7xx_hal_iwdg.c ****         in STOP and STANDBY mode (IWDG reset can wake up the CPU from STANDBY).
+  44:./src/stm32f7xx_hal_iwdg.c ****         IWDGRST flag in RCC_CSR register can be used to inform when an IWDG
+  45:./src/stm32f7xx_hal_iwdg.c ****         reset occurs.
+  46:./src/stm32f7xx_hal_iwdg.c **** 
+  47:./src/stm32f7xx_hal_iwdg.c ****     (+) Debug mode: When the microcontroller enters debug mode (core halted),
+  48:./src/stm32f7xx_hal_iwdg.c ****         the IWDG counter either continues to work normally or stops, depending
+  49:./src/stm32f7xx_hal_iwdg.c ****         on DBG_IWDG_STOP configuration bit in DBG module, accessible through
+  50:./src/stm32f7xx_hal_iwdg.c ****         __HAL_DBGMCU_FREEZE_IWDG() and __HAL_DBGMCU_UNFREEZE_IWDG() macros.
+  51:./src/stm32f7xx_hal_iwdg.c **** 
+  52:./src/stm32f7xx_hal_iwdg.c ****     [..] Min-max timeout value @32KHz (LSI): ~125us / ~32.7s
+  53:./src/stm32f7xx_hal_iwdg.c ****          The IWDG timeout may vary due to LSI clock frequency dispersion.
+  54:./src/stm32f7xx_hal_iwdg.c ****          STM32F7xx devices provide the capability to measure the LSI clock
+  55:./src/stm32f7xx_hal_iwdg.c ****          frequency (LSI clock is internally connected to TIM16 CH1 input capture).
+  56:./src/stm32f7xx_hal_iwdg.c ****          The measured value can be used to have an IWDG timeout with an
+  57:./src/stm32f7xx_hal_iwdg.c ****          acceptable accuracy.
+  58:./src/stm32f7xx_hal_iwdg.c **** 
+  59:./src/stm32f7xx_hal_iwdg.c ****     [..] Default timeout value (necessary for IWDG_SR status register update):
+  60:./src/stm32f7xx_hal_iwdg.c ****          Constant LSI_VALUE is defined based on the nominal LSI clock frequency.
+  61:./src/stm32f7xx_hal_iwdg.c ****          This frequency being subject to variations as mentioned above, the
+  62:./src/stm32f7xx_hal_iwdg.c ****          default timeout value (defined through constant HAL_IWDG_DEFAULT_TIMEOUT
+  63:./src/stm32f7xx_hal_iwdg.c ****          below) may become too short or too long.
+  64:./src/stm32f7xx_hal_iwdg.c ****          In such cases, this default timeout value can be tuned by redefining
+  65:./src/stm32f7xx_hal_iwdg.c ****          the constant LSI_VALUE at user-application level (based, for instance,
+  66:./src/stm32f7xx_hal_iwdg.c ****          on the measured LSI clock frequency as explained above).
+  67:./src/stm32f7xx_hal_iwdg.c **** 
+  68:./src/stm32f7xx_hal_iwdg.c ****                      ##### How to use this driver #####
+  69:./src/stm32f7xx_hal_iwdg.c ****   ==============================================================================
+  70:./src/stm32f7xx_hal_iwdg.c ****   [..]
+  71:./src/stm32f7xx_hal_iwdg.c ****     (#) Use IWDG using HAL_IWDG_Init() function to :
+  72:./src/stm32f7xx_hal_iwdg.c ****       (++) Enable instance by writing Start keyword in IWDG_KEY register. LSI
+  73:./src/stm32f7xx_hal_iwdg.c ****            clock is forced ON and IWDG counter starts counting down.
+  74:./src/stm32f7xx_hal_iwdg.c ****       (++) Enable write access to configuration registers:
+  75:./src/stm32f7xx_hal_iwdg.c ****           IWDG_PR, IWDG_RLR and IWDG_WINR.
+  76:./src/stm32f7xx_hal_iwdg.c ****       (++) Configure the IWDG prescaler and counter reload value. This reload
+  77:./src/stm32f7xx_hal_iwdg.c ****            value will be loaded in the IWDG counter each time the watchdog is
+  78:./src/stm32f7xx_hal_iwdg.c ****            reloaded, then the IWDG will start counting down from this value.
+  79:./src/stm32f7xx_hal_iwdg.c ****       (++) Depending on window parameter:
+  80:./src/stm32f7xx_hal_iwdg.c ****         (+++) If Window Init parameter is same as Window register value,
+  81:./src/stm32f7xx_hal_iwdg.c ****              nothing more is done but reload counter value in order to exit
+  82:./src/stm32f7xx_hal_iwdg.c ****              function with exact time base.
+  83:./src/stm32f7xx_hal_iwdg.c ****         (+++) Else modify Window register. This will automatically reload
+  84:./src/stm32f7xx_hal_iwdg.c ****              watchdog counter.
+  85:./src/stm32f7xx_hal_iwdg.c ****       (++) Wait for status flags to be reset.
+  86:./src/stm32f7xx_hal_iwdg.c **** 
+  87:./src/stm32f7xx_hal_iwdg.c ****     (#) Then the application program must refresh the IWDG counter at regular
+  88:./src/stm32f7xx_hal_iwdg.c ****         intervals during normal operation to prevent an MCU reset, using
+  89:./src/stm32f7xx_hal_iwdg.c ****         HAL_IWDG_Refresh() function.
+  90:./src/stm32f7xx_hal_iwdg.c **** 
+  91:./src/stm32f7xx_hal_iwdg.c ****      *** IWDG HAL driver macros list ***
+  92:./src/stm32f7xx_hal_iwdg.c ****      ====================================
+  93:./src/stm32f7xx_hal_iwdg.c ****      [..]
+  94:./src/stm32f7xx_hal_iwdg.c ****        Below the list of most used macros in IWDG HAL driver:
+  95:./src/stm32f7xx_hal_iwdg.c ****       (+) __HAL_IWDG_START: Enable the IWDG peripheral
+  96:./src/stm32f7xx_hal_iwdg.c ****       (+) __HAL_IWDG_RELOAD_COUNTER: Reloads IWDG counter with value defined in
+  97:./src/stm32f7xx_hal_iwdg.c ****           the reload register
+  98:./src/stm32f7xx_hal_iwdg.c **** 
+  99:./src/stm32f7xx_hal_iwdg.c ****   @endverbatim
+ 100:./src/stm32f7xx_hal_iwdg.c ****   */
+ 101:./src/stm32f7xx_hal_iwdg.c **** 
+ 102:./src/stm32f7xx_hal_iwdg.c **** /* Includes ------------------------------------------------------------------*/
+ 103:./src/stm32f7xx_hal_iwdg.c **** #include "stm32f7xx_hal.h"
+ 104:./src/stm32f7xx_hal_iwdg.c **** 
+ 105:./src/stm32f7xx_hal_iwdg.c **** /** @addtogroup STM32F7xx_HAL_Driver
+ 106:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 107:./src/stm32f7xx_hal_iwdg.c ****   */
+ 108:./src/stm32f7xx_hal_iwdg.c **** 
+ 109:./src/stm32f7xx_hal_iwdg.c **** #ifdef HAL_IWDG_MODULE_ENABLED
+ 110:./src/stm32f7xx_hal_iwdg.c **** /** @addtogroup IWDG
+ 111:./src/stm32f7xx_hal_iwdg.c ****   * @brief IWDG HAL module driver.
+ 112:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 113:./src/stm32f7xx_hal_iwdg.c ****   */
+ 114:./src/stm32f7xx_hal_iwdg.c **** 
+ 115:./src/stm32f7xx_hal_iwdg.c **** /* Private typedef -----------------------------------------------------------*/
+ 116:./src/stm32f7xx_hal_iwdg.c **** /* Private define ------------------------------------------------------------*/
+ 117:./src/stm32f7xx_hal_iwdg.c **** /** @defgroup IWDG_Private_Defines IWDG Private Defines
+ 118:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 119:./src/stm32f7xx_hal_iwdg.c ****   */
+ 120:./src/stm32f7xx_hal_iwdg.c **** /* Status register needs up to 5 LSI clock periods divided by the clock
+ 121:./src/stm32f7xx_hal_iwdg.c ****    prescaler to be updated. The number of LSI clock periods is upper-rounded to
+ 122:./src/stm32f7xx_hal_iwdg.c ****    6 for the timeout value calculation.
+ 123:./src/stm32f7xx_hal_iwdg.c ****    The timeout value is calculated using the highest prescaler (256) and
+ 124:./src/stm32f7xx_hal_iwdg.c ****    the LSI_VALUE constant. The value of this constant can be changed by the user
+ 125:./src/stm32f7xx_hal_iwdg.c ****    to take into account possible LSI clock period variations.
+ 126:./src/stm32f7xx_hal_iwdg.c ****    The timeout value is multiplied by 1000 to be converted in milliseconds.
+ 127:./src/stm32f7xx_hal_iwdg.c ****    LSI startup time is also considered here by adding LSI_STARTUP_TIME
+ 128:./src/stm32f7xx_hal_iwdg.c ****    converted in milliseconds. */
+ 129:./src/stm32f7xx_hal_iwdg.c **** #define LSI_STARTUP_TIME 40U /*!< LSI Maximum startup time in us */
+ 130:./src/stm32f7xx_hal_iwdg.c **** 
+ 131:./src/stm32f7xx_hal_iwdg.c **** #define HAL_IWDG_DEFAULT_TIMEOUT        (((6UL * 256UL * 1000UL) / (LSI_VALUE / 128U)) + \
+ 132:./src/stm32f7xx_hal_iwdg.c ****                                          ((LSI_STARTUP_TIME / 1000UL) + 1UL))
+ 133:./src/stm32f7xx_hal_iwdg.c **** #define IWDG_KERNEL_UPDATE_FLAGS        (IWDG_SR_WVU | IWDG_SR_RVU | IWDG_SR_PVU)
+ 134:./src/stm32f7xx_hal_iwdg.c **** /**
+ 135:./src/stm32f7xx_hal_iwdg.c ****   * @}
+ 136:./src/stm32f7xx_hal_iwdg.c ****   */
+ 137:./src/stm32f7xx_hal_iwdg.c **** 
+ 138:./src/stm32f7xx_hal_iwdg.c **** /* Private macro -------------------------------------------------------------*/
+ 139:./src/stm32f7xx_hal_iwdg.c **** /* Private variables ---------------------------------------------------------*/
+ 140:./src/stm32f7xx_hal_iwdg.c **** /* Private function prototypes -----------------------------------------------*/
+ 141:./src/stm32f7xx_hal_iwdg.c **** /* Exported functions --------------------------------------------------------*/
+ 142:./src/stm32f7xx_hal_iwdg.c **** 
+ 143:./src/stm32f7xx_hal_iwdg.c **** /** @addtogroup IWDG_Exported_Functions
+ 144:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 145:./src/stm32f7xx_hal_iwdg.c ****   */
+ 146:./src/stm32f7xx_hal_iwdg.c **** 
+ 147:./src/stm32f7xx_hal_iwdg.c **** /** @addtogroup IWDG_Exported_Functions_Group1
+ 148:./src/stm32f7xx_hal_iwdg.c ****   *  @brief    Initialization and Start functions.
+ 149:./src/stm32f7xx_hal_iwdg.c ****   *
+ 150:./src/stm32f7xx_hal_iwdg.c **** @verbatim
+ 151:./src/stm32f7xx_hal_iwdg.c ****  ===============================================================================
+ 152:./src/stm32f7xx_hal_iwdg.c ****           ##### Initialization and Start functions #####
+ 153:./src/stm32f7xx_hal_iwdg.c ****  ===============================================================================
+ 154:./src/stm32f7xx_hal_iwdg.c ****  [..]  This section provides functions allowing to:
+ 155:./src/stm32f7xx_hal_iwdg.c ****       (+) Initialize the IWDG according to the specified parameters in the
+ 156:./src/stm32f7xx_hal_iwdg.c ****           IWDG_InitTypeDef of associated handle.
+ 157:./src/stm32f7xx_hal_iwdg.c ****       (+) Manage Window option.
+ 158:./src/stm32f7xx_hal_iwdg.c ****       (+) Once initialization is performed in HAL_IWDG_Init function, Watchdog
+ 159:./src/stm32f7xx_hal_iwdg.c ****           is reloaded in order to exit function with correct time base.
+ 160:./src/stm32f7xx_hal_iwdg.c **** 
+ 161:./src/stm32f7xx_hal_iwdg.c **** @endverbatim
+ 162:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 163:./src/stm32f7xx_hal_iwdg.c ****   */
+ 164:./src/stm32f7xx_hal_iwdg.c **** 
+ 165:./src/stm32f7xx_hal_iwdg.c **** /**
+ 166:./src/stm32f7xx_hal_iwdg.c ****   * @brief  Initialize the IWDG according to the specified parameters in the
+ 167:./src/stm32f7xx_hal_iwdg.c ****   *         IWDG_InitTypeDef and start watchdog. Before exiting function,
+ 168:./src/stm32f7xx_hal_iwdg.c ****   *         watchdog is refreshed in order to have correct time base.
+ 169:./src/stm32f7xx_hal_iwdg.c ****   * @param  hiwdg  pointer to a IWDG_HandleTypeDef structure that contains
+ 170:./src/stm32f7xx_hal_iwdg.c ****   *                the configuration information for the specified IWDG module.
+ 171:./src/stm32f7xx_hal_iwdg.c ****   * @retval HAL status
+ 172:./src/stm32f7xx_hal_iwdg.c ****   */
+ 173:./src/stm32f7xx_hal_iwdg.c **** HAL_StatusTypeDef HAL_IWDG_Init(IWDG_HandleTypeDef *hiwdg)
+ 174:./src/stm32f7xx_hal_iwdg.c **** {
+  29              		.loc 1 174 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+ 175:./src/stm32f7xx_hal_iwdg.c ****   uint32_t tickstart;
+  33              		.loc 1 175 3 view .LVU1
+ 176:./src/stm32f7xx_hal_iwdg.c **** 
+ 177:./src/stm32f7xx_hal_iwdg.c ****   /* Check the IWDG handle allocation */
+ 178:./src/stm32f7xx_hal_iwdg.c ****   if (hiwdg == NULL)
+  34              		.loc 1 178 3 view .LVU2
+  35              		.loc 1 178 6 is_stmt 0 view .LVU3
+  36 0000 40B3     		cbz	r0, .L8
+ 179:./src/stm32f7xx_hal_iwdg.c ****   {
+ 180:./src/stm32f7xx_hal_iwdg.c ****     return HAL_ERROR;
+ 181:./src/stm32f7xx_hal_iwdg.c ****   }
+ 182:./src/stm32f7xx_hal_iwdg.c **** 
+ 183:./src/stm32f7xx_hal_iwdg.c ****   /* Check the parameters */
+ 184:./src/stm32f7xx_hal_iwdg.c ****   assert_param(IS_IWDG_ALL_INSTANCE(hiwdg->Instance));
+  37              		.loc 1 184 3 is_stmt 1 view .LVU4
+ 185:./src/stm32f7xx_hal_iwdg.c ****   assert_param(IS_IWDG_PRESCALER(hiwdg->Init.Prescaler));
+  38              		.loc 1 185 3 view .LVU5
+ 186:./src/stm32f7xx_hal_iwdg.c ****   assert_param(IS_IWDG_RELOAD(hiwdg->Init.Reload));
+  39              		.loc 1 186 3 view .LVU6
+ 187:./src/stm32f7xx_hal_iwdg.c ****   assert_param(IS_IWDG_WINDOW(hiwdg->Init.Window));
+  40              		.loc 1 187 3 view .LVU7
+ 188:./src/stm32f7xx_hal_iwdg.c **** 
+ 189:./src/stm32f7xx_hal_iwdg.c ****   /* Enable IWDG. LSI is turned on automatically */
+ 190:./src/stm32f7xx_hal_iwdg.c ****   __HAL_IWDG_START(hiwdg);
+  41              		.loc 1 190 3 view .LVU8
+ 191:./src/stm32f7xx_hal_iwdg.c **** 
+ 192:./src/stm32f7xx_hal_iwdg.c ****   /* Enable write access to IWDG_PR, IWDG_RLR and IWDG_WINR registers by writing
+ 193:./src/stm32f7xx_hal_iwdg.c ****   0x5555 in KR */
+ 194:./src/stm32f7xx_hal_iwdg.c ****   IWDG_ENABLE_WRITE_ACCESS(hiwdg);
+ 195:./src/stm32f7xx_hal_iwdg.c **** 
+ 196:./src/stm32f7xx_hal_iwdg.c ****   /* Write to IWDG registers the Prescaler & Reload values to work with */
+ 197:./src/stm32f7xx_hal_iwdg.c ****   hiwdg->Instance->PR = hiwdg->Init.Prescaler;
+ 198:./src/stm32f7xx_hal_iwdg.c ****   hiwdg->Instance->RLR = hiwdg->Init.Reload;
+  42              		.loc 1 198 37 is_stmt 0 view .LVU9
+  43 0002 8268     		ldr	r2, [r0, #8]
+ 197:./src/stm32f7xx_hal_iwdg.c ****   hiwdg->Instance->RLR = hiwdg->Init.Reload;
+  44              		.loc 1 197 36 view .LVU10
+  45 0004 D0E90031 		ldrd	r3, r1, [r0]
+ 174:./src/stm32f7xx_hal_iwdg.c ****   uint32_t tickstart;
+  46              		.loc 1 174 1 view .LVU11
+  47 0008 70B5     		push	{r4, r5, r6, lr}
+  48              	.LCFI0:
+  49              		.cfi_def_cfa_offset 16
+  50              		.cfi_offset 4, -16
+  51              		.cfi_offset 5, -12
+  52              		.cfi_offset 6, -8
+  53              		.cfi_offset 14, -4
+  54 000a 0446     		mov	r4, r0
+ 190:./src/stm32f7xx_hal_iwdg.c **** 
+  55              		.loc 1 190 3 view .LVU12
+  56 000c 4CF6CC40 		movw	r0, #52428
+  57              	.LVL1:
+ 190:./src/stm32f7xx_hal_iwdg.c **** 
+  58              		.loc 1 190 3 view .LVU13
+  59 0010 1860     		str	r0, [r3]
+ 194:./src/stm32f7xx_hal_iwdg.c **** 
+  60              		.loc 1 194 3 is_stmt 1 view .LVU14
+  61 0012 45F25550 		movw	r0, #21845
+  62 0016 1860     		str	r0, [r3]
+ 197:./src/stm32f7xx_hal_iwdg.c ****   hiwdg->Instance->RLR = hiwdg->Init.Reload;
+  63              		.loc 1 197 3 view .LVU15
+ 197:./src/stm32f7xx_hal_iwdg.c ****   hiwdg->Instance->RLR = hiwdg->Init.Reload;
+  64              		.loc 1 197 23 is_stmt 0 view .LVU16
+  65 0018 5960     		str	r1, [r3, #4]
+  66              		.loc 1 198 3 is_stmt 1 view .LVU17
+  67              		.loc 1 198 24 is_stmt 0 view .LVU18
+  68 001a 9A60     		str	r2, [r3, #8]
+ 199:./src/stm32f7xx_hal_iwdg.c **** 
+ 200:./src/stm32f7xx_hal_iwdg.c ****   /* Check pending flag, if previous update not done, return timeout */
+ 201:./src/stm32f7xx_hal_iwdg.c ****   tickstart = HAL_GetTick();
+  69              		.loc 1 201 3 is_stmt 1 view .LVU19
+  70              		.loc 1 201 15 is_stmt 0 view .LVU20
+  71 001c FFF7FEFF 		bl	HAL_GetTick
+  72              	.LVL2:
+ 202:./src/stm32f7xx_hal_iwdg.c **** 
+ 203:./src/stm32f7xx_hal_iwdg.c ****   /* Wait for register to be updated */
+ 204:./src/stm32f7xx_hal_iwdg.c ****   while ((hiwdg->Instance->SR & IWDG_KERNEL_UPDATE_FLAGS) != 0x00u)
+  73              		.loc 1 204 16 view .LVU21
+  74 0020 2368     		ldr	r3, [r4]
+ 201:./src/stm32f7xx_hal_iwdg.c **** 
+  75              		.loc 1 201 15 view .LVU22
+  76 0022 0546     		mov	r5, r0
+  77              	.LVL3:
+  78              		.loc 1 204 3 is_stmt 1 view .LVU23
+  79              		.loc 1 204 9 view .LVU24
+  80              		.loc 1 204 26 is_stmt 0 view .LVU25
+  81 0024 DA68     		ldr	r2, [r3, #12]
+  82              		.loc 1 204 9 view .LVU26
+  83 0026 5007     		lsls	r0, r2, #29
+  84              	.LVL4:
+  85              		.loc 1 204 9 view .LVU27
+  86 0028 0DD0     		beq	.L3
+ 205:./src/stm32f7xx_hal_iwdg.c ****   {
+ 206:./src/stm32f7xx_hal_iwdg.c ****     if ((HAL_GetTick() - tickstart) > HAL_IWDG_DEFAULT_TIMEOUT)
+  87              		.loc 1 206 8 view .LVU28
+  88 002a 41F60106 		movw	r6, #6145
+  89              	.L6:
+  90              		.loc 1 206 5 is_stmt 1 view .LVU29
+  91              		.loc 1 206 10 is_stmt 0 view .LVU30
+  92 002e FFF7FEFF 		bl	HAL_GetTick
+  93              	.LVL5:
+ 207:./src/stm32f7xx_hal_iwdg.c ****     {
+ 208:./src/stm32f7xx_hal_iwdg.c ****       if ((hiwdg->Instance->SR & IWDG_KERNEL_UPDATE_FLAGS) != 0x00u)
+  94              		.loc 1 208 7 is_stmt 1 view .LVU31
+ 206:./src/stm32f7xx_hal_iwdg.c ****     {
+  95              		.loc 1 206 24 is_stmt 0 view .LVU32
+  96 0032 431B     		subs	r3, r0, r5
+ 206:./src/stm32f7xx_hal_iwdg.c ****     {
+  97              		.loc 1 206 8 view .LVU33
+  98 0034 B342     		cmp	r3, r6
+  99              		.loc 1 208 17 view .LVU34
+ 100 0036 2368     		ldr	r3, [r4]
+ 206:./src/stm32f7xx_hal_iwdg.c ****     {
+ 101              		.loc 1 206 8 view .LVU35
+ 102 0038 02D9     		bls	.L5
+ 103              		.loc 1 208 27 view .LVU36
+ 104 003a DA68     		ldr	r2, [r3, #12]
+ 105              		.loc 1 208 10 view .LVU37
+ 106 003c 5107     		lsls	r1, r2, #29
+ 107 003e 0BD1     		bne	.L9
+ 108              	.L5:
+ 204:./src/stm32f7xx_hal_iwdg.c ****   {
+ 109              		.loc 1 204 9 is_stmt 1 view .LVU38
+ 204:./src/stm32f7xx_hal_iwdg.c ****   {
+ 110              		.loc 1 204 26 is_stmt 0 view .LVU39
+ 111 0040 DA68     		ldr	r2, [r3, #12]
+ 204:./src/stm32f7xx_hal_iwdg.c ****   {
+ 112              		.loc 1 204 9 view .LVU40
+ 113 0042 5207     		lsls	r2, r2, #29
+ 114 0044 F3D1     		bne	.L6
+ 115              	.L3:
+ 209:./src/stm32f7xx_hal_iwdg.c ****       {
+ 210:./src/stm32f7xx_hal_iwdg.c ****         return HAL_TIMEOUT;
+ 211:./src/stm32f7xx_hal_iwdg.c ****       }
+ 212:./src/stm32f7xx_hal_iwdg.c ****     }
+ 213:./src/stm32f7xx_hal_iwdg.c ****   }
+ 214:./src/stm32f7xx_hal_iwdg.c **** 
+ 215:./src/stm32f7xx_hal_iwdg.c ****   /* If window parameter is different than current value, modify window
+ 216:./src/stm32f7xx_hal_iwdg.c ****   register */
+ 217:./src/stm32f7xx_hal_iwdg.c ****   if (hiwdg->Instance->WINR != hiwdg->Init.Window)
+ 116              		.loc 1 217 3 is_stmt 1 view .LVU41
+ 117              		.loc 1 217 22 is_stmt 0 view .LVU42
+ 118 0046 1969     		ldr	r1, [r3, #16]
+ 119              		.loc 1 217 43 view .LVU43
+ 120 0048 E268     		ldr	r2, [r4, #12]
+ 121              		.loc 1 217 6 view .LVU44
+ 122 004a 9142     		cmp	r1, r2
+ 123 004c 06D0     		beq	.L7
+ 218:./src/stm32f7xx_hal_iwdg.c ****   {
+ 219:./src/stm32f7xx_hal_iwdg.c ****     /* Write to IWDG WINR the IWDG_Window value to compare with. In any case,
+ 220:./src/stm32f7xx_hal_iwdg.c ****     even if window feature is disabled, Watchdog will be reloaded by writing
+ 221:./src/stm32f7xx_hal_iwdg.c ****     windows register */
+ 222:./src/stm32f7xx_hal_iwdg.c ****     hiwdg->Instance->WINR = hiwdg->Init.Window;
+ 124              		.loc 1 222 5 is_stmt 1 view .LVU45
+ 223:./src/stm32f7xx_hal_iwdg.c ****   }
+ 224:./src/stm32f7xx_hal_iwdg.c ****   else
+ 225:./src/stm32f7xx_hal_iwdg.c ****   {
+ 226:./src/stm32f7xx_hal_iwdg.c ****     /* Reload IWDG counter with value defined in the reload register */
+ 227:./src/stm32f7xx_hal_iwdg.c ****     __HAL_IWDG_RELOAD_COUNTER(hiwdg);
+ 228:./src/stm32f7xx_hal_iwdg.c ****   }
+ 229:./src/stm32f7xx_hal_iwdg.c **** 
+ 230:./src/stm32f7xx_hal_iwdg.c ****   /* Return function status */
+ 231:./src/stm32f7xx_hal_iwdg.c ****   return HAL_OK;
+ 125              		.loc 1 231 10 is_stmt 0 view .LVU46
+ 126 004e 0020     		movs	r0, #0
+ 222:./src/stm32f7xx_hal_iwdg.c ****   }
+ 127              		.loc 1 222 27 view .LVU47
+ 128 0050 1A61     		str	r2, [r3, #16]
+ 232:./src/stm32f7xx_hal_iwdg.c **** }
+ 129              		.loc 1 232 1 view .LVU48
+ 130 0052 70BD     		pop	{r4, r5, r6, pc}
+ 131              	.LVL6:
+ 132              	.L8:
+ 133              	.LCFI1:
+ 134              		.cfi_def_cfa_offset 0
+ 135              		.cfi_restore 4
+ 136              		.cfi_restore 5
+ 137              		.cfi_restore 6
+ 138              		.cfi_restore 14
+ 180:./src/stm32f7xx_hal_iwdg.c ****   }
+ 139              		.loc 1 180 12 view .LVU49
+ 140 0054 0120     		movs	r0, #1
+ 141              	.LVL7:
+ 142              		.loc 1 232 1 view .LVU50
+ 143 0056 7047     		bx	lr
+ 144              	.LVL8:
+ 145              	.L9:
+ 146              	.LCFI2:
+ 147              		.cfi_def_cfa_offset 16
+ 148              		.cfi_offset 4, -16
+ 149              		.cfi_offset 5, -12
+ 150              		.cfi_offset 6, -8
+ 151              		.cfi_offset 14, -4
+ 210:./src/stm32f7xx_hal_iwdg.c ****       }
+ 152              		.loc 1 210 16 view .LVU51
+ 153 0058 0320     		movs	r0, #3
+ 154              		.loc 1 232 1 view .LVU52
+ 155 005a 70BD     		pop	{r4, r5, r6, pc}
+ 156              	.LVL9:
+ 157              	.L7:
+ 227:./src/stm32f7xx_hal_iwdg.c ****   }
+ 158              		.loc 1 227 5 is_stmt 1 view .LVU53
+ 159 005c 4AF6AA22 		movw	r2, #43690
+ 231:./src/stm32f7xx_hal_iwdg.c **** }
+ 160              		.loc 1 231 10 is_stmt 0 view .LVU54
+ 161 0060 0020     		movs	r0, #0
+ 227:./src/stm32f7xx_hal_iwdg.c ****   }
+ 162              		.loc 1 227 5 view .LVU55
+ 163 0062 1A60     		str	r2, [r3]
+ 164              		.loc 1 232 1 view .LVU56
+ 165 0064 70BD     		pop	{r4, r5, r6, pc}
+ 166              		.loc 1 232 1 view .LVU57
+ 167              		.cfi_endproc
+ 168              	.LFE144:
+ 170              		.align	1
+ 171 0066 00BF     		.p2align 2,,3
+ 172              		.global	HAL_IWDG_Refresh
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.fpu fpv5-d16
+ 178              	HAL_IWDG_Refresh:
+ 179              	.LVL10:
+ 180              	.LFB145:
+ 233:./src/stm32f7xx_hal_iwdg.c **** 
+ 234:./src/stm32f7xx_hal_iwdg.c **** 
+ 235:./src/stm32f7xx_hal_iwdg.c **** /**
+ 236:./src/stm32f7xx_hal_iwdg.c ****   * @}
+ 237:./src/stm32f7xx_hal_iwdg.c ****   */
+ 238:./src/stm32f7xx_hal_iwdg.c **** 
+ 239:./src/stm32f7xx_hal_iwdg.c **** 
+ 240:./src/stm32f7xx_hal_iwdg.c **** /** @addtogroup IWDG_Exported_Functions_Group2
+ 241:./src/stm32f7xx_hal_iwdg.c ****   *  @brief   IO operation functions
+ 242:./src/stm32f7xx_hal_iwdg.c ****   *
+ 243:./src/stm32f7xx_hal_iwdg.c **** @verbatim
+ 244:./src/stm32f7xx_hal_iwdg.c ****  ===============================================================================
+ 245:./src/stm32f7xx_hal_iwdg.c ****                       ##### IO operation functions #####
+ 246:./src/stm32f7xx_hal_iwdg.c ****  ===============================================================================
+ 247:./src/stm32f7xx_hal_iwdg.c ****  [..]  This section provides functions allowing to:
+ 248:./src/stm32f7xx_hal_iwdg.c ****       (+) Refresh the IWDG.
+ 249:./src/stm32f7xx_hal_iwdg.c **** 
+ 250:./src/stm32f7xx_hal_iwdg.c **** @endverbatim
+ 251:./src/stm32f7xx_hal_iwdg.c ****   * @{
+ 252:./src/stm32f7xx_hal_iwdg.c ****   */
+ 253:./src/stm32f7xx_hal_iwdg.c **** 
+ 254:./src/stm32f7xx_hal_iwdg.c **** /**
+ 255:./src/stm32f7xx_hal_iwdg.c ****   * @brief  Refresh the IWDG.
+ 256:./src/stm32f7xx_hal_iwdg.c ****   * @param  hiwdg  pointer to a IWDG_HandleTypeDef structure that contains
+ 257:./src/stm32f7xx_hal_iwdg.c ****   *                the configuration information for the specified IWDG module.
+ 258:./src/stm32f7xx_hal_iwdg.c ****   * @retval HAL status
+ 259:./src/stm32f7xx_hal_iwdg.c ****   */
+ 260:./src/stm32f7xx_hal_iwdg.c **** HAL_StatusTypeDef HAL_IWDG_Refresh(IWDG_HandleTypeDef *hiwdg)
+ 261:./src/stm32f7xx_hal_iwdg.c **** {
+ 181              		.loc 1 261 1 is_stmt 1 view -0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185              		@ link register save eliminated.
+ 262:./src/stm32f7xx_hal_iwdg.c ****   /* Reload IWDG counter with value defined in the reload register */
+ 263:./src/stm32f7xx_hal_iwdg.c ****   __HAL_IWDG_RELOAD_COUNTER(hiwdg);
+ 186              		.loc 1 263 3 view .LVU59
+ 261:./src/stm32f7xx_hal_iwdg.c ****   /* Reload IWDG counter with value defined in the reload register */
+ 187              		.loc 1 261 1 is_stmt 0 view .LVU60
+ 188 0068 0346     		mov	r3, r0
+ 189              		.loc 1 263 3 view .LVU61
+ 190 006a 4AF6AA22 		movw	r2, #43690
+ 264:./src/stm32f7xx_hal_iwdg.c **** 
+ 265:./src/stm32f7xx_hal_iwdg.c ****   /* Return function status */
+ 266:./src/stm32f7xx_hal_iwdg.c ****   return HAL_OK;
+ 267:./src/stm32f7xx_hal_iwdg.c **** }
+ 191              		.loc 1 267 1 view .LVU62
+ 192 006e 0020     		movs	r0, #0
+ 193              	.LVL11:
+ 263:./src/stm32f7xx_hal_iwdg.c **** 
+ 194              		.loc 1 263 3 view .LVU63
+ 195 0070 1B68     		ldr	r3, [r3]
+ 196              	.LVL12:
+ 263:./src/stm32f7xx_hal_iwdg.c **** 
+ 197              		.loc 1 263 3 view .LVU64
+ 198 0072 1A60     		str	r2, [r3]
+ 266:./src/stm32f7xx_hal_iwdg.c **** }
+ 199              		.loc 1 266 3 is_stmt 1 view .LVU65
+ 200              		.loc 1 267 1 is_stmt 0 view .LVU66
+ 201 0074 7047     		bx	lr
+ 202              		.cfi_endproc
+ 203              	.LFE145:
+ 205              	.Letext0:
+ 206              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 207              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 208              		.file 4 "./inc/stm32f765xx.h"
+ 209              		.file 5 "./inc/stm32f7xx_hal_def.h"
+ 210              		.file 6 "./inc/stm32f7xx_hal_iwdg.h"
+ 211              		.file 7 "./inc/stm32f7xx_hal.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f7xx_hal_iwdg.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFvO2SQ.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFvO2SQ.s:25     .text:00000000 HAL_IWDG_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFvO2SQ.s:178    .text:00000068 HAL_IWDG_Refresh
+
+UNDEFINED SYMBOLS
+HAL_GetTick

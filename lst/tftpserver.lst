@@ -31,7 +31,7 @@
   27              		.fpu fpv5-d16
   29              	IAP_tftp_send_ack_packet.isra.0:
   30              	.LVL0:
-  31              	.LFB179:
+  31              	.LFB180:
   32              		.file 1 "./src/tftpserver.c"
    1:./src/tftpserver.c **** /**
    2:./src/tftpserver.c ****   ******************************************************************************
@@ -62,118 +62,120 @@
   27:./src/tftpserver.c **** #include "udp_total.h"
   28:./src/tftpserver.c **** #include "stm32f7xx_hal_crc.h"
   29:./src/tftpserver.c **** #include "stm32f7xx_hal_crc_ex.h"
-  30:./src/tftpserver.c **** 
-  31:./src/tftpserver.c **** #define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
-  32:./src/tftpserver.c **** #define BACKUP_TAG_ADDRESS  ((FirmwareTag*) BACKUP_FLASH_FIRST_PAGE_ADDRESS)
-  33:./src/tftpserver.c **** 
-  34:./src/tftpserver.c **** #define USE_IAP_TFTP 1
-  35:./src/tftpserver.c **** #define USE_PRINT 1
-  36:./src/tftpserver.c **** 
-  37:./src/tftpserver.c **** #define MAX_FILE_SIZE  102400
+  30:./src/tftpserver.c **** #include "stm32f7xx_hal_rcc.h"
+  31:./src/tftpserver.c **** #include "stm32f7xx_hal_iwdg.h"
+  32:./src/tftpserver.c **** 
+  33:./src/tftpserver.c **** #define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
+  34:./src/tftpserver.c **** #define BACKUP_TAG_ADDRESS  ((FirmwareTag*) BACKUP_FLASH_FIRST_PAGE_ADDRESS)
+  35:./src/tftpserver.c **** 
+  36:./src/tftpserver.c **** #define USE_IAP_TFTP 1
+  37:./src/tftpserver.c **** #define USE_PRINT 1
   38:./src/tftpserver.c **** 
-  39:./src/tftpserver.c **** 
-  40:./src/tftpserver.c **** #ifdef USE_IAP_TFTP
+  39:./src/tftpserver.c **** #define MAX_FILE_SIZE  102400
+  40:./src/tftpserver.c **** 
   41:./src/tftpserver.c **** 
-  42:./src/tftpserver.c **** /* Private variables ---------------------------------------------------------*/
-  43:./src/tftpserver.c **** static uint32_t Flash_Write_Address;
-  44:./src/tftpserver.c **** static struct udp_pcb *UDPpcb;
-  45:./src/tftpserver.c **** static __IO uint32_t total_count=0;
-  46:./src/tftpserver.c **** 
-  47:./src/tftpserver.c **** extern CRC_HandleTypeDef hcrc;
-  48:./src/tftpserver.c **** //extern IWDG_HandleTypeDef hiwdg;
-  49:./src/tftpserver.c **** 
-  50:./src/tftpserver.c **** /* Private function prototypes -----------------------------------------------*/
+  42:./src/tftpserver.c **** #ifdef USE_IAP_TFTP
+  43:./src/tftpserver.c **** 
+  44:./src/tftpserver.c **** /* Private variables ---------------------------------------------------------*/
+  45:./src/tftpserver.c **** static uint32_t Flash_Write_Address;
+  46:./src/tftpserver.c **** static struct udp_pcb *UDPpcb;
+  47:./src/tftpserver.c **** static __IO uint32_t total_count=0;
+  48:./src/tftpserver.c **** 
+  49:./src/tftpserver.c **** extern CRC_HandleTypeDef hcrc;
+  50:./src/tftpserver.c **** extern IWDG_HandleTypeDef hiwdg;
   51:./src/tftpserver.c **** 
-  52:./src/tftpserver.c **** static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf *pkt_buf, 
-  53:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port);
-  54:./src/tftpserver.c **** 
-  55:./src/tftpserver.c **** static int IAP_tftp_process_write(struct udp_pcb *upcb, const ip_addr_t *to, int to_port);
+  52:./src/tftpserver.c **** /* Private function prototypes -----------------------------------------------*/
+  53:./src/tftpserver.c **** 
+  54:./src/tftpserver.c **** static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf *pkt_buf, 
+  55:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port);
   56:./src/tftpserver.c **** 
-  57:./src/tftpserver.c **** static void IAP_tftp_recv_callback(void *arg, struct udp_pcb *Upcb, struct pbuf *pkt_buf,
-  58:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port);
-  59:./src/tftpserver.c **** 
-  60:./src/tftpserver.c **** static void IAP_tftp_cleanup_wr(struct udp_pcb *upcb, tftp_connection_args *args);
-  61:./src/tftpserver.c **** static tftp_opcode IAP_tftp_decode_op(char *buf);
-  62:./src/tftpserver.c **** static u16_t IAP_tftp_extract_block(char *buf);
-  63:./src/tftpserver.c **** static void IAP_tftp_set_opcode(char *buffer, tftp_opcode opcode);
-  64:./src/tftpserver.c **** static void IAP_tftp_set_block(char* packet, u16_t block);
-  65:./src/tftpserver.c **** static err_t IAP_tftp_send_ack_packet(struct udp_pcb *upcb, const ip_addr_t *to, int to_port, int b
-  66:./src/tftpserver.c **** 
-  67:./src/tftpserver.c **** /* Private functions ---------------------------------------------------------*/
+  57:./src/tftpserver.c **** static int IAP_tftp_process_write(struct udp_pcb *upcb, const ip_addr_t *to, int to_port);
+  58:./src/tftpserver.c **** 
+  59:./src/tftpserver.c **** static void IAP_tftp_recv_callback(void *arg, struct udp_pcb *Upcb, struct pbuf *pkt_buf,
+  60:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port);
+  61:./src/tftpserver.c **** 
+  62:./src/tftpserver.c **** static void IAP_tftp_cleanup_wr(struct udp_pcb *upcb, tftp_connection_args *args);
+  63:./src/tftpserver.c **** static tftp_opcode IAP_tftp_decode_op(char *buf);
+  64:./src/tftpserver.c **** static u16_t IAP_tftp_extract_block(char *buf);
+  65:./src/tftpserver.c **** static void IAP_tftp_set_opcode(char *buffer, tftp_opcode opcode);
+  66:./src/tftpserver.c **** static void IAP_tftp_set_block(char* packet, u16_t block);
+  67:./src/tftpserver.c **** static err_t IAP_tftp_send_ack_packet(struct udp_pcb *upcb, const ip_addr_t *to, int to_port, int b
   68:./src/tftpserver.c **** 
-  69:./src/tftpserver.c **** 
-  70:./src/tftpserver.c **** /**
-  71:./src/tftpserver.c ****   * @brief Returns the TFTP opcode 
-  72:./src/tftpserver.c ****   * @param buf: pointer on the TFTP packet 
-  73:./src/tftpserver.c ****   * @retval None
-  74:./src/tftpserver.c ****   */
-  75:./src/tftpserver.c **** static tftp_opcode IAP_tftp_decode_op(char *buf)
-  76:./src/tftpserver.c **** {
-  77:./src/tftpserver.c ****   return (tftp_opcode)(buf[1]);
-  78:./src/tftpserver.c **** }
-  79:./src/tftpserver.c **** 
-  80:./src/tftpserver.c **** /**
-  81:./src/tftpserver.c ****   * @brief  Extracts the block number
-  82:./src/tftpserver.c ****   * @param  buf: pointer on the TFTP packet 
-  83:./src/tftpserver.c ****   * @retval block number
-  84:./src/tftpserver.c ****   */
-  85:./src/tftpserver.c **** static u16_t IAP_tftp_extract_block(char *buf)
-  86:./src/tftpserver.c **** {
-  87:./src/tftpserver.c ****   u16_t *b = (u16_t*)buf;
-  88:./src/tftpserver.c ****   return ntohs(b[1]);
-  89:./src/tftpserver.c **** }
-  90:./src/tftpserver.c **** 
-  91:./src/tftpserver.c **** /**
-  92:./src/tftpserver.c ****   * @brief Sets the TFTP opcode 
-  93:./src/tftpserver.c ****   * @param  buffer: pointer on the TFTP packet
-  94:./src/tftpserver.c ****   * @param  opcode: TFTP opcode
-  95:./src/tftpserver.c ****   * @retval None
-  96:./src/tftpserver.c ****   */
-  97:./src/tftpserver.c **** static void IAP_tftp_set_opcode(char *buffer, tftp_opcode opcode)
-  98:./src/tftpserver.c **** {
-  99:./src/tftpserver.c ****   buffer[0] = 0;
- 100:./src/tftpserver.c ****   buffer[1] = (u8_t)opcode;
- 101:./src/tftpserver.c **** }
- 102:./src/tftpserver.c **** 
- 103:./src/tftpserver.c **** /**
- 104:./src/tftpserver.c ****   * @brief Sets the TFTP block number 
- 105:./src/tftpserver.c ****   * @param packet: pointer on the TFTP packet 
- 106:./src/tftpserver.c ****   * @param  block: block number
- 107:./src/tftpserver.c ****   * @retval None
- 108:./src/tftpserver.c ****   */
- 109:./src/tftpserver.c **** static void IAP_tftp_set_block(char* packet, u16_t block)
- 110:./src/tftpserver.c **** {
- 111:./src/tftpserver.c ****   u16_t *p = (u16_t *)packet;
- 112:./src/tftpserver.c ****   p[1] = htons(block);
- 113:./src/tftpserver.c **** }
- 114:./src/tftpserver.c **** 
- 115:./src/tftpserver.c **** /**
- 116:./src/tftpserver.c ****   * @brief Sends TFTP ACK packet  
- 117:./src/tftpserver.c ****   * @param upcb: pointer on udp_pcb structure
- 118:./src/tftpserver.c ****   * @param to: pointer on the receive IP address structure
- 119:./src/tftpserver.c ****   * @param to_port: receive port number
- 120:./src/tftpserver.c ****   * @param block: block number
- 121:./src/tftpserver.c ****   * @retval: err_t: error code 
- 122:./src/tftpserver.c ****   */
- 123:./src/tftpserver.c **** static err_t IAP_tftp_send_ack_packet(struct udp_pcb *upcb, const ip_addr_t *to, int to_port, int b
-  33              		.loc 1 123 14 view -0
+  69:./src/tftpserver.c **** /* Private functions ---------------------------------------------------------*/
+  70:./src/tftpserver.c **** 
+  71:./src/tftpserver.c **** 
+  72:./src/tftpserver.c **** /**
+  73:./src/tftpserver.c ****   * @brief Returns the TFTP opcode 
+  74:./src/tftpserver.c ****   * @param buf: pointer on the TFTP packet 
+  75:./src/tftpserver.c ****   * @retval None
+  76:./src/tftpserver.c ****   */
+  77:./src/tftpserver.c **** static tftp_opcode IAP_tftp_decode_op(char *buf)
+  78:./src/tftpserver.c **** {
+  79:./src/tftpserver.c ****   return (tftp_opcode)(buf[1]);
+  80:./src/tftpserver.c **** }
+  81:./src/tftpserver.c **** 
+  82:./src/tftpserver.c **** /**
+  83:./src/tftpserver.c ****   * @brief  Extracts the block number
+  84:./src/tftpserver.c ****   * @param  buf: pointer on the TFTP packet 
+  85:./src/tftpserver.c ****   * @retval block number
+  86:./src/tftpserver.c ****   */
+  87:./src/tftpserver.c **** static u16_t IAP_tftp_extract_block(char *buf)
+  88:./src/tftpserver.c **** {
+  89:./src/tftpserver.c ****   u16_t *b = (u16_t*)buf;
+  90:./src/tftpserver.c ****   return ntohs(b[1]);
+  91:./src/tftpserver.c **** }
+  92:./src/tftpserver.c **** 
+  93:./src/tftpserver.c **** /**
+  94:./src/tftpserver.c ****   * @brief Sets the TFTP opcode 
+  95:./src/tftpserver.c ****   * @param  buffer: pointer on the TFTP packet
+  96:./src/tftpserver.c ****   * @param  opcode: TFTP opcode
+  97:./src/tftpserver.c ****   * @retval None
+  98:./src/tftpserver.c ****   */
+  99:./src/tftpserver.c **** static void IAP_tftp_set_opcode(char *buffer, tftp_opcode opcode)
+ 100:./src/tftpserver.c **** {
+ 101:./src/tftpserver.c ****   buffer[0] = 0;
+ 102:./src/tftpserver.c ****   buffer[1] = (u8_t)opcode;
+ 103:./src/tftpserver.c **** }
+ 104:./src/tftpserver.c **** 
+ 105:./src/tftpserver.c **** /**
+ 106:./src/tftpserver.c ****   * @brief Sets the TFTP block number 
+ 107:./src/tftpserver.c ****   * @param packet: pointer on the TFTP packet 
+ 108:./src/tftpserver.c ****   * @param  block: block number
+ 109:./src/tftpserver.c ****   * @retval None
+ 110:./src/tftpserver.c ****   */
+ 111:./src/tftpserver.c **** static void IAP_tftp_set_block(char* packet, u16_t block)
+ 112:./src/tftpserver.c **** {
+ 113:./src/tftpserver.c ****   u16_t *p = (u16_t *)packet;
+ 114:./src/tftpserver.c ****   p[1] = htons(block);
+ 115:./src/tftpserver.c **** }
+ 116:./src/tftpserver.c **** 
+ 117:./src/tftpserver.c **** /**
+ 118:./src/tftpserver.c ****   * @brief Sends TFTP ACK packet  
+ 119:./src/tftpserver.c ****   * @param upcb: pointer on udp_pcb structure
+ 120:./src/tftpserver.c ****   * @param to: pointer on the receive IP address structure
+ 121:./src/tftpserver.c ****   * @param to_port: receive port number
+ 122:./src/tftpserver.c ****   * @param block: block number
+ 123:./src/tftpserver.c ****   * @retval: err_t: error code 
+ 124:./src/tftpserver.c ****   */
+ 125:./src/tftpserver.c **** static err_t IAP_tftp_send_ack_packet(struct udp_pcb *upcb, const ip_addr_t *to, int to_port, int b
+  33              		.loc 1 125 14 view -0
   34              		.cfi_startproc
   35              		@ args = 0, pretend = 0, frame = 8
   36              		@ frame_needed = 0, uses_anonymous_args = 0
- 124:./src/tftpserver.c **** {
- 125:./src/tftpserver.c ****   err_t err;
-  37              		.loc 1 125 3 view .LVU1
- 126:./src/tftpserver.c ****   struct pbuf *pkt_buf; /* Chain of pbuf's to be sent */
-  38              		.loc 1 126 3 view .LVU2
- 127:./src/tftpserver.c **** 
- 128:./src/tftpserver.c ****   /* create the maximum possible size packet that a TFTP ACK packet can be */
- 129:./src/tftpserver.c ****   char packet[TFTP_ACK_PKT_LEN];
-  39              		.loc 1 129 3 view .LVU3
- 130:./src/tftpserver.c **** 	
- 131:./src/tftpserver.c **** 	memset(packet, 0, TFTP_ACK_PKT_LEN *sizeof(char));
-  40              		.loc 1 131 2 view .LVU4
- 123:./src/tftpserver.c **** {
-  41              		.loc 1 123 14 is_stmt 0 view .LVU5
+ 126:./src/tftpserver.c **** {
+ 127:./src/tftpserver.c ****   err_t err;
+  37              		.loc 1 127 3 view .LVU1
+ 128:./src/tftpserver.c ****   struct pbuf *pkt_buf; /* Chain of pbuf's to be sent */
+  38              		.loc 1 128 3 view .LVU2
+ 129:./src/tftpserver.c **** 
+ 130:./src/tftpserver.c ****   /* create the maximum possible size packet that a TFTP ACK packet can be */
+ 131:./src/tftpserver.c ****   char packet[TFTP_ACK_PKT_LEN];
+  39              		.loc 1 131 3 view .LVU3
+ 132:./src/tftpserver.c **** 	
+ 133:./src/tftpserver.c **** 	memset(packet, 0, TFTP_ACK_PKT_LEN *sizeof(char));
+  40              		.loc 1 133 2 view .LVU4
+ 125:./src/tftpserver.c **** {
+  41              		.loc 1 125 14 is_stmt 0 view .LVU5
   42 0000 F0B5     		push	{r4, r5, r6, r7, lr}
   43              	.LCFI0:
   44              		.cfi_def_cfa_offset 20
@@ -186,147 +188,147 @@
   51 0004 83B0     		sub	sp, sp, #12
   52              	.LCFI1:
   53              		.cfi_def_cfa_offset 32
- 123:./src/tftpserver.c **** {
-  54              		.loc 1 123 14 view .LVU6
+ 125:./src/tftpserver.c **** {
+  54              		.loc 1 125 14 view .LVU6
   55 0006 0546     		mov	r5, r0
   56              	.LBB24:
   57              	.LBB25:
- 112:./src/tftpserver.c **** }
-  58              		.loc 1 112 10 view .LVU7
+ 114:./src/tftpserver.c **** }
+  58              		.loc 1 114 10 view .LVU7
   59 0008 98B2     		uxth	r0, r3
   60              	.LVL1:
- 112:./src/tftpserver.c **** }
-  61              		.loc 1 112 10 view .LVU8
+ 114:./src/tftpserver.c **** }
+  61              		.loc 1 114 10 view .LVU8
   62 000a 8DF80440 		strb	r4, [sp, #4]
   63              	.LBE25:
   64              	.LBE24:
- 132:./src/tftpserver.c **** 
- 133:./src/tftpserver.c ****   /* define the first two bytes of the packet */
- 134:./src/tftpserver.c ****   IAP_tftp_set_opcode(packet, TFTP_ACK);
-  65              		.loc 1 134 3 is_stmt 1 view .LVU9
+ 134:./src/tftpserver.c **** 
+ 135:./src/tftpserver.c ****   /* define the first two bytes of the packet */
+ 136:./src/tftpserver.c ****   IAP_tftp_set_opcode(packet, TFTP_ACK);
+  65              		.loc 1 136 3 is_stmt 1 view .LVU9
   66              	.LVL2:
   67              	.LBB28:
   68              	.LBI28:
-  97:./src/tftpserver.c **** {
-  69              		.loc 1 97 13 view .LVU10
+  99:./src/tftpserver.c **** {
+  69              		.loc 1 99 13 view .LVU10
   70              	.LBB29:
-  99:./src/tftpserver.c ****   buffer[1] = (u8_t)opcode;
-  71              		.loc 1 99 3 view .LVU11
- 100:./src/tftpserver.c **** }
-  72              		.loc 1 100 3 view .LVU12
- 100:./src/tftpserver.c **** }
-  73              		.loc 1 100 13 is_stmt 0 view .LVU13
+ 101:./src/tftpserver.c ****   buffer[1] = (u8_t)opcode;
+  71              		.loc 1 101 3 view .LVU11
+ 102:./src/tftpserver.c **** }
+  72              		.loc 1 102 3 view .LVU12
+ 102:./src/tftpserver.c **** }
+  73              		.loc 1 102 13 is_stmt 0 view .LVU13
   74 000e 0424     		movs	r4, #4
   75              	.LBE29:
   76              	.LBE28:
- 123:./src/tftpserver.c **** {
-  77              		.loc 1 123 14 view .LVU14
+ 125:./src/tftpserver.c **** {
+  77              		.loc 1 125 14 view .LVU14
   78 0010 0E46     		mov	r6, r1
   79 0012 1746     		mov	r7, r2
   80              	.LBB31:
   81              	.LBB30:
- 100:./src/tftpserver.c **** }
-  82              		.loc 1 100 13 view .LVU15
+ 102:./src/tftpserver.c **** }
+  82              		.loc 1 102 13 view .LVU15
   83 0014 8DF80540 		strb	r4, [sp, #5]
   84              	.LVL3:
- 100:./src/tftpserver.c **** }
-  85              		.loc 1 100 13 view .LVU16
+ 102:./src/tftpserver.c **** }
+  85              		.loc 1 102 13 view .LVU16
   86              	.LBE30:
   87              	.LBE31:
- 135:./src/tftpserver.c **** 
- 136:./src/tftpserver.c ****   /* Specify the block number being ACK'd.
- 137:./src/tftpserver.c ****    * If we are ACK'ing a DATA pkt then the block number echoes that of the DATA pkt being ACK'd (du
- 138:./src/tftpserver.c ****    * If we are ACK'ing a WRQ pkt then the block number is always 0
- 139:./src/tftpserver.c ****    * RRQ packets are never sent ACK pkts by the server, instead the server sends DATA pkts to the
- 140:./src/tftpserver.c ****    * host which are, obviously, used as the "acknowledgement".  This saves from having to sEndTrans
- 141:./src/tftpserver.c ****    * an ACK packet and a DATA packet for RRQs - see RFC1350 for more info.  */
- 142:./src/tftpserver.c ****   IAP_tftp_set_block(packet, block);
-  88              		.loc 1 142 3 is_stmt 1 view .LVU17
+ 137:./src/tftpserver.c **** 
+ 138:./src/tftpserver.c ****   /* Specify the block number being ACK'd.
+ 139:./src/tftpserver.c ****    * If we are ACK'ing a DATA pkt then the block number echoes that of the DATA pkt being ACK'd (du
+ 140:./src/tftpserver.c ****    * If we are ACK'ing a WRQ pkt then the block number is always 0
+ 141:./src/tftpserver.c ****    * RRQ packets are never sent ACK pkts by the server, instead the server sends DATA pkts to the
+ 142:./src/tftpserver.c ****    * host which are, obviously, used as the "acknowledgement".  This saves from having to sEndTrans
+ 143:./src/tftpserver.c ****    * an ACK packet and a DATA packet for RRQs - see RFC1350 for more info.  */
+ 144:./src/tftpserver.c ****   IAP_tftp_set_block(packet, block);
+  88              		.loc 1 144 3 is_stmt 1 view .LVU17
   89              	.LBB32:
   90              	.LBI24:
- 109:./src/tftpserver.c **** {
-  91              		.loc 1 109 13 view .LVU18
+ 111:./src/tftpserver.c **** {
+  91              		.loc 1 111 13 view .LVU18
   92              	.LBB26:
- 111:./src/tftpserver.c ****   p[1] = htons(block);
-  93              		.loc 1 111 3 view .LVU19
- 112:./src/tftpserver.c **** }
-  94              		.loc 1 112 3 view .LVU20
- 112:./src/tftpserver.c **** }
-  95              		.loc 1 112 10 is_stmt 0 view .LVU21
+ 113:./src/tftpserver.c ****   p[1] = htons(block);
+  93              		.loc 1 113 3 view .LVU19
+ 114:./src/tftpserver.c **** }
+  94              		.loc 1 114 3 view .LVU20
+ 114:./src/tftpserver.c **** }
+  95              		.loc 1 114 10 is_stmt 0 view .LVU21
   96 0018 FFF7FEFF 		bl	lwip_htons
   97              	.LVL4:
- 112:./src/tftpserver.c **** }
-  98              		.loc 1 112 10 view .LVU22
+ 114:./src/tftpserver.c **** }
+  98              		.loc 1 114 10 view .LVU22
   99              	.LBE26:
  100              	.LBE32:
- 143:./src/tftpserver.c **** 
- 144:./src/tftpserver.c ****   /* PBUF_TRANSPORT - specifies the transport layer */
- 145:./src/tftpserver.c ****   pkt_buf = pbuf_alloc(PBUF_TRANSPORT, TFTP_ACK_PKT_LEN, PBUF_POOL);
- 101              		.loc 1 145 13 view .LVU23
+ 145:./src/tftpserver.c **** 
+ 146:./src/tftpserver.c ****   /* PBUF_TRANSPORT - specifies the transport layer */
+ 147:./src/tftpserver.c ****   pkt_buf = pbuf_alloc(PBUF_TRANSPORT, TFTP_ACK_PKT_LEN, PBUF_POOL);
+ 101              		.loc 1 147 13 view .LVU23
  102 001c 2146     		mov	r1, r4
  103              	.LBB33:
  104              	.LBB27:
- 112:./src/tftpserver.c **** }
- 105              		.loc 1 112 8 view .LVU24
+ 114:./src/tftpserver.c **** }
+ 105              		.loc 1 114 8 view .LVU24
  106 001e ADF80600 		strh	r0, [sp, #6]	@ movhi
  107              	.LVL5:
- 112:./src/tftpserver.c **** }
- 108              		.loc 1 112 8 view .LVU25
+ 114:./src/tftpserver.c **** }
+ 108              		.loc 1 114 8 view .LVU25
  109              	.LBE27:
  110              	.LBE33:
- 111              		.loc 1 145 3 is_stmt 1 view .LVU26
- 112              		.loc 1 145 13 is_stmt 0 view .LVU27
+ 111              		.loc 1 147 3 is_stmt 1 view .LVU26
+ 112              		.loc 1 147 13 is_stmt 0 view .LVU27
  113 0022 4FF4C172 		mov	r2, #386
  114 0026 3620     		movs	r0, #54
  115 0028 FFF7FEFF 		bl	pbuf_alloc
  116              	.LVL6:
- 146:./src/tftpserver.c **** 
- 147:./src/tftpserver.c ****   if (!pkt_buf)      /*if the packet pbuf == NULL exit and EndTransfertransmission */
- 117              		.loc 1 147 3 is_stmt 1 view .LVU28
- 118              		.loc 1 147 6 is_stmt 0 view .LVU29
+ 148:./src/tftpserver.c **** 
+ 149:./src/tftpserver.c ****   if (!pkt_buf)      /*if the packet pbuf == NULL exit and EndTransfertransmission */
+ 117              		.loc 1 149 3 is_stmt 1 view .LVU28
+ 118              		.loc 1 149 6 is_stmt 0 view .LVU29
  119 002c 78B1     		cbz	r0, .L5
- 148:./src/tftpserver.c ****   {
- 149:./src/tftpserver.c **** #ifdef USE_PRINT
- 150:./src/tftpserver.c ****     udp_client_send("Can not allocate pbuf\n");
- 151:./src/tftpserver.c **** #endif
- 152:./src/tftpserver.c ****     return ERR_MEM;
- 153:./src/tftpserver.c ****   }
- 154:./src/tftpserver.c **** 
- 155:./src/tftpserver.c ****   /* Copy the original data buffer over to the packet buffer's payload */
- 156:./src/tftpserver.c ****   memcpy(pkt_buf->payload, packet, TFTP_ACK_PKT_LEN);
- 120              		.loc 1 156 3 is_stmt 1 view .LVU30
+ 150:./src/tftpserver.c ****   {
+ 151:./src/tftpserver.c **** #ifdef USE_PRINT
+ 152:./src/tftpserver.c ****     udp_client_send("Can not allocate pbuf\n");
+ 153:./src/tftpserver.c **** #endif
+ 154:./src/tftpserver.c ****     return ERR_MEM;
+ 155:./src/tftpserver.c ****   }
+ 156:./src/tftpserver.c **** 
+ 157:./src/tftpserver.c ****   /* Copy the original data buffer over to the packet buffer's payload */
+ 158:./src/tftpserver.c ****   memcpy(pkt_buf->payload, packet, TFTP_ACK_PKT_LEN);
+ 120              		.loc 1 158 3 is_stmt 1 view .LVU30
  121 002e 0446     		mov	r4, r0
  122 0030 4168     		ldr	r1, [r0, #4]
- 157:./src/tftpserver.c **** 
- 158:./src/tftpserver.c ****   /* Sending packet by UDP protocol */
- 159:./src/tftpserver.c ****   err = udp_sendto(upcb, pkt_buf, to, to_port);
- 123              		.loc 1 159 9 is_stmt 0 view .LVU31
+ 159:./src/tftpserver.c **** 
+ 160:./src/tftpserver.c ****   /* Sending packet by UDP protocol */
+ 161:./src/tftpserver.c ****   err = udp_sendto(upcb, pkt_buf, to, to_port);
+ 123              		.loc 1 161 9 is_stmt 0 view .LVU31
  124 0032 2846     		mov	r0, r5
  125              	.LVL7:
- 156:./src/tftpserver.c **** 
- 126              		.loc 1 156 3 view .LVU32
+ 158:./src/tftpserver.c **** 
+ 126              		.loc 1 158 3 view .LVU32
  127 0034 019D     		ldr	r5, [sp, #4]
  128              	.LVL8:
- 129              		.loc 1 159 9 view .LVU33
+ 129              		.loc 1 161 9 view .LVU33
  130 0036 BBB2     		uxth	r3, r7
  131 0038 3246     		mov	r2, r6
- 156:./src/tftpserver.c **** 
- 132              		.loc 1 156 3 view .LVU34
+ 158:./src/tftpserver.c **** 
+ 132              		.loc 1 158 3 view .LVU34
  133 003a 0D60     		str	r5, [r1]	@ unaligned
- 134              		.loc 1 159 3 is_stmt 1 view .LVU35
- 135              		.loc 1 159 9 is_stmt 0 view .LVU36
+ 134              		.loc 1 161 3 is_stmt 1 view .LVU35
+ 135              		.loc 1 161 9 is_stmt 0 view .LVU36
  136 003c 2146     		mov	r1, r4
  137 003e FFF7FEFF 		bl	udp_sendto
  138              	.LVL9:
- 160:./src/tftpserver.c **** 
- 161:./src/tftpserver.c ****   /* free the buffer pbuf */
- 162:./src/tftpserver.c ****   pbuf_free(pkt_buf);
- 139              		.loc 1 162 3 is_stmt 1 view .LVU37
+ 162:./src/tftpserver.c **** 
+ 163:./src/tftpserver.c ****   /* free the buffer pbuf */
+ 164:./src/tftpserver.c ****   pbuf_free(pkt_buf);
+ 139              		.loc 1 164 3 is_stmt 1 view .LVU37
  140 0042 2046     		mov	r0, r4
- 163:./src/tftpserver.c **** 
- 164:./src/tftpserver.c ****   return err;
- 165:./src/tftpserver.c **** }
- 141              		.loc 1 165 1 is_stmt 0 view .LVU38
+ 165:./src/tftpserver.c **** 
+ 166:./src/tftpserver.c ****   return err;
+ 167:./src/tftpserver.c **** }
+ 141              		.loc 1 167 1 is_stmt 0 view .LVU38
  142 0044 03B0     		add	sp, sp, #12
  143              	.LCFI2:
  144              		.cfi_remember_state
@@ -341,18 +343,18 @@
  153              		.cfi_restore 4
  154              		.cfi_def_cfa_offset 0
  155              	.LVL10:
- 162:./src/tftpserver.c **** 
- 156              		.loc 1 162 3 view .LVU39
+ 164:./src/tftpserver.c **** 
+ 156              		.loc 1 164 3 view .LVU39
  157 004a FFF7FEBF 		b	pbuf_free
  158              	.LVL11:
  159              	.L5:
  160              	.LCFI4:
  161              		.cfi_restore_state
- 150:./src/tftpserver.c **** #endif
- 162              		.loc 1 150 5 is_stmt 1 view .LVU40
+ 152:./src/tftpserver.c **** #endif
+ 162              		.loc 1 152 5 is_stmt 1 view .LVU40
  163 004e 0348     		ldr	r0, .L6
  164              	.LVL12:
- 165              		.loc 1 165 1 is_stmt 0 view .LVU41
+ 165              		.loc 1 167 1 is_stmt 0 view .LVU41
  166 0050 03B0     		add	sp, sp, #12
  167              	.LCFI5:
  168              		.cfi_def_cfa_offset 20
@@ -366,8 +368,8 @@
  176              		.cfi_restore 4
  177              		.cfi_def_cfa_offset 0
  178              	.LVL13:
- 150:./src/tftpserver.c **** #endif
- 179              		.loc 1 150 5 view .LVU42
+ 152:./src/tftpserver.c **** #endif
+ 179              		.loc 1 152 5 view .LVU42
  180 0056 FFF7FEBF 		b	udp_client_send
  181              	.LVL14:
  182              	.L7:
@@ -375,7 +377,7 @@
  184              	.L6:
  185 005c 00000000 		.word	.LC0
  186              		.cfi_endproc
- 187              	.LFE179:
+ 187              	.LFE180:
  189              		.section	.rodata.str1.4
  190 0017 00       		.align	2
  191              	.LC1:
@@ -428,26 +430,26 @@
  216              	IAP_wrq_recv_callback:
  217              	.LVL15:
  218              	.LFB174:
- 166:./src/tftpserver.c **** 
- 167:./src/tftpserver.c **** /**
- 168:./src/tftpserver.c ****   * @brief  Processes data transfers after a TFTP write request
- 169:./src/tftpserver.c ****   * @param  _args: used as pointer on TFTP connection args
- 170:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
- 171:./src/tftpserver.c ****   * @param  pkt_buf: pointer on a pbuf stucture
- 172:./src/tftpserver.c ****   * @param  ip_addr: pointer on the receive IP_address structure
- 173:./src/tftpserver.c ****   * @param  port: receive port address
- 174:./src/tftpserver.c ****   * @retval None
- 175:./src/tftpserver.c ****   */
- 176:./src/tftpserver.c **** static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf *pkt_buf, const ip
- 177:./src/tftpserver.c **** {
- 219              		.loc 1 177 1 is_stmt 1 view -0
+ 168:./src/tftpserver.c **** 
+ 169:./src/tftpserver.c **** /**
+ 170:./src/tftpserver.c ****   * @brief  Processes data transfers after a TFTP write request
+ 171:./src/tftpserver.c ****   * @param  _args: used as pointer on TFTP connection args
+ 172:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
+ 173:./src/tftpserver.c ****   * @param  pkt_buf: pointer on a pbuf stucture
+ 174:./src/tftpserver.c ****   * @param  ip_addr: pointer on the receive IP_address structure
+ 175:./src/tftpserver.c ****   * @param  port: receive port address
+ 176:./src/tftpserver.c ****   * @retval None
+ 177:./src/tftpserver.c ****   */
+ 178:./src/tftpserver.c **** static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf *pkt_buf, const ip
+ 179:./src/tftpserver.c **** {
+ 219              		.loc 1 179 1 is_stmt 1 view -0
  220              		.cfi_startproc
  221              		@ args = 4, pretend = 0, frame = 584
  222              		@ frame_needed = 0, uses_anonymous_args = 0
- 178:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
- 223              		.loc 1 178 3 view .LVU44
- 177:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
- 224              		.loc 1 177 1 is_stmt 0 view .LVU45
+ 180:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
+ 223              		.loc 1 180 3 view .LVU44
+ 179:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
+ 224              		.loc 1 179 1 is_stmt 0 view .LVU45
  225 0060 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
  226              	.LCFI7:
  227              		.cfi_def_cfa_offset 24
@@ -459,212 +461,212 @@
  233              		.cfi_offset 14, -4
  234 0064 1446     		mov	r4, r2
  235              	.LVL16:
- 179:./src/tftpserver.c ****   uint32_t data_buffer[128];
- 236              		.loc 1 179 3 is_stmt 1 view .LVU46
- 180:./src/tftpserver.c ****   uint16_t count=0;
- 237              		.loc 1 180 3 view .LVU47
- 181:./src/tftpserver.c **** 
- 182:./src/tftpserver.c **** #ifdef USE_PRINT
- 183:./src/tftpserver.c ****   char message[40];
- 238              		.loc 1 183 3 view .LVU48
- 184:./src/tftpserver.c **** #endif
- 185:./src/tftpserver.c **** 
- 186:./src/tftpserver.c ****   if (pkt_buf->len != pkt_buf->tot_len)
- 239              		.loc 1 186 3 view .LVU49
- 177:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
- 240              		.loc 1 177 1 is_stmt 0 view .LVU50
+ 181:./src/tftpserver.c ****   uint32_t data_buffer[128];
+ 236              		.loc 1 181 3 is_stmt 1 view .LVU46
+ 182:./src/tftpserver.c ****   uint16_t count=0;
+ 237              		.loc 1 182 3 view .LVU47
+ 183:./src/tftpserver.c **** 
+ 184:./src/tftpserver.c **** #ifdef USE_PRINT
+ 185:./src/tftpserver.c ****   char message[40];
+ 238              		.loc 1 185 3 view .LVU48
+ 186:./src/tftpserver.c **** #endif
+ 187:./src/tftpserver.c **** 
+ 188:./src/tftpserver.c ****   if (pkt_buf->len != pkt_buf->tot_len)
+ 239              		.loc 1 188 3 view .LVU49
+ 179:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
+ 240              		.loc 1 179 1 is_stmt 0 view .LVU50
  241 0066 1F46     		mov	r7, r3
- 242              		.loc 1 186 14 view .LVU51
+ 242              		.loc 1 188 14 view .LVU51
  243 0068 5289     		ldrh	r2, [r2, #10]
  244              	.LVL17:
- 177:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
- 245              		.loc 1 177 1 view .LVU52
+ 179:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
+ 245              		.loc 1 179 1 view .LVU52
  246 006a ADF5187D 		sub	sp, sp, #608
  247              	.LCFI8:
  248              		.cfi_def_cfa_offset 632
- 249              		.loc 1 186 6 view .LVU53
+ 249              		.loc 1 188 6 view .LVU53
  250 006e 2389     		ldrh	r3, [r4, #8]
  251              	.LVL18:
- 177:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
- 252              		.loc 1 177 1 view .LVU54
+ 179:./src/tftpserver.c ****   tftp_connection_args *args = (tftp_connection_args *)_args;
+ 252              		.loc 1 179 1 view .LVU54
  253 0070 BDF87882 		ldrh	r8, [sp, #632]
- 254              		.loc 1 186 6 view .LVU55
+ 254              		.loc 1 188 6 view .LVU55
  255 0074 9342     		cmp	r3, r2
  256 0076 29D1     		bne	.L23
- 187:./src/tftpserver.c ****   {
- 188:./src/tftpserver.c **** #ifdef USE_PRINT
- 189:./src/tftpserver.c ****     udp_client_send("Invalid data length\n");
- 190:./src/tftpserver.c **** #endif
- 191:./src/tftpserver.c ****     return;
- 192:./src/tftpserver.c ****   }
- 193:./src/tftpserver.c **** 
- 194:./src/tftpserver.c ****   /* Does this packet have any valid data to write? */
- 195:./src/tftpserver.c ****   if ((pkt_buf->len > TFTP_DATA_PKT_HDR_LEN) &&
- 257              		.loc 1 195 6 view .LVU56
+ 189:./src/tftpserver.c ****   {
+ 190:./src/tftpserver.c **** #ifdef USE_PRINT
+ 191:./src/tftpserver.c ****     udp_client_send("Invalid data length\n");
+ 192:./src/tftpserver.c **** #endif
+ 193:./src/tftpserver.c ****     return;
+ 194:./src/tftpserver.c ****   }
+ 195:./src/tftpserver.c **** 
+ 196:./src/tftpserver.c ****   /* Does this packet have any valid data to write? */
+ 197:./src/tftpserver.c ****   if ((pkt_buf->len > TFTP_DATA_PKT_HDR_LEN) &&
+ 257              		.loc 1 197 6 view .LVU56
  258 0078 042B     		cmp	r3, #4
  259 007a 0546     		mov	r5, r0
  260 007c 0E46     		mov	r6, r1
- 261              		.loc 1 195 3 is_stmt 1 view .LVU57
- 262              		.loc 1 195 6 is_stmt 0 view .LVU58
+ 261              		.loc 1 197 3 is_stmt 1 view .LVU57
+ 262              		.loc 1 197 6 is_stmt 0 view .LVU58
  263 007e 08D9     		bls	.L10
  264              	.LVL19:
  265              	.LBB49:
  266              	.LBI49:
-  85:./src/tftpserver.c **** {
- 267              		.loc 1 85 14 is_stmt 1 discriminator 1 view .LVU59
+  87:./src/tftpserver.c **** {
+ 267              		.loc 1 87 14 is_stmt 1 discriminator 1 view .LVU59
  268              	.LBB50:
-  87:./src/tftpserver.c ****   return ntohs(b[1]);
- 269              		.loc 1 87 3 discriminator 1 view .LVU60
-  88:./src/tftpserver.c **** }
- 270              		.loc 1 88 3 discriminator 1 view .LVU61
-  88:./src/tftpserver.c **** }
- 271              		.loc 1 88 10 is_stmt 0 discriminator 1 view .LVU62
+  89:./src/tftpserver.c ****   return ntohs(b[1]);
+ 269              		.loc 1 89 3 discriminator 1 view .LVU60
+  90:./src/tftpserver.c **** }
+ 270              		.loc 1 90 3 discriminator 1 view .LVU61
+  90:./src/tftpserver.c **** }
+ 271              		.loc 1 90 10 is_stmt 0 discriminator 1 view .LVU62
  272 0080 6368     		ldr	r3, [r4, #4]
  273 0082 5888     		ldrh	r0, [r3, #2]
  274              	.LVL20:
-  88:./src/tftpserver.c **** }
- 275              		.loc 1 88 10 discriminator 1 view .LVU63
+  90:./src/tftpserver.c **** }
+ 275              		.loc 1 90 10 discriminator 1 view .LVU63
  276 0084 FFF7FEFF 		bl	lwip_htons
  277              	.LVL21:
-  88:./src/tftpserver.c **** }
- 278              		.loc 1 88 10 discriminator 1 view .LVU64
+  90:./src/tftpserver.c **** }
+ 278              		.loc 1 90 10 discriminator 1 view .LVU64
  279              	.LBE50:
  280              	.LBE49:
- 196:./src/tftpserver.c ****       (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1)))
- 281              		.loc 1 196 65 discriminator 1 view .LVU65
+ 198:./src/tftpserver.c ****       (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1)))
+ 281              		.loc 1 198 65 discriminator 1 view .LVU65
  282 0088 D5F81432 		ldr	r3, [r5, #532]
  283 008c 0133     		adds	r3, r3, #1
- 195:./src/tftpserver.c ****       (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1)))
- 284              		.loc 1 195 46 discriminator 1 view .LVU66
+ 197:./src/tftpserver.c ****       (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1)))
+ 284              		.loc 1 197 46 discriminator 1 view .LVU66
  285 008e 9842     		cmp	r0, r3
  286 0090 23D0     		beq	.L24
  287              	.L10:
- 197:./src/tftpserver.c ****   {
- 198:./src/tftpserver.c ****     /* copy packet payload to data_buffer */
- 199:./src/tftpserver.c ****     pbuf_copy_partial(pkt_buf, data_buffer, pkt_buf->len - TFTP_DATA_PKT_HDR_LEN,
- 200:./src/tftpserver.c ****                       TFTP_DATA_PKT_HDR_LEN);
- 201:./src/tftpserver.c ****     
- 202:./src/tftpserver.c ****     total_count += pkt_buf->len - TFTP_DATA_PKT_HDR_LEN; 
+ 199:./src/tftpserver.c ****   {
+ 200:./src/tftpserver.c ****     /* copy packet payload to data_buffer */
+ 201:./src/tftpserver.c ****     pbuf_copy_partial(pkt_buf, data_buffer, pkt_buf->len - TFTP_DATA_PKT_HDR_LEN,
+ 202:./src/tftpserver.c ****                       TFTP_DATA_PKT_HDR_LEN);
  203:./src/tftpserver.c ****     
- 204:./src/tftpserver.c ****     count = (pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)/4;
- 205:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
- 206:./src/tftpserver.c ****     count++;
- 207:./src/tftpserver.c **** 
- 208:./src/tftpserver.c **** 
- 209:./src/tftpserver.c ****     /* Write received data in Flash */
- 210:./src/tftpserver.c ****     FLASH_If_Write(&Flash_Write_Address, data_buffer ,count);
- 211:./src/tftpserver.c ****        
- 212:./src/tftpserver.c ****     /* update our block number to match the block number just received */
- 213:./src/tftpserver.c ****     args->block++;
- 214:./src/tftpserver.c ****     /* update total bytes  */
- 215:./src/tftpserver.c ****     (args->tot_bytes) += (pkt_buf->len - TFTP_DATA_PKT_HDR_LEN);
- 216:./src/tftpserver.c **** 
- 217:./src/tftpserver.c ****     /* This is a valid pkt but it has no data.  This would occur if the file being
- 218:./src/tftpserver.c ****        written is an exact multiple of 512 bytes.  In this case, the args->block
- 219:./src/tftpserver.c ****        value must still be updated, but we can skip everything else.    */
- 220:./src/tftpserver.c ****   }
- 221:./src/tftpserver.c ****   else if (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1))
- 288              		.loc 1 221 8 is_stmt 1 view .LVU67
+ 204:./src/tftpserver.c ****     total_count += pkt_buf->len - TFTP_DATA_PKT_HDR_LEN; 
+ 205:./src/tftpserver.c ****     
+ 206:./src/tftpserver.c ****     count = (pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)/4;
+ 207:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
+ 208:./src/tftpserver.c ****     count++;
+ 209:./src/tftpserver.c **** 
+ 210:./src/tftpserver.c **** 
+ 211:./src/tftpserver.c ****     /* Write received data in Flash */
+ 212:./src/tftpserver.c ****     FLASH_If_Write(&Flash_Write_Address, data_buffer ,count);
+ 213:./src/tftpserver.c ****        
+ 214:./src/tftpserver.c ****     /* update our block number to match the block number just received */
+ 215:./src/tftpserver.c ****     args->block++;
+ 216:./src/tftpserver.c ****     /* update total bytes  */
+ 217:./src/tftpserver.c ****     (args->tot_bytes) += (pkt_buf->len - TFTP_DATA_PKT_HDR_LEN);
+ 218:./src/tftpserver.c **** 
+ 219:./src/tftpserver.c ****     /* This is a valid pkt but it has no data.  This would occur if the file being
+ 220:./src/tftpserver.c ****        written is an exact multiple of 512 bytes.  In this case, the args->block
+ 221:./src/tftpserver.c ****        value must still be updated, but we can skip everything else.    */
+ 222:./src/tftpserver.c ****   }
+ 223:./src/tftpserver.c ****   else if (IAP_tftp_extract_block(pkt_buf->payload) == (args->block + 1))
+ 288              		.loc 1 223 8 is_stmt 1 view .LVU67
  289              	.LVL22:
  290              	.LBB51:
  291              	.LBI51:
-  85:./src/tftpserver.c **** {
- 292              		.loc 1 85 14 view .LVU68
+  87:./src/tftpserver.c **** {
+ 292              		.loc 1 87 14 view .LVU68
  293              	.LBB52:
-  87:./src/tftpserver.c ****   return ntohs(b[1]);
- 294              		.loc 1 87 3 view .LVU69
-  88:./src/tftpserver.c **** }
- 295              		.loc 1 88 3 view .LVU70
-  88:./src/tftpserver.c **** }
- 296              		.loc 1 88 10 is_stmt 0 view .LVU71
+  89:./src/tftpserver.c ****   return ntohs(b[1]);
+ 294              		.loc 1 89 3 view .LVU69
+  90:./src/tftpserver.c **** }
+ 295              		.loc 1 90 3 view .LVU70
+  90:./src/tftpserver.c **** }
+ 296              		.loc 1 90 10 is_stmt 0 view .LVU71
  297 0092 6368     		ldr	r3, [r4, #4]
  298 0094 5888     		ldrh	r0, [r3, #2]
  299 0096 FFF7FEFF 		bl	lwip_htons
  300              	.LVL23:
-  88:./src/tftpserver.c **** }
- 301              		.loc 1 88 10 view .LVU72
+  90:./src/tftpserver.c **** }
+ 301              		.loc 1 90 10 view .LVU72
  302              	.LBE52:
  303              	.LBE51:
- 304              		.loc 1 221 61 view .LVU73
+ 304              		.loc 1 223 61 view .LVU73
  305 009a D5F81432 		ldr	r3, [r5, #532]
- 306              		.loc 1 221 69 view .LVU74
+ 306              		.loc 1 223 69 view .LVU74
  307 009e 5A1C     		adds	r2, r3, #1
- 308              		.loc 1 221 11 view .LVU75
+ 308              		.loc 1 223 11 view .LVU75
  309 00a0 9042     		cmp	r0, r2
  310 00a2 0FD0     		beq	.L25
  311              	.LVL24:
  312              	.L13:
- 222:./src/tftpserver.c ****   {
- 223:./src/tftpserver.c ****     /* update our block number to match the block number just received  */
- 224:./src/tftpserver.c ****     args->block++;
- 225:./src/tftpserver.c ****   }
- 226:./src/tftpserver.c ****   
- 227:./src/tftpserver.c ****   /* Send the appropriate ACK pkt*/
- 228:./src/tftpserver.c ****   IAP_tftp_send_ack_packet(upcb, addr, port, args->block);   
- 313              		.loc 1 228 3 is_stmt 1 view .LVU76
+ 224:./src/tftpserver.c ****   {
+ 225:./src/tftpserver.c ****     /* update our block number to match the block number just received  */
+ 226:./src/tftpserver.c ****     args->block++;
+ 227:./src/tftpserver.c ****   }
+ 228:./src/tftpserver.c ****   
+ 229:./src/tftpserver.c ****   /* Send the appropriate ACK pkt*/
+ 230:./src/tftpserver.c ****   IAP_tftp_send_ack_packet(upcb, addr, port, args->block);   
+ 313              		.loc 1 230 3 is_stmt 1 view .LVU76
  314 00a4 4246     		mov	r2, r8
  315 00a6 3946     		mov	r1, r7
  316 00a8 3046     		mov	r0, r6
  317 00aa FFF7A9FF 		bl	IAP_tftp_send_ack_packet.isra.0
  318              	.LVL25:
- 229:./src/tftpserver.c **** 
- 230:./src/tftpserver.c ****   /* If the last write returned less than the maximum TFTP data pkt length,
- 231:./src/tftpserver.c ****    * then we've received the whole file and so we can quit (this is how TFTP
- 232:./src/tftpserver.c ****    * signals the EndTransferof a transfer!)
- 233:./src/tftpserver.c ****    */
- 234:./src/tftpserver.c ****   if (pkt_buf->len < TFTP_DATA_PKT_LEN_MAX)
- 319              		.loc 1 234 3 view .LVU77
- 320              		.loc 1 234 6 is_stmt 0 view .LVU78
+ 231:./src/tftpserver.c **** 
+ 232:./src/tftpserver.c ****   /* If the last write returned less than the maximum TFTP data pkt length,
+ 233:./src/tftpserver.c ****    * then we've received the whole file and so we can quit (this is how TFTP
+ 234:./src/tftpserver.c ****    * signals the EndTransferof a transfer!)
+ 235:./src/tftpserver.c ****    */
+ 236:./src/tftpserver.c ****   if (pkt_buf->len < TFTP_DATA_PKT_LEN_MAX)
+ 319              		.loc 1 236 3 view .LVU77
+ 320              		.loc 1 236 6 is_stmt 0 view .LVU78
  321 00ae 6389     		ldrh	r3, [r4, #10]
  322 00b0 B3F5017F 		cmp	r3, #516
  323 00b4 3CD3     		bcc	.L26
- 235:./src/tftpserver.c ****   {
- 236:./src/tftpserver.c **** 	  sprintf(message, "[BOOT]  Tot bytes Received: %d bytes \n",(int)total_count);
- 237:./src/tftpserver.c **** 	  udp_client_send(message);
- 238:./src/tftpserver.c **** 
- 239:./src/tftpserver.c ****     IAP_tftp_cleanup_wr(upcb, args);
- 240:./src/tftpserver.c ****     pbuf_free(pkt_buf);
- 241:./src/tftpserver.c ****     
- 242:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
- 243:./src/tftpserver.c ****       uint32_t crc_result = 0;
- 244:./src/tftpserver.c ****       crc_result = CAL_CRC(hcrc);
- 245:./src/tftpserver.c ****       char msg2[32];
- 246:./src/tftpserver.c ****       sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
- 247:./src/tftpserver.c ****       udp_client_send(msg2);
- 248:./src/tftpserver.c **** 
- 249:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 237:./src/tftpserver.c ****   {
+ 238:./src/tftpserver.c **** 	  sprintf(message, "[BOOT]  Tot bytes Received: %d bytes \n",(int)total_count);
+ 239:./src/tftpserver.c **** 	  udp_client_send(message);
+ 240:./src/tftpserver.c **** 
+ 241:./src/tftpserver.c ****     IAP_tftp_cleanup_wr(upcb, args);
+ 242:./src/tftpserver.c ****     pbuf_free(pkt_buf);
+ 243:./src/tftpserver.c ****     
+ 244:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
+ 245:./src/tftpserver.c ****       uint32_t crc_result = 0;
+ 246:./src/tftpserver.c ****       crc_result = CAL_CRC(hcrc);
+ 247:./src/tftpserver.c ****       char msg2[32];
+ 248:./src/tftpserver.c ****       sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
+ 249:./src/tftpserver.c ****       udp_client_send(msg2);
  250:./src/tftpserver.c **** 
- 251:./src/tftpserver.c ****       if (TAG_ADDRESS->crc == crc_result){
- 252:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
- 253:./src/tftpserver.c ****   	  }
- 254:./src/tftpserver.c ****   	  else if(TAG_ADDRESS->crc != crc_result) {
- 255:./src/tftpserver.c ****   		udp_client_send("[BOOT]  CRC not same, Back to before FW\n");
- 256:./src/tftpserver.c ****   		HAL_FLASH_Unlock();
- 257:./src/tftpserver.c ****   		FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
- 258:./src/tftpserver.c ****   		Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
- 259:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 260:./src/tftpserver.c ****   		uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
- 261:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 262:./src/tftpserver.c ****   	  }
- 263:./src/tftpserver.c ****     }
- 264:./src/tftpserver.c **** #ifdef USE_PRINT
- 265:./src/tftpserver.c ****     udp_client_send("[BOOT]  Reset the board \n");
- 266:./src/tftpserver.c ****     clear_boot_flag();
- 267:./src/tftpserver.c ****     NVIC_SystemReset();
- 268:./src/tftpserver.c **** #endif
- 269:./src/tftpserver.c ****   }
- 270:./src/tftpserver.c ****   else
- 271:./src/tftpserver.c ****   {
- 272:./src/tftpserver.c ****     pbuf_free(pkt_buf);
- 324              		.loc 1 272 5 is_stmt 1 view .LVU79
+ 251:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 252:./src/tftpserver.c **** 
+ 253:./src/tftpserver.c ****       if (TAG_ADDRESS->crc == crc_result){
+ 254:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
+ 255:./src/tftpserver.c ****   	  }
+ 256:./src/tftpserver.c ****   	  else if(TAG_ADDRESS->crc != crc_result) {
+ 257:./src/tftpserver.c ****   		udp_client_send("[BOOT]  CRC not same, Back to before FW\n");
+ 258:./src/tftpserver.c ****   		HAL_FLASH_Unlock();
+ 259:./src/tftpserver.c ****   		FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+ 260:./src/tftpserver.c ****   		Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 261:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 262:./src/tftpserver.c ****   		uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
+ 263:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 264:./src/tftpserver.c ****   	  }
+ 265:./src/tftpserver.c ****     }
+ 266:./src/tftpserver.c **** #ifdef USE_PRINT
+ 267:./src/tftpserver.c ****     udp_client_send("[BOOT]  Reset the board \n");
+ 268:./src/tftpserver.c ****     clear_boot_flag();
+ 269:./src/tftpserver.c ****     NVIC_SystemReset();
+ 270:./src/tftpserver.c **** #endif
+ 271:./src/tftpserver.c ****   }
+ 272:./src/tftpserver.c ****   else
+ 273:./src/tftpserver.c ****   {
+ 274:./src/tftpserver.c ****     pbuf_free(pkt_buf);
+ 324              		.loc 1 274 5 is_stmt 1 view .LVU79
  325 00b6 2046     		mov	r0, r4
  326 00b8 FFF7FEFF 		bl	pbuf_free
  327              	.LVL26:
- 273:./src/tftpserver.c ****     return;
- 328              		.loc 1 273 5 view .LVU80
- 274:./src/tftpserver.c ****   }
- 275:./src/tftpserver.c **** }
- 329              		.loc 1 275 1 is_stmt 0 view .LVU81
+ 275:./src/tftpserver.c ****     return;
+ 328              		.loc 1 275 5 view .LVU80
+ 276:./src/tftpserver.c ****   }
+ 277:./src/tftpserver.c **** }
+ 329              		.loc 1 277 1 is_stmt 0 view .LVU81
  330 00bc 0DF5187D 		add	sp, sp, #608
  331              	.LCFI9:
  332              		.cfi_remember_state
@@ -675,20 +677,20 @@
  337              	.L25:
  338              	.LCFI10:
  339              		.cfi_restore_state
- 224:./src/tftpserver.c ****   }
- 340              		.loc 1 224 5 is_stmt 1 view .LVU82
- 224:./src/tftpserver.c ****   }
- 341              		.loc 1 224 16 is_stmt 0 view .LVU83
+ 226:./src/tftpserver.c ****   }
+ 340              		.loc 1 226 5 is_stmt 1 view .LVU82
+ 226:./src/tftpserver.c ****   }
+ 341              		.loc 1 226 16 is_stmt 0 view .LVU83
  342 00c4 0346     		mov	r3, r0
  343 00c6 C5F81402 		str	r0, [r5, #532]
  344 00ca EBE7     		b	.L13
  345              	.LVL28:
  346              	.L23:
- 189:./src/tftpserver.c **** #endif
- 347              		.loc 1 189 5 is_stmt 1 view .LVU84
+ 191:./src/tftpserver.c **** #endif
+ 347              		.loc 1 191 5 is_stmt 1 view .LVU84
  348 00cc 4B48     		ldr	r0, .L29
  349              	.LVL29:
- 350              		.loc 1 275 1 is_stmt 0 view .LVU85
+ 350              		.loc 1 277 1 is_stmt 0 view .LVU85
  351 00ce 0DF5187D 		add	sp, sp, #608
  352              	.LCFI11:
  353              		.cfi_remember_state
@@ -704,15 +706,15 @@
  363              		.cfi_restore 4
  364              		.cfi_def_cfa_offset 0
  365              	.LVL30:
- 189:./src/tftpserver.c **** #endif
- 366              		.loc 1 189 5 view .LVU86
+ 191:./src/tftpserver.c **** #endif
+ 366              		.loc 1 191 5 view .LVU86
  367 00d6 FFF7FEBF 		b	udp_client_send
  368              	.LVL31:
  369              	.L24:
  370              	.LCFI13:
  371              		.cfi_restore_state
- 199:./src/tftpserver.c ****                       TFTP_DATA_PKT_HDR_LEN);
- 372              		.loc 1 199 5 is_stmt 1 view .LVU87
+ 201:./src/tftpserver.c ****                       TFTP_DATA_PKT_HDR_LEN);
+ 372              		.loc 1 201 5 is_stmt 1 view .LVU87
  373 00da 6289     		ldrh	r2, [r4, #10]
  374 00dc 0423     		movs	r3, #4
  375 00de 18A9     		add	r1, sp, #96
@@ -721,359 +723,359 @@
  378 00e4 92B2     		uxth	r2, r2
  379 00e6 FFF7FEFF 		bl	pbuf_copy_partial
  380              	.LVL32:
- 202:./src/tftpserver.c ****     
- 381              		.loc 1 202 5 view .LVU88
- 202:./src/tftpserver.c ****     
- 382              		.loc 1 202 17 is_stmt 0 view .LVU89
+ 204:./src/tftpserver.c ****     
+ 381              		.loc 1 204 5 view .LVU88
+ 204:./src/tftpserver.c ****     
+ 382              		.loc 1 204 17 is_stmt 0 view .LVU89
  383 00ea 454A     		ldr	r2, .L29+4
- 202:./src/tftpserver.c ****     
- 384              		.loc 1 202 27 view .LVU90
+ 204:./src/tftpserver.c ****     
+ 384              		.loc 1 204 27 view .LVU90
  385 00ec 6189     		ldrh	r1, [r4, #10]
- 202:./src/tftpserver.c ****     
- 386              		.loc 1 202 17 view .LVU91
+ 204:./src/tftpserver.c ****     
+ 386              		.loc 1 204 17 view .LVU91
  387 00ee 1368     		ldr	r3, [r2]
  388 00f0 043B     		subs	r3, r3, #4
  389 00f2 0B44     		add	r3, r3, r1
  390 00f4 1360     		str	r3, [r2]
- 204:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
- 391              		.loc 1 204 5 is_stmt 1 view .LVU92
- 204:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
- 392              		.loc 1 204 27 is_stmt 0 view .LVU93
+ 206:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
+ 391              		.loc 1 206 5 is_stmt 1 view .LVU92
+ 206:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
+ 392              		.loc 1 206 27 is_stmt 0 view .LVU93
  393 00f6 0B1F     		subs	r3, r1, #4
- 204:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
- 394              		.loc 1 204 51 view .LVU94
+ 206:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
+ 394              		.loc 1 206 51 view .LVU94
  395 00f8 002B     		cmp	r3, #0
  396 00fa 1A46     		mov	r2, r3
  397 00fc B8BF     		it	lt
  398 00fe 01F1FF32 		addlt	r2, r1, #-1
- 205:./src/tftpserver.c ****     count++;
- 399              		.loc 1 205 8 view .LVU95
+ 207:./src/tftpserver.c ****     count++;
+ 399              		.loc 1 207 8 view .LVU95
  400 0102 9B07     		lsls	r3, r3, #30
- 204:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
- 401              		.loc 1 204 11 view .LVU96
+ 206:./src/tftpserver.c ****     if (((pkt_buf->len - TFTP_DATA_PKT_HDR_LEN)%4)!=0) 
+ 401              		.loc 1 206 11 view .LVU96
  402 0104 C2F38F02 		ubfx	r2, r2, #2, #16
  403              	.LVL33:
- 205:./src/tftpserver.c ****     count++;
- 404              		.loc 1 205 5 is_stmt 1 view .LVU97
- 205:./src/tftpserver.c ****     count++;
- 405              		.loc 1 205 8 is_stmt 0 view .LVU98
+ 207:./src/tftpserver.c ****     count++;
+ 404              		.loc 1 207 5 is_stmt 1 view .LVU97
+ 207:./src/tftpserver.c ****     count++;
+ 405              		.loc 1 207 8 is_stmt 0 view .LVU98
  406 0108 01D0     		beq	.L12
- 206:./src/tftpserver.c **** 
- 407              		.loc 1 206 5 is_stmt 1 view .LVU99
- 206:./src/tftpserver.c **** 
- 408              		.loc 1 206 10 is_stmt 0 view .LVU100
+ 208:./src/tftpserver.c **** 
+ 407              		.loc 1 208 5 is_stmt 1 view .LVU99
+ 208:./src/tftpserver.c **** 
+ 408              		.loc 1 208 10 is_stmt 0 view .LVU100
  409 010a 0132     		adds	r2, r2, #1
  410              	.LVL34:
- 206:./src/tftpserver.c **** 
- 411              		.loc 1 206 10 view .LVU101
+ 208:./src/tftpserver.c **** 
+ 411              		.loc 1 208 10 view .LVU101
  412 010c 92B2     		uxth	r2, r2
  413              	.LVL35:
  414              	.L12:
- 210:./src/tftpserver.c ****        
- 415              		.loc 1 210 5 is_stmt 1 view .LVU102
+ 212:./src/tftpserver.c ****        
+ 415              		.loc 1 212 5 is_stmt 1 view .LVU102
  416 010e 18A9     		add	r1, sp, #96
  417 0110 3C48     		ldr	r0, .L29+8
  418 0112 FFF7FEFF 		bl	FLASH_If_Write
  419              	.LVL36:
- 213:./src/tftpserver.c ****     /* update total bytes  */
- 420              		.loc 1 213 5 view .LVU103
- 215:./src/tftpserver.c **** 
- 421              		.loc 1 215 34 is_stmt 0 view .LVU104
+ 215:./src/tftpserver.c ****     /* update total bytes  */
+ 420              		.loc 1 215 5 view .LVU103
+ 217:./src/tftpserver.c **** 
+ 421              		.loc 1 217 34 is_stmt 0 view .LVU104
  422 0116 6289     		ldrh	r2, [r4, #10]
- 213:./src/tftpserver.c ****     /* update total bytes  */
- 423              		.loc 1 213 16 view .LVU105
+ 215:./src/tftpserver.c ****     /* update total bytes  */
+ 423              		.loc 1 215 16 view .LVU105
  424 0118 D5F81432 		ldr	r3, [r5, #532]
- 215:./src/tftpserver.c **** 
- 425              		.loc 1 215 40 view .LVU106
+ 217:./src/tftpserver.c **** 
+ 425              		.loc 1 217 40 view .LVU106
  426 011c 111F     		subs	r1, r2, #4
- 215:./src/tftpserver.c **** 
- 427              		.loc 1 215 23 view .LVU107
+ 217:./src/tftpserver.c **** 
+ 427              		.loc 1 217 23 view .LVU107
  428 011e D5F81822 		ldr	r2, [r5, #536]
- 213:./src/tftpserver.c ****     /* update total bytes  */
- 429              		.loc 1 213 16 view .LVU108
+ 215:./src/tftpserver.c ****     /* update total bytes  */
+ 429              		.loc 1 215 16 view .LVU108
  430 0122 0133     		adds	r3, r3, #1
- 215:./src/tftpserver.c **** 
- 431              		.loc 1 215 23 view .LVU109
+ 217:./src/tftpserver.c **** 
+ 431              		.loc 1 217 23 view .LVU109
  432 0124 0A44     		add	r2, r2, r1
- 213:./src/tftpserver.c ****     /* update total bytes  */
- 433              		.loc 1 213 16 view .LVU110
+ 215:./src/tftpserver.c ****     /* update total bytes  */
+ 433              		.loc 1 215 16 view .LVU110
  434 0126 C5F81432 		str	r3, [r5, #532]
- 215:./src/tftpserver.c **** 
- 435              		.loc 1 215 5 is_stmt 1 view .LVU111
- 215:./src/tftpserver.c **** 
- 436              		.loc 1 215 23 is_stmt 0 view .LVU112
+ 217:./src/tftpserver.c **** 
+ 435              		.loc 1 217 5 is_stmt 1 view .LVU111
+ 217:./src/tftpserver.c **** 
+ 436              		.loc 1 217 23 is_stmt 0 view .LVU112
  437 012a C5F81822 		str	r2, [r5, #536]
  438 012e B9E7     		b	.L13
  439              	.L26:
  440              	.LBB53:
- 236:./src/tftpserver.c **** 	  udp_client_send(message);
- 441              		.loc 1 236 4 is_stmt 1 view .LVU113
+ 238:./src/tftpserver.c **** 	  udp_client_send(message);
+ 441              		.loc 1 238 4 is_stmt 1 view .LVU113
  442 0130 DFF8CC80 		ldr	r8, .L29+4
  443 0134 0EA8     		add	r0, sp, #56
  444 0136 3449     		ldr	r1, .L29+12
  445 0138 D8F80020 		ldr	r2, [r8]
  446 013c FFF7FEFF 		bl	sprintf
  447              	.LVL37:
- 237:./src/tftpserver.c **** 
- 448              		.loc 1 237 4 view .LVU114
+ 239:./src/tftpserver.c **** 
+ 448              		.loc 1 239 4 view .LVU114
  449 0140 0EA8     		add	r0, sp, #56
  450 0142 FFF7FEFF 		bl	udp_client_send
  451              	.LVL38:
- 239:./src/tftpserver.c ****     pbuf_free(pkt_buf);
- 452              		.loc 1 239 5 view .LVU115
+ 241:./src/tftpserver.c ****     pbuf_free(pkt_buf);
+ 452              		.loc 1 241 5 view .LVU115
  453              	.LBB54:
  454              	.LBI54:
- 276:./src/tftpserver.c **** 
- 277:./src/tftpserver.c **** // void  WDGbackup()
- 278:./src/tftpserver.c **** // {
- 279:./src/tftpserver.c **** // 	static uint32_t Flash_Write_Address2;
- 280:./src/tftpserver.c **** // 	HAL_FLASH_Unlock();
- 281:./src/tftpserver.c **** //   HAL_IWDG_Refresh(&hiwdg);
- 282:./src/tftpserver.c **** // 	FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
- 283:./src/tftpserver.c **** // 	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
- 284:./src/tftpserver.c **** // 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 285:./src/tftpserver.c **** // 	uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
- 286:./src/tftpserver.c **** // 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 287:./src/tftpserver.c **** 
- 288:./src/tftpserver.c **** // 	__HAL_RCC_CLEAR_RESET_FLAGS();
- 289:./src/tftpserver.c **** // 	clear_boot_flag();
- 290:./src/tftpserver.c **** 
- 291:./src/tftpserver.c **** // }
+ 278:./src/tftpserver.c **** 
+ 279:./src/tftpserver.c **** void  WDGbackup()
+ 280:./src/tftpserver.c **** {
+ 281:./src/tftpserver.c **** 	static uint32_t Flash_Write_Address2;
+ 282:./src/tftpserver.c **** 	HAL_FLASH_Unlock();
+ 283:./src/tftpserver.c ****   HAL_IWDG_Refresh(&hiwdg);
+ 284:./src/tftpserver.c **** 	FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+ 285:./src/tftpserver.c **** 	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 286:./src/tftpserver.c **** 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 287:./src/tftpserver.c **** 	uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
+ 288:./src/tftpserver.c **** 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 289:./src/tftpserver.c **** 
+ 290:./src/tftpserver.c **** 	__HAL_RCC_CLEAR_RESET_FLAGS();
+ 291:./src/tftpserver.c **** 	clear_boot_flag();
  292:./src/tftpserver.c **** 
- 293:./src/tftpserver.c **** 
- 294:./src/tftpserver.c **** /**
- 295:./src/tftpserver.c ****   * @brief  Processes TFTP write request
- 296:./src/tftpserver.c ****   * @param  to: pointer on the receive IP address
- 297:./src/tftpserver.c ****   * @param  to_port: receive port number
- 298:./src/tftpserver.c ****   * @retval None
- 299:./src/tftpserver.c ****   */
- 300:./src/tftpserver.c **** static int IAP_tftp_process_write(struct udp_pcb *upcb, const ip_addr_t *to, int to_port)
- 301:./src/tftpserver.c **** {
- 302:./src/tftpserver.c ****   tftp_connection_args *args = NULL;
- 303:./src/tftpserver.c ****   /* This function is called from a callback,
- 304:./src/tftpserver.c ****   * therefore interrupts are disabled,
- 305:./src/tftpserver.c ****   * therefore we can use regular malloc   */
- 306:./src/tftpserver.c ****   args = mem_malloc(sizeof *args);
- 307:./src/tftpserver.c ****   if (!args)
- 308:./src/tftpserver.c ****   {
- 309:./src/tftpserver.c **** #ifdef USE_PRINT
- 310:./src/tftpserver.c ****     udp_client_send("Memory error \n");
- 311:./src/tftpserver.c **** #endif
- 312:./src/tftpserver.c ****     IAP_tftp_cleanup_wr(upcb, args);
- 313:./src/tftpserver.c ****     return 0;
- 314:./src/tftpserver.c ****   }
- 315:./src/tftpserver.c **** 
- 316:./src/tftpserver.c ****   args->op = TFTP_WRQ;
- 317:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
- 318:./src/tftpserver.c ****   args->to_port = to_port;
- 319:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
- 320:./src/tftpserver.c ****   args->block = 0;
- 321:./src/tftpserver.c ****   args->tot_bytes = 0;
- 322:./src/tftpserver.c **** 
- 323:./src/tftpserver.c ****   /* set callback for receives on this UDP PCB (Protocol Control Block) */
- 324:./src/tftpserver.c ****   udp_recv(upcb, IAP_wrq_recv_callback, args);
- 325:./src/tftpserver.c ****   
- 326:./src/tftpserver.c ****   total_count =0;
- 327:./src/tftpserver.c **** 
- 328:./src/tftpserver.c ****   /* init flash */
- 329:./src/tftpserver.c ****   FLASH_If_Init();
- 330:./src/tftpserver.c ****   
- 331:./src/tftpserver.c **** 
- 332:./src/tftpserver.c **** 
+ 293:./src/tftpserver.c **** }
+ 294:./src/tftpserver.c **** 
+ 295:./src/tftpserver.c **** 
+ 296:./src/tftpserver.c **** /**
+ 297:./src/tftpserver.c ****   * @brief  Processes TFTP write request
+ 298:./src/tftpserver.c ****   * @param  to: pointer on the receive IP address
+ 299:./src/tftpserver.c ****   * @param  to_port: receive port number
+ 300:./src/tftpserver.c ****   * @retval None
+ 301:./src/tftpserver.c ****   */
+ 302:./src/tftpserver.c **** static int IAP_tftp_process_write(struct udp_pcb *upcb, const ip_addr_t *to, int to_port)
+ 303:./src/tftpserver.c **** {
+ 304:./src/tftpserver.c ****   tftp_connection_args *args = NULL;
+ 305:./src/tftpserver.c ****   /* This function is called from a callback,
+ 306:./src/tftpserver.c ****   * therefore interrupts are disabled,
+ 307:./src/tftpserver.c ****   * therefore we can use regular malloc   */
+ 308:./src/tftpserver.c ****   args = mem_malloc(sizeof *args);
+ 309:./src/tftpserver.c ****   if (!args)
+ 310:./src/tftpserver.c ****   {
+ 311:./src/tftpserver.c **** #ifdef USE_PRINT
+ 312:./src/tftpserver.c ****     udp_client_send("Memory error \n");
+ 313:./src/tftpserver.c **** #endif
+ 314:./src/tftpserver.c ****     IAP_tftp_cleanup_wr(upcb, args);
+ 315:./src/tftpserver.c ****     return 0;
+ 316:./src/tftpserver.c ****   }
+ 317:./src/tftpserver.c **** 
+ 318:./src/tftpserver.c ****   args->op = TFTP_WRQ;
+ 319:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
+ 320:./src/tftpserver.c ****   args->to_port = to_port;
+ 321:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
+ 322:./src/tftpserver.c ****   args->block = 0;
+ 323:./src/tftpserver.c ****   args->tot_bytes = 0;
+ 324:./src/tftpserver.c **** 
+ 325:./src/tftpserver.c ****   /* set callback for receives on this UDP PCB (Protocol Control Block) */
+ 326:./src/tftpserver.c ****   udp_recv(upcb, IAP_wrq_recv_callback, args);
+ 327:./src/tftpserver.c ****   
+ 328:./src/tftpserver.c ****   total_count =0;
+ 329:./src/tftpserver.c **** 
+ 330:./src/tftpserver.c ****   /* init flash */
+ 331:./src/tftpserver.c ****   FLASH_If_Init();
+ 332:./src/tftpserver.c ****   
  333:./src/tftpserver.c **** 
- 334:./src/tftpserver.c ****   /* erase user flash area */
- 335:./src/tftpserver.c ****   FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
- 336:./src/tftpserver.c ****  
- 337:./src/tftpserver.c ****   Flash_Write_Address = USER_FLASH_FIRST_PAGE_ADDRESS;    
- 338:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
- 339:./src/tftpserver.c ****   IAP_tftp_send_ack_packet(upcb, to, to_port, args->block);
- 340:./src/tftpserver.c **** #ifdef USE_PRINT
- 341:./src/tftpserver.c ****   	  udp_client_send("[BOOT]  Update FW... \n");
- 342:./src/tftpserver.c **** #endif
- 343:./src/tftpserver.c ****   return 0;
- 344:./src/tftpserver.c **** }
- 345:./src/tftpserver.c **** 
- 346:./src/tftpserver.c **** 
- 347:./src/tftpserver.c **** /**
- 348:./src/tftpserver.c ****   * @brief  Processes traffic received on UDP port 69
- 349:./src/tftpserver.c ****   * @param  args: pointer on tftp_connection arguments
- 350:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
- 351:./src/tftpserver.c ****   * @param  pbuf: pointer on packet buffer
- 352:./src/tftpserver.c ****   * @param  addr: pointer on the receive IP address
- 353:./src/tftpserver.c ****   * @param  port: receive port number
- 354:./src/tftpserver.c ****   * @retval None
- 355:./src/tftpserver.c ****   */
- 356:./src/tftpserver.c **** static void IAP_tftp_recv_callback(void *arg, struct udp_pcb *upcb, struct pbuf *pkt_buf,
- 357:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port)
- 358:./src/tftpserver.c **** {
- 359:./src/tftpserver.c **** 
- 360:./src/tftpserver.c ****     char tmp1[40], tmp2[40];
- 361:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
- 362:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
- 363:./src/tftpserver.c **** 
- 364:./src/tftpserver.c ****       sprintf(tmp1, "[BOOT]  Backup : %s\n",TAG_ADDRESS->filename);
- 365:./src/tftpserver.c ****       udp_client_send(tmp1);
- 366:./src/tftpserver.c ****       HAL_FLASH_Unlock();
- 367:./src/tftpserver.c ****   	  FLASH_Backup_Erase(BACKUP_FLASH_FIRST_PAGE_ADDRESS);
- 368:./src/tftpserver.c **** 
- 369:./src/tftpserver.c ****   	  Flash_Write_Address2 = BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 370:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
- 371:./src/tftpserver.c ****   	  uint16_t data_len = ( TAG_ADDRESS->size + 1024 ) / 4;
- 372:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 373:./src/tftpserver.c ****   	  if( result != 0)
- 374:./src/tftpserver.c ****   		  {
- 375:./src/tftpserver.c ****           sprintf(tmp2, "[BOOT]  fail Backup, error : %lu\n", result);
- 376:./src/tftpserver.c ****           udp_client_send(tmp2);
- 377:./src/tftpserver.c ****   		  }
- 378:./src/tftpserver.c ****   	  else
- 379:./src/tftpserver.c ****   		  {
- 380:./src/tftpserver.c ****   			  //printf("[BOOT]  success backup\n");
- 381:./src/tftpserver.c ****   		  }
- 382:./src/tftpserver.c ****   	  }
- 383:./src/tftpserver.c ****   tftp_opcode op;
- 384:./src/tftpserver.c ****   struct udp_pcb *upcb_tftp_data;
- 385:./src/tftpserver.c ****   err_t err;
- 386:./src/tftpserver.c **** 
- 387:./src/tftpserver.c **** #ifdef USE_PRINT
- 388:./src/tftpserver.c ****   uint32_t i;
- 389:./src/tftpserver.c ****   char filename[40],message[46], *ptr;
- 390:./src/tftpserver.c **** #endif
- 391:./src/tftpserver.c **** 
- 392:./src/tftpserver.c ****   /* create new UDP PCB structure */
- 393:./src/tftpserver.c ****   upcb_tftp_data = udp_new();
- 394:./src/tftpserver.c ****   if (!upcb_tftp_data)
- 395:./src/tftpserver.c ****   {
- 396:./src/tftpserver.c ****     /* Error creating PCB. Out of Memory  */
- 397:./src/tftpserver.c **** #ifdef USE_PRINT
- 398:./src/tftpserver.c ****     udp_client_send("Can not create pcb1 \n");
- 399:./src/tftpserver.c **** #endif
- 400:./src/tftpserver.c ****     return;
- 401:./src/tftpserver.c ****   }
- 402:./src/tftpserver.c **** 
- 403:./src/tftpserver.c ****   /* bind to port 0 to receive next available free port */
- 404:./src/tftpserver.c ****   /* NOTE:  This is how TFTP works.  There is a UDP PCB for the standard port
- 405:./src/tftpserver.c ****   * 69 which al transactions begin communication on, however, _all_ subsequent
- 406:./src/tftpserver.c ****   * transactions for a given "stream" occur on another port  */
- 407:./src/tftpserver.c ****   err = udp_bind(upcb_tftp_data, IP_ADDR_ANY, 0);
- 408:./src/tftpserver.c ****   if (err != ERR_OK)
- 409:./src/tftpserver.c ****   {
- 410:./src/tftpserver.c ****     /* Unable to bind to port */
- 411:./src/tftpserver.c **** #ifdef USE_PRINT
- 412:./src/tftpserver.c ****     udp_client_send("Can not create pcb2 \n");
- 413:./src/tftpserver.c **** #endif
- 414:./src/tftpserver.c ****     return;
- 415:./src/tftpserver.c ****   }
- 416:./src/tftpserver.c **** 
- 417:./src/tftpserver.c ****   op = IAP_tftp_decode_op(pkt_buf->payload);
- 418:./src/tftpserver.c ****   if (op != TFTP_WRQ)
- 419:./src/tftpserver.c ****   {
- 420:./src/tftpserver.c ****     /* remove PCB */
- 421:./src/tftpserver.c **** #ifdef USE_PRINT
- 422:./src/tftpserver.c ****     udp_client_send("Bad TFTP opcode \n");
- 423:./src/tftpserver.c **** #endif
- 424:./src/tftpserver.c ****     udp_remove(upcb_tftp_data);
- 425:./src/tftpserver.c ****   }
- 426:./src/tftpserver.c ****   else
- 427:./src/tftpserver.c ****   {
- 428:./src/tftpserver.c ****     
- 429:./src/tftpserver.c **** #ifdef USE_PRINT
- 430:./src/tftpserver.c ****     ptr = pkt_buf->payload;
- 431:./src/tftpserver.c ****     ptr = ptr +2;
- 432:./src/tftpserver.c ****     /*extract file name info */
- 433:./src/tftpserver.c ****     i= 0;
- 434:./src/tftpserver.c ****     while (*(ptr+i)!=0x0)
- 435:./src/tftpserver.c ****     {
- 436:./src/tftpserver.c ****       i++;
- 437:./src/tftpserver.c ****     }
- 438:./src/tftpserver.c ****     strncpy(filename, ptr, i+1);
- 439:./src/tftpserver.c **** 
- 440:./src/tftpserver.c ****     sprintf(message, "[BOOT]  New : %s\n",filename);
- 441:./src/tftpserver.c ****     udp_client_send(message);
- 442:./src/tftpserver.c **** #endif
- 443:./src/tftpserver.c ****      
- 444:./src/tftpserver.c ****     /* Start the TFTP write mode*/
- 445:./src/tftpserver.c ****     IAP_tftp_process_write(upcb_tftp_data, addr, port);
- 446:./src/tftpserver.c ****   }
- 447:./src/tftpserver.c ****   pbuf_free(pkt_buf);
- 448:./src/tftpserver.c **** }
- 449:./src/tftpserver.c **** 
- 450:./src/tftpserver.c **** 
- 451:./src/tftpserver.c **** /**
- 452:./src/tftpserver.c ****   * @brief  disconnect and close the connection 
- 453:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
- 454:./src/tftpserver.c ****   * @param  args: pointer on tftp_connection arguments
- 455:./src/tftpserver.c ****   * @retval None
- 456:./src/tftpserver.c ****   */
- 457:./src/tftpserver.c **** static void IAP_tftp_cleanup_wr(struct udp_pcb *upcb, tftp_connection_args *args)
- 455              		.loc 1 457 13 view .LVU116
+ 334:./src/tftpserver.c **** 
+ 335:./src/tftpserver.c **** 
+ 336:./src/tftpserver.c ****   /* erase user flash area */
+ 337:./src/tftpserver.c ****   FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+ 338:./src/tftpserver.c ****  
+ 339:./src/tftpserver.c ****   Flash_Write_Address = USER_FLASH_FIRST_PAGE_ADDRESS;    
+ 340:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
+ 341:./src/tftpserver.c ****   IAP_tftp_send_ack_packet(upcb, to, to_port, args->block);
+ 342:./src/tftpserver.c **** #ifdef USE_PRINT
+ 343:./src/tftpserver.c ****   	  udp_client_send("[BOOT]  Update FW... \n");
+ 344:./src/tftpserver.c **** #endif
+ 345:./src/tftpserver.c ****   return 0;
+ 346:./src/tftpserver.c **** }
+ 347:./src/tftpserver.c **** 
+ 348:./src/tftpserver.c **** 
+ 349:./src/tftpserver.c **** /**
+ 350:./src/tftpserver.c ****   * @brief  Processes traffic received on UDP port 69
+ 351:./src/tftpserver.c ****   * @param  args: pointer on tftp_connection arguments
+ 352:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
+ 353:./src/tftpserver.c ****   * @param  pbuf: pointer on packet buffer
+ 354:./src/tftpserver.c ****   * @param  addr: pointer on the receive IP address
+ 355:./src/tftpserver.c ****   * @param  port: receive port number
+ 356:./src/tftpserver.c ****   * @retval None
+ 357:./src/tftpserver.c ****   */
+ 358:./src/tftpserver.c **** static void IAP_tftp_recv_callback(void *arg, struct udp_pcb *upcb, struct pbuf *pkt_buf,
+ 359:./src/tftpserver.c ****                         const ip_addr_t *addr, u16_t port)
+ 360:./src/tftpserver.c **** {
+ 361:./src/tftpserver.c **** 
+ 362:./src/tftpserver.c ****     char tmp1[40], tmp2[40];
+ 363:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
+ 364:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 365:./src/tftpserver.c **** 
+ 366:./src/tftpserver.c ****       sprintf(tmp1, "[BOOT]  Backup : %s\n",TAG_ADDRESS->filename);
+ 367:./src/tftpserver.c ****       udp_client_send(tmp1);
+ 368:./src/tftpserver.c ****       HAL_FLASH_Unlock();
+ 369:./src/tftpserver.c ****   	  FLASH_Backup_Erase(BACKUP_FLASH_FIRST_PAGE_ADDRESS);
+ 370:./src/tftpserver.c **** 
+ 371:./src/tftpserver.c ****   	  Flash_Write_Address2 = BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 372:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
+ 373:./src/tftpserver.c ****   	  uint16_t data_len = ( TAG_ADDRESS->size + 1024 ) / 4;
+ 374:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 375:./src/tftpserver.c ****   	  if( result != 0)
+ 376:./src/tftpserver.c ****   		  {
+ 377:./src/tftpserver.c ****           sprintf(tmp2, "[BOOT]  fail Backup, error : %lu\n", result);
+ 378:./src/tftpserver.c ****           udp_client_send(tmp2);
+ 379:./src/tftpserver.c ****   		  }
+ 380:./src/tftpserver.c ****   	  else
+ 381:./src/tftpserver.c ****   		  {
+ 382:./src/tftpserver.c ****   			  //printf("[BOOT]  success backup\n");
+ 383:./src/tftpserver.c ****   		  }
+ 384:./src/tftpserver.c ****   	  }
+ 385:./src/tftpserver.c ****   tftp_opcode op;
+ 386:./src/tftpserver.c ****   struct udp_pcb *upcb_tftp_data;
+ 387:./src/tftpserver.c ****   err_t err;
+ 388:./src/tftpserver.c **** 
+ 389:./src/tftpserver.c **** #ifdef USE_PRINT
+ 390:./src/tftpserver.c ****   uint32_t i;
+ 391:./src/tftpserver.c ****   char filename[40],message[46], *ptr;
+ 392:./src/tftpserver.c **** #endif
+ 393:./src/tftpserver.c **** 
+ 394:./src/tftpserver.c ****   /* create new UDP PCB structure */
+ 395:./src/tftpserver.c ****   upcb_tftp_data = udp_new();
+ 396:./src/tftpserver.c ****   if (!upcb_tftp_data)
+ 397:./src/tftpserver.c ****   {
+ 398:./src/tftpserver.c ****     /* Error creating PCB. Out of Memory  */
+ 399:./src/tftpserver.c **** #ifdef USE_PRINT
+ 400:./src/tftpserver.c ****     udp_client_send("Can not create pcb1 \n");
+ 401:./src/tftpserver.c **** #endif
+ 402:./src/tftpserver.c ****     return;
+ 403:./src/tftpserver.c ****   }
+ 404:./src/tftpserver.c **** 
+ 405:./src/tftpserver.c ****   /* bind to port 0 to receive next available free port */
+ 406:./src/tftpserver.c ****   /* NOTE:  This is how TFTP works.  There is a UDP PCB for the standard port
+ 407:./src/tftpserver.c ****   * 69 which al transactions begin communication on, however, _all_ subsequent
+ 408:./src/tftpserver.c ****   * transactions for a given "stream" occur on another port  */
+ 409:./src/tftpserver.c ****   err = udp_bind(upcb_tftp_data, IP_ADDR_ANY, 0);
+ 410:./src/tftpserver.c ****   if (err != ERR_OK)
+ 411:./src/tftpserver.c ****   {
+ 412:./src/tftpserver.c ****     /* Unable to bind to port */
+ 413:./src/tftpserver.c **** #ifdef USE_PRINT
+ 414:./src/tftpserver.c ****     udp_client_send("Can not create pcb2 \n");
+ 415:./src/tftpserver.c **** #endif
+ 416:./src/tftpserver.c ****     return;
+ 417:./src/tftpserver.c ****   }
+ 418:./src/tftpserver.c **** 
+ 419:./src/tftpserver.c ****   op = IAP_tftp_decode_op(pkt_buf->payload);
+ 420:./src/tftpserver.c ****   if (op != TFTP_WRQ)
+ 421:./src/tftpserver.c ****   {
+ 422:./src/tftpserver.c ****     /* remove PCB */
+ 423:./src/tftpserver.c **** #ifdef USE_PRINT
+ 424:./src/tftpserver.c ****     udp_client_send("Bad TFTP opcode \n");
+ 425:./src/tftpserver.c **** #endif
+ 426:./src/tftpserver.c ****     udp_remove(upcb_tftp_data);
+ 427:./src/tftpserver.c ****   }
+ 428:./src/tftpserver.c ****   else
+ 429:./src/tftpserver.c ****   {
+ 430:./src/tftpserver.c ****     
+ 431:./src/tftpserver.c **** #ifdef USE_PRINT
+ 432:./src/tftpserver.c ****     ptr = pkt_buf->payload;
+ 433:./src/tftpserver.c ****     ptr = ptr +2;
+ 434:./src/tftpserver.c ****     /*extract file name info */
+ 435:./src/tftpserver.c ****     i= 0;
+ 436:./src/tftpserver.c ****     while (*(ptr+i)!=0x0)
+ 437:./src/tftpserver.c ****     {
+ 438:./src/tftpserver.c ****       i++;
+ 439:./src/tftpserver.c ****     }
+ 440:./src/tftpserver.c ****     strncpy(filename, ptr, i+1);
+ 441:./src/tftpserver.c **** 
+ 442:./src/tftpserver.c ****     sprintf(message, "[BOOT]  New : %s\n",filename);
+ 443:./src/tftpserver.c ****     udp_client_send(message);
+ 444:./src/tftpserver.c **** #endif
+ 445:./src/tftpserver.c ****      
+ 446:./src/tftpserver.c ****     /* Start the TFTP write mode*/
+ 447:./src/tftpserver.c ****     IAP_tftp_process_write(upcb_tftp_data, addr, port);
+ 448:./src/tftpserver.c ****   }
+ 449:./src/tftpserver.c ****   pbuf_free(pkt_buf);
+ 450:./src/tftpserver.c **** }
+ 451:./src/tftpserver.c **** 
+ 452:./src/tftpserver.c **** 
+ 453:./src/tftpserver.c **** /**
+ 454:./src/tftpserver.c ****   * @brief  disconnect and close the connection 
+ 455:./src/tftpserver.c ****   * @param  upcb: pointer on udp_pcb structure
+ 456:./src/tftpserver.c ****   * @param  args: pointer on tftp_connection arguments
+ 457:./src/tftpserver.c ****   * @retval None
+ 458:./src/tftpserver.c ****   */
+ 459:./src/tftpserver.c **** static void IAP_tftp_cleanup_wr(struct udp_pcb *upcb, tftp_connection_args *args)
+ 455              		.loc 1 459 13 view .LVU116
  456              	.LBB55:
- 458:./src/tftpserver.c **** {
- 459:./src/tftpserver.c ****   /* Free the tftp_connection_args structure */
- 460:./src/tftpserver.c ****   mem_free(args);
- 457              		.loc 1 460 3 view .LVU117
+ 460:./src/tftpserver.c **** {
+ 461:./src/tftpserver.c ****   /* Free the tftp_connection_args structure */
+ 462:./src/tftpserver.c ****   mem_free(args);
+ 457              		.loc 1 462 3 view .LVU117
  458 0146 2846     		mov	r0, r5
  459 0148 FFF7FEFF 		bl	mem_free
  460              	.LVL39:
- 461:./src/tftpserver.c **** 
- 462:./src/tftpserver.c ****   /* Disconnect the udp_pcb */
- 463:./src/tftpserver.c ****   udp_disconnect(upcb);
- 461              		.loc 1 463 3 view .LVU118
+ 463:./src/tftpserver.c **** 
+ 464:./src/tftpserver.c ****   /* Disconnect the udp_pcb */
+ 465:./src/tftpserver.c ****   udp_disconnect(upcb);
+ 461              		.loc 1 465 3 view .LVU118
  462 014c 3046     		mov	r0, r6
  463 014e FFF7FEFF 		bl	udp_disconnect
  464              	.LVL40:
- 464:./src/tftpserver.c ****   
- 465:./src/tftpserver.c ****   /* close the connection */
- 466:./src/tftpserver.c ****   udp_remove(upcb);
- 465              		.loc 1 466 3 view .LVU119
+ 466:./src/tftpserver.c ****   
+ 467:./src/tftpserver.c ****   /* close the connection */
+ 468:./src/tftpserver.c ****   udp_remove(upcb);
+ 465              		.loc 1 468 3 view .LVU119
  466 0152 3046     		mov	r0, r6
  467 0154 FFF7FEFF 		bl	udp_remove
  468              	.LVL41:
- 467:./src/tftpserver.c ****   
- 468:./src/tftpserver.c ****   /* reset the callback function */
- 469:./src/tftpserver.c ****   udp_recv(UDPpcb, IAP_tftp_recv_callback, NULL);
- 469              		.loc 1 469 3 view .LVU120
+ 469:./src/tftpserver.c ****   
+ 470:./src/tftpserver.c ****   /* reset the callback function */
+ 471:./src/tftpserver.c ****   udp_recv(UDPpcb, IAP_tftp_recv_callback, NULL);
+ 469              		.loc 1 471 3 view .LVU120
  470              	.LBE55:
  471              	.LBE54:
- 242:./src/tftpserver.c ****       uint32_t crc_result = 0;
- 472              		.loc 1 242 20 is_stmt 0 view .LVU121
+ 244:./src/tftpserver.c ****       uint32_t crc_result = 0;
+ 472              		.loc 1 244 20 is_stmt 0 view .LVU121
  473 0158 2C4F     		ldr	r7, .L29+16
  474              	.LVL42:
  475              	.LBB57:
  476              	.LBB56:
- 477              		.loc 1 469 3 view .LVU122
+ 477              		.loc 1 471 3 view .LVU122
  478 015a 0022     		movs	r2, #0
  479 015c 2C49     		ldr	r1, .L29+20
  480 015e D8F80800 		ldr	r0, [r8, #8]
  481 0162 FFF7FEFF 		bl	udp_recv
  482              	.LVL43:
- 483              		.loc 1 469 3 view .LVU123
+ 483              		.loc 1 471 3 view .LVU123
  484              	.LBE56:
  485              	.LBE57:
- 240:./src/tftpserver.c ****     
- 486              		.loc 1 240 5 is_stmt 1 view .LVU124
+ 242:./src/tftpserver.c ****     
+ 486              		.loc 1 242 5 is_stmt 1 view .LVU124
  487 0166 2046     		mov	r0, r4
  488 0168 FFF7FEFF 		bl	pbuf_free
  489              	.LVL44:
- 242:./src/tftpserver.c ****       uint32_t crc_result = 0;
- 490              		.loc 1 242 5 view .LVU125
- 242:./src/tftpserver.c ****       uint32_t crc_result = 0;
- 491              		.loc 1 242 8 is_stmt 0 view .LVU126
+ 244:./src/tftpserver.c ****       uint32_t crc_result = 0;
+ 490              		.loc 1 244 5 view .LVU125
+ 244:./src/tftpserver.c ****       uint32_t crc_result = 0;
+ 491              		.loc 1 244 8 is_stmt 0 view .LVU126
  492 016c FB68     		ldr	r3, [r7, #12]
  493 016e B3F1A53F 		cmp	r3, #-1515870811
  494 0172 11D0     		beq	.L27
  495              	.LVL45:
  496              	.L15:
- 265:./src/tftpserver.c ****     clear_boot_flag();
- 497              		.loc 1 265 5 is_stmt 1 view .LVU127
+ 267:./src/tftpserver.c ****     clear_boot_flag();
+ 497              		.loc 1 267 5 is_stmt 1 view .LVU127
  498 0174 2748     		ldr	r0, .L29+24
  499 0176 FFF7FEFF 		bl	udp_client_send
  500              	.LVL46:
- 266:./src/tftpserver.c ****     NVIC_SystemReset();
- 501              		.loc 1 266 5 view .LVU128
+ 268:./src/tftpserver.c ****     NVIC_SystemReset();
+ 501              		.loc 1 268 5 view .LVU128
  502 017a FFF7FEFF 		bl	clear_boot_flag
  503              	.LVL47:
- 267:./src/tftpserver.c **** #endif
- 504              		.loc 1 267 5 view .LVU129
+ 269:./src/tftpserver.c **** #endif
+ 504              		.loc 1 269 5 view .LVU129
  505              	.LBB58:
  506              	.LBI58:
  507              		.file 2 "./inc/core_cm7.h"
@@ -4257,24 +4259,24 @@
  566              	.LBE59:
  567              	.LBE58:
  568              	.LBB64:
- 243:./src/tftpserver.c ****       crc_result = CAL_CRC(hcrc);
- 569              		.loc 1 243 7 is_stmt 1 view .LVU148
- 244:./src/tftpserver.c ****       char msg2[32];
- 570              		.loc 1 244 7 view .LVU149
- 244:./src/tftpserver.c ****       char msg2[32];
- 571              		.loc 1 244 20 is_stmt 0 view .LVU150
+ 245:./src/tftpserver.c ****       crc_result = CAL_CRC(hcrc);
+ 569              		.loc 1 245 7 is_stmt 1 view .LVU148
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 570              		.loc 1 246 7 view .LVU149
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 571              		.loc 1 246 20 is_stmt 0 view .LVU150
  572 0198 214E     		ldr	r6, .L29+36
  573              	.LVL49:
- 244:./src/tftpserver.c ****       char msg2[32];
- 574              		.loc 1 244 20 view .LVU151
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 574              		.loc 1 246 20 view .LVU151
  575 019a 6C46     		mov	r4, sp
  576              	.LVL50:
- 244:./src/tftpserver.c ****       char msg2[32];
- 577              		.loc 1 244 20 view .LVU152
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 577              		.loc 1 246 20 view .LVU152
  578 019c 06F11005 		add	r5, r6, #16
  579              	.LVL51:
- 244:./src/tftpserver.c ****       char msg2[32];
- 580              		.loc 1 244 20 view .LVU153
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 580              		.loc 1 246 20 view .LVU153
  581 01a0 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
  582 01a2 0FC4     		stmia	r4!, {r0, r1, r2, r3}
  583 01a4 2B68     		ldr	r3, [r5]
@@ -4282,92 +4284,92 @@
  585 01a8 96E80F00 		ldm	r6, {r0, r1, r2, r3}
  586 01ac FFF7FEFF 		bl	CAL_CRC
  587              	.LVL52:
- 246:./src/tftpserver.c ****       udp_client_send(msg2);
- 588              		.loc 1 246 7 view .LVU154
+ 248:./src/tftpserver.c ****       udp_client_send(msg2);
+ 588              		.loc 1 248 7 view .LVU154
  589 01b0 1C49     		ldr	r1, .L29+40
  590 01b2 0246     		mov	r2, r0
- 244:./src/tftpserver.c ****       char msg2[32];
- 591              		.loc 1 244 20 view .LVU155
+ 246:./src/tftpserver.c ****       char msg2[32];
+ 591              		.loc 1 246 20 view .LVU155
  592 01b4 0446     		mov	r4, r0
  593              	.LVL53:
- 245:./src/tftpserver.c ****       sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
- 594              		.loc 1 245 7 is_stmt 1 view .LVU156
- 246:./src/tftpserver.c ****       udp_client_send(msg2);
- 595              		.loc 1 246 7 view .LVU157
+ 247:./src/tftpserver.c ****       sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
+ 594              		.loc 1 247 7 is_stmt 1 view .LVU156
+ 248:./src/tftpserver.c ****       udp_client_send(msg2);
+ 595              		.loc 1 248 7 view .LVU157
  596 01b6 06A8     		add	r0, sp, #24
  597              	.LVL54:
- 246:./src/tftpserver.c ****       udp_client_send(msg2);
- 598              		.loc 1 246 7 is_stmt 0 view .LVU158
+ 248:./src/tftpserver.c ****       udp_client_send(msg2);
+ 598              		.loc 1 248 7 is_stmt 0 view .LVU158
  599 01b8 FFF7FEFF 		bl	sprintf
  600              	.LVL55:
- 247:./src/tftpserver.c **** 
- 601              		.loc 1 247 7 is_stmt 1 view .LVU159
+ 249:./src/tftpserver.c **** 
+ 601              		.loc 1 249 7 is_stmt 1 view .LVU159
  602 01bc 06A8     		add	r0, sp, #24
  603 01be FFF7FEFF 		bl	udp_client_send
  604              	.LVL56:
- 249:./src/tftpserver.c **** 
- 605              		.loc 1 249 7 view .LVU160
- 251:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
- 606              		.loc 1 251 7 view .LVU161
- 251:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
- 607              		.loc 1 251 10 is_stmt 0 view .LVU162
+ 251:./src/tftpserver.c **** 
+ 605              		.loc 1 251 7 view .LVU160
+ 253:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
+ 606              		.loc 1 253 7 view .LVU161
+ 253:./src/tftpserver.c ****   		  udp_client_send("[BOOT]  CRC same, Jump to new FW\n");
+ 607              		.loc 1 253 10 is_stmt 0 view .LVU162
  608 01c2 7B68     		ldr	r3, [r7, #4]
  609 01c4 A342     		cmp	r3, r4
  610 01c6 14D0     		beq	.L28
- 254:./src/tftpserver.c ****   		udp_client_send("[BOOT]  CRC not same, Back to before FW\n");
- 611              		.loc 1 254 11 is_stmt 1 view .LVU163
+ 256:./src/tftpserver.c ****   		udp_client_send("[BOOT]  CRC not same, Back to before FW\n");
+ 611              		.loc 1 256 11 is_stmt 1 view .LVU163
  612              	.LBB65:
- 255:./src/tftpserver.c ****   		HAL_FLASH_Unlock();
- 613              		.loc 1 255 5 view .LVU164
+ 257:./src/tftpserver.c ****   		HAL_FLASH_Unlock();
+ 613              		.loc 1 257 5 view .LVU164
  614 01c8 1748     		ldr	r0, .L29+44
  615 01ca FFF7FEFF 		bl	udp_client_send
  616              	.LVL57:
- 256:./src/tftpserver.c ****   		FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
- 617              		.loc 1 256 5 view .LVU165
+ 258:./src/tftpserver.c ****   		FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+ 617              		.loc 1 258 5 view .LVU165
  618 01ce FFF7FEFF 		bl	HAL_FLASH_Unlock
  619              	.LVL58:
- 257:./src/tftpserver.c ****   		Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
- 620              		.loc 1 257 5 view .LVU166
+ 259:./src/tftpserver.c ****   		Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 620              		.loc 1 259 5 view .LVU166
  621 01d2 3846     		mov	r0, r7
  622 01d4 FFF7FEFF 		bl	FLASH_If_Erase
  623              	.LVL59:
- 258:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 624              		.loc 1 258 5 view .LVU167
- 258:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 625              		.loc 1 258 26 is_stmt 0 view .LVU168
+ 260:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 624              		.loc 1 260 5 view .LVU167
+ 260:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 625              		.loc 1 260 26 is_stmt 0 view .LVU168
  626 01d8 4046     		mov	r0, r8
- 260:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 627              		.loc 1 260 45 view .LVU169
+ 262:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 627              		.loc 1 262 45 view .LVU169
  628 01da 4FF00161 		mov	r1, #135266304
- 258:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
- 629              		.loc 1 258 26 view .LVU170
+ 260:./src/tftpserver.c ****   		uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 629              		.loc 1 260 26 view .LVU170
  630 01de 40F80C7F 		str	r7, [r0, #12]!
- 259:./src/tftpserver.c ****   		uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
- 631              		.loc 1 259 5 is_stmt 1 view .LVU171
+ 261:./src/tftpserver.c ****   		uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
+ 631              		.loc 1 261 5 is_stmt 1 view .LVU171
  632              	.LVL60:
- 260:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 633              		.loc 1 260 5 view .LVU172
- 261:./src/tftpserver.c ****   	  }
- 634              		.loc 1 261 5 view .LVU173
- 260:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 635              		.loc 1 260 52 is_stmt 0 view .LVU174
+ 262:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 633              		.loc 1 262 5 view .LVU172
+ 263:./src/tftpserver.c ****   	  }
+ 634              		.loc 1 263 5 view .LVU173
+ 262:./src/tftpserver.c ****   		uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 635              		.loc 1 262 52 is_stmt 0 view .LVU174
  636 01e2 0B68     		ldr	r3, [r1]
  637 01e4 03F58063 		add	r3, r3, #1024
- 261:./src/tftpserver.c ****   	  }
- 638              		.loc 1 261 23 view .LVU175
+ 263:./src/tftpserver.c ****   	  }
+ 638              		.loc 1 263 23 view .LVU175
  639 01e8 C3F38F02 		ubfx	r2, r3, #2, #16
  640 01ec FFF7FEFF 		bl	FLASH_If_Write
  641              	.LVL61:
- 261:./src/tftpserver.c ****   	  }
- 642              		.loc 1 261 23 view .LVU176
+ 263:./src/tftpserver.c ****   	  }
+ 642              		.loc 1 263 23 view .LVU176
  643 01f0 C0E7     		b	.L15
  644              	.LVL62:
  645              	.L28:
- 261:./src/tftpserver.c ****   	  }
- 646              		.loc 1 261 23 view .LVU177
+ 263:./src/tftpserver.c ****   	  }
+ 646              		.loc 1 263 23 view .LVU177
  647              	.LBE65:
- 252:./src/tftpserver.c ****   	  }
- 648              		.loc 1 252 7 is_stmt 1 view .LVU178
+ 254:./src/tftpserver.c ****   	  }
+ 648              		.loc 1 254 7 is_stmt 1 view .LVU178
  649 01f2 0E48     		ldr	r0, .L29+48
  650 01f4 FFF7FEFF 		bl	udp_client_send
  651              	.LVL63:
@@ -4457,18 +4459,18 @@
  705              		.fpu fpv5-d16
  707              	IAP_tftp_recv_callback:
  708              	.LVL64:
- 709              	.LFB176:
- 358:./src/tftpserver.c **** 
- 710              		.loc 1 358 1 view -0
+ 709              	.LFB177:
+ 360:./src/tftpserver.c **** 
+ 710              		.loc 1 360 1 view -0
  711              		.cfi_startproc
  712              		@ args = 4, pretend = 0, frame = 168
  713              		@ frame_needed = 0, uses_anonymous_args = 0
- 360:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
- 714              		.loc 1 360 5 view .LVU180
- 361:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
- 715              		.loc 1 361 5 view .LVU181
- 358:./src/tftpserver.c **** 
- 716              		.loc 1 358 1 is_stmt 0 view .LVU182
+ 362:./src/tftpserver.c ****     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
+ 714              		.loc 1 362 5 view .LVU180
+ 363:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 715              		.loc 1 363 5 view .LVU181
+ 360:./src/tftpserver.c **** 
+ 716              		.loc 1 360 1 is_stmt 0 view .LVU182
  717 0230 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
  718              	.LCFI14:
  719              		.cfi_def_cfa_offset 36
@@ -4481,291 +4483,291 @@
  726              		.cfi_offset 10, -12
  727              		.cfi_offset 11, -8
  728              		.cfi_offset 14, -4
- 361:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
- 729              		.loc 1 361 20 view .LVU183
+ 363:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 729              		.loc 1 363 20 view .LVU183
  730 0234 5A4C     		ldr	r4, .L55
- 358:./src/tftpserver.c **** 
- 731              		.loc 1 358 1 view .LVU184
+ 360:./src/tftpserver.c **** 
+ 731              		.loc 1 360 1 view .LVU184
  732 0236 ABB0     		sub	sp, sp, #172
  733              	.LCFI15:
  734              		.cfi_def_cfa_offset 208
- 358:./src/tftpserver.c **** 
- 735              		.loc 1 358 1 view .LVU185
+ 360:./src/tftpserver.c **** 
+ 735              		.loc 1 360 1 view .LVU185
  736 0238 1646     		mov	r6, r2
  737 023a 1F46     		mov	r7, r3
- 361:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
- 738              		.loc 1 361 8 view .LVU186
+ 363:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 738              		.loc 1 363 8 view .LVU186
  739 023c E168     		ldr	r1, [r4, #12]
  740              	.LVL65:
- 358:./src/tftpserver.c **** 
- 741              		.loc 1 358 1 view .LVU187
+ 360:./src/tftpserver.c **** 
+ 741              		.loc 1 360 1 view .LVU187
  742 023e BDF8D080 		ldrh	r8, [sp, #208]
- 361:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
- 743              		.loc 1 361 8 view .LVU188
+ 363:./src/tftpserver.c ****       static uint32_t Flash_Write_Address2;
+ 743              		.loc 1 363 8 view .LVU188
  744 0242 B1F1A53F 		cmp	r1, #-1515870811
  745 0246 63D0     		beq	.L50
  746              	.LVL66:
  747              	.L33:
  748              	.LBB73:
- 381:./src/tftpserver.c ****   	  }
- 749              		.loc 1 381 7 is_stmt 1 view .LVU189
+ 383:./src/tftpserver.c ****   	  }
+ 749              		.loc 1 383 7 is_stmt 1 view .LVU189
  750              	.LBE73:
- 383:./src/tftpserver.c ****   struct udp_pcb *upcb_tftp_data;
- 751              		.loc 1 383 3 view .LVU190
- 384:./src/tftpserver.c ****   err_t err;
- 752              		.loc 1 384 3 view .LVU191
- 385:./src/tftpserver.c **** 
- 753              		.loc 1 385 3 view .LVU192
- 388:./src/tftpserver.c ****   char filename[40],message[46], *ptr;
- 754              		.loc 1 388 3 view .LVU193
- 389:./src/tftpserver.c **** #endif
- 755              		.loc 1 389 3 view .LVU194
- 393:./src/tftpserver.c ****   if (!upcb_tftp_data)
- 756              		.loc 1 393 3 view .LVU195
- 393:./src/tftpserver.c ****   if (!upcb_tftp_data)
- 757              		.loc 1 393 20 is_stmt 0 view .LVU196
+ 385:./src/tftpserver.c ****   struct udp_pcb *upcb_tftp_data;
+ 751              		.loc 1 385 3 view .LVU190
+ 386:./src/tftpserver.c ****   err_t err;
+ 752              		.loc 1 386 3 view .LVU191
+ 387:./src/tftpserver.c **** 
+ 753              		.loc 1 387 3 view .LVU192
+ 390:./src/tftpserver.c ****   char filename[40],message[46], *ptr;
+ 754              		.loc 1 390 3 view .LVU193
+ 391:./src/tftpserver.c **** #endif
+ 755              		.loc 1 391 3 view .LVU194
+ 395:./src/tftpserver.c ****   if (!upcb_tftp_data)
+ 756              		.loc 1 395 3 view .LVU195
+ 395:./src/tftpserver.c ****   if (!upcb_tftp_data)
+ 757              		.loc 1 395 20 is_stmt 0 view .LVU196
  758 0248 FFF7FEFF 		bl	udp_new
  759              	.LVL67:
- 394:./src/tftpserver.c ****   {
- 760              		.loc 1 394 3 is_stmt 1 view .LVU197
- 394:./src/tftpserver.c ****   {
- 761              		.loc 1 394 6 is_stmt 0 view .LVU198
+ 396:./src/tftpserver.c ****   {
+ 760              		.loc 1 396 3 is_stmt 1 view .LVU197
+ 396:./src/tftpserver.c ****   {
+ 761              		.loc 1 396 6 is_stmt 0 view .LVU198
  762 024c 0546     		mov	r5, r0
  763 024e 0028     		cmp	r0, #0
  764 0250 00F08580 		beq	.L51
- 407:./src/tftpserver.c ****   if (err != ERR_OK)
- 765              		.loc 1 407 3 is_stmt 1 view .LVU199
- 407:./src/tftpserver.c ****   if (err != ERR_OK)
- 766              		.loc 1 407 9 is_stmt 0 view .LVU200
+ 409:./src/tftpserver.c ****   if (err != ERR_OK)
+ 765              		.loc 1 409 3 is_stmt 1 view .LVU199
+ 409:./src/tftpserver.c ****   if (err != ERR_OK)
+ 766              		.loc 1 409 9 is_stmt 0 view .LVU200
  767 0254 0022     		movs	r2, #0
  768 0256 5349     		ldr	r1, .L55+4
  769 0258 FFF7FEFF 		bl	udp_bind
  770              	.LVL68:
- 408:./src/tftpserver.c ****   {
- 771              		.loc 1 408 3 is_stmt 1 view .LVU201
- 408:./src/tftpserver.c ****   {
- 772              		.loc 1 408 6 is_stmt 0 view .LVU202
+ 410:./src/tftpserver.c ****   {
+ 771              		.loc 1 410 3 is_stmt 1 view .LVU201
+ 410:./src/tftpserver.c ****   {
+ 772              		.loc 1 410 6 is_stmt 0 view .LVU202
  773 025c 0028     		cmp	r0, #0
  774 025e 40F08480 		bne	.L52
- 417:./src/tftpserver.c ****   if (op != TFTP_WRQ)
- 775              		.loc 1 417 3 is_stmt 1 view .LVU203
- 417:./src/tftpserver.c ****   if (op != TFTP_WRQ)
- 776              		.loc 1 417 34 is_stmt 0 view .LVU204
+ 419:./src/tftpserver.c ****   if (op != TFTP_WRQ)
+ 775              		.loc 1 419 3 is_stmt 1 view .LVU203
+ 419:./src/tftpserver.c ****   if (op != TFTP_WRQ)
+ 776              		.loc 1 419 34 is_stmt 0 view .LVU204
  777 0262 7468     		ldr	r4, [r6, #4]
  778              	.LVL69:
  779              	.LBB74:
  780              	.LBI74:
-  75:./src/tftpserver.c **** {
- 781              		.loc 1 75 20 is_stmt 1 view .LVU205
+  77:./src/tftpserver.c **** {
+ 781              		.loc 1 77 20 is_stmt 1 view .LVU205
  782              	.LBB75:
-  77:./src/tftpserver.c **** }
- 783              		.loc 1 77 3 view .LVU206
-  77:./src/tftpserver.c **** }
- 784              		.loc 1 77 3 is_stmt 0 view .LVU207
+  79:./src/tftpserver.c **** }
+ 783              		.loc 1 79 3 view .LVU206
+  79:./src/tftpserver.c **** }
+ 784              		.loc 1 79 3 is_stmt 0 view .LVU207
  785              	.LBE75:
  786              	.LBE74:
- 418:./src/tftpserver.c ****   {
- 787              		.loc 1 418 3 is_stmt 1 view .LVU208
- 418:./src/tftpserver.c ****   {
- 788              		.loc 1 418 6 is_stmt 0 view .LVU209
+ 420:./src/tftpserver.c ****   {
+ 787              		.loc 1 420 3 is_stmt 1 view .LVU208
+ 420:./src/tftpserver.c ****   {
+ 788              		.loc 1 420 6 is_stmt 0 view .LVU209
  789 0264 6378     		ldrb	r3, [r4, #1]	@ zero_extendqisi2
  790 0266 022B     		cmp	r3, #2
  791 0268 46D1     		bne	.L53
- 430:./src/tftpserver.c ****     ptr = ptr +2;
- 792              		.loc 1 430 5 is_stmt 1 view .LVU210
+ 432:./src/tftpserver.c ****     ptr = ptr +2;
+ 792              		.loc 1 432 5 is_stmt 1 view .LVU210
  793              	.LVL70:
- 431:./src/tftpserver.c ****     /*extract file name info */
- 794              		.loc 1 431 5 view .LVU211
- 434:./src/tftpserver.c ****     {
- 795              		.loc 1 434 11 is_stmt 0 view .LVU212
+ 433:./src/tftpserver.c ****     /*extract file name info */
+ 794              		.loc 1 433 5 view .LVU211
+ 436:./src/tftpserver.c ****     {
+ 795              		.loc 1 436 11 is_stmt 0 view .LVU212
  796 026a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
- 431:./src/tftpserver.c ****     /*extract file name info */
- 797              		.loc 1 431 9 view .LVU213
+ 433:./src/tftpserver.c ****     /*extract file name info */
+ 797              		.loc 1 433 9 view .LVU213
  798 026c A11C     		adds	r1, r4, #2
  799              	.LVL71:
- 433:./src/tftpserver.c ****     while (*(ptr+i)!=0x0)
- 800              		.loc 1 433 5 is_stmt 1 view .LVU214
- 434:./src/tftpserver.c ****     {
- 801              		.loc 1 434 5 view .LVU215
- 434:./src/tftpserver.c ****     {
- 802              		.loc 1 434 11 view .LVU216
+ 435:./src/tftpserver.c ****     while (*(ptr+i)!=0x0)
+ 800              		.loc 1 435 5 is_stmt 1 view .LVU214
+ 436:./src/tftpserver.c ****     {
+ 801              		.loc 1 436 5 view .LVU215
+ 436:./src/tftpserver.c ****     {
+ 802              		.loc 1 436 11 view .LVU216
  803 026e 002B     		cmp	r3, #0
  804 0270 00F09480 		beq	.L44
  805 0274 6FEA040E 		mvn	lr, r4
  806 0278 8C46     		mov	ip, r1
  807              	.LVL72:
  808              	.L41:
- 436:./src/tftpserver.c ****     }
- 809              		.loc 1 436 7 view .LVU217
+ 438:./src/tftpserver.c ****     }
+ 809              		.loc 1 438 7 view .LVU217
  810 027a 0EEB0C02 		add	r2, lr, ip
  811              	.LVL73:
- 434:./src/tftpserver.c ****     {
- 812              		.loc 1 434 11 view .LVU218
+ 436:./src/tftpserver.c ****     {
+ 812              		.loc 1 436 11 view .LVU218
  813 027e 1CF8014F 		ldrb	r4, [ip, #1]!	@ zero_extendqisi2
  814 0282 002C     		cmp	r4, #0
  815 0284 F9D1     		bne	.L41
- 438:./src/tftpserver.c **** 
- 816              		.loc 1 438 29 is_stmt 0 view .LVU219
+ 440:./src/tftpserver.c **** 
+ 816              		.loc 1 440 29 is_stmt 0 view .LVU219
  817 0286 0132     		adds	r2, r2, #1
  818              	.LVL74:
  819              	.L40:
- 438:./src/tftpserver.c **** 
- 820              		.loc 1 438 5 is_stmt 1 view .LVU220
+ 440:./src/tftpserver.c **** 
+ 820              		.loc 1 440 5 is_stmt 1 view .LVU220
  821 0288 14A8     		add	r0, sp, #80
  822              	.LVL75:
- 438:./src/tftpserver.c **** 
- 823              		.loc 1 438 5 is_stmt 0 view .LVU221
+ 440:./src/tftpserver.c **** 
+ 823              		.loc 1 440 5 is_stmt 0 view .LVU221
  824 028a FFF7FEFF 		bl	strncpy
  825              	.LVL76:
- 440:./src/tftpserver.c ****     udp_client_send(message);
- 826              		.loc 1 440 5 is_stmt 1 view .LVU222
+ 442:./src/tftpserver.c ****     udp_client_send(message);
+ 826              		.loc 1 442 5 is_stmt 1 view .LVU222
  827 028e 14AA     		add	r2, sp, #80
  828 0290 4549     		ldr	r1, .L55+8
  829 0292 1EA8     		add	r0, sp, #120
  830 0294 FFF7FEFF 		bl	sprintf
  831              	.LVL77:
- 441:./src/tftpserver.c **** #endif
- 832              		.loc 1 441 5 view .LVU223
+ 443:./src/tftpserver.c **** #endif
+ 832              		.loc 1 443 5 view .LVU223
  833 0298 1EA8     		add	r0, sp, #120
  834 029a FFF7FEFF 		bl	udp_client_send
  835              	.LVL78:
- 445:./src/tftpserver.c ****   }
- 836              		.loc 1 445 5 view .LVU224
+ 447:./src/tftpserver.c ****   }
+ 836              		.loc 1 447 5 view .LVU224
  837              	.LBB76:
  838              	.LBI76:
- 300:./src/tftpserver.c **** {
- 839              		.loc 1 300 12 view .LVU225
+ 302:./src/tftpserver.c **** {
+ 839              		.loc 1 302 12 view .LVU225
  840              	.LBB77:
- 302:./src/tftpserver.c ****   /* This function is called from a callback,
- 841              		.loc 1 302 3 view .LVU226
- 306:./src/tftpserver.c ****   if (!args)
- 842              		.loc 1 306 3 view .LVU227
- 306:./src/tftpserver.c ****   if (!args)
- 843              		.loc 1 306 10 is_stmt 0 view .LVU228
+ 304:./src/tftpserver.c ****   /* This function is called from a callback,
+ 841              		.loc 1 304 3 view .LVU226
+ 308:./src/tftpserver.c ****   if (!args)
+ 842              		.loc 1 308 3 view .LVU227
+ 308:./src/tftpserver.c ****   if (!args)
+ 843              		.loc 1 308 10 is_stmt 0 view .LVU228
  844 029e 4FF40A70 		mov	r0, #552
  845 02a2 FFF7FEFF 		bl	mem_malloc
  846              	.LVL79:
- 307:./src/tftpserver.c ****   {
- 847              		.loc 1 307 3 is_stmt 1 view .LVU229
- 307:./src/tftpserver.c ****   {
- 848              		.loc 1 307 6 is_stmt 0 view .LVU230
+ 309:./src/tftpserver.c ****   {
+ 847              		.loc 1 309 3 is_stmt 1 view .LVU229
+ 309:./src/tftpserver.c ****   {
+ 848              		.loc 1 309 6 is_stmt 0 view .LVU230
  849 02a6 0446     		mov	r4, r0
  850 02a8 0028     		cmp	r0, #0
  851 02aa 64D0     		beq	.L54
- 316:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
- 852              		.loc 1 316 3 is_stmt 1 view .LVU231
- 317:./src/tftpserver.c ****   args->to_port = to_port;
- 853              		.loc 1 317 24 is_stmt 0 view .LVU232
+ 318:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
+ 852              		.loc 1 318 3 is_stmt 1 view .LVU231
+ 319:./src/tftpserver.c ****   args->to_port = to_port;
+ 853              		.loc 1 319 24 is_stmt 0 view .LVU232
  854 02ac 3B68     		ldr	r3, [r7]
- 320:./src/tftpserver.c ****   args->tot_bytes = 0;
- 855              		.loc 1 320 15 view .LVU233
+ 322:./src/tftpserver.c ****   args->tot_bytes = 0;
+ 855              		.loc 1 322 15 view .LVU233
  856 02ae 4FF00009 		mov	r9, #0
- 326:./src/tftpserver.c **** 
- 857              		.loc 1 326 15 view .LVU234
+ 328:./src/tftpserver.c **** 
+ 857              		.loc 1 328 15 view .LVU234
  858 02b2 DFF80CA1 		ldr	r10, .L55+32
- 324:./src/tftpserver.c ****   
- 859              		.loc 1 324 3 view .LVU235
+ 326:./src/tftpserver.c ****   
+ 859              		.loc 1 326 3 view .LVU235
  860 02b6 0246     		mov	r2, r0
- 335:./src/tftpserver.c ****  
- 861              		.loc 1 335 3 view .LVU236
+ 337:./src/tftpserver.c ****  
+ 861              		.loc 1 337 3 view .LVU236
  862 02b8 DFF8E4B0 		ldr	fp, .L55
- 324:./src/tftpserver.c ****   
- 863              		.loc 1 324 3 view .LVU237
+ 326:./src/tftpserver.c ****   
+ 863              		.loc 1 326 3 view .LVU237
  864 02bc 3B49     		ldr	r1, .L55+12
- 318:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
- 865              		.loc 1 318 17 view .LVU238
+ 320:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
+ 865              		.loc 1 320 17 view .LVU238
  866 02be C0E98338 		strd	r3, r8, [r0, #524]
- 316:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
- 867              		.loc 1 316 12 view .LVU239
+ 318:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
+ 867              		.loc 1 318 12 view .LVU239
  868 02c2 0223     		movs	r3, #2
- 321:./src/tftpserver.c **** 
- 869              		.loc 1 321 19 view .LVU240
+ 323:./src/tftpserver.c **** 
+ 869              		.loc 1 323 19 view .LVU240
  870 02c4 C0E98599 		strd	r9, r9, [r0, #532]
- 316:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
- 871              		.loc 1 316 12 view .LVU241
+ 318:./src/tftpserver.c ****   args->to_ip.addr = to->addr;
+ 871              		.loc 1 318 12 view .LVU241
  872 02c8 0360     		str	r3, [r0]
- 317:./src/tftpserver.c ****   args->to_port = to_port;
- 873              		.loc 1 317 3 is_stmt 1 view .LVU242
- 318:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
- 874              		.loc 1 318 3 view .LVU243
- 320:./src/tftpserver.c ****   args->tot_bytes = 0;
- 875              		.loc 1 320 3 view .LVU244
- 321:./src/tftpserver.c **** 
- 876              		.loc 1 321 3 view .LVU245
- 324:./src/tftpserver.c ****   
- 877              		.loc 1 324 3 view .LVU246
+ 319:./src/tftpserver.c ****   args->to_port = to_port;
+ 873              		.loc 1 319 3 is_stmt 1 view .LVU242
+ 320:./src/tftpserver.c ****   /* the block # used as a positive response to a WRQ is _always_ 0!!! (see RFC1350)  */
+ 874              		.loc 1 320 3 view .LVU243
+ 322:./src/tftpserver.c ****   args->tot_bytes = 0;
+ 875              		.loc 1 322 3 view .LVU244
+ 323:./src/tftpserver.c **** 
+ 876              		.loc 1 323 3 view .LVU245
+ 326:./src/tftpserver.c ****   
+ 877              		.loc 1 326 3 view .LVU246
  878 02ca 2846     		mov	r0, r5
  879              	.LVL80:
- 324:./src/tftpserver.c ****   
- 880              		.loc 1 324 3 is_stmt 0 view .LVU247
+ 326:./src/tftpserver.c ****   
+ 880              		.loc 1 326 3 is_stmt 0 view .LVU247
  881 02cc FFF7FEFF 		bl	udp_recv
  882              	.LVL81:
- 326:./src/tftpserver.c **** 
- 883              		.loc 1 326 3 is_stmt 1 view .LVU248
- 326:./src/tftpserver.c **** 
- 884              		.loc 1 326 15 is_stmt 0 view .LVU249
+ 328:./src/tftpserver.c **** 
+ 883              		.loc 1 328 3 is_stmt 1 view .LVU248
+ 328:./src/tftpserver.c **** 
+ 884              		.loc 1 328 15 is_stmt 0 view .LVU249
  885 02d0 CAF80090 		str	r9, [r10]
- 329:./src/tftpserver.c ****   
- 886              		.loc 1 329 3 is_stmt 1 view .LVU250
+ 331:./src/tftpserver.c ****   
+ 886              		.loc 1 331 3 is_stmt 1 view .LVU250
  887 02d4 FFF7FEFF 		bl	FLASH_If_Init
  888              	.LVL82:
- 335:./src/tftpserver.c ****  
- 889              		.loc 1 335 3 view .LVU251
+ 337:./src/tftpserver.c ****  
+ 889              		.loc 1 337 3 view .LVU251
  890 02d8 5846     		mov	r0, fp
  891 02da FFF7FEFF 		bl	FLASH_If_Erase
  892              	.LVL83:
- 337:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
- 893              		.loc 1 337 3 view .LVU252
- 339:./src/tftpserver.c **** #ifdef USE_PRINT
- 894              		.loc 1 339 3 is_stmt 0 view .LVU253
+ 339:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
+ 893              		.loc 1 339 3 view .LVU252
+ 341:./src/tftpserver.c **** #ifdef USE_PRINT
+ 894              		.loc 1 341 3 is_stmt 0 view .LVU253
  895 02de 2846     		mov	r0, r5
  896 02e0 D4F81432 		ldr	r3, [r4, #532]
  897 02e4 4246     		mov	r2, r8
  898 02e6 3946     		mov	r1, r7
- 337:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
- 899              		.loc 1 337 23 view .LVU254
+ 339:./src/tftpserver.c ****   /* initiate the write transaction by sending the first ack */
+ 899              		.loc 1 339 23 view .LVU254
  900 02e8 CAF804B0 		str	fp, [r10, #4]
- 339:./src/tftpserver.c **** #ifdef USE_PRINT
- 901              		.loc 1 339 3 is_stmt 1 view .LVU255
+ 341:./src/tftpserver.c **** #ifdef USE_PRINT
+ 901              		.loc 1 341 3 is_stmt 1 view .LVU255
  902 02ec FFF788FE 		bl	IAP_tftp_send_ack_packet.isra.0
  903              	.LVL84:
- 341:./src/tftpserver.c **** #endif
- 904              		.loc 1 341 6 view .LVU256
+ 343:./src/tftpserver.c **** #endif
+ 904              		.loc 1 343 6 view .LVU256
  905 02f0 2F48     		ldr	r0, .L55+16
  906 02f2 FFF7FEFF 		bl	udp_client_send
  907              	.LVL85:
- 343:./src/tftpserver.c **** }
- 908              		.loc 1 343 3 view .LVU257
- 343:./src/tftpserver.c **** }
- 909              		.loc 1 343 10 is_stmt 0 view .LVU258
+ 345:./src/tftpserver.c **** }
+ 908              		.loc 1 345 3 view .LVU257
+ 345:./src/tftpserver.c **** }
+ 909              		.loc 1 345 10 is_stmt 0 view .LVU258
  910 02f6 05E0     		b	.L39
  911              	.LVL86:
  912              	.L53:
- 343:./src/tftpserver.c **** }
- 913              		.loc 1 343 10 view .LVU259
+ 345:./src/tftpserver.c **** }
+ 913              		.loc 1 345 10 view .LVU259
  914              	.LBE77:
  915              	.LBE76:
- 422:./src/tftpserver.c **** #endif
- 916              		.loc 1 422 5 is_stmt 1 view .LVU260
+ 424:./src/tftpserver.c **** #endif
+ 916              		.loc 1 424 5 is_stmt 1 view .LVU260
  917 02f8 2E48     		ldr	r0, .L55+20
  918              	.LVL87:
- 422:./src/tftpserver.c **** #endif
- 919              		.loc 1 422 5 is_stmt 0 view .LVU261
+ 424:./src/tftpserver.c **** #endif
+ 919              		.loc 1 424 5 is_stmt 0 view .LVU261
  920 02fa FFF7FEFF 		bl	udp_client_send
  921              	.LVL88:
- 424:./src/tftpserver.c ****   }
- 922              		.loc 1 424 5 is_stmt 1 view .LVU262
+ 426:./src/tftpserver.c ****   }
+ 922              		.loc 1 426 5 is_stmt 1 view .LVU262
  923 02fe 2846     		mov	r0, r5
  924 0300 FFF7FEFF 		bl	udp_remove
  925              	.LVL89:
  926              	.L39:
- 447:./src/tftpserver.c **** }
- 927              		.loc 1 447 3 view .LVU263
+ 449:./src/tftpserver.c **** }
+ 927              		.loc 1 449 3 view .LVU263
  928 0304 3046     		mov	r0, r6
  929 0306 FFF7FEFF 		bl	pbuf_free
  930              	.LVL90:
- 448:./src/tftpserver.c **** 
- 931              		.loc 1 448 1 is_stmt 0 view .LVU264
+ 450:./src/tftpserver.c **** 
+ 931              		.loc 1 450 1 is_stmt 0 view .LVU264
  932 030a 2BB0     		add	sp, sp, #172
  933              	.LCFI16:
  934              		.cfi_remember_state
@@ -4777,102 +4779,102 @@
  940              	.LCFI17:
  941              		.cfi_restore_state
  942              	.LBB81:
- 362:./src/tftpserver.c **** 
- 943              		.loc 1 362 7 is_stmt 1 view .LVU265
- 364:./src/tftpserver.c ****       udp_client_send(tmp1);
- 944              		.loc 1 364 7 view .LVU266
+ 364:./src/tftpserver.c **** 
+ 943              		.loc 1 364 7 is_stmt 1 view .LVU265
+ 366:./src/tftpserver.c ****       udp_client_send(tmp1);
+ 944              		.loc 1 366 7 view .LVU266
  945 0310 294A     		ldr	r2, .L55+24
  946              	.LVL92:
- 364:./src/tftpserver.c ****       udp_client_send(tmp1);
- 947              		.loc 1 364 7 is_stmt 0 view .LVU267
+ 366:./src/tftpserver.c ****       udp_client_send(tmp1);
+ 947              		.loc 1 366 7 is_stmt 0 view .LVU267
  948 0312 6846     		mov	r0, sp
  949              	.LVL93:
- 364:./src/tftpserver.c ****       udp_client_send(tmp1);
- 950              		.loc 1 364 7 view .LVU268
+ 366:./src/tftpserver.c ****       udp_client_send(tmp1);
+ 950              		.loc 1 366 7 view .LVU268
  951 0314 2949     		ldr	r1, .L55+28
  952 0316 FFF7FEFF 		bl	sprintf
  953              	.LVL94:
- 365:./src/tftpserver.c ****       HAL_FLASH_Unlock();
- 954              		.loc 1 365 7 is_stmt 1 view .LVU269
+ 367:./src/tftpserver.c ****       HAL_FLASH_Unlock();
+ 954              		.loc 1 367 7 is_stmt 1 view .LVU269
  955 031a 6846     		mov	r0, sp
  956 031c FFF7FEFF 		bl	udp_client_send
  957              	.LVL95:
- 366:./src/tftpserver.c ****   	  FLASH_Backup_Erase(BACKUP_FLASH_FIRST_PAGE_ADDRESS);
- 958              		.loc 1 366 7 view .LVU270
+ 368:./src/tftpserver.c ****   	  FLASH_Backup_Erase(BACKUP_FLASH_FIRST_PAGE_ADDRESS);
+ 958              		.loc 1 368 7 view .LVU270
  959 0320 FFF7FEFF 		bl	HAL_FLASH_Unlock
  960              	.LVL96:
- 367:./src/tftpserver.c **** 
- 961              		.loc 1 367 6 view .LVU271
+ 369:./src/tftpserver.c **** 
+ 961              		.loc 1 369 6 view .LVU271
  962 0324 4FF00160 		mov	r0, #135266304
  963 0328 FFF7FEFF 		bl	FLASH_Backup_Erase
  964              	.LVL97:
- 369:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
- 965              		.loc 1 369 6 view .LVU272
- 369:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
- 966              		.loc 1 369 27 is_stmt 0 view .LVU273
+ 371:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
+ 965              		.loc 1 371 6 view .LVU272
+ 371:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
+ 966              		.loc 1 371 27 is_stmt 0 view .LVU273
  967 032c 4FF00163 		mov	r3, #135266304
  968 0330 2348     		ldr	r0, .L55+32
- 372:./src/tftpserver.c ****   	  if( result != 0)
- 969              		.loc 1 372 24 view .LVU274
+ 374:./src/tftpserver.c ****   	  if( result != 0)
+ 969              		.loc 1 374 24 view .LVU274
  970 0332 2146     		mov	r1, r4
- 369:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
- 971              		.loc 1 369 27 view .LVU275
+ 371:./src/tftpserver.c ****   	  uint32_t *src_data = (uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS;
+ 971              		.loc 1 371 27 view .LVU275
  972 0334 40F8103F 		str	r3, [r0, #16]!
- 370:./src/tftpserver.c ****   	  uint16_t data_len = ( TAG_ADDRESS->size + 1024 ) / 4;
- 973              		.loc 1 370 6 is_stmt 1 view .LVU276
+ 372:./src/tftpserver.c ****   	  uint16_t data_len = ( TAG_ADDRESS->size + 1024 ) / 4;
+ 973              		.loc 1 372 6 is_stmt 1 view .LVU276
  974              	.LVL98:
- 371:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 975              		.loc 1 371 6 view .LVU277
- 372:./src/tftpserver.c ****   	  if( result != 0)
- 976              		.loc 1 372 6 view .LVU278
- 371:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
- 977              		.loc 1 371 46 is_stmt 0 view .LVU279
+ 373:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 975              		.loc 1 373 6 view .LVU277
+ 374:./src/tftpserver.c ****   	  if( result != 0)
+ 976              		.loc 1 374 6 view .LVU278
+ 373:./src/tftpserver.c ****   	  uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 977              		.loc 1 373 46 is_stmt 0 view .LVU279
  978 0338 2268     		ldr	r2, [r4]
  979 033a 02F58062 		add	r2, r2, #1024
- 372:./src/tftpserver.c ****   	  if( result != 0)
- 980              		.loc 1 372 24 view .LVU280
+ 374:./src/tftpserver.c ****   	  if( result != 0)
+ 980              		.loc 1 374 24 view .LVU280
  981 033e C2F38F02 		ubfx	r2, r2, #2, #16
  982 0342 FFF7FEFF 		bl	FLASH_If_Write
  983              	.LVL99:
- 373:./src/tftpserver.c ****   		  {
- 984              		.loc 1 373 6 is_stmt 1 view .LVU281
- 373:./src/tftpserver.c ****   		  {
- 985              		.loc 1 373 8 is_stmt 0 view .LVU282
+ 375:./src/tftpserver.c ****   		  {
+ 984              		.loc 1 375 6 is_stmt 1 view .LVU281
+ 375:./src/tftpserver.c ****   		  {
+ 985              		.loc 1 375 8 is_stmt 0 view .LVU282
  986 0346 0028     		cmp	r0, #0
  987 0348 3FF47EAF 		beq	.L33
- 375:./src/tftpserver.c ****           udp_client_send(tmp2);
- 988              		.loc 1 375 11 is_stmt 1 view .LVU283
+ 377:./src/tftpserver.c ****           udp_client_send(tmp2);
+ 988              		.loc 1 377 11 is_stmt 1 view .LVU283
  989 034c 0246     		mov	r2, r0
  990 034e 1D49     		ldr	r1, .L55+36
  991 0350 0AA8     		add	r0, sp, #40
  992              	.LVL100:
- 375:./src/tftpserver.c ****           udp_client_send(tmp2);
- 993              		.loc 1 375 11 is_stmt 0 view .LVU284
+ 377:./src/tftpserver.c ****           udp_client_send(tmp2);
+ 993              		.loc 1 377 11 is_stmt 0 view .LVU284
  994 0352 FFF7FEFF 		bl	sprintf
  995              	.LVL101:
- 376:./src/tftpserver.c ****   		  }
- 996              		.loc 1 376 11 is_stmt 1 view .LVU285
+ 378:./src/tftpserver.c ****   		  }
+ 996              		.loc 1 378 11 is_stmt 1 view .LVU285
  997 0356 0AA8     		add	r0, sp, #40
  998 0358 FFF7FEFF 		bl	udp_client_send
  999              	.LVL102:
  1000 035c 74E7     		b	.L33
  1001              	.LVL103:
  1002              	.L51:
- 376:./src/tftpserver.c ****   		  }
- 1003              		.loc 1 376 11 is_stmt 0 view .LVU286
+ 378:./src/tftpserver.c ****   		  }
+ 1003              		.loc 1 378 11 is_stmt 0 view .LVU286
  1004              	.LBE81:
- 398:./src/tftpserver.c **** #endif
- 1005              		.loc 1 398 5 is_stmt 1 view .LVU287
+ 400:./src/tftpserver.c **** #endif
+ 1005              		.loc 1 400 5 is_stmt 1 view .LVU287
  1006 035e 1A48     		ldr	r0, .L55+40
  1007              	.LVL104:
- 398:./src/tftpserver.c **** #endif
- 1008              		.loc 1 398 5 is_stmt 0 view .LVU288
+ 400:./src/tftpserver.c **** #endif
+ 1008              		.loc 1 400 5 is_stmt 0 view .LVU288
  1009 0360 FFF7FEFF 		bl	udp_client_send
  1010              	.LVL105:
- 400:./src/tftpserver.c ****   }
- 1011              		.loc 1 400 5 is_stmt 1 view .LVU289
- 448:./src/tftpserver.c **** 
- 1012              		.loc 1 448 1 is_stmt 0 view .LVU290
+ 402:./src/tftpserver.c ****   }
+ 1011              		.loc 1 402 5 is_stmt 1 view .LVU289
+ 450:./src/tftpserver.c **** 
+ 1012              		.loc 1 450 1 is_stmt 0 view .LVU290
  1013 0364 2BB0     		add	sp, sp, #172
  1014              	.LCFI18:
  1015              		.cfi_remember_state
@@ -4883,18 +4885,18 @@
  1020              	.L52:
  1021              	.LCFI19:
  1022              		.cfi_restore_state
- 412:./src/tftpserver.c **** #endif
- 1023              		.loc 1 412 5 is_stmt 1 view .LVU291
+ 414:./src/tftpserver.c **** #endif
+ 1023              		.loc 1 414 5 is_stmt 1 view .LVU291
  1024 036a 1848     		ldr	r0, .L55+44
  1025              	.LVL107:
- 412:./src/tftpserver.c **** #endif
- 1026              		.loc 1 412 5 is_stmt 0 view .LVU292
+ 414:./src/tftpserver.c **** #endif
+ 1026              		.loc 1 414 5 is_stmt 0 view .LVU292
  1027 036c FFF7FEFF 		bl	udp_client_send
  1028              	.LVL108:
- 414:./src/tftpserver.c ****   }
- 1029              		.loc 1 414 5 is_stmt 1 view .LVU293
- 448:./src/tftpserver.c **** 
- 1030              		.loc 1 448 1 is_stmt 0 view .LVU294
+ 416:./src/tftpserver.c ****   }
+ 1029              		.loc 1 416 5 is_stmt 1 view .LVU293
+ 450:./src/tftpserver.c **** 
+ 1030              		.loc 1 450 1 is_stmt 0 view .LVU294
  1031 0370 2BB0     		add	sp, sp, #172
  1032              	.LCFI20:
  1033              		.cfi_remember_state
@@ -4907,56 +4909,56 @@
  1040              		.cfi_restore_state
  1041              	.LBB82:
  1042              	.LBB80:
- 310:./src/tftpserver.c **** #endif
- 1043              		.loc 1 310 5 is_stmt 1 view .LVU295
+ 312:./src/tftpserver.c **** #endif
+ 1043              		.loc 1 312 5 is_stmt 1 view .LVU295
  1044 0376 1648     		ldr	r0, .L55+48
  1045              	.LVL110:
- 310:./src/tftpserver.c **** #endif
- 1046              		.loc 1 310 5 is_stmt 0 view .LVU296
+ 312:./src/tftpserver.c **** #endif
+ 1046              		.loc 1 312 5 is_stmt 0 view .LVU296
  1047 0378 FFF7FEFF 		bl	udp_client_send
  1048              	.LVL111:
- 312:./src/tftpserver.c ****     return 0;
- 1049              		.loc 1 312 5 is_stmt 1 view .LVU297
+ 314:./src/tftpserver.c ****     return 0;
+ 1049              		.loc 1 314 5 is_stmt 1 view .LVU297
  1050              	.LBB78:
  1051              	.LBI78:
- 457:./src/tftpserver.c **** {
- 1052              		.loc 1 457 13 view .LVU298
+ 459:./src/tftpserver.c **** {
+ 1052              		.loc 1 459 13 view .LVU298
  1053              	.LBB79:
- 460:./src/tftpserver.c **** 
- 1054              		.loc 1 460 3 view .LVU299
+ 462:./src/tftpserver.c **** 
+ 1054              		.loc 1 462 3 view .LVU299
  1055 037c 2046     		mov	r0, r4
  1056 037e FFF7FEFF 		bl	mem_free
  1057              	.LVL112:
- 463:./src/tftpserver.c ****   
- 1058              		.loc 1 463 3 view .LVU300
+ 465:./src/tftpserver.c ****   
+ 1058              		.loc 1 465 3 view .LVU300
  1059 0382 2846     		mov	r0, r5
  1060 0384 FFF7FEFF 		bl	udp_disconnect
  1061              	.LVL113:
- 466:./src/tftpserver.c ****   
- 1062              		.loc 1 466 3 view .LVU301
+ 468:./src/tftpserver.c ****   
+ 1062              		.loc 1 468 3 view .LVU301
  1063 0388 2846     		mov	r0, r5
  1064 038a FFF7FEFF 		bl	udp_remove
  1065              	.LVL114:
- 1066              		.loc 1 469 3 view .LVU302
+ 1066              		.loc 1 471 3 view .LVU302
  1067 038e 0C4B     		ldr	r3, .L55+32
  1068 0390 2246     		mov	r2, r4
  1069 0392 1049     		ldr	r1, .L55+52
  1070 0394 9868     		ldr	r0, [r3, #8]
  1071 0396 FFF7FEFF 		bl	udp_recv
  1072              	.LVL115:
- 470:./src/tftpserver.c ****  
- 471:./src/tftpserver.c **** }
- 1073              		.loc 1 471 1 is_stmt 0 view .LVU303
+ 472:./src/tftpserver.c ****  
+ 473:./src/tftpserver.c **** }
+ 1073              		.loc 1 473 1 is_stmt 0 view .LVU303
  1074 039a B3E7     		b	.L39
  1075              	.LVL116:
  1076              	.L44:
- 1077              		.loc 1 471 1 view .LVU304
+ 1077              		.loc 1 473 1 view .LVU304
  1078              	.LBE79:
  1079              	.LBE78:
  1080              	.LBE80:
  1081              	.LBE82:
- 434:./src/tftpserver.c ****     {
- 1082              		.loc 1 434 11 view .LVU305
+ 436:./src/tftpserver.c ****     {
+ 1082              		.loc 1 436 11 view .LVU305
  1083 039c 0122     		movs	r2, #1
  1084 039e 73E7     		b	.L40
  1085              	.L56:
@@ -4977,223 +4979,327 @@
  1100 03d0 68010000 		.word	.LC13
  1101 03d4 00000000 		.word	IAP_tftp_recv_callback
  1102              		.cfi_endproc
- 1103              	.LFE176:
- 1105              		.section	.rodata.str1.4
- 1106 018f 00       		.align	2
- 1107              	.LC15:
- 1108 0190 43616E20 		.ascii	"Can not create pcb3 \012\000"
- 1108      6E6F7420 
- 1108      63726561 
- 1108      74652070 
- 1108      63623320 
- 1109 01a6 0000     		.align	2
- 1110              	.LC16:
- 1111 01a8 43616E20 		.ascii	"Can not create pcb4 \012\000"
- 1111      6E6F7420 
- 1111      63726561 
- 1111      74652070 
- 1111      63623420 
- 1112              		.text
- 1113              		.align	1
- 1114              		.p2align 2,,3
- 1115              		.global	IAP_tftpd_init
- 1116              		.syntax unified
- 1117              		.thumb
- 1118              		.thumb_func
- 1119              		.fpu fpv5-d16
- 1121              	IAP_tftpd_init:
- 1122              	.LFB178:
- 472:./src/tftpserver.c **** 
- 473:./src/tftpserver.c **** /* Global functions ---------------------------------------------------------*/
- 474:./src/tftpserver.c **** 
- 475:./src/tftpserver.c **** /**
- 476:./src/tftpserver.c ****   * @brief  Creates and initializes a UDP PCB for TFTP receive operation  
- 477:./src/tftpserver.c ****   * @param  None  
- 478:./src/tftpserver.c ****   * @retval None
- 479:./src/tftpserver.c ****   */
- 480:./src/tftpserver.c **** void IAP_tftpd_init(void)
- 481:./src/tftpserver.c **** {
- 1123              		.loc 1 481 1 is_stmt 1 view -0
- 1124              		.cfi_startproc
- 1125              		@ args = 0, pretend = 0, frame = 0
- 1126              		@ frame_needed = 0, uses_anonymous_args = 0
- 482:./src/tftpserver.c ****   err_t err;
- 1127              		.loc 1 482 3 view .LVU307
- 483:./src/tftpserver.c ****   unsigned port = 69; /* 69 is the port used for TFTP protocol initial transaction */
- 1128              		.loc 1 483 3 view .LVU308
- 1129              	.LVL117:
- 484:./src/tftpserver.c **** 
- 485:./src/tftpserver.c ****   /* create a new UDP PCB structure  */
- 486:./src/tftpserver.c ****   UDPpcb = udp_new();
- 1130              		.loc 1 486 3 view .LVU309
- 481:./src/tftpserver.c ****   err_t err;
- 1131              		.loc 1 481 1 is_stmt 0 view .LVU310
- 1132 03d8 10B5     		push	{r4, lr}
- 1133              	.LCFI22:
- 1134              		.cfi_def_cfa_offset 8
- 1135              		.cfi_offset 4, -8
- 1136              		.cfi_offset 14, -4
- 1137              		.loc 1 486 10 view .LVU311
- 1138 03da 0D4C     		ldr	r4, .L62
- 1139              		.loc 1 486 12 view .LVU312
- 1140 03dc FFF7FEFF 		bl	udp_new
- 1141              	.LVL118:
- 1142              		.loc 1 486 10 view .LVU313
- 1143 03e0 A060     		str	r0, [r4, #8]
- 487:./src/tftpserver.c ****   if (!UDPpcb)
- 1144              		.loc 1 487 3 is_stmt 1 view .LVU314
- 1145              		.loc 1 487 6 is_stmt 0 view .LVU315
- 1146 03e2 80B1     		cbz	r0, .L61
- 488:./src/tftpserver.c ****   {
- 489:./src/tftpserver.c ****     /* Error creating PCB. Out of Memory  */
- 490:./src/tftpserver.c **** #ifdef USE_PRINT
- 491:./src/tftpserver.c ****     udp_client_send("Can not create pcb3 \n");
- 492:./src/tftpserver.c **** #endif
- 493:./src/tftpserver.c ****     return;
- 494:./src/tftpserver.c ****   }
- 495:./src/tftpserver.c **** 
- 496:./src/tftpserver.c ****   /* Bind this PCB to port 69  */
- 497:./src/tftpserver.c ****   err = udp_bind(UDPpcb, IP_ADDR_ANY, port);
- 1147              		.loc 1 497 3 is_stmt 1 view .LVU316
- 1148              		.loc 1 497 9 is_stmt 0 view .LVU317
- 1149 03e4 4522     		movs	r2, #69
- 1150 03e6 0B49     		ldr	r1, .L62+4
- 1151 03e8 FFF7FEFF 		bl	udp_bind
- 1152              	.LVL119:
- 498:./src/tftpserver.c ****   if (err == ERR_OK)
- 1153              		.loc 1 498 3 is_stmt 1 view .LVU318
- 1154              		.loc 1 498 6 is_stmt 0 view .LVU319
- 1155 03ec 30B9     		cbnz	r0, .L59
- 499:./src/tftpserver.c ****   {
- 500:./src/tftpserver.c ****     /* Initialize receive callback function  */
- 501:./src/tftpserver.c ****     udp_recv(UDPpcb, IAP_tftp_recv_callback, NULL);
- 1156              		.loc 1 501 5 is_stmt 1 view .LVU320
- 1157 03ee 0246     		mov	r2, r0
- 1158 03f0 0949     		ldr	r1, .L62+8
- 1159 03f2 A068     		ldr	r0, [r4, #8]
- 1160              	.LVL120:
- 502:./src/tftpserver.c ****   } 
- 503:./src/tftpserver.c ****   else
- 504:./src/tftpserver.c ****   {
- 505:./src/tftpserver.c **** #ifdef USE_PRINT
- 506:./src/tftpserver.c ****     udp_client_send("Can not create pcb4 \n");
- 507:./src/tftpserver.c **** #endif
- 508:./src/tftpserver.c ****   }
- 509:./src/tftpserver.c **** }
- 1161              		.loc 1 509 1 is_stmt 0 view .LVU321
- 1162 03f4 BDE81040 		pop	{r4, lr}
- 1163              	.LCFI23:
- 1164              		.cfi_remember_state
+ 1103              	.LFE177:
+ 1105              		.align	1
+ 1106              		.p2align 2,,3
+ 1107              		.global	WDGbackup
+ 1108              		.syntax unified
+ 1109              		.thumb
+ 1110              		.thumb_func
+ 1111              		.fpu fpv5-d16
+ 1113              	WDGbackup:
+ 1114              	.LFB175:
+ 280:./src/tftpserver.c **** 	static uint32_t Flash_Write_Address2;
+ 1115              		.loc 1 280 1 is_stmt 1 view -0
+ 1116              		.cfi_startproc
+ 1117              		@ args = 0, pretend = 0, frame = 0
+ 1118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 281:./src/tftpserver.c **** 	HAL_FLASH_Unlock();
+ 1119              		.loc 1 281 2 view .LVU307
+ 282:./src/tftpserver.c ****   HAL_IWDG_Refresh(&hiwdg);
+ 1120              		.loc 1 282 2 view .LVU308
+ 280:./src/tftpserver.c **** 	static uint32_t Flash_Write_Address2;
+ 1121              		.loc 1 280 1 is_stmt 0 view .LVU309
+ 1122 03d8 10B5     		push	{r4, lr}
+ 1123              	.LCFI22:
+ 1124              		.cfi_def_cfa_offset 8
+ 1125              		.cfi_offset 4, -8
+ 1126              		.cfi_offset 14, -4
+ 284:./src/tftpserver.c **** 	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 1127              		.loc 1 284 2 view .LVU310
+ 1128 03da 0F4C     		ldr	r4, .L59
+ 282:./src/tftpserver.c ****   HAL_IWDG_Refresh(&hiwdg);
+ 1129              		.loc 1 282 2 view .LVU311
+ 1130 03dc FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 1131              	.LVL117:
+ 283:./src/tftpserver.c **** 	FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+ 1132              		.loc 1 283 3 is_stmt 1 view .LVU312
+ 1133 03e0 0E48     		ldr	r0, .L59+4
+ 1134 03e2 FFF7FEFF 		bl	HAL_IWDG_Refresh
+ 1135              	.LVL118:
+ 284:./src/tftpserver.c **** 	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+ 1136              		.loc 1 284 2 view .LVU313
+ 1137 03e6 2046     		mov	r0, r4
+ 1138 03e8 FFF7FEFF 		bl	FLASH_If_Erase
+ 1139              	.LVL119:
+ 285:./src/tftpserver.c **** 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 1140              		.loc 1 285 2 view .LVU314
+ 285:./src/tftpserver.c **** 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 1141              		.loc 1 285 23 is_stmt 0 view .LVU315
+ 1142 03ec 0C48     		ldr	r0, .L59+8
+ 287:./src/tftpserver.c **** 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 1143              		.loc 1 287 42 view .LVU316
+ 1144 03ee 4FF00161 		mov	r1, #135266304
+ 285:./src/tftpserver.c **** 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+ 1145              		.loc 1 285 23 view .LVU317
+ 1146 03f2 40F8144F 		str	r4, [r0, #20]!
+ 286:./src/tftpserver.c **** 	uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
+ 1147              		.loc 1 286 2 is_stmt 1 view .LVU318
+ 1148              	.LVL120:
+ 287:./src/tftpserver.c **** 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 1149              		.loc 1 287 2 view .LVU319
+ 288:./src/tftpserver.c **** 
+ 1150              		.loc 1 288 2 view .LVU320
+ 287:./src/tftpserver.c **** 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+ 1151              		.loc 1 287 49 is_stmt 0 view .LVU321
+ 1152 03f6 0A68     		ldr	r2, [r1]
+ 1153 03f8 02F58062 		add	r2, r2, #1024
+ 288:./src/tftpserver.c **** 
+ 1154              		.loc 1 288 20 view .LVU322
+ 1155 03fc C2F38F02 		ubfx	r2, r2, #2, #16
+ 1156 0400 FFF7FEFF 		bl	FLASH_If_Write
+ 1157              	.LVL121:
+ 290:./src/tftpserver.c **** 	clear_boot_flag();
+ 1158              		.loc 1 290 2 is_stmt 1 view .LVU323
+ 1159 0404 074A     		ldr	r2, .L59+12
+ 1160 0406 536F     		ldr	r3, [r2, #116]
+ 1161 0408 43F08073 		orr	r3, r3, #16777216
+ 293:./src/tftpserver.c **** 
+ 1162              		.loc 1 293 1 is_stmt 0 view .LVU324
+ 1163 040c BDE81040 		pop	{r4, lr}
+ 1164              	.LCFI23:
  1165              		.cfi_restore 14
  1166              		.cfi_restore 4
  1167              		.cfi_def_cfa_offset 0
- 501:./src/tftpserver.c ****   } 
- 1168              		.loc 1 501 5 view .LVU322
- 1169 03f8 FFF7FEBF 		b	udp_recv
- 1170              	.LVL121:
- 1171              	.L59:
- 1172              	.LCFI24:
- 1173              		.cfi_restore_state
- 506:./src/tftpserver.c **** #endif
- 1174              		.loc 1 506 5 is_stmt 1 view .LVU323
- 1175 03fc 0748     		ldr	r0, .L62+12
- 1176              	.LVL122:
- 1177              		.loc 1 509 1 is_stmt 0 view .LVU324
- 1178 03fe BDE81040 		pop	{r4, lr}
- 1179              	.LCFI25:
- 1180              		.cfi_remember_state
- 1181              		.cfi_restore 14
- 1182              		.cfi_restore 4
- 1183              		.cfi_def_cfa_offset 0
- 506:./src/tftpserver.c **** #endif
- 1184              		.loc 1 506 5 view .LVU325
- 1185 0402 FFF7FEBF 		b	udp_client_send
- 1186              	.LVL123:
- 1187              	.L61:
- 1188              	.LCFI26:
- 1189              		.cfi_restore_state
- 491:./src/tftpserver.c **** #endif
- 1190              		.loc 1 491 5 is_stmt 1 view .LVU326
- 1191 0406 0648     		ldr	r0, .L62+16
- 1192              		.loc 1 509 1 is_stmt 0 view .LVU327
- 1193 0408 BDE81040 		pop	{r4, lr}
- 1194              	.LCFI27:
- 1195              		.cfi_restore 14
- 1196              		.cfi_restore 4
- 1197              		.cfi_def_cfa_offset 0
- 491:./src/tftpserver.c **** #endif
- 1198              		.loc 1 491 5 view .LVU328
- 1199 040c FFF7FEBF 		b	udp_client_send
- 1200              	.LVL124:
- 1201              	.L63:
- 1202              		.align	2
- 1203              	.L62:
- 1204 0410 00000000 		.word	.LANCHOR0
- 1205 0414 00000000 		.word	ip_addr_any
- 1206 0418 00000000 		.word	IAP_tftp_recv_callback
- 1207 041c A8010000 		.word	.LC16
- 1208 0420 90010000 		.word	.LC15
- 1209              		.cfi_endproc
- 1210              	.LFE178:
- 1212              		.bss
- 1213              		.align	2
- 1214              		.set	.LANCHOR0,. + 0
- 1217              	total_count:
- 1218 0000 00000000 		.space	4
- 1221              	Flash_Write_Address:
- 1222 0004 00000000 		.space	4
- 1225              	UDPpcb:
- 1226 0008 00000000 		.space	4
- 1229              	Flash_Write_Address2.0:
- 1230 000c 00000000 		.space	4
- 1233              	Flash_Write_Address2.1:
- 1234 0010 00000000 		.space	4
- 1235              		.text
- 1236              	.Letext0:
- 1237              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1238              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1239              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
- 1240              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
- 1241              		.file 8 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 1242              		.file 9 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 1243              		.file 10 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 1244              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
- 1245              		.file 12 "./lwip-2.1.2/src/include/lwip/udp.h"
- 1246              		.file 13 "./inc/tftpserver.h"
- 1247              		.file 14 "./inc/stm32f765xx.h"
- 1248              		.file 15 "./inc/stm32f7xx_hal_def.h"
- 1249              		.file 16 "./inc/firmware_tag.h"
- 1250              		.file 17 "./inc/stm32f7xx_hal_crc.h"
- 1251              		.file 18 "./inc/udp_total.h"
- 1252              		.file 19 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 1253              		.file 20 "./inc/stm32f7xx_hal_flash.h"
- 1254              		.file 21 "./inc/backup.h"
- 1255              		.file 22 "./inc/flash_if.h"
- 1256              		.file 23 "./lwip-2.1.2/src/include/lwip/mem.h"
- 1257              		.file 24 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 1258              		.file 25 "./lwip-2.1.2/src/include/lwip/def.h"
- 1259              		.file 26 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 290:./src/tftpserver.c **** 	clear_boot_flag();
+ 1168              		.loc 1 290 2 view .LVU325
+ 1169 0410 5367     		str	r3, [r2, #116]
+ 291:./src/tftpserver.c **** 
+ 1170              		.loc 1 291 2 is_stmt 1 view .LVU326
+ 1171 0412 FFF7FEBF 		b	clear_boot_flag
+ 1172              	.LVL122:
+ 1173              	.L60:
+ 1174 0416 00BF     		.align	2
+ 1175              	.L59:
+ 1176 0418 00000408 		.word	134479872
+ 1177 041c 00000000 		.word	hiwdg
+ 1178 0420 00000000 		.word	.LANCHOR0
+ 1179 0424 00380240 		.word	1073887232
+ 1180              		.cfi_endproc
+ 1181              	.LFE175:
+ 1183              		.section	.rodata.str1.4
+ 1184 018f 00       		.align	2
+ 1185              	.LC15:
+ 1186 0190 43616E20 		.ascii	"Can not create pcb3 \012\000"
+ 1186      6E6F7420 
+ 1186      63726561 
+ 1186      74652070 
+ 1186      63623320 
+ 1187 01a6 0000     		.align	2
+ 1188              	.LC16:
+ 1189 01a8 43616E20 		.ascii	"Can not create pcb4 \012\000"
+ 1189      6E6F7420 
+ 1189      63726561 
+ 1189      74652070 
+ 1189      63623420 
+ 1190              		.text
+ 1191              		.align	1
+ 1192              		.p2align 2,,3
+ 1193              		.global	IAP_tftpd_init
+ 1194              		.syntax unified
+ 1195              		.thumb
+ 1196              		.thumb_func
+ 1197              		.fpu fpv5-d16
+ 1199              	IAP_tftpd_init:
+ 1200              	.LFB179:
+ 474:./src/tftpserver.c **** 
+ 475:./src/tftpserver.c **** /* Global functions ---------------------------------------------------------*/
+ 476:./src/tftpserver.c **** 
+ 477:./src/tftpserver.c **** /**
+ 478:./src/tftpserver.c ****   * @brief  Creates and initializes a UDP PCB for TFTP receive operation  
+ 479:./src/tftpserver.c ****   * @param  None  
+ 480:./src/tftpserver.c ****   * @retval None
+ 481:./src/tftpserver.c ****   */
+ 482:./src/tftpserver.c **** void IAP_tftpd_init(void)
+ 483:./src/tftpserver.c **** {
+ 1201              		.loc 1 483 1 view -0
+ 1202              		.cfi_startproc
+ 1203              		@ args = 0, pretend = 0, frame = 0
+ 1204              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484:./src/tftpserver.c ****   err_t err;
+ 1205              		.loc 1 484 3 view .LVU328
+ 485:./src/tftpserver.c ****   unsigned port = 69; /* 69 is the port used for TFTP protocol initial transaction */
+ 1206              		.loc 1 485 3 view .LVU329
+ 1207              	.LVL123:
+ 486:./src/tftpserver.c **** 
+ 487:./src/tftpserver.c ****   /* create a new UDP PCB structure  */
+ 488:./src/tftpserver.c ****   UDPpcb = udp_new();
+ 1208              		.loc 1 488 3 view .LVU330
+ 483:./src/tftpserver.c ****   err_t err;
+ 1209              		.loc 1 483 1 is_stmt 0 view .LVU331
+ 1210 0428 10B5     		push	{r4, lr}
+ 1211              	.LCFI24:
+ 1212              		.cfi_def_cfa_offset 8
+ 1213              		.cfi_offset 4, -8
+ 1214              		.cfi_offset 14, -4
+ 1215              		.loc 1 488 10 view .LVU332
+ 1216 042a 0D4C     		ldr	r4, .L66
+ 1217              		.loc 1 488 12 view .LVU333
+ 1218 042c FFF7FEFF 		bl	udp_new
+ 1219              	.LVL124:
+ 1220              		.loc 1 488 10 view .LVU334
+ 1221 0430 A060     		str	r0, [r4, #8]
+ 489:./src/tftpserver.c ****   if (!UDPpcb)
+ 1222              		.loc 1 489 3 is_stmt 1 view .LVU335
+ 1223              		.loc 1 489 6 is_stmt 0 view .LVU336
+ 1224 0432 80B1     		cbz	r0, .L65
+ 490:./src/tftpserver.c ****   {
+ 491:./src/tftpserver.c ****     /* Error creating PCB. Out of Memory  */
+ 492:./src/tftpserver.c **** #ifdef USE_PRINT
+ 493:./src/tftpserver.c ****     udp_client_send("Can not create pcb3 \n");
+ 494:./src/tftpserver.c **** #endif
+ 495:./src/tftpserver.c ****     return;
+ 496:./src/tftpserver.c ****   }
+ 497:./src/tftpserver.c **** 
+ 498:./src/tftpserver.c ****   /* Bind this PCB to port 69  */
+ 499:./src/tftpserver.c ****   err = udp_bind(UDPpcb, IP_ADDR_ANY, port);
+ 1225              		.loc 1 499 3 is_stmt 1 view .LVU337
+ 1226              		.loc 1 499 9 is_stmt 0 view .LVU338
+ 1227 0434 4522     		movs	r2, #69
+ 1228 0436 0B49     		ldr	r1, .L66+4
+ 1229 0438 FFF7FEFF 		bl	udp_bind
+ 1230              	.LVL125:
+ 500:./src/tftpserver.c ****   if (err == ERR_OK)
+ 1231              		.loc 1 500 3 is_stmt 1 view .LVU339
+ 1232              		.loc 1 500 6 is_stmt 0 view .LVU340
+ 1233 043c 30B9     		cbnz	r0, .L63
+ 501:./src/tftpserver.c ****   {
+ 502:./src/tftpserver.c ****     /* Initialize receive callback function  */
+ 503:./src/tftpserver.c ****     udp_recv(UDPpcb, IAP_tftp_recv_callback, NULL);
+ 1234              		.loc 1 503 5 is_stmt 1 view .LVU341
+ 1235 043e 0246     		mov	r2, r0
+ 1236 0440 0949     		ldr	r1, .L66+8
+ 1237 0442 A068     		ldr	r0, [r4, #8]
+ 1238              	.LVL126:
+ 504:./src/tftpserver.c ****   } 
+ 505:./src/tftpserver.c ****   else
+ 506:./src/tftpserver.c ****   {
+ 507:./src/tftpserver.c **** #ifdef USE_PRINT
+ 508:./src/tftpserver.c ****     udp_client_send("Can not create pcb4 \n");
+ 509:./src/tftpserver.c **** #endif
+ 510:./src/tftpserver.c ****   }
+ 511:./src/tftpserver.c **** }
+ 1239              		.loc 1 511 1 is_stmt 0 view .LVU342
+ 1240 0444 BDE81040 		pop	{r4, lr}
+ 1241              	.LCFI25:
+ 1242              		.cfi_remember_state
+ 1243              		.cfi_restore 14
+ 1244              		.cfi_restore 4
+ 1245              		.cfi_def_cfa_offset 0
+ 503:./src/tftpserver.c ****   } 
+ 1246              		.loc 1 503 5 view .LVU343
+ 1247 0448 FFF7FEBF 		b	udp_recv
+ 1248              	.LVL127:
+ 1249              	.L63:
+ 1250              	.LCFI26:
+ 1251              		.cfi_restore_state
+ 508:./src/tftpserver.c **** #endif
+ 1252              		.loc 1 508 5 is_stmt 1 view .LVU344
+ 1253 044c 0748     		ldr	r0, .L66+12
+ 1254              	.LVL128:
+ 1255              		.loc 1 511 1 is_stmt 0 view .LVU345
+ 1256 044e BDE81040 		pop	{r4, lr}
+ 1257              	.LCFI27:
+ 1258              		.cfi_remember_state
+ 1259              		.cfi_restore 14
+ 1260              		.cfi_restore 4
+ 1261              		.cfi_def_cfa_offset 0
+ 508:./src/tftpserver.c **** #endif
+ 1262              		.loc 1 508 5 view .LVU346
+ 1263 0452 FFF7FEBF 		b	udp_client_send
+ 1264              	.LVL129:
+ 1265              	.L65:
+ 1266              	.LCFI28:
+ 1267              		.cfi_restore_state
+ 493:./src/tftpserver.c **** #endif
+ 1268              		.loc 1 493 5 is_stmt 1 view .LVU347
+ 1269 0456 0648     		ldr	r0, .L66+16
+ 1270              		.loc 1 511 1 is_stmt 0 view .LVU348
+ 1271 0458 BDE81040 		pop	{r4, lr}
+ 1272              	.LCFI29:
+ 1273              		.cfi_restore 14
+ 1274              		.cfi_restore 4
+ 1275              		.cfi_def_cfa_offset 0
+ 493:./src/tftpserver.c **** #endif
+ 1276              		.loc 1 493 5 view .LVU349
+ 1277 045c FFF7FEBF 		b	udp_client_send
+ 1278              	.LVL130:
+ 1279              	.L67:
+ 1280              		.align	2
+ 1281              	.L66:
+ 1282 0460 00000000 		.word	.LANCHOR0
+ 1283 0464 00000000 		.word	ip_addr_any
+ 1284 0468 00000000 		.word	IAP_tftp_recv_callback
+ 1285 046c A8010000 		.word	.LC16
+ 1286 0470 90010000 		.word	.LC15
+ 1287              		.cfi_endproc
+ 1288              	.LFE179:
+ 1290              		.bss
+ 1291              		.align	2
+ 1292              		.set	.LANCHOR0,. + 0
+ 1295              	total_count:
+ 1296 0000 00000000 		.space	4
+ 1299              	Flash_Write_Address:
+ 1300 0004 00000000 		.space	4
+ 1303              	UDPpcb:
+ 1304 0008 00000000 		.space	4
+ 1307              	Flash_Write_Address2.0:
+ 1308 000c 00000000 		.space	4
+ 1311              	Flash_Write_Address2.1:
+ 1312 0010 00000000 		.space	4
+ 1315              	Flash_Write_Address2.2:
+ 1316 0014 00000000 		.space	4
+ 1317              		.text
+ 1318              	.Letext0:
+ 1319              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1320              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1321              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1322              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1323              		.file 8 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 1324              		.file 9 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 1325              		.file 10 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 1326              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1327              		.file 12 "./lwip-2.1.2/src/include/lwip/udp.h"
+ 1328              		.file 13 "./inc/tftpserver.h"
+ 1329              		.file 14 "./inc/stm32f765xx.h"
+ 1330              		.file 15 "./inc/stm32f7xx_hal_def.h"
+ 1331              		.file 16 "./inc/firmware_tag.h"
+ 1332              		.file 17 "./inc/stm32f7xx_hal_crc.h"
+ 1333              		.file 18 "./inc/stm32f7xx_hal_iwdg.h"
+ 1334              		.file 19 "./inc/udp_total.h"
+ 1335              		.file 20 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
+ 1336              		.file 21 "./inc/stm32f7xx_hal_flash.h"
+ 1337              		.file 22 "./inc/backup.h"
+ 1338              		.file 23 "./inc/flash_if.h"
+ 1339              		.file 24 "./lwip-2.1.2/src/include/lwip/mem.h"
+ 1340              		.file 25 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
+ 1341              		.file 26 "./lwip-2.1.2/src/include/lwip/def.h"
+ 1342              		.file 27 "./lwip-2.1.2/src/include/lwip/netif.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 tftpserver.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:17     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:21     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:29     .text:00000000 IAP_tftp_send_ack_packet.isra.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:185    .text:0000005c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:209    .text:00000060 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:216    .text:00000060 IAP_wrq_recv_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:656    .text:000001fc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:707    .text:00000230 IAP_tftp_recv_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:700    .text:00000230 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1088   .text:000003a0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1113   .text:000003d8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1121   .text:000003d8 IAP_tftpd_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1204   .text:00000410 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1213   .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1217   .bss:00000000 total_count
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1221   .bss:00000004 Flash_Write_Address
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1225   .bss:00000008 UDPpcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1229   .bss:0000000c Flash_Write_Address2.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccw3yiHu.s:1233   .bss:00000010 Flash_Write_Address2.1
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:17     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:21     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:29     .text:00000000 IAP_tftp_send_ack_packet.isra.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:185    .text:0000005c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:209    .text:00000060 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:216    .text:00000060 IAP_wrq_recv_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:656    .text:000001fc $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:707    .text:00000230 IAP_tftp_recv_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:700    .text:00000230 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1088   .text:000003a0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1105   .text:000003d8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1113   .text:000003d8 WDGbackup
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1176   .text:00000418 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1191   .text:00000428 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1199   .text:00000428 IAP_tftpd_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1282   .text:00000460 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1291   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1295   .bss:00000000 total_count
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1299   .bss:00000004 Flash_Write_Address
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1303   .bss:00000008 UDPpcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1307   .bss:0000000c Flash_Write_Address2.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1311   .bss:00000010 Flash_Write_Address2.1
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccA7iZst.s:1315   .bss:00000014 Flash_Write_Address2.2
 
 UNDEFINED SYMBOLS
 lwip_htons
@@ -5220,3 +5326,5 @@ mem_malloc
 FLASH_If_Init
 FLASH_Backup_Erase
 ip_addr_any
+HAL_IWDG_Refresh
+hiwdg

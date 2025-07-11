@@ -27,6 +27,8 @@
 #include "udp_total.h"
 #include "stm32f7xx_hal_crc.h"
 #include "stm32f7xx_hal_crc_ex.h"
+#include "stm32f7xx_hal_rcc.h"
+#include "stm32f7xx_hal_iwdg.h"
 
 #define TAG_ADDRESS  ((FirmwareTag*) USER_FLASH_FIRST_PAGE_ADDRESS)
 #define BACKUP_TAG_ADDRESS  ((FirmwareTag*) BACKUP_FLASH_FIRST_PAGE_ADDRESS)
@@ -45,7 +47,7 @@ static struct udp_pcb *UDPpcb;
 static __IO uint32_t total_count=0;
 
 extern CRC_HandleTypeDef hcrc;
-//extern IWDG_HandleTypeDef hiwdg;
+extern IWDG_HandleTypeDef hiwdg;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -274,21 +276,21 @@ static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf
   }
 }
 
-// void  WDGbackup()
-// {
-// 	static uint32_t Flash_Write_Address2;
-// 	HAL_FLASH_Unlock();
-//   HAL_IWDG_Refresh(&hiwdg);
-// 	FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
-// 	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
-// 	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
-// 	uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
-// 	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
+void  WDGbackup()
+{
+	static uint32_t Flash_Write_Address2;
+	HAL_FLASH_Unlock();
+  HAL_IWDG_Refresh(&hiwdg);
+	FLASH_If_Erase(USER_FLASH_FIRST_PAGE_ADDRESS);
+	Flash_Write_Address2 = USER_FLASH_FIRST_PAGE_ADDRESS;
+	uint32_t *src_data = (uint32_t*)BACKUP_FLASH_FIRST_PAGE_ADDRESS;
+	uint16_t data_len = ( BACKUP_TAG_ADDRESS->size + 1024 ) / 4;
+	uint32_t result = FLASH_If_Write(&Flash_Write_Address2, src_data ,data_len);
 
-// 	__HAL_RCC_CLEAR_RESET_FLAGS();
-// 	clear_boot_flag();
+	__HAL_RCC_CLEAR_RESET_FLAGS();
+	clear_boot_flag();
 
-// }
+}
 
 
 /**
