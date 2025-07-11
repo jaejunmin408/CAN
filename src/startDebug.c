@@ -13,7 +13,7 @@ void startDebug(void *argument)
 {
     udp_total_connect();
     printf("[FW]  START FW\n");
-    osDelay(2000);
+    //osDelay(2000);
     debugQueue = osMessageQueueNew(QUEUE_SIZE, ITEM_SIZE, NULL);
 }
 

@@ -1,4 +1,4 @@
-obj/stm32f7xx_hal.o: src/stm32f7xx_hal.c inc/stm32f7xx_hal.h \
+obj/stm32f7xx_hal_iwdg.o: src/stm32f7xx_hal_iwdg.c inc/stm32f7xx_hal.h \
  inc/stm32f7xx_hal_conf.h inc/stm32f7xx_hal_rcc.h inc/stm32f7xx_hal_def.h \
  inc/ARMCM7_DP.h inc/core_cm7.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\lib\gcc\arm-none-eabi\10.2.1\include\stdint.h \

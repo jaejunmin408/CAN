@@ -14,7 +14,7 @@
 # www.peak-system.com
 #
 #
-
+PYTHON =  C:/msys64/ucrt64/bin/python.exe
 
 # MCU name and submodel
 MCU = cortex-m7
@@ -87,6 +87,7 @@ CSRC += ./lwip-2.1.2/src/netif/ethernet.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_eth.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_gpio.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_rcc.c
+CSRC += $(SRC_FOLDER)/stm32f7xx_hal_iwdg.c
 
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_cortex.c
@@ -370,10 +371,15 @@ gccversion:
 
 
 # create bin file from hex
+# PYTHON = python               # 또는 필요 시 python3
+CRC_SCRIPT = inject_crc.py   # inject_crc.py가 Makefile과 같은 디렉토리에 있다고 가정
+
 %.bin: %.hex
 	@echo
 	@echo $(MSG_BIN_FILE) $@
-	$(HEX2BIN) -s 0000 $(OUT_FOLDER)/$<
+	$(HEX2BIN) -s 40000 $(OUT_FOLDER)/$<
+	@echo "[INFO] Running CRC injection script on out/$@"
+	$(PYTHON) $(CRC_SCRIPT) $(OUT_FOLDER)/$@
 
 
 # Link: create ELF output file from object files

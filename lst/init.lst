@@ -6,7 +6,7 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"init.c"
@@ -14,15 +14,16 @@
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
   16              		.align	1
-  17              		.global	lwip_init
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	lwip_init:
-  25              	.LFB169:
-  26              		.file 1 "./lwip-2.1.2/src/core/init.c"
+  17              		.p2align 2,,3
+  18              		.global	lwip_init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	lwip_init:
+  26              	.LFB169:
+  27              		.file 1 "./lwip-2.1.2/src/core/init.c"
    1:./lwip-2.1.2/src/core/init.c **** /**
    2:./lwip-2.1.2/src/core/init.c ****  * @file
    3:./lwip-2.1.2/src/core/init.c ****  * Modules initialization
@@ -356,54 +357,61 @@
  331:./lwip-2.1.2/src/core/init.c **** void
  332:./lwip-2.1.2/src/core/init.c **** lwip_init(void)
  333:./lwip-2.1.2/src/core/init.c **** {
-  27              		.loc 1 333 1
-  28              		.cfi_startproc
-  29              		@ args = 0, pretend = 0, frame = 8
-  30              		@ frame_needed = 1, uses_anonymous_args = 0
-  31 0000 80B5     		push	{r7, lr}
-  32              	.LCFI0:
-  33              		.cfi_def_cfa_offset 8
-  34              		.cfi_offset 7, -8
-  35              		.cfi_offset 14, -4
-  36 0002 82B0     		sub	sp, sp, #8
-  37              	.LCFI1:
-  38              		.cfi_def_cfa_offset 16
-  39 0004 00AF     		add	r7, sp, #0
-  40              	.LCFI2:
-  41              		.cfi_def_cfa_register 7
+  28              		.loc 1 333 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
  334:./lwip-2.1.2/src/core/init.c **** #ifndef LWIP_SKIP_CONST_CHECK
  335:./lwip-2.1.2/src/core/init.c ****   int a = 0;
-  42              		.loc 1 335 7
-  43 0006 0023     		movs	r3, #0
-  44 0008 7B60     		str	r3, [r7, #4]
+  32              		.loc 1 335 3 view .LVU1
+  33              	.LVL0:
  336:./lwip-2.1.2/src/core/init.c ****   LWIP_UNUSED_ARG(a);
+  34              		.loc 1 336 3 view .LVU2
  337:./lwip-2.1.2/src/core/init.c ****   LWIP_ASSERT("LWIP_CONST_CAST not implemented correctly. Check your lwIP port.", LWIP_CONST_CAST(v
+  35              		.loc 1 337 117 view .LVU3
  338:./lwip-2.1.2/src/core/init.c **** #endif
  339:./lwip-2.1.2/src/core/init.c **** #ifndef LWIP_SKIP_PACKING_CHECK
  340:./lwip-2.1.2/src/core/init.c ****   LWIP_ASSERT("Struct packing not implemented correctly. Check your lwIP port.", sizeof(struct pack
+  36              		.loc 1 340 152 view .LVU4
  341:./lwip-2.1.2/src/core/init.c **** #endif
  342:./lwip-2.1.2/src/core/init.c **** 
  343:./lwip-2.1.2/src/core/init.c ****   /* Modules initialization */
  344:./lwip-2.1.2/src/core/init.c ****   stats_init();
+  37              		.loc 1 344 15 view .LVU5
  345:./lwip-2.1.2/src/core/init.c **** #if !NO_SYS
  346:./lwip-2.1.2/src/core/init.c ****   sys_init();
-  45              		.loc 1 346 3
-  46 000a FFF7FEFF 		bl	sys_init
+  38              		.loc 1 346 3 view .LVU6
+ 333:./lwip-2.1.2/src/core/init.c **** #ifndef LWIP_SKIP_CONST_CHECK
+  39              		.loc 1 333 1 is_stmt 0 view .LVU7
+  40 0000 08B5     		push	{r3, lr}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 8
+  43              		.cfi_offset 3, -8
+  44              		.cfi_offset 14, -4
+  45              		.loc 1 346 3 view .LVU8
+  46 0002 FFF7FEFF 		bl	sys_init
+  47              	.LVL1:
  347:./lwip-2.1.2/src/core/init.c **** #endif /* !NO_SYS */
  348:./lwip-2.1.2/src/core/init.c ****   mem_init();
-  47              		.loc 1 348 3
-  48 000e FFF7FEFF 		bl	mem_init
+  48              		.loc 1 348 3 is_stmt 1 view .LVU9
+  49 0006 FFF7FEFF 		bl	mem_init
+  50              	.LVL2:
  349:./lwip-2.1.2/src/core/init.c ****   memp_init();
-  49              		.loc 1 349 3
-  50 0012 FFF7FEFF 		bl	memp_init
+  51              		.loc 1 349 3 view .LVU10
+  52 000a FFF7FEFF 		bl	memp_init
+  53              	.LVL3:
  350:./lwip-2.1.2/src/core/init.c ****   pbuf_init();
+  54              		.loc 1 350 14 view .LVU11
  351:./lwip-2.1.2/src/core/init.c ****   netif_init();
-  51              		.loc 1 351 3
-  52 0016 FFF7FEFF 		bl	netif_init
+  55              		.loc 1 351 3 view .LVU12
+  56 000e FFF7FEFF 		bl	netif_init
+  57              	.LVL4:
  352:./lwip-2.1.2/src/core/init.c **** #if LWIP_IPV4
  353:./lwip-2.1.2/src/core/init.c ****   ip_init();
+  58              		.loc 1 353 12 view .LVU13
  354:./lwip-2.1.2/src/core/init.c **** #if LWIP_ARP
  355:./lwip-2.1.2/src/core/init.c ****   etharp_init();
+  59              		.loc 1 355 16 view .LVU14
  356:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_ARP */
  357:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_IPV4 */
  358:./lwip-2.1.2/src/core/init.c **** #if LWIP_RAW
@@ -411,13 +419,15 @@
  360:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_RAW */
  361:./lwip-2.1.2/src/core/init.c **** #if LWIP_UDP
  362:./lwip-2.1.2/src/core/init.c ****   udp_init();
-  53              		.loc 1 362 3
-  54 001a FFF7FEFF 		bl	udp_init
+  60              		.loc 1 362 3 view .LVU15
+  61 0012 FFF7FEFF 		bl	udp_init
+  62              	.LVL5:
  363:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_UDP */
  364:./lwip-2.1.2/src/core/init.c **** #if LWIP_TCP
  365:./lwip-2.1.2/src/core/init.c ****   tcp_init();
-  55              		.loc 1 365 3
-  56 001e FFF7FEFF 		bl	tcp_init
+  63              		.loc 1 365 3 view .LVU16
+  64 0016 FFF7FEFF 		bl	tcp_init
+  65              	.LVL6:
  366:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_TCP */
  367:./lwip-2.1.2/src/core/init.c **** #if LWIP_IGMP
  368:./lwip-2.1.2/src/core/init.c ****   igmp_init();
@@ -431,27 +441,33 @@
  376:./lwip-2.1.2/src/core/init.c **** 
  377:./lwip-2.1.2/src/core/init.c **** #if LWIP_TIMERS
  378:./lwip-2.1.2/src/core/init.c ****   sys_timeouts_init();
-  57              		.loc 1 378 3
-  58 0022 FFF7FEFF 		bl	sys_timeouts_init
+  66              		.loc 1 378 3 view .LVU17
  379:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_TIMERS */
  380:./lwip-2.1.2/src/core/init.c **** }
-  59              		.loc 1 380 1
-  60 0026 00BF     		nop
-  61 0028 0837     		adds	r7, r7, #8
-  62              	.LCFI3:
-  63              		.cfi_def_cfa_offset 8
-  64 002a BD46     		mov	sp, r7
-  65              	.LCFI4:
-  66              		.cfi_def_cfa_register 13
-  67              		@ sp needed
-  68 002c 80BD     		pop	{r7, pc}
-  69              		.cfi_endproc
-  70              	.LFE169:
-  72              	.Letext0:
+  67              		.loc 1 380 1 is_stmt 0 view .LVU18
+  68 001a BDE80840 		pop	{r3, lr}
+  69              	.LCFI1:
+  70              		.cfi_restore 14
+  71              		.cfi_restore 3
+  72              		.cfi_def_cfa_offset 0
+ 378:./lwip-2.1.2/src/core/init.c **** #endif /* LWIP_TIMERS */
+  73              		.loc 1 378 3 view .LVU19
+  74 001e FFF7FEBF 		b	sys_timeouts_init
+  75              	.LVL7:
+  76              		.cfi_endproc
+  77              	.LFE169:
+  79              	.Letext0:
+  80              		.file 2 "./lwip-2.1.2/src/include/lwip/sys.h"
+  81              		.file 3 "./lwip-2.1.2/src/include/lwip/mem.h"
+  82              		.file 4 "./lwip-2.1.2/src/include/lwip/memp.h"
+  83              		.file 5 "./lwip-2.1.2/src/include/lwip/netif.h"
+  84              		.file 6 "./lwip-2.1.2/src/include/lwip/udp.h"
+  85              		.file 7 "./lwip-2.1.2/src/include/lwip/priv/tcp_priv.h"
+  86              		.file 8 "./lwip-2.1.2/src/include/lwip/timeouts.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccMZTO9P.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccMZTO9P.s:24     .text:00000000 lwip_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMeJO6B.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccMeJO6B.s:25     .text:00000000 lwip_init
 
 UNDEFINED SYMBOLS
 sys_init

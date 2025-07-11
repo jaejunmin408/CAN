@@ -4,7 +4,7 @@
 
 
 extern osMessageQueueId_t debugQueue;
-// extern IWDG_HandleTypeDef hiwdg;
+extern IWDG_HandleTypeDef hiwdg;
 
 osThreadId_t Task02Handle;
 const osThreadAttr_t Task02_attributes = {
@@ -21,7 +21,7 @@ void task02_thread(void *argument)
   {
     
     DEBUG("Task2 Test!!!\n");
-    // HAL_IWDG_Refresh(&hiwdg);
+    HAL_IWDG_Refresh(&hiwdg);
     osDelay(1000);
   }
 }

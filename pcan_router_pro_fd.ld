@@ -128,6 +128,12 @@ SECTIONS
 		LONG ( 0x00000065);
 	} */
 
+   .firmware_tag : 
+  {
+  	KEEP(*(.firmware_tag))
+  	. = 0x400; 
+  } > FLASH
+
   .text :
   {
     KEEP(*(.vectors))

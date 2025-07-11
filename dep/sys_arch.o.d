@@ -55,8 +55,8 @@ obj/sys_arch.o: src/sys_arch.c lwip-2.1.2/src/include/lwip/arch.h \
  inc/stm32f7xx_hal_gpio_ex.h inc/stm32f7xx_hal_dma.h \
  inc/stm32f7xx_hal_dma_ex.h inc/stm32f7xx_hal_cortex.h \
  inc/stm32f7xx_hal_eth.h inc/stm32f7xx_hal_flash.h \
- inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_sd.h \
- inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
+ inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_iwdg.h \
+ inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h \
  lwip-2.1.2/src/include/lwip/sys.h lwip-2.1.2/src/include/lwip/opt.h \
  inc/lwipopts.h inc/main.h lwip-2.1.2/src/include/lwip/debug.h \
  lwip-2.1.2/src/include/lwip/err.h \
@@ -138,6 +138,7 @@ inc/stm32f7xx_hal_cortex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:
+inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:

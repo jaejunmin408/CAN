@@ -6,44 +6,24 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"mem.c"
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.global	ram_heap
-  17              		.bss
-  18              		.align	2
-  21              	ram_heap:
-  22 0000 00000000 		.space	4115
-  22      00000000 
-  22      00000000 
-  22      00000000 
-  22      00000000 
-  23 1013 00       		.align	2
-  24              	ram:
-  25 1014 00000000 		.space	4
-  27              		.align	2
-  28              	ram_end:
-  29 1018 00000000 		.space	4
-  31              		.align	2
-  32              	mem_mutex:
-  33 101c 00000000 		.space	4
-  35              		.align	2
-  36              	lfree:
-  37 1020 00000000 		.space	4
-  39              		.text
-  40              		.align	1
-  41              		.arch armv7e-m
-  42              		.syntax unified
-  43              		.thumb
-  44              		.thumb_func
-  45              		.fpu fpv5-d16
-  47              	ptr_to_mem:
-  48              	.LFB169:
-  49              		.file 1 "./lwip-2.1.2/src/core/mem.c"
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	mem_init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	mem_init:
+  26              	.LFB172:
+  27              		.file 1 "./lwip-2.1.2/src/core/mem.c"
    1:./lwip-2.1.2/src/core/mem.c **** /**
    2:./lwip-2.1.2/src/core/mem.c ****  * @file
    3:./lwip-2.1.2/src/core/mem.c ****  * Dynamic memory manager
@@ -496,114 +476,14 @@
  450:./lwip-2.1.2/src/core/mem.c **** static struct mem *
  451:./lwip-2.1.2/src/core/mem.c **** ptr_to_mem(mem_size_t ptr)
  452:./lwip-2.1.2/src/core/mem.c **** {
-  50              		.loc 1 452 1
-  51              		.cfi_startproc
-  52              		@ args = 0, pretend = 0, frame = 8
-  53              		@ frame_needed = 1, uses_anonymous_args = 0
-  54              		@ link register save eliminated.
-  55 0000 80B4     		push	{r7}
-  56              	.LCFI0:
-  57              		.cfi_def_cfa_offset 4
-  58              		.cfi_offset 7, -4
-  59 0002 83B0     		sub	sp, sp, #12
-  60              	.LCFI1:
-  61              		.cfi_def_cfa_offset 16
-  62 0004 00AF     		add	r7, sp, #0
-  63              	.LCFI2:
-  64              		.cfi_def_cfa_register 7
-  65 0006 0346     		mov	r3, r0
-  66 0008 FB80     		strh	r3, [r7, #6]	@ movhi
  453:./lwip-2.1.2/src/core/mem.c ****   return (struct mem *)(void *)&ram[ptr];
-  67              		.loc 1 453 32
-  68 000a 054B     		ldr	r3, .L3
-  69 000c 1A68     		ldr	r2, [r3]
-  70 000e FB88     		ldrh	r3, [r7, #6]
-  71              		.loc 1 453 10
-  72 0010 1344     		add	r3, r3, r2
  454:./lwip-2.1.2/src/core/mem.c **** }
-  73              		.loc 1 454 1
-  74 0012 1846     		mov	r0, r3
-  75 0014 0C37     		adds	r7, r7, #12
-  76              	.LCFI3:
-  77              		.cfi_def_cfa_offset 4
-  78 0016 BD46     		mov	sp, r7
-  79              	.LCFI4:
-  80              		.cfi_def_cfa_register 13
-  81              		@ sp needed
-  82 0018 5DF8047B 		ldr	r7, [sp], #4
-  83              	.LCFI5:
-  84              		.cfi_restore 7
-  85              		.cfi_def_cfa_offset 0
-  86 001c 7047     		bx	lr
-  87              	.L4:
-  88 001e 00BF     		.align	2
-  89              	.L3:
-  90 0020 14100000 		.word	ram
-  91              		.cfi_endproc
-  92              	.LFE169:
-  94              		.align	1
-  95              		.syntax unified
-  96              		.thumb
-  97              		.thumb_func
-  98              		.fpu fpv5-d16
- 100              	mem_to_ptr:
- 101              	.LFB170:
  455:./lwip-2.1.2/src/core/mem.c **** 
  456:./lwip-2.1.2/src/core/mem.c **** static mem_size_t
  457:./lwip-2.1.2/src/core/mem.c **** mem_to_ptr(void *mem)
  458:./lwip-2.1.2/src/core/mem.c **** {
- 102              		.loc 1 458 1
- 103              		.cfi_startproc
- 104              		@ args = 0, pretend = 0, frame = 8
- 105              		@ frame_needed = 1, uses_anonymous_args = 0
- 106              		@ link register save eliminated.
- 107 0024 80B4     		push	{r7}
- 108              	.LCFI6:
- 109              		.cfi_def_cfa_offset 4
- 110              		.cfi_offset 7, -4
- 111 0026 83B0     		sub	sp, sp, #12
- 112              	.LCFI7:
- 113              		.cfi_def_cfa_offset 16
- 114 0028 00AF     		add	r7, sp, #0
- 115              	.LCFI8:
- 116              		.cfi_def_cfa_register 7
- 117 002a 7860     		str	r0, [r7, #4]
  459:./lwip-2.1.2/src/core/mem.c ****   return (mem_size_t)((u8_t *)mem - ram);
- 118              		.loc 1 459 35
- 119 002c 054B     		ldr	r3, .L7
- 120 002e 1B68     		ldr	r3, [r3]
- 121 0030 7A68     		ldr	r2, [r7, #4]
- 122 0032 D31A     		subs	r3, r2, r3
- 123              		.loc 1 459 10
- 124 0034 9BB2     		uxth	r3, r3
  460:./lwip-2.1.2/src/core/mem.c **** }
- 125              		.loc 1 460 1
- 126 0036 1846     		mov	r0, r3
- 127 0038 0C37     		adds	r7, r7, #12
- 128              	.LCFI9:
- 129              		.cfi_def_cfa_offset 4
- 130 003a BD46     		mov	sp, r7
- 131              	.LCFI10:
- 132              		.cfi_def_cfa_register 13
- 133              		@ sp needed
- 134 003c 5DF8047B 		ldr	r7, [sp], #4
- 135              	.LCFI11:
- 136              		.cfi_restore 7
- 137              		.cfi_def_cfa_offset 0
- 138 0040 7047     		bx	lr
- 139              	.L8:
- 140 0042 00BF     		.align	2
- 141              	.L7:
- 142 0044 14100000 		.word	ram
- 143              		.cfi_endproc
- 144              	.LFE170:
- 146              		.align	1
- 147              		.syntax unified
- 148              		.thumb
- 149              		.thumb_func
- 150              		.fpu fpv5-d16
- 152              	plug_holes:
- 153              	.LFB171:
  461:./lwip-2.1.2/src/core/mem.c **** 
  462:./lwip-2.1.2/src/core/mem.c **** /**
  463:./lwip-2.1.2/src/core/mem.c ****  * "Plug holes" by combining adjacent empty struct mems.
@@ -619,23 +499,6 @@
  473:./lwip-2.1.2/src/core/mem.c **** static void
  474:./lwip-2.1.2/src/core/mem.c **** plug_holes(struct mem *mem)
  475:./lwip-2.1.2/src/core/mem.c **** {
- 154              		.loc 1 475 1
- 155              		.cfi_startproc
- 156              		@ args = 0, pretend = 0, frame = 16
- 157              		@ frame_needed = 1, uses_anonymous_args = 0
- 158 0048 90B5     		push	{r4, r7, lr}
- 159              	.LCFI12:
- 160              		.cfi_def_cfa_offset 12
- 161              		.cfi_offset 4, -12
- 162              		.cfi_offset 7, -8
- 163              		.cfi_offset 14, -4
- 164 004a 85B0     		sub	sp, sp, #20
- 165              	.LCFI13:
- 166              		.cfi_def_cfa_offset 32
- 167 004c 00AF     		add	r7, sp, #0
- 168              	.LCFI14:
- 169              		.cfi_def_cfa_register 7
- 170 004e 7860     		str	r0, [r7, #4]
  476:./lwip-2.1.2/src/core/mem.c ****   struct mem *nmem;
  477:./lwip-2.1.2/src/core/mem.c ****   struct mem *pmem;
  478:./lwip-2.1.2/src/core/mem.c **** 
@@ -647,170 +510,30 @@
  484:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem->next <= MEM_SIZE_ALIGNED", mem->next <= MEM_SIZE_ALIGNED);
  485:./lwip-2.1.2/src/core/mem.c **** 
  486:./lwip-2.1.2/src/core/mem.c ****   nmem = ptr_to_mem(mem->next);
- 171              		.loc 1 486 10
- 172 0050 7B68     		ldr	r3, [r7, #4]
- 173 0052 1B88     		ldrh	r3, [r3]
- 174 0054 1846     		mov	r0, r3
- 175 0056 FFF7D3FF 		bl	ptr_to_mem
- 176 005a F860     		str	r0, [r7, #12]
  487:./lwip-2.1.2/src/core/mem.c ****   if (mem != nmem && nmem->used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
- 177              		.loc 1 487 6
- 178 005c 7A68     		ldr	r2, [r7, #4]
- 179 005e FB68     		ldr	r3, [r7, #12]
- 180 0060 9A42     		cmp	r2, r3
- 181 0062 24D0     		beq	.L10
- 182              		.loc 1 487 26 discriminator 1
- 183 0064 FB68     		ldr	r3, [r7, #12]
- 184 0066 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 185              		.loc 1 487 19 discriminator 1
- 186 0068 002B     		cmp	r3, #0
- 187 006a 20D1     		bne	.L10
- 188              		.loc 1 487 57 discriminator 2
- 189 006c 274B     		ldr	r3, .L15
- 190 006e 1B68     		ldr	r3, [r3]
- 191              		.loc 1 487 38 discriminator 2
- 192 0070 FA68     		ldr	r2, [r7, #12]
- 193 0072 9A42     		cmp	r2, r3
- 194 0074 1BD0     		beq	.L10
  488:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
  489:./lwip-2.1.2/src/core/mem.c ****     if (lfree == nmem) {
- 195              		.loc 1 489 15
- 196 0076 264B     		ldr	r3, .L15+4
- 197 0078 1B68     		ldr	r3, [r3]
- 198              		.loc 1 489 8
- 199 007a FA68     		ldr	r2, [r7, #12]
- 200 007c 9A42     		cmp	r2, r3
- 201 007e 02D1     		bne	.L11
  490:./lwip-2.1.2/src/core/mem.c ****       lfree = mem;
- 202              		.loc 1 490 13
- 203 0080 234A     		ldr	r2, .L15+4
- 204 0082 7B68     		ldr	r3, [r7, #4]
- 205 0084 1360     		str	r3, [r2]
- 206              	.L11:
  491:./lwip-2.1.2/src/core/mem.c ****     }
  492:./lwip-2.1.2/src/core/mem.c ****     mem->next = nmem->next;
- 207              		.loc 1 492 21
- 208 0086 FB68     		ldr	r3, [r7, #12]
- 209 0088 1A88     		ldrh	r2, [r3]
- 210              		.loc 1 492 15
- 211 008a 7B68     		ldr	r3, [r7, #4]
- 212 008c 1A80     		strh	r2, [r3]	@ movhi
  493:./lwip-2.1.2/src/core/mem.c ****     if (nmem->next != MEM_SIZE_ALIGNED) {
- 213              		.loc 1 493 13
- 214 008e FB68     		ldr	r3, [r7, #12]
- 215 0090 1B88     		ldrh	r3, [r3]
- 216              		.loc 1 493 8
- 217 0092 B3F5805F 		cmp	r3, #4096
- 218 0096 0AD0     		beq	.L10
  494:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
- 219              		.loc 1 494 7
- 220 0098 FB68     		ldr	r3, [r7, #12]
- 221 009a 1B88     		ldrh	r3, [r3]
- 222 009c 1846     		mov	r0, r3
- 223 009e FFF7AFFF 		bl	ptr_to_mem
- 224 00a2 0446     		mov	r4, r0
- 225              		.loc 1 494 38
- 226 00a4 7868     		ldr	r0, [r7, #4]
- 227 00a6 FFF7BDFF 		bl	mem_to_ptr
- 228 00aa 0346     		mov	r3, r0
- 229              		.loc 1 494 36
- 230 00ac 6380     		strh	r3, [r4, #2]	@ movhi
- 231              	.L10:
  495:./lwip-2.1.2/src/core/mem.c ****     }
  496:./lwip-2.1.2/src/core/mem.c ****   }
  497:./lwip-2.1.2/src/core/mem.c **** 
  498:./lwip-2.1.2/src/core/mem.c ****   /* plug hole backward */
  499:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
- 232              		.loc 1 499 10
- 233 00ae 7B68     		ldr	r3, [r7, #4]
- 234 00b0 5B88     		ldrh	r3, [r3, #2]
- 235 00b2 1846     		mov	r0, r3
- 236 00b4 FFF7A4FF 		bl	ptr_to_mem
- 237 00b8 B860     		str	r0, [r7, #8]
  500:./lwip-2.1.2/src/core/mem.c ****   if (pmem != mem && pmem->used == 0) {
- 238              		.loc 1 500 6
- 239 00ba BA68     		ldr	r2, [r7, #8]
- 240 00bc 7B68     		ldr	r3, [r7, #4]
- 241 00be 9A42     		cmp	r2, r3
- 242 00c0 1FD0     		beq	.L14
- 243              		.loc 1 500 26 discriminator 1
- 244 00c2 BB68     		ldr	r3, [r7, #8]
- 245 00c4 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 246              		.loc 1 500 19 discriminator 1
- 247 00c6 002B     		cmp	r3, #0
- 248 00c8 1BD1     		bne	.L14
  501:./lwip-2.1.2/src/core/mem.c ****     /* if mem->prev is unused, combine mem and mem->prev */
  502:./lwip-2.1.2/src/core/mem.c ****     if (lfree == mem) {
- 249              		.loc 1 502 15
- 250 00ca 114B     		ldr	r3, .L15+4
- 251 00cc 1B68     		ldr	r3, [r3]
- 252              		.loc 1 502 8
- 253 00ce 7A68     		ldr	r2, [r7, #4]
- 254 00d0 9A42     		cmp	r2, r3
- 255 00d2 02D1     		bne	.L13
  503:./lwip-2.1.2/src/core/mem.c ****       lfree = pmem;
- 256              		.loc 1 503 13
- 257 00d4 0E4A     		ldr	r2, .L15+4
- 258 00d6 BB68     		ldr	r3, [r7, #8]
- 259 00d8 1360     		str	r3, [r2]
- 260              	.L13:
  504:./lwip-2.1.2/src/core/mem.c ****     }
  505:./lwip-2.1.2/src/core/mem.c ****     pmem->next = mem->next;
- 261              		.loc 1 505 21
- 262 00da 7B68     		ldr	r3, [r7, #4]
- 263 00dc 1A88     		ldrh	r2, [r3]
- 264              		.loc 1 505 16
- 265 00de BB68     		ldr	r3, [r7, #8]
- 266 00e0 1A80     		strh	r2, [r3]	@ movhi
  506:./lwip-2.1.2/src/core/mem.c ****     if (mem->next != MEM_SIZE_ALIGNED) {
- 267              		.loc 1 506 12
- 268 00e2 7B68     		ldr	r3, [r7, #4]
- 269 00e4 1B88     		ldrh	r3, [r3]
- 270              		.loc 1 506 8
- 271 00e6 B3F5805F 		cmp	r3, #4096
- 272 00ea 0AD0     		beq	.L14
  507:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
- 273              		.loc 1 507 7
- 274 00ec 7B68     		ldr	r3, [r7, #4]
- 275 00ee 1B88     		ldrh	r3, [r3]
- 276 00f0 1846     		mov	r0, r3
- 277 00f2 FFF785FF 		bl	ptr_to_mem
- 278 00f6 0446     		mov	r4, r0
- 279              		.loc 1 507 37
- 280 00f8 B868     		ldr	r0, [r7, #8]
- 281 00fa FFF793FF 		bl	mem_to_ptr
- 282 00fe 0346     		mov	r3, r0
- 283              		.loc 1 507 35
- 284 0100 6380     		strh	r3, [r4, #2]	@ movhi
- 285              	.L14:
  508:./lwip-2.1.2/src/core/mem.c ****     }
  509:./lwip-2.1.2/src/core/mem.c ****   }
  510:./lwip-2.1.2/src/core/mem.c **** }
- 286              		.loc 1 510 1
- 287 0102 00BF     		nop
- 288 0104 1437     		adds	r7, r7, #20
- 289              	.LCFI15:
- 290              		.cfi_def_cfa_offset 12
- 291 0106 BD46     		mov	sp, r7
- 292              	.LCFI16:
- 293              		.cfi_def_cfa_register 13
- 294              		@ sp needed
- 295 0108 90BD     		pop	{r4, r7, pc}
- 296              	.L16:
- 297 010a 00BF     		.align	2
- 298              	.L15:
- 299 010c 18100000 		.word	ram_end
- 300 0110 20100000 		.word	lfree
- 301              		.cfi_endproc
- 302              	.LFE171:
- 304              		.align	1
- 305              		.global	mem_init
- 306              		.syntax unified
- 307              		.thumb
- 308              		.thumb_func
- 309              		.fpu fpv5-d16
- 311              	mem_init:
- 312              	.LFB172:
  511:./lwip-2.1.2/src/core/mem.c **** 
  512:./lwip-2.1.2/src/core/mem.c **** /**
  513:./lwip-2.1.2/src/core/mem.c ****  * Zero the heap and initialize start, end and lowest-free
@@ -818,134 +541,133 @@
  515:./lwip-2.1.2/src/core/mem.c **** void
  516:./lwip-2.1.2/src/core/mem.c **** mem_init(void)
  517:./lwip-2.1.2/src/core/mem.c **** {
- 313              		.loc 1 517 1
- 314              		.cfi_startproc
- 315              		@ args = 0, pretend = 0, frame = 8
- 316              		@ frame_needed = 1, uses_anonymous_args = 0
- 317 0114 80B5     		push	{r7, lr}
- 318              	.LCFI17:
- 319              		.cfi_def_cfa_offset 8
- 320              		.cfi_offset 7, -8
- 321              		.cfi_offset 14, -4
- 322 0116 82B0     		sub	sp, sp, #8
- 323              	.LCFI18:
- 324              		.cfi_def_cfa_offset 16
- 325 0118 00AF     		add	r7, sp, #0
- 326              	.LCFI19:
- 327              		.cfi_def_cfa_register 7
+  28              		.loc 1 517 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
  518:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+  33              		.loc 1 518 3 view .LVU1
  519:./lwip-2.1.2/src/core/mem.c **** 
  520:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("Sanity check alignment",
  521:./lwip-2.1.2/src/core/mem.c ****               (SIZEOF_STRUCT_MEM & (MEM_ALIGNMENT - 1)) == 0);
+  34              		.loc 1 521 62 view .LVU2
  522:./lwip-2.1.2/src/core/mem.c **** 
  523:./lwip-2.1.2/src/core/mem.c ****   /* align the heap */
  524:./lwip-2.1.2/src/core/mem.c ****   ram = (u8_t *)LWIP_MEM_ALIGN(LWIP_RAM_HEAP_POINTER);
- 328              		.loc 1 524 17
- 329 011a 1A4B     		ldr	r3, .L18
- 330 011c 0333     		adds	r3, r3, #3
- 331 011e 23F00303 		bic	r3, r3, #3
- 332              		.loc 1 524 9
- 333 0122 1A46     		mov	r2, r3
- 334              		.loc 1 524 7
- 335 0124 184B     		ldr	r3, .L18+4
- 336 0126 1A60     		str	r2, [r3]
+  35              		.loc 1 524 3 view .LVU3
+  36              		.loc 1 524 17 is_stmt 0 view .LVU4
+  37 0000 0B4B     		ldr	r3, .L4
  525:./lwip-2.1.2/src/core/mem.c ****   /* initialize the start of the heap */
  526:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)ram;
- 337              		.loc 1 526 7
- 338 0128 174B     		ldr	r3, .L18+4
- 339 012a 1B68     		ldr	r3, [r3]
- 340 012c 7B60     		str	r3, [r7, #4]
  527:./lwip-2.1.2/src/core/mem.c ****   mem->next = MEM_SIZE_ALIGNED;
- 341              		.loc 1 527 13
- 342 012e 7B68     		ldr	r3, [r7, #4]
- 343 0130 4FF48052 		mov	r2, #4096
- 344 0134 1A80     		strh	r2, [r3]	@ movhi
  528:./lwip-2.1.2/src/core/mem.c ****   mem->prev = 0;
- 345              		.loc 1 528 13
- 346 0136 7B68     		ldr	r3, [r7, #4]
- 347 0138 0022     		movs	r2, #0
- 348 013a 5A80     		strh	r2, [r3, #2]	@ movhi
  529:./lwip-2.1.2/src/core/mem.c ****   mem->used = 0;
- 349              		.loc 1 529 13
- 350 013c 7B68     		ldr	r3, [r7, #4]
- 351 013e 0022     		movs	r2, #0
- 352 0140 1A71     		strb	r2, [r3, #4]
+  38              		.loc 1 529 13 view .LVU5
+  39 0002 0020     		movs	r0, #0
+ 524:./lwip-2.1.2/src/core/mem.c ****   /* initialize the start of the heap */
+  40              		.loc 1 524 7 view .LVU6
+  41 0004 0B4A     		ldr	r2, .L4+4
+ 524:./lwip-2.1.2/src/core/mem.c ****   /* initialize the start of the heap */
+  42              		.loc 1 524 17 view .LVU7
+  43 0006 23F00303 		bic	r3, r3, #3
+ 517:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+  44              		.loc 1 517 1 view .LVU8
+  45 000a 30B4     		push	{r4, r5}
+  46              	.LCFI0:
+  47              		.cfi_def_cfa_offset 8
+  48              		.cfi_offset 4, -8
+  49              		.cfi_offset 5, -4
+ 527:./lwip-2.1.2/src/core/mem.c ****   mem->prev = 0;
+  50              		.loc 1 527 13 view .LVU9
+  51 000c 4FF48055 		mov	r5, #4096
+  52              		.loc 1 529 13 view .LVU10
+  53 0010 1871     		strb	r0, [r3, #4]
  530:./lwip-2.1.2/src/core/mem.c ****   /* initialize the end of the heap */
  531:./lwip-2.1.2/src/core/mem.c ****   ram_end = ptr_to_mem(MEM_SIZE_ALIGNED);
- 353              		.loc 1 531 13
- 354 0142 4FF48050 		mov	r0, #4096
- 355 0146 FFF75BFF 		bl	ptr_to_mem
- 356 014a 0346     		mov	r3, r0
- 357              		.loc 1 531 11
- 358 014c 0F4A     		ldr	r2, .L18+8
- 359 014e 1360     		str	r3, [r2]
  532:./lwip-2.1.2/src/core/mem.c ****   ram_end->used = 1;
- 360              		.loc 1 532 10
- 361 0150 0E4B     		ldr	r3, .L18+8
- 362 0152 1B68     		ldr	r3, [r3]
- 363              		.loc 1 532 17
- 364 0154 0122     		movs	r2, #1
- 365 0156 1A71     		strb	r2, [r3, #4]
  533:./lwip-2.1.2/src/core/mem.c ****   ram_end->next = MEM_SIZE_ALIGNED;
- 366              		.loc 1 533 10
- 367 0158 0C4B     		ldr	r3, .L18+8
- 368 015a 1B68     		ldr	r3, [r3]
- 369              		.loc 1 533 17
- 370 015c 4FF48052 		mov	r2, #4096
- 371 0160 1A80     		strh	r2, [r3]	@ movhi
+  54              		.loc 1 533 17 view .LVU11
+  55 0012 4FF01024 		mov	r4, #268439552
+ 532:./lwip-2.1.2/src/core/mem.c ****   ram_end->next = MEM_SIZE_ALIGNED;
+  56              		.loc 1 532 17 view .LVU12
+  57 0016 0120     		movs	r0, #1
+  58              	.LBB117:
+  59              	.LBB118:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+  60              		.loc 1 453 10 view .LVU13
+  61 0018 5919     		adds	r1, r3, r5
+  62              	.LBE118:
+  63              	.LBE117:
+ 527:./lwip-2.1.2/src/core/mem.c ****   mem->prev = 0;
+  64              		.loc 1 527 13 view .LVU14
+  65 001a 1D60     		str	r5, [r3]
  534:./lwip-2.1.2/src/core/mem.c ****   ram_end->prev = MEM_SIZE_ALIGNED;
- 372              		.loc 1 534 10
- 373 0162 0A4B     		ldr	r3, .L18+8
- 374 0164 1B68     		ldr	r3, [r3]
- 375              		.loc 1 534 17
- 376 0166 4FF48052 		mov	r2, #4096
- 377 016a 5A80     		strh	r2, [r3, #2]	@ movhi
  535:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
  536:./lwip-2.1.2/src/core/mem.c **** 
  537:./lwip-2.1.2/src/core/mem.c ****   /* initialize the lowest-free pointer to the start of the heap */
  538:./lwip-2.1.2/src/core/mem.c ****   lfree = (struct mem *)(void *)ram;
- 378              		.loc 1 538 9
- 379 016c 064B     		ldr	r3, .L18+4
- 380 016e 1B68     		ldr	r3, [r3]
- 381 0170 074A     		ldr	r2, .L18+12
- 382 0172 1360     		str	r3, [r2]
+  66              		.loc 1 538 9 view .LVU15
+  67 001c 9360     		str	r3, [r2, #8]
+ 532:./lwip-2.1.2/src/core/mem.c ****   ram_end->next = MEM_SIZE_ALIGNED;
+  68              		.loc 1 532 17 view .LVU16
+  69 001e 0871     		strb	r0, [r1, #4]
  539:./lwip-2.1.2/src/core/mem.c **** 
  540:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_AVAIL(avail, MEM_SIZE_ALIGNED);
  541:./lwip-2.1.2/src/core/mem.c **** 
  542:./lwip-2.1.2/src/core/mem.c ****   if (sys_mutex_new(&mem_mutex) != ERR_OK) {
- 383              		.loc 1 542 7
- 384 0174 0748     		ldr	r0, .L18+16
- 385 0176 FFF7FEFF 		bl	sys_mutex_new
+  70              		.loc 1 542 7 view .LVU17
+  71 0020 02F10C00 		add	r0, r2, #12
+ 533:./lwip-2.1.2/src/core/mem.c ****   ram_end->prev = MEM_SIZE_ALIGNED;
+  72              		.loc 1 533 17 view .LVU18
+  73 0024 0C60     		str	r4, [r1]
  543:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("failed to create mem_mutex", 0);
  544:./lwip-2.1.2/src/core/mem.c ****   }
  545:./lwip-2.1.2/src/core/mem.c **** }
- 386              		.loc 1 545 1
- 387 017a 00BF     		nop
- 388 017c 0837     		adds	r7, r7, #8
- 389              	.LCFI20:
- 390              		.cfi_def_cfa_offset 8
- 391 017e BD46     		mov	sp, r7
- 392              	.LCFI21:
- 393              		.cfi_def_cfa_register 13
- 394              		@ sp needed
- 395 0180 80BD     		pop	{r7, pc}
- 396              	.L19:
- 397 0182 00BF     		.align	2
- 398              	.L18:
- 399 0184 00000000 		.word	ram_heap
- 400 0188 14100000 		.word	ram
- 401 018c 18100000 		.word	ram_end
- 402 0190 20100000 		.word	lfree
- 403 0194 1C100000 		.word	mem_mutex
- 404              		.cfi_endproc
- 405              	.LFE172:
- 407              		.align	1
- 408              		.syntax unified
- 409              		.thumb
- 410              		.thumb_func
- 411              		.fpu fpv5-d16
- 413              	mem_link_valid:
- 414              	.LFB173:
+  74              		.loc 1 545 1 view .LVU19
+  75 0026 30BC     		pop	{r4, r5}
+  76              	.LCFI1:
+  77              		.cfi_restore 5
+  78              		.cfi_restore 4
+  79              		.cfi_def_cfa_offset 0
+ 531:./lwip-2.1.2/src/core/mem.c ****   ram_end->used = 1;
+  80              		.loc 1 531 11 view .LVU20
+  81 0028 C2E90031 		strd	r3, r1, [r2]
+ 532:./lwip-2.1.2/src/core/mem.c ****   ram_end->next = MEM_SIZE_ALIGNED;
+  82              		.loc 1 532 3 is_stmt 1 view .LVU21
+ 533:./lwip-2.1.2/src/core/mem.c ****   ram_end->prev = MEM_SIZE_ALIGNED;
+  83              		.loc 1 533 3 view .LVU22
+ 534:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+  84              		.loc 1 534 3 view .LVU23
+ 535:./lwip-2.1.2/src/core/mem.c **** 
+  85              		.loc 1 535 15 view .LVU24
+ 538:./lwip-2.1.2/src/core/mem.c **** 
+  86              		.loc 1 538 3 view .LVU25
+ 540:./lwip-2.1.2/src/core/mem.c **** 
+  87              		.loc 1 540 43 view .LVU26
+ 542:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("failed to create mem_mutex", 0);
+  88              		.loc 1 542 3 view .LVU27
+ 542:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("failed to create mem_mutex", 0);
+  89              		.loc 1 542 7 is_stmt 0 view .LVU28
+  90 002c FFF7FEBF 		b	sys_mutex_new
+  91              	.LVL0:
+  92              	.L5:
+  93              		.align	2
+  94              	.L4:
+  95 0030 03000000 		.word	ram_heap+3
+  96 0034 00000000 		.word	.LANCHOR0
+  97              		.cfi_endproc
+  98              	.LFE172:
+ 100              		.align	1
+ 101              		.p2align 2,,3
+ 102              		.global	mem_free
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.fpu fpv5-d16
+ 108              	mem_free:
+ 109              	.LVL1:
+ 110              	.LFB174:
  546:./lwip-2.1.2/src/core/mem.c **** 
  547:./lwip-2.1.2/src/core/mem.c **** /* Check if a struct mem is correctly linked.
  548:./lwip-2.1.2/src/core/mem.c ****  * If not, double-free is a possible reason.
@@ -953,126 +675,18 @@
  550:./lwip-2.1.2/src/core/mem.c **** static int
  551:./lwip-2.1.2/src/core/mem.c **** mem_link_valid(struct mem *mem)
  552:./lwip-2.1.2/src/core/mem.c **** {
- 415              		.loc 1 552 1
- 416              		.cfi_startproc
- 417              		@ args = 0, pretend = 0, frame = 24
- 418              		@ frame_needed = 1, uses_anonymous_args = 0
- 419 0198 80B5     		push	{r7, lr}
- 420              	.LCFI22:
- 421              		.cfi_def_cfa_offset 8
- 422              		.cfi_offset 7, -8
- 423              		.cfi_offset 14, -4
- 424 019a 86B0     		sub	sp, sp, #24
- 425              	.LCFI23:
- 426              		.cfi_def_cfa_offset 32
- 427 019c 00AF     		add	r7, sp, #0
- 428              	.LCFI24:
- 429              		.cfi_def_cfa_register 7
- 430 019e 7860     		str	r0, [r7, #4]
  553:./lwip-2.1.2/src/core/mem.c ****   struct mem *nmem, *pmem;
  554:./lwip-2.1.2/src/core/mem.c ****   mem_size_t rmem_idx;
  555:./lwip-2.1.2/src/core/mem.c ****   rmem_idx = mem_to_ptr(mem);
- 431              		.loc 1 555 14
- 432 01a0 7868     		ldr	r0, [r7, #4]
- 433 01a2 FFF73FFF 		bl	mem_to_ptr
- 434 01a6 0346     		mov	r3, r0
- 435 01a8 FB82     		strh	r3, [r7, #22]	@ movhi
  556:./lwip-2.1.2/src/core/mem.c ****   nmem = ptr_to_mem(mem->next);
- 436              		.loc 1 556 10
- 437 01aa 7B68     		ldr	r3, [r7, #4]
- 438 01ac 1B88     		ldrh	r3, [r3]
- 439 01ae 1846     		mov	r0, r3
- 440 01b0 FFF726FF 		bl	ptr_to_mem
- 441 01b4 3861     		str	r0, [r7, #16]
  557:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
- 442              		.loc 1 557 10
- 443 01b6 7B68     		ldr	r3, [r7, #4]
- 444 01b8 5B88     		ldrh	r3, [r3, #2]
- 445 01ba 1846     		mov	r0, r3
- 446 01bc FFF720FF 		bl	ptr_to_mem
- 447 01c0 F860     		str	r0, [r7, #12]
  558:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
- 448              		.loc 1 558 11
- 449 01c2 7B68     		ldr	r3, [r7, #4]
- 450 01c4 1B88     		ldrh	r3, [r3]
- 451              		.loc 1 558 6
- 452 01c6 B3F5805F 		cmp	r3, #4096
- 453 01ca 18D8     		bhi	.L21
- 454              		.loc 1 558 45 discriminator 1
- 455 01cc 7B68     		ldr	r3, [r7, #4]
- 456 01ce 5B88     		ldrh	r3, [r3, #2]
- 457              		.loc 1 558 38 discriminator 1
- 458 01d0 B3F5805F 		cmp	r3, #4096
- 459 01d4 13D8     		bhi	.L21
  559:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
- 460              		.loc 1 559 12 discriminator 2
- 461 01d6 7B68     		ldr	r3, [r7, #4]
- 462 01d8 5B88     		ldrh	r3, [r3, #2]
- 558:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
- 463              		.loc 1 558 72 discriminator 2
- 464 01da FA8A     		ldrh	r2, [r7, #22]
- 465 01dc 9A42     		cmp	r2, r3
- 466 01de 04D0     		beq	.L22
- 467              		.loc 1 559 40
- 468 01e0 FB68     		ldr	r3, [r7, #12]
- 469 01e2 1B88     		ldrh	r3, [r3]
- 470              		.loc 1 559 32
- 471 01e4 FA8A     		ldrh	r2, [r7, #22]
- 472 01e6 9A42     		cmp	r2, r3
- 473 01e8 09D1     		bne	.L21
- 474              	.L22:
  560:./lwip-2.1.2/src/core/mem.c ****       ((nmem != ram_end) && (nmem->prev != rmem_idx))) {
- 475              		.loc 1 560 14 discriminator 1
- 476 01ea 084B     		ldr	r3, .L25
- 477 01ec 1B68     		ldr	r3, [r3]
- 559:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
- 478              		.loc 1 559 61 discriminator 1
- 479 01ee 3A69     		ldr	r2, [r7, #16]
- 480 01f0 9A42     		cmp	r2, r3
- 481 01f2 06D0     		beq	.L23
- 482              		.loc 1 560 34
- 483 01f4 3B69     		ldr	r3, [r7, #16]
- 484 01f6 5B88     		ldrh	r3, [r3, #2]
- 485              		.loc 1 560 26
- 486 01f8 FA8A     		ldrh	r2, [r7, #22]
- 487 01fa 9A42     		cmp	r2, r3
- 488 01fc 01D0     		beq	.L23
- 489              	.L21:
  561:./lwip-2.1.2/src/core/mem.c ****     return 0;
- 490              		.loc 1 561 12
- 491 01fe 0023     		movs	r3, #0
- 492 0200 00E0     		b	.L24
- 493              	.L23:
  562:./lwip-2.1.2/src/core/mem.c ****   }
  563:./lwip-2.1.2/src/core/mem.c ****   return 1;
- 494              		.loc 1 563 10
- 495 0202 0123     		movs	r3, #1
- 496              	.L24:
  564:./lwip-2.1.2/src/core/mem.c **** }
- 497              		.loc 1 564 1
- 498 0204 1846     		mov	r0, r3
- 499 0206 1837     		adds	r7, r7, #24
- 500              	.LCFI25:
- 501              		.cfi_def_cfa_offset 8
- 502 0208 BD46     		mov	sp, r7
- 503              	.LCFI26:
- 504              		.cfi_def_cfa_register 13
- 505              		@ sp needed
- 506 020a 80BD     		pop	{r7, pc}
- 507              	.L26:
- 508              		.align	2
- 509              	.L25:
- 510 020c 18100000 		.word	ram_end
- 511              		.cfi_endproc
- 512              	.LFE173:
- 514              		.align	1
- 515              		.global	mem_free
- 516              		.syntax unified
- 517              		.thumb
- 518              		.thumb_func
- 519              		.fpu fpv5-d16
- 521              	mem_free:
- 522              	.LFB174:
  565:./lwip-2.1.2/src/core/mem.c **** 
  566:./lwip-2.1.2/src/core/mem.c **** #if MEM_SANITY_CHECK
  567:./lwip-2.1.2/src/core/mem.c **** static void
@@ -1127,45 +741,109 @@
  616:./lwip-2.1.2/src/core/mem.c **** void
  617:./lwip-2.1.2/src/core/mem.c **** mem_free(void *rmem)
  618:./lwip-2.1.2/src/core/mem.c **** {
- 523              		.loc 1 618 1
- 524              		.cfi_startproc
- 525              		@ args = 0, pretend = 0, frame = 48
- 526              		@ frame_needed = 1, uses_anonymous_args = 0
- 527 0210 80B5     		push	{r7, lr}
- 528              	.LCFI27:
- 529              		.cfi_def_cfa_offset 8
- 530              		.cfi_offset 7, -8
- 531              		.cfi_offset 14, -4
- 532 0212 8CB0     		sub	sp, sp, #48
- 533              	.LCFI28:
- 534              		.cfi_def_cfa_offset 56
- 535 0214 00AF     		add	r7, sp, #0
- 536              	.LCFI29:
- 537              		.cfi_def_cfa_register 7
- 538 0216 7860     		str	r0, [r7, #4]
+ 111              		.loc 1 618 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
  619:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+ 115              		.loc 1 619 3 view .LVU30
  620:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_DECL_PROTECT();
+ 116              		.loc 1 620 31 view .LVU31
  621:./lwip-2.1.2/src/core/mem.c **** 
  622:./lwip-2.1.2/src/core/mem.c ****   if (rmem == NULL) {
- 539              		.loc 1 622 6
- 540 0218 7B68     		ldr	r3, [r7, #4]
- 541 021a 002B     		cmp	r3, #0
- 542 021c 00F08580 		beq	.L44
+ 117              		.loc 1 622 3 view .LVU32
+ 118              		.loc 1 622 6 is_stmt 0 view .LVU33
+ 119 0038 0028     		cmp	r0, #0
+ 120 003a 7AD0     		beq	.L31
  623:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS, ("mem_free(p == NULL) was call
  624:./lwip-2.1.2/src/core/mem.c ****     return;
  625:./lwip-2.1.2/src/core/mem.c ****   }
  626:./lwip-2.1.2/src/core/mem.c ****   if ((((mem_ptr_t)rmem) & (MEM_ALIGNMENT - 1)) != 0) {
- 543              		.loc 1 626 9
- 544 0220 7B68     		ldr	r3, [r7, #4]
- 545              		.loc 1 626 26
- 546 0222 03F00303 		and	r3, r3, #3
- 547              		.loc 1 626 6
- 548 0226 002B     		cmp	r3, #0
- 549 0228 12D0     		beq	.L30
- 550              	.LBB58:
- 551              	.LBB59:
- 552              	.LBB60:
- 553              		.file 2 "./inc/cmsis_gcc.h"
+ 121              		.loc 1 626 3 is_stmt 1 view .LVU34
+ 618:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem;
+ 122              		.loc 1 618 1 is_stmt 0 view .LVU35
+ 123 003c 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 124              	.LCFI2:
+ 125              		.cfi_def_cfa_offset 32
+ 126              		.cfi_offset 3, -32
+ 127              		.cfi_offset 4, -28
+ 128              		.cfi_offset 5, -24
+ 129              		.cfi_offset 6, -20
+ 130              		.cfi_offset 7, -16
+ 131              		.cfi_offset 8, -12
+ 132              		.cfi_offset 9, -8
+ 133              		.cfi_offset 14, -4
+ 134              		.loc 1 626 6 view .LVU36
+ 135 0040 8307     		lsls	r3, r0, #30
+ 136 0042 0446     		mov	r4, r0
+ 137 0044 0AD1     		bne	.L38
+ 627:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: sanity check alignment");
+ 628:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
+ 629:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 630:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 631:./lwip-2.1.2/src/core/mem.c ****     return;
+ 632:./lwip-2.1.2/src/core/mem.c ****   }
+ 633:./lwip-2.1.2/src/core/mem.c **** 
+ 634:./lwip-2.1.2/src/core/mem.c ****   /* Get the corresponding struct mem: */
+ 635:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
+ 636:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
+ 138              		.loc 1 636 3 is_stmt 1 view .LVU37
+ 637:./lwip-2.1.2/src/core/mem.c **** 
+ 638:./lwip-2.1.2/src/core/mem.c ****   if ((u8_t *)mem < ram || (u8_t *)rmem + MIN_SIZE_ALIGNED > (u8_t *)ram_end) {
+ 139              		.loc 1 638 19 is_stmt 0 view .LVU38
+ 140 0046 3F4D     		ldr	r5, .L41
+ 636:./lwip-2.1.2/src/core/mem.c **** 
+ 141              		.loc 1 636 7 view .LVU39
+ 142 0048 A0F10806 		sub	r6, r0, #8
+ 143              	.LVL2:
+ 144              		.loc 1 638 3 is_stmt 1 view .LVU40
+ 145              		.loc 1 638 6 is_stmt 0 view .LVU41
+ 146 004c 2B68     		ldr	r3, [r5]
+ 147 004e B342     		cmp	r3, r6
+ 148 0050 04D8     		bhi	.L38
+ 149              		.loc 1 638 41 discriminator 1 view .LVU42
+ 150 0052 00F10C03 		add	r3, r0, #12
+ 151              		.loc 1 638 25 discriminator 1 view .LVU43
+ 152 0056 6A68     		ldr	r2, [r5, #4]
+ 153 0058 9A42     		cmp	r2, r3
+ 154 005a 0AD2     		bcs	.L12
+ 155              	.LVL3:
+ 156              	.L38:
+ 639:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory");
+ 640:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory\n"));
+ 641:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 642:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 643:./lwip-2.1.2/src/core/mem.c ****     return;
+ 644:./lwip-2.1.2/src/core/mem.c ****   }
+ 645:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 646:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_element(mem);
+ 647:./lwip-2.1.2/src/core/mem.c **** #endif
+ 648:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
+ 649:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_PROTECT();
+ 650:./lwip-2.1.2/src/core/mem.c ****   /* mem has to be in a used state */
+ 651:./lwip-2.1.2/src/core/mem.c ****   if (!mem->used) {
+ 652:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
+ 653:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 654:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
+ 655:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 656:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 657:./lwip-2.1.2/src/core/mem.c ****     return;
+ 658:./lwip-2.1.2/src/core/mem.c ****   }
+ 659:./lwip-2.1.2/src/core/mem.c **** 
+ 660:./lwip-2.1.2/src/core/mem.c ****   if (!mem_link_valid(mem)) {
+ 661:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: non-linked: double free");
+ 662:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 663:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double f
+ 157              		.loc 1 663 109 is_stmt 1 view .LVU44
+ 664:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 665:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
+ 158              		.loc 1 665 5 view .LVU45
+ 159              	.LBB185:
+ 160              		.loc 1 665 5 view .LVU46
+ 161              		.loc 1 665 5 view .LVU47
+ 162              	.LBB186:
+ 163              	.LBI186:
+ 164              		.file 2 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -1615,46 +1293,45 @@
  447:./inc/cmsis_gcc.h ****   \return               Priority Mask value
  448:./inc/cmsis_gcc.h ****  */
  449:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 165              		.loc 2 449 31 view .LVU48
+ 166              	.LBB187:
  450:./inc/cmsis_gcc.h **** {
  451:./inc/cmsis_gcc.h ****   uint32_t result;
+ 167              		.loc 2 451 3 view .LVU49
  452:./inc/cmsis_gcc.h **** 
  453:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
- 554              		.loc 2 453 3
- 555              		.syntax unified
- 556              	@ 453 "./inc/cmsis_gcc.h" 1
- 557 022a EFF31083 		MRS r3, primask
- 558              	@ 0 "" 2
- 559              		.thumb
- 560              		.syntax unified
- 561 022e BB61     		str	r3, [r7, #24]
+ 168              		.loc 2 453 3 view .LVU50
+ 169              		.syntax unified
+ 170              	@ 453 "./inc/cmsis_gcc.h" 1
+ 171 005c EFF31083 		MRS r3, primask
+ 172              	@ 0 "" 2
+ 173              	.LVL4:
  454:./inc/cmsis_gcc.h ****   return(result);
- 562              		.loc 2 454 9
- 563 0230 BB69     		ldr	r3, [r7, #24]
- 564              	.LBE60:
- 565              	.LBE59:
- 627:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: sanity check alignment");
- 628:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: sanity check alignment\n"));
- 629:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
- 630:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
- 566              		.loc 1 630 5
- 567 0232 FB61     		str	r3, [r7, #28]
- 568              	.LBB61:
- 569              	.LBB62:
+ 174              		.loc 2 454 3 view .LVU51
+ 175              		.loc 2 454 3 is_stmt 0 view .LVU52
+ 176              		.thumb
+ 177              		.syntax unified
+ 178              	.LBE187:
+ 179              	.LBE186:
+ 180              		.loc 1 665 5 is_stmt 1 view .LVU53
+ 181              	.LBB188:
+ 182              	.LBI188:
+ 207:./inc/cmsis_gcc.h **** {
+ 183              		.loc 2 207 27 view .LVU54
+ 184              	.LBB189:
  209:./inc/cmsis_gcc.h **** }
- 570              		.loc 2 209 3
- 571              		.syntax unified
- 572              	@ 209 "./inc/cmsis_gcc.h" 1
- 573 0234 72B6     		cpsid i
- 574              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 575              		.loc 2 210 1
- 576              		.thumb
- 577              		.syntax unified
- 578 0236 00BF     		nop
- 579              	.LBE62:
- 580              	.LBE61:
- 581              	.LBB63:
- 582              	.LBB64:
+ 185              		.loc 2 209 3 view .LVU55
+ 186              		.syntax unified
+ 187              	@ 209 "./inc/cmsis_gcc.h" 1
+ 188 0060 72B6     		cpsid i
+ 189              	@ 0 "" 2
+ 190              		.thumb
+ 191              		.syntax unified
+ 192              	.LBE189:
+ 193              	.LBE188:
+ 194              		.loc 1 665 5 view .LVU56
+ 195              	.LBB190:
+ 196              	.LBI190:
  455:./inc/cmsis_gcc.h **** }
  456:./inc/cmsis_gcc.h **** 
  457:./inc/cmsis_gcc.h **** 
@@ -2145,489 +1822,523 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 197              		.loc 2 944 27 view .LVU57
+ 198              	.LBB191:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 583              		.loc 2 946 3
- 584              		.syntax unified
- 585              	@ 946 "./inc/cmsis_gcc.h" 1
- 586 0238 BFF34F8F 		dsb 0xF
- 587              	@ 0 "" 2
- 947:./inc/cmsis_gcc.h **** }
- 588              		.loc 2 947 1
- 589              		.thumb
- 590              		.syntax unified
- 591 023c 00BF     		nop
- 592              	.LBE64:
- 593              	.LBE63:
- 594              	.LBB65:
- 595              	.LBB66:
+ 199              		.loc 2 946 3 view .LVU58
+ 200              		.syntax unified
+ 201              	@ 946 "./inc/cmsis_gcc.h" 1
+ 202 0062 BFF34F8F 		dsb 0xF
+ 203              	@ 0 "" 2
+ 204              		.thumb
+ 205              		.syntax unified
+ 206              	.LBE191:
+ 207              	.LBE190:
+ 208              		.loc 1 665 5 view .LVU59
+ 209              	.LBB192:
+ 210              	.LBI192:
+ 933:./inc/cmsis_gcc.h **** {
+ 211              		.loc 2 933 27 view .LVU60
+ 212              	.LBB193:
  935:./inc/cmsis_gcc.h **** }
- 596              		.loc 2 935 3
- 597              		.syntax unified
- 598              	@ 935 "./inc/cmsis_gcc.h" 1
- 599 023e BFF36F8F 		isb 0xF
- 600              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 601              		.loc 2 936 1
- 602              		.thumb
- 603              		.syntax unified
- 604 0242 00BF     		nop
- 605              	.LBE66:
- 606              	.LBE65:
- 607              		.loc 1 630 5
- 608 0244 FB69     		ldr	r3, [r7, #28]
- 609 0246 002B     		cmp	r3, #0
- 610 0248 71D1     		bne	.L45
- 611              	.LBB67:
- 612              	.LBB68:
+ 213              		.loc 2 935 3 view .LVU61
+ 214              		.syntax unified
+ 215              	@ 935 "./inc/cmsis_gcc.h" 1
+ 216 0066 BFF36F8F 		isb 0xF
+ 217              	@ 0 "" 2
+ 218              		.thumb
+ 219              		.syntax unified
+ 220              	.LBE193:
+ 221              	.LBE192:
+ 222              		.loc 1 665 5 view .LVU62
+ 223              		.loc 1 665 5 view .LVU63
+ 224 006a 03B9     		cbnz	r3, .L6
+ 225              		.loc 1 665 5 view .LVU64
+ 226              	.LBB194:
+ 227              	.LBI194:
+ 196:./inc/cmsis_gcc.h **** {
+ 228              		.loc 2 196 27 view .LVU65
+ 229              	.LBB195:
  198:./inc/cmsis_gcc.h **** }
- 613              		.loc 2 198 3
- 614              		.syntax unified
- 615              	@ 198 "./inc/cmsis_gcc.h" 1
- 616 024a 62B6     		cpsie i
- 617              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 618              		.loc 2 199 1
- 619              		.thumb
- 620              		.syntax unified
- 621 024c 00BF     		nop
- 622              	.LBE68:
- 623              	.LBE67:
- 624              	.LBE58:
- 631:./lwip-2.1.2/src/core/mem.c ****     return;
- 625              		.loc 1 631 5
- 626 024e 6EE0     		b	.L45
- 627              	.L30:
- 632:./lwip-2.1.2/src/core/mem.c ****   }
- 633:./lwip-2.1.2/src/core/mem.c **** 
- 634:./lwip-2.1.2/src/core/mem.c ****   /* Get the corresponding struct mem: */
- 635:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
- 636:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
- 628              		.loc 1 636 7
- 629 0250 7B68     		ldr	r3, [r7, #4]
- 630 0252 083B     		subs	r3, r3, #8
- 631 0254 FB62     		str	r3, [r7, #44]
- 637:./lwip-2.1.2/src/core/mem.c **** 
- 638:./lwip-2.1.2/src/core/mem.c ****   if ((u8_t *)mem < ram || (u8_t *)rmem + MIN_SIZE_ALIGNED > (u8_t *)ram_end) {
- 632              		.loc 1 638 19
- 633 0256 3B4B     		ldr	r3, .L49
- 634 0258 1B68     		ldr	r3, [r3]
- 635              		.loc 1 638 6
- 636 025a FA6A     		ldr	r2, [r7, #44]
- 637 025c 9A42     		cmp	r2, r3
- 638 025e 06D3     		bcc	.L33
- 639              		.loc 1 638 41 discriminator 1
- 640 0260 7B68     		ldr	r3, [r7, #4]
- 641 0262 03F10C02 		add	r2, r3, #12
- 642              		.loc 1 638 62 discriminator 1
- 643 0266 384B     		ldr	r3, .L49+4
- 644 0268 1B68     		ldr	r3, [r3]
- 645              		.loc 1 638 25 discriminator 1
- 646 026a 9A42     		cmp	r2, r3
- 647 026c 12D9     		bls	.L34
- 648              	.L33:
- 649              	.LBB69:
- 650              	.LBB70:
- 651              	.LBB71:
- 453:./inc/cmsis_gcc.h ****   return(result);
- 652              		.loc 2 453 3
- 653              		.syntax unified
- 654              	@ 453 "./inc/cmsis_gcc.h" 1
- 655 026e EFF31083 		MRS r3, primask
- 656              	@ 0 "" 2
- 657              		.thumb
- 658              		.syntax unified
- 659 0272 7B61     		str	r3, [r7, #20]
- 454:./inc/cmsis_gcc.h **** }
- 660              		.loc 2 454 9
- 661 0274 7B69     		ldr	r3, [r7, #20]
- 662              	.LBE71:
- 663              	.LBE70:
- 639:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory");
- 640:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory\n"));
- 641:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
- 642:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
- 664              		.loc 1 642 5
- 665 0276 3B62     		str	r3, [r7, #32]
- 666              	.LBB72:
- 667              	.LBB73:
- 209:./inc/cmsis_gcc.h **** }
- 668              		.loc 2 209 3
- 669              		.syntax unified
- 670              	@ 209 "./inc/cmsis_gcc.h" 1
- 671 0278 72B6     		cpsid i
- 672              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 673              		.loc 2 210 1
- 674              		.thumb
- 675              		.syntax unified
- 676 027a 00BF     		nop
- 677              	.LBE73:
- 678              	.LBE72:
- 679              	.LBB74:
- 680              	.LBB75:
- 946:./inc/cmsis_gcc.h **** }
- 681              		.loc 2 946 3
- 682              		.syntax unified
- 683              	@ 946 "./inc/cmsis_gcc.h" 1
- 684 027c BFF34F8F 		dsb 0xF
- 685              	@ 0 "" 2
- 686              		.loc 2 947 1
- 687              		.thumb
- 688              		.syntax unified
- 689 0280 00BF     		nop
- 690              	.LBE75:
- 691              	.LBE74:
- 692              	.LBB76:
- 693              	.LBB77:
- 935:./inc/cmsis_gcc.h **** }
- 694              		.loc 2 935 3
- 695              		.syntax unified
- 696              	@ 935 "./inc/cmsis_gcc.h" 1
- 697 0282 BFF36F8F 		isb 0xF
- 698              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 699              		.loc 2 936 1
- 700              		.thumb
- 701              		.syntax unified
- 702 0286 00BF     		nop
- 703              	.LBE77:
- 704              	.LBE76:
- 705              		.loc 1 642 5
- 706 0288 3B6A     		ldr	r3, [r7, #32]
- 707 028a 002B     		cmp	r3, #0
- 708 028c 51D1     		bne	.L46
- 709              	.LBB78:
- 710              	.LBB79:
- 198:./inc/cmsis_gcc.h **** }
- 711              		.loc 2 198 3
- 712              		.syntax unified
- 713              	@ 198 "./inc/cmsis_gcc.h" 1
- 714 028e 62B6     		cpsie i
- 715              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 716              		.loc 2 199 1
- 717              		.thumb
- 718              		.syntax unified
- 719 0290 00BF     		nop
- 720              	.LBE79:
- 721              	.LBE78:
- 722              	.LBE69:
- 643:./lwip-2.1.2/src/core/mem.c ****     return;
- 723              		.loc 1 643 5
- 724 0292 4EE0     		b	.L46
- 725              	.L34:
- 644:./lwip-2.1.2/src/core/mem.c ****   }
- 645:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
- 646:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_element(mem);
- 647:./lwip-2.1.2/src/core/mem.c **** #endif
- 648:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
- 649:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_PROTECT();
- 726              		.loc 1 649 3
- 727 0294 2D48     		ldr	r0, .L49+8
- 728 0296 FFF7FEFF 		bl	sys_mutex_lock
- 650:./lwip-2.1.2/src/core/mem.c ****   /* mem has to be in a used state */
- 651:./lwip-2.1.2/src/core/mem.c ****   if (!mem->used) {
- 729              		.loc 1 651 11
- 730 029a FB6A     		ldr	r3, [r7, #44]
- 731 029c 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 732              		.loc 1 651 6
- 733 029e 002B     		cmp	r3, #0
- 734 02a0 15D1     		bne	.L37
- 652:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
- 653:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
- 735              		.loc 1 653 5
- 736 02a2 2A48     		ldr	r0, .L49+8
- 737 02a4 FFF7FEFF 		bl	sys_mutex_unlock
- 738              	.LBB80:
- 739              	.LBB81:
- 740              	.LBB82:
- 453:./inc/cmsis_gcc.h ****   return(result);
- 741              		.loc 2 453 3
- 742              		.syntax unified
- 743              	@ 453 "./inc/cmsis_gcc.h" 1
- 744 02a8 EFF31083 		MRS r3, primask
- 745              	@ 0 "" 2
- 746              		.thumb
- 747              		.syntax unified
- 748 02ac 3B61     		str	r3, [r7, #16]
- 454:./inc/cmsis_gcc.h **** }
- 749              		.loc 2 454 9
- 750 02ae 3B69     		ldr	r3, [r7, #16]
- 751              	.LBE82:
- 752              	.LBE81:
- 654:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
- 655:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
- 656:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
- 753              		.loc 1 656 5
- 754 02b0 7B62     		str	r3, [r7, #36]
- 755              	.LBB83:
- 756              	.LBB84:
- 209:./inc/cmsis_gcc.h **** }
- 757              		.loc 2 209 3
- 758              		.syntax unified
- 759              	@ 209 "./inc/cmsis_gcc.h" 1
- 760 02b2 72B6     		cpsid i
- 761              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 762              		.loc 2 210 1
- 763              		.thumb
- 764              		.syntax unified
- 765 02b4 00BF     		nop
- 766              	.LBE84:
- 767              	.LBE83:
- 768              	.LBB85:
- 769              	.LBB86:
- 946:./inc/cmsis_gcc.h **** }
- 770              		.loc 2 946 3
- 771              		.syntax unified
- 772              	@ 946 "./inc/cmsis_gcc.h" 1
- 773 02b6 BFF34F8F 		dsb 0xF
- 774              	@ 0 "" 2
- 775              		.loc 2 947 1
- 776              		.thumb
- 777              		.syntax unified
- 778 02ba 00BF     		nop
- 779              	.LBE86:
- 780              	.LBE85:
- 781              	.LBB87:
- 782              	.LBB88:
- 935:./inc/cmsis_gcc.h **** }
- 783              		.loc 2 935 3
- 784              		.syntax unified
- 785              	@ 935 "./inc/cmsis_gcc.h" 1
- 786 02bc BFF36F8F 		isb 0xF
- 787              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 788              		.loc 2 936 1
- 789              		.thumb
- 790              		.syntax unified
- 791 02c0 00BF     		nop
- 792              	.LBE88:
- 793              	.LBE87:
- 794              		.loc 1 656 5
- 795 02c2 7B6A     		ldr	r3, [r7, #36]
- 796 02c4 002B     		cmp	r3, #0
- 797 02c6 36D1     		bne	.L47
- 798              	.LBB89:
- 799              	.LBB90:
- 198:./inc/cmsis_gcc.h **** }
- 800              		.loc 2 198 3
- 801              		.syntax unified
- 802              	@ 198 "./inc/cmsis_gcc.h" 1
- 803 02c8 62B6     		cpsie i
- 804              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 805              		.loc 2 199 1
- 806              		.thumb
- 807              		.syntax unified
- 808 02ca 00BF     		nop
- 809              	.LBE90:
- 810              	.LBE89:
- 811              	.LBE80:
- 657:./lwip-2.1.2/src/core/mem.c ****     return;
- 812              		.loc 1 657 5
- 813 02cc 33E0     		b	.L47
- 814              	.L37:
- 658:./lwip-2.1.2/src/core/mem.c ****   }
- 659:./lwip-2.1.2/src/core/mem.c **** 
- 660:./lwip-2.1.2/src/core/mem.c ****   if (!mem_link_valid(mem)) {
- 815              		.loc 1 660 8
- 816 02ce F86A     		ldr	r0, [r7, #44]
- 817 02d0 FFF762FF 		bl	mem_link_valid
- 818 02d4 0346     		mov	r3, r0
- 819              		.loc 1 660 6
- 820 02d6 002B     		cmp	r3, #0
- 821 02d8 15D1     		bne	.L40
- 661:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: non-linked: double free");
- 662:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
- 822              		.loc 1 662 5
- 823 02da 1C48     		ldr	r0, .L49+8
- 824 02dc FFF7FEFF 		bl	sys_mutex_unlock
- 825              	.LBB91:
- 826              	.LBB92:
- 827              	.LBB93:
- 453:./inc/cmsis_gcc.h ****   return(result);
- 828              		.loc 2 453 3
- 829              		.syntax unified
- 830              	@ 453 "./inc/cmsis_gcc.h" 1
- 831 02e0 EFF31083 		MRS r3, primask
- 832              	@ 0 "" 2
- 833              		.thumb
- 834              		.syntax unified
- 835 02e4 FB60     		str	r3, [r7, #12]
- 454:./inc/cmsis_gcc.h **** }
- 836              		.loc 2 454 9
- 837 02e6 FB68     		ldr	r3, [r7, #12]
- 838              	.LBE93:
- 839              	.LBE92:
- 663:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double f
- 664:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
- 665:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
- 840              		.loc 1 665 5
- 841 02e8 BB62     		str	r3, [r7, #40]
- 842              	.LBB94:
- 843              	.LBB95:
- 209:./inc/cmsis_gcc.h **** }
- 844              		.loc 2 209 3
- 845              		.syntax unified
- 846              	@ 209 "./inc/cmsis_gcc.h" 1
- 847 02ea 72B6     		cpsid i
- 848              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 849              		.loc 2 210 1
- 850              		.thumb
- 851              		.syntax unified
- 852 02ec 00BF     		nop
- 853              	.LBE95:
- 854              	.LBE94:
- 855              	.LBB96:
- 856              	.LBB97:
- 946:./inc/cmsis_gcc.h **** }
- 857              		.loc 2 946 3
- 858              		.syntax unified
- 859              	@ 946 "./inc/cmsis_gcc.h" 1
- 860 02ee BFF34F8F 		dsb 0xF
- 861              	@ 0 "" 2
- 862              		.loc 2 947 1
- 863              		.thumb
- 864              		.syntax unified
- 865 02f2 00BF     		nop
- 866              	.LBE97:
- 867              	.LBE96:
- 868              	.LBB98:
- 869              	.LBB99:
- 935:./inc/cmsis_gcc.h **** }
- 870              		.loc 2 935 3
- 871              		.syntax unified
- 872              	@ 935 "./inc/cmsis_gcc.h" 1
- 873 02f4 BFF36F8F 		isb 0xF
- 874              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 875              		.loc 2 936 1
- 876              		.thumb
- 877              		.syntax unified
- 878 02f8 00BF     		nop
- 879              	.LBE99:
- 880              	.LBE98:
- 881              		.loc 1 665 5
- 882 02fa BB6A     		ldr	r3, [r7, #40]
- 883 02fc 002B     		cmp	r3, #0
- 884 02fe 1CD1     		bne	.L48
- 885              	.LBB100:
- 886              	.LBB101:
- 198:./inc/cmsis_gcc.h **** }
- 887              		.loc 2 198 3
- 888              		.syntax unified
- 889              	@ 198 "./inc/cmsis_gcc.h" 1
- 890 0300 62B6     		cpsie i
- 891              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 892              		.loc 2 199 1
- 893              		.thumb
- 894              		.syntax unified
- 895 0302 00BF     		nop
- 896              	.LBE101:
- 897              	.LBE100:
- 898              	.LBE91:
+ 230              		.loc 2 198 3 view .LVU66
+ 231              		.syntax unified
+ 232              	@ 198 "./inc/cmsis_gcc.h" 1
+ 233 006c 62B6     		cpsie i
+ 234              	@ 0 "" 2
+ 235              		.thumb
+ 236              		.syntax unified
+ 237              	.L6:
+ 238              	.LBE195:
+ 239              	.LBE194:
+ 240              	.LBE185:
  666:./lwip-2.1.2/src/core/mem.c ****     return;
- 899              		.loc 1 666 5
- 900 0304 19E0     		b	.L48
- 901              	.L40:
  667:./lwip-2.1.2/src/core/mem.c ****   }
  668:./lwip-2.1.2/src/core/mem.c **** 
  669:./lwip-2.1.2/src/core/mem.c ****   /* mem is now unused. */
  670:./lwip-2.1.2/src/core/mem.c ****   mem->used = 0;
- 902              		.loc 1 670 13
- 903 0306 FB6A     		ldr	r3, [r7, #44]
- 904 0308 0022     		movs	r2, #0
- 905 030a 1A71     		strb	r2, [r3, #4]
  671:./lwip-2.1.2/src/core/mem.c **** 
  672:./lwip-2.1.2/src/core/mem.c ****   if (mem < lfree) {
- 906              		.loc 1 672 11
- 907 030c 104B     		ldr	r3, .L49+12
- 908 030e 1B68     		ldr	r3, [r3]
- 909              		.loc 1 672 6
- 910 0310 FA6A     		ldr	r2, [r7, #44]
- 911 0312 9A42     		cmp	r2, r3
- 912 0314 02D2     		bcs	.L43
  673:./lwip-2.1.2/src/core/mem.c ****     /* the newly freed struct is now the lowest */
  674:./lwip-2.1.2/src/core/mem.c ****     lfree = mem;
- 913              		.loc 1 674 11
- 914 0316 0E4A     		ldr	r2, .L49+12
- 915 0318 FB6A     		ldr	r3, [r7, #44]
- 916 031a 1360     		str	r3, [r2]
- 917              	.L43:
  675:./lwip-2.1.2/src/core/mem.c ****   }
  676:./lwip-2.1.2/src/core/mem.c **** 
  677:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_DEC_USED(used, mem->next - (mem_size_t)(((u8_t *)mem - ram)));
  678:./lwip-2.1.2/src/core/mem.c **** 
  679:./lwip-2.1.2/src/core/mem.c ****   /* finally, see if prev or next are free also */
  680:./lwip-2.1.2/src/core/mem.c ****   plug_holes(mem);
- 918              		.loc 1 680 3
- 919 031c F86A     		ldr	r0, [r7, #44]
- 920 031e FFF793FE 		bl	plug_holes
  681:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
  682:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  683:./lwip-2.1.2/src/core/mem.c ****   mem_free_count = 1;
  684:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  685:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_UNPROTECT();
- 921              		.loc 1 685 3
- 922 0322 0A48     		ldr	r0, .L49+8
- 923 0324 FFF7FEFF 		bl	sys_mutex_unlock
- 924 0328 08E0     		b	.L27
- 925              	.L44:
- 624:./lwip-2.1.2/src/core/mem.c ****   }
- 926              		.loc 1 624 5
- 927 032a 00BF     		nop
- 928 032c 06E0     		b	.L27
- 929              	.L45:
- 631:./lwip-2.1.2/src/core/mem.c ****   }
- 930              		.loc 1 631 5
- 931 032e 00BF     		nop
- 932 0330 04E0     		b	.L27
- 933              	.L46:
- 643:./lwip-2.1.2/src/core/mem.c ****   }
- 934              		.loc 1 643 5
- 935 0332 00BF     		nop
- 936 0334 02E0     		b	.L27
- 937              	.L47:
- 657:./lwip-2.1.2/src/core/mem.c ****   }
- 938              		.loc 1 657 5
- 939 0336 00BF     		nop
- 940 0338 00E0     		b	.L27
- 941              	.L48:
- 666:./lwip-2.1.2/src/core/mem.c ****   }
- 942              		.loc 1 666 5
- 943 033a 00BF     		nop
- 944              	.L27:
  686:./lwip-2.1.2/src/core/mem.c **** }
- 945              		.loc 1 686 1
- 946 033c 3037     		adds	r7, r7, #48
- 947              	.LCFI30:
- 948              		.cfi_def_cfa_offset 8
- 949 033e BD46     		mov	sp, r7
- 950              	.LCFI31:
- 951              		.cfi_def_cfa_register 13
- 952              		@ sp needed
- 953 0340 80BD     		pop	{r7, pc}
- 954              	.L50:
- 955 0342 00BF     		.align	2
- 956              	.L49:
- 957 0344 14100000 		.word	ram
- 958 0348 18100000 		.word	ram_end
- 959 034c 1C100000 		.word	mem_mutex
- 960 0350 20100000 		.word	lfree
- 961              		.cfi_endproc
- 962              	.LFE174:
- 964              		.align	1
- 965              		.global	mem_trim
- 966              		.syntax unified
- 967              		.thumb
- 968              		.thumb_func
- 969              		.fpu fpv5-d16
- 971              	mem_trim:
- 972              	.LFB175:
+ 241              		.loc 1 686 1 is_stmt 0 view .LVU67
+ 242 006e BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 243              	.LVL5:
+ 244              	.L12:
+ 649:./lwip-2.1.2/src/core/mem.c ****   /* mem has to be in a used state */
+ 245              		.loc 1 649 3 is_stmt 1 view .LVU68
+ 246 0072 05F10C00 		add	r0, r5, #12
+ 247              	.LVL6:
+ 649:./lwip-2.1.2/src/core/mem.c ****   /* mem has to be in a used state */
+ 248              		.loc 1 649 3 is_stmt 0 view .LVU69
+ 249 0076 FFF7FEFF 		bl	sys_mutex_lock
+ 250              	.LVL7:
+ 651:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
+ 251              		.loc 1 651 3 is_stmt 1 view .LVU70
+ 651:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
+ 252              		.loc 1 651 6 is_stmt 0 view .LVU71
+ 253 007a 14F8043C 		ldrb	r3, [r4, #-4]	@ zero_extendqisi2
+ 254 007e 002B     		cmp	r3, #0
+ 255 0080 5CD0     		beq	.L40
+ 660:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: non-linked: double free");
+ 256              		.loc 1 660 3 is_stmt 1 view .LVU72
+ 257              	.LVL8:
+ 258              	.LBB196:
+ 259              	.LBI196:
+ 551:./lwip-2.1.2/src/core/mem.c **** {
+ 260              		.loc 1 551 1 view .LVU73
+ 261              	.LBB197:
+ 553:./lwip-2.1.2/src/core/mem.c ****   mem_size_t rmem_idx;
+ 262              		.loc 1 553 3 view .LVU74
+ 554:./lwip-2.1.2/src/core/mem.c ****   rmem_idx = mem_to_ptr(mem);
+ 263              		.loc 1 554 3 view .LVU75
+ 555:./lwip-2.1.2/src/core/mem.c ****   nmem = ptr_to_mem(mem->next);
+ 264              		.loc 1 555 3 view .LVU76
+ 265              	.LBB198:
+ 266              	.LBI198:
+ 457:./lwip-2.1.2/src/core/mem.c **** {
+ 267              		.loc 1 457 1 view .LVU77
+ 268              	.LBB199:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 269              		.loc 1 459 3 view .LVU78
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 270              		.loc 1 459 3 is_stmt 0 view .LVU79
+ 271              	.LBE199:
+ 272              	.LBE198:
+ 556:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
+ 273              		.loc 1 556 3 is_stmt 1 view .LVU80
+ 557:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
+ 274              		.loc 1 557 10 is_stmt 0 view .LVU81
+ 275 0082 34F8063C 		ldrh	r3, [r4, #-6]
+ 556:./lwip-2.1.2/src/core/mem.c ****   pmem = ptr_to_mem(mem->prev);
+ 276              		.loc 1 556 10 view .LVU82
+ 277 0086 34F8080C 		ldrh	r0, [r4, #-8]
+ 278              	.LVL9:
+ 279              	.LBB202:
+ 280              	.LBI202:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 281              		.loc 1 451 1 is_stmt 1 view .LVU83
+ 282              	.LBB203:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 283              		.loc 1 453 3 view .LVU84
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 284              		.loc 1 453 3 is_stmt 0 view .LVU85
+ 285              	.LBE203:
+ 286              	.LBE202:
+ 557:./lwip-2.1.2/src/core/mem.c ****   if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
+ 287              		.loc 1 557 3 is_stmt 1 view .LVU86
+ 288              	.LBB205:
+ 289              	.LBI205:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 290              		.loc 1 451 1 view .LVU87
+ 291              	.LBB206:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 292              		.loc 1 453 3 view .LVU88
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 293              		.loc 1 453 3 is_stmt 0 view .LVU89
+ 294              	.LBE206:
+ 295              	.LBE205:
+ 558:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
+ 296              		.loc 1 558 3 is_stmt 1 view .LVU90
+ 558:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
+ 297              		.loc 1 558 38 is_stmt 0 view .LVU91
+ 298 008a B3F5805F 		cmp	r3, #4096
+ 299 008e 51D8     		bhi	.L14
+ 300 0090 B0F5805F 		cmp	r0, #4096
+ 301 0094 4ED8     		bhi	.L14
+ 302              	.LBB208:
+ 303              	.LBB200:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 304              		.loc 1 459 35 view .LVU92
+ 305 0096 2A68     		ldr	r2, [r5]
+ 306 0098 A6EB020C 		sub	ip, r6, r2
+ 307              	.LBE200:
+ 308              	.LBE208:
+ 309              	.LBB209:
+ 310              	.LBB207:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 311              		.loc 1 453 10 view .LVU93
+ 312 009c 02EB0308 		add	r8, r2, r3
+ 313              	.LBE207:
+ 314              	.LBE209:
+ 315              	.LBB210:
+ 316              	.LBB201:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 317              		.loc 1 459 10 view .LVU94
+ 318 00a0 1FFA8CFC 		uxth	ip, ip
+ 319              	.LBE201:
+ 320              	.LBE210:
+ 558:./lwip-2.1.2/src/core/mem.c ****       ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
+ 321              		.loc 1 558 72 view .LVU95
+ 322 00a4 9C45     		cmp	ip, r3
+ 323 00a6 02D0     		beq	.L15
+ 559:./lwip-2.1.2/src/core/mem.c ****       ((nmem != ram_end) && (nmem->prev != rmem_idx))) {
+ 324              		.loc 1 559 32 view .LVU96
+ 325 00a8 D15A     		ldrh	r1, [r2, r3]
+ 326 00aa 6145     		cmp	r1, ip
+ 327 00ac 42D1     		bne	.L14
+ 328              	.L15:
+ 329              	.LBB211:
+ 330              	.LBB204:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 331              		.loc 1 453 10 view .LVU97
+ 332 00ae 1118     		adds	r1, r2, r0
+ 333              	.LBE204:
+ 334              	.LBE211:
+ 560:./lwip-2.1.2/src/core/mem.c ****     return 0;
+ 335              		.loc 1 560 14 view .LVU98
+ 336 00b0 D5F80490 		ldr	r9, [r5, #4]
+ 559:./lwip-2.1.2/src/core/mem.c ****       ((nmem != ram_end) && (nmem->prev != rmem_idx))) {
+ 337              		.loc 1 559 61 view .LVU99
+ 338 00b4 4945     		cmp	r1, r9
+ 339 00b6 02D0     		beq	.L16
+ 560:./lwip-2.1.2/src/core/mem.c ****     return 0;
+ 340              		.loc 1 560 26 view .LVU100
+ 341 00b8 4F88     		ldrh	r7, [r1, #2]
+ 342 00ba 6745     		cmp	r7, ip
+ 343 00bc 3AD1     		bne	.L14
+ 344              	.L16:
+ 345              	.LVL10:
+ 560:./lwip-2.1.2/src/core/mem.c ****     return 0;
+ 346              		.loc 1 560 26 view .LVU101
+ 347              	.LBE197:
+ 348              	.LBE196:
+ 670:./lwip-2.1.2/src/core/mem.c **** 
+ 349              		.loc 1 670 3 is_stmt 1 view .LVU102
+ 672:./lwip-2.1.2/src/core/mem.c ****     /* the newly freed struct is now the lowest */
+ 350              		.loc 1 672 6 is_stmt 0 view .LVU103
+ 351 00be AF68     		ldr	r7, [r5, #8]
+ 670:./lwip-2.1.2/src/core/mem.c **** 
+ 352              		.loc 1 670 13 view .LVU104
+ 353 00c0 4FF0000E 		mov	lr, #0
+ 672:./lwip-2.1.2/src/core/mem.c ****     /* the newly freed struct is now the lowest */
+ 354              		.loc 1 672 6 view .LVU105
+ 355 00c4 B742     		cmp	r7, r6
+ 670:./lwip-2.1.2/src/core/mem.c **** 
+ 356              		.loc 1 670 13 view .LVU106
+ 357 00c6 04F804EC 		strb	lr, [r4, #-4]
+ 672:./lwip-2.1.2/src/core/mem.c ****     /* the newly freed struct is now the lowest */
+ 358              		.loc 1 672 3 is_stmt 1 view .LVU107
+ 674:./lwip-2.1.2/src/core/mem.c ****   }
+ 359              		.loc 1 674 5 view .LVU108
+ 674:./lwip-2.1.2/src/core/mem.c ****   }
+ 360              		.loc 1 674 11 is_stmt 0 view .LVU109
+ 361 00ca 88BF     		it	hi
+ 362 00cc AE60     		strhi	r6, [r5, #8]
+ 677:./lwip-2.1.2/src/core/mem.c **** 
+ 363              		.loc 1 677 74 is_stmt 1 view .LVU110
+ 680:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+ 364              		.loc 1 680 3 view .LVU111
+ 365              	.LVL11:
+ 366              	.LBB213:
+ 367              	.LBI213:
+ 474:./lwip-2.1.2/src/core/mem.c **** {
+ 368              		.loc 1 474 1 view .LVU112
+ 369              	.LBB214:
+ 476:./lwip-2.1.2/src/core/mem.c ****   struct mem *pmem;
+ 370              		.loc 1 476 3 view .LVU113
+ 477:./lwip-2.1.2/src/core/mem.c **** 
+ 371              		.loc 1 477 3 view .LVU114
+ 479:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem < ram_end", (u8_t *)mem < (u8_t *)ram_end);
+ 372              		.loc 1 479 60 view .LVU115
+ 480:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("plug_holes: mem->used == 0", mem->used == 0);
+ 373              		.loc 1 480 74 view .LVU116
+ 481:./lwip-2.1.2/src/core/mem.c **** 
+ 374              		.loc 1 481 60 view .LVU117
+ 484:./lwip-2.1.2/src/core/mem.c **** 
+ 375              		.loc 1 484 90 view .LVU118
+ 486:./lwip-2.1.2/src/core/mem.c ****   if (mem != nmem && nmem->used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
+ 376              		.loc 1 486 3 view .LVU119
+ 486:./lwip-2.1.2/src/core/mem.c ****   if (mem != nmem && nmem->used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
+ 377              		.loc 1 486 3 is_stmt 0 view .LVU120
+ 378              	.LBE214:
+ 379              	.LBE213:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 380              		.loc 1 453 3 is_stmt 1 view .LVU121
+ 381              	.LBB226:
+ 382              	.LBB223:
+ 487:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
+ 383              		.loc 1 487 3 view .LVU122
+ 487:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
+ 384              		.loc 1 487 6 is_stmt 0 view .LVU123
+ 385 00ce 8E42     		cmp	r6, r1
+ 386 00d0 15D0     		beq	.L18
+ 487:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
+ 387              		.loc 1 487 19 view .LVU124
+ 388 00d2 0F79     		ldrb	r7, [r1, #4]	@ zero_extendqisi2
+ 389 00d4 9FB9     		cbnz	r7, .L18
+ 487:./lwip-2.1.2/src/core/mem.c ****     /* if mem->next is unused and not end of ram, combine mem and mem->next */
+ 390              		.loc 1 487 38 view .LVU125
+ 391 00d6 4945     		cmp	r1, r9
+ 392 00d8 11D0     		beq	.L18
+ 489:./lwip-2.1.2/src/core/mem.c ****       lfree = mem;
+ 393              		.loc 1 489 5 is_stmt 1 view .LVU126
+ 489:./lwip-2.1.2/src/core/mem.c ****       lfree = mem;
+ 394              		.loc 1 489 8 is_stmt 0 view .LVU127
+ 395 00da AF68     		ldr	r7, [r5, #8]
+ 396 00dc B942     		cmp	r1, r7
+ 490:./lwip-2.1.2/src/core/mem.c ****     }
+ 397              		.loc 1 490 7 is_stmt 1 view .LVU128
+ 492:./lwip-2.1.2/src/core/mem.c ****     if (nmem->next != MEM_SIZE_ALIGNED) {
+ 398              		.loc 1 492 21 is_stmt 0 view .LVU129
+ 399 00de 115A     		ldrh	r1, [r2, r0]
+ 492:./lwip-2.1.2/src/core/mem.c ****     if (nmem->next != MEM_SIZE_ALIGNED) {
+ 400              		.loc 1 492 15 view .LVU130
+ 401 00e0 24F8081C 		strh	r1, [r4, #-8]	@ movhi
+ 493:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
+ 402              		.loc 1 493 13 view .LVU131
+ 403 00e4 115A     		ldrh	r1, [r2, r0]
+ 490:./lwip-2.1.2/src/core/mem.c ****     }
+ 404              		.loc 1 490 13 view .LVU132
+ 405 00e6 08BF     		it	eq
+ 406 00e8 AE60     		streq	r6, [r5, #8]
+ 492:./lwip-2.1.2/src/core/mem.c ****     if (nmem->next != MEM_SIZE_ALIGNED) {
+ 407              		.loc 1 492 5 is_stmt 1 view .LVU133
+ 493:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
+ 408              		.loc 1 493 5 view .LVU134
+ 493:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
+ 409              		.loc 1 493 8 is_stmt 0 view .LVU135
+ 410 00ea B1F5805F 		cmp	r1, #4096
+ 411 00ee 06D0     		beq	.L18
+ 494:./lwip-2.1.2/src/core/mem.c ****     }
+ 412              		.loc 1 494 7 is_stmt 1 view .LVU136
+ 413              	.LVL12:
+ 414              	.LBB215:
+ 415              	.LBI215:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 416              		.loc 1 451 1 view .LVU137
+ 417              	.LBB216:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 418              		.loc 1 453 3 view .LVU138
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 419              		.loc 1 453 3 is_stmt 0 view .LVU139
+ 420              	.LBE216:
+ 421              	.LBE215:
+ 422              	.LBE223:
+ 423              	.LBE226:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 424              		.loc 1 459 3 is_stmt 1 view .LVU140
+ 425              	.LBB227:
+ 426              	.LBB224:
+ 494:./lwip-2.1.2/src/core/mem.c ****     }
+ 427              		.loc 1 494 36 is_stmt 0 view .LVU141
+ 428 00f0 1144     		add	r1, r1, r2
+ 429 00f2 A1F802C0 		strh	ip, [r1, #2]	@ movhi
+ 499:./lwip-2.1.2/src/core/mem.c ****   if (pmem != mem && pmem->used == 0) {
+ 430              		.loc 1 499 10 view .LVU142
+ 431 00f6 34F8063C 		ldrh	r3, [r4, #-6]
+ 432              	.LVL13:
+ 433              	.LBB217:
+ 434              	.LBB218:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 435              		.loc 1 453 10 view .LVU143
+ 436 00fa 02EB0308 		add	r8, r2, r3
+ 437              	.LVL14:
+ 438              	.L18:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 439              		.loc 1 453 10 view .LVU144
+ 440              	.LBE218:
+ 441              	.LBE217:
+ 499:./lwip-2.1.2/src/core/mem.c ****   if (pmem != mem && pmem->used == 0) {
+ 442              		.loc 1 499 3 is_stmt 1 view .LVU145
+ 443              	.LBB220:
+ 444              	.LBI217:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 445              		.loc 1 451 1 view .LVU146
+ 446              	.LBB219:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 447              		.loc 1 453 3 view .LVU147
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 448              		.loc 1 453 3 is_stmt 0 view .LVU148
+ 449              	.LBE219:
+ 450              	.LBE220:
+ 500:./lwip-2.1.2/src/core/mem.c ****     /* if mem->prev is unused, combine mem and mem->prev */
+ 451              		.loc 1 500 3 is_stmt 1 view .LVU149
+ 500:./lwip-2.1.2/src/core/mem.c ****     /* if mem->prev is unused, combine mem and mem->prev */
+ 452              		.loc 1 500 6 is_stmt 0 view .LVU150
+ 453 00fe 4645     		cmp	r6, r8
+ 454 0100 12D0     		beq	.L21
+ 500:./lwip-2.1.2/src/core/mem.c ****     /* if mem->prev is unused, combine mem and mem->prev */
+ 455              		.loc 1 500 19 view .LVU151
+ 456 0102 98F80410 		ldrb	r1, [r8, #4]	@ zero_extendqisi2
+ 457 0106 79B9     		cbnz	r1, .L21
+ 502:./lwip-2.1.2/src/core/mem.c ****       lfree = pmem;
+ 458              		.loc 1 502 5 is_stmt 1 view .LVU152
+ 502:./lwip-2.1.2/src/core/mem.c ****       lfree = pmem;
+ 459              		.loc 1 502 8 is_stmt 0 view .LVU153
+ 460 0108 A968     		ldr	r1, [r5, #8]
+ 461 010a 8E42     		cmp	r6, r1
+ 503:./lwip-2.1.2/src/core/mem.c ****     }
+ 462              		.loc 1 503 7 is_stmt 1 view .LVU154
+ 505:./lwip-2.1.2/src/core/mem.c ****     if (mem->next != MEM_SIZE_ALIGNED) {
+ 463              		.loc 1 505 21 is_stmt 0 view .LVU155
+ 464 010c 34F8081C 		ldrh	r1, [r4, #-8]
+ 505:./lwip-2.1.2/src/core/mem.c ****     if (mem->next != MEM_SIZE_ALIGNED) {
+ 465              		.loc 1 505 16 view .LVU156
+ 466 0110 A8F80010 		strh	r1, [r8]	@ movhi
+ 506:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
+ 467              		.loc 1 506 12 view .LVU157
+ 468 0114 34F8081C 		ldrh	r1, [r4, #-8]
+ 503:./lwip-2.1.2/src/core/mem.c ****     }
+ 469              		.loc 1 503 13 view .LVU158
+ 470 0118 08BF     		it	eq
+ 471 011a C5F80880 		streq	r8, [r5, #8]
+ 505:./lwip-2.1.2/src/core/mem.c ****     if (mem->next != MEM_SIZE_ALIGNED) {
+ 472              		.loc 1 505 5 is_stmt 1 view .LVU159
+ 506:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
+ 473              		.loc 1 506 5 view .LVU160
+ 506:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
+ 474              		.loc 1 506 8 is_stmt 0 view .LVU161
+ 475 011e B1F5805F 		cmp	r1, #4096
+ 476 0122 01D0     		beq	.L21
+ 507:./lwip-2.1.2/src/core/mem.c ****     }
+ 477              		.loc 1 507 7 is_stmt 1 view .LVU162
+ 478              	.LVL15:
+ 479              	.LBB221:
+ 480              	.LBI221:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 481              		.loc 1 451 1 view .LVU163
+ 482              	.LBB222:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 483              		.loc 1 453 3 view .LVU164
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 484              		.loc 1 453 3 is_stmt 0 view .LVU165
+ 485              	.LBE222:
+ 486              	.LBE221:
+ 487              	.LBE224:
+ 488              	.LBE227:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 489              		.loc 1 459 3 is_stmt 1 view .LVU166
+ 490              	.LBB228:
+ 491              	.LBB225:
+ 507:./lwip-2.1.2/src/core/mem.c ****     }
+ 492              		.loc 1 507 35 is_stmt 0 view .LVU167
+ 493 0124 0A44     		add	r2, r2, r1
+ 494              	.LVL16:
+ 507:./lwip-2.1.2/src/core/mem.c ****     }
+ 495              		.loc 1 507 35 view .LVU168
+ 496 0126 5380     		strh	r3, [r2, #2]	@ movhi
+ 497              	.LVL17:
+ 498              	.L21:
+ 507:./lwip-2.1.2/src/core/mem.c ****     }
+ 499              		.loc 1 507 35 view .LVU169
+ 500              	.LBE225:
+ 501              	.LBE228:
+ 681:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 502              		.loc 1 681 15 is_stmt 1 view .LVU170
+ 685:./lwip-2.1.2/src/core/mem.c **** }
+ 503              		.loc 1 685 3 view .LVU171
+ 504 0128 0748     		ldr	r0, .L41+4
+ 505              	.LVL18:
+ 506              		.loc 1 686 1 is_stmt 0 view .LVU172
+ 507 012a BDE8F843 		pop	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 508              	.LCFI3:
+ 509              		.cfi_restore 14
+ 510              		.cfi_restore 9
+ 511              		.cfi_restore 8
+ 512              		.cfi_restore 7
+ 513              		.cfi_restore 6
+ 514              		.cfi_restore 5
+ 515              		.cfi_restore 4
+ 516              		.cfi_restore 3
+ 517              		.cfi_def_cfa_offset 0
+ 518              	.LVL19:
+ 685:./lwip-2.1.2/src/core/mem.c **** }
+ 519              		.loc 1 685 3 view .LVU173
+ 520 012e FFF7FEBF 		b	sys_mutex_unlock
+ 521              	.LVL20:
+ 522              	.L31:
+ 685:./lwip-2.1.2/src/core/mem.c **** }
+ 523              		.loc 1 685 3 view .LVU174
+ 524 0132 7047     		bx	lr
+ 525              	.LVL21:
+ 526              	.L14:
+ 527              	.LCFI4:
+ 528              		.cfi_def_cfa_offset 32
+ 529              		.cfi_offset 3, -32
+ 530              		.cfi_offset 4, -28
+ 531              		.cfi_offset 5, -24
+ 532              		.cfi_offset 6, -20
+ 533              		.cfi_offset 7, -16
+ 534              		.cfi_offset 8, -12
+ 535              		.cfi_offset 9, -8
+ 536              		.cfi_offset 14, -4
+ 537              	.LBB229:
+ 538              	.LBB212:
+ 561:./lwip-2.1.2/src/core/mem.c ****   }
+ 539              		.loc 1 561 5 is_stmt 1 view .LVU175
+ 561:./lwip-2.1.2/src/core/mem.c ****   }
+ 540              		.loc 1 561 5 is_stmt 0 view .LVU176
+ 541              	.LBE212:
+ 542              	.LBE229:
+ 661:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 543              		.loc 1 661 79 is_stmt 1 view .LVU177
+ 662:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double f
+ 544              		.loc 1 662 5 view .LVU178
+ 545 0134 0448     		ldr	r0, .L41+4
+ 546              	.LVL22:
+ 547              	.L36:
+ 662:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: non-linked: double f
+ 548              		.loc 1 662 5 is_stmt 0 view .LVU179
+ 549 0136 FFF7FEFF 		bl	sys_mutex_unlock
+ 550              	.LVL23:
+ 551 013a 8FE7     		b	.L38
+ 552              	.L40:
+ 652:./lwip-2.1.2/src/core/mem.c ****     LWIP_MEM_FREE_UNPROTECT();
+ 553              		.loc 1 652 67 is_stmt 1 view .LVU180
+ 653:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
+ 554              		.loc 1 653 5 view .LVU181
+ 555 013c 05F10C00 		add	r0, r5, #12
+ 556 0140 F9E7     		b	.L36
+ 557              	.L42:
+ 558 0142 00BF     		.align	2
+ 559              	.L41:
+ 560 0144 00000000 		.word	.LANCHOR0
+ 561 0148 0C000000 		.word	.LANCHOR0+12
+ 562              		.cfi_endproc
+ 563              	.LFE174:
+ 565              		.align	1
+ 566              		.p2align 2,,3
+ 567              		.global	mem_trim
+ 568              		.syntax unified
+ 569              		.thumb
+ 570              		.thumb_func
+ 571              		.fpu fpv5-d16
+ 573              	mem_trim:
+ 574              	.LVL24:
+ 575              	.LFB175:
  687:./lwip-2.1.2/src/core/mem.c **** 
  688:./lwip-2.1.2/src/core/mem.c **** /**
  689:./lwip-2.1.2/src/core/mem.c ****  * Shrink memory returned by mem_malloc().
@@ -2642,365 +2353,323 @@
  698:./lwip-2.1.2/src/core/mem.c **** void *
  699:./lwip-2.1.2/src/core/mem.c **** mem_trim(void *rmem, mem_size_t new_size)
  700:./lwip-2.1.2/src/core/mem.c **** {
- 973              		.loc 1 700 1
- 974              		.cfi_startproc
- 975              		@ args = 0, pretend = 0, frame = 40
- 976              		@ frame_needed = 1, uses_anonymous_args = 0
- 977 0354 80B5     		push	{r7, lr}
- 978              	.LCFI32:
- 979              		.cfi_def_cfa_offset 8
- 980              		.cfi_offset 7, -8
- 981              		.cfi_offset 14, -4
- 982 0356 8AB0     		sub	sp, sp, #40
- 983              	.LCFI33:
- 984              		.cfi_def_cfa_offset 48
- 985 0358 00AF     		add	r7, sp, #0
- 986              	.LCFI34:
- 987              		.cfi_def_cfa_register 7
- 988 035a 7860     		str	r0, [r7, #4]
- 989 035c 0B46     		mov	r3, r1
- 990 035e 7B80     		strh	r3, [r7, #2]	@ movhi
+ 576              		.loc 1 700 1 view -0
+ 577              		.cfi_startproc
+ 578              		@ args = 0, pretend = 0, frame = 8
+ 579              		@ frame_needed = 0, uses_anonymous_args = 0
  701:./lwip-2.1.2/src/core/mem.c ****   mem_size_t size, newsize;
+ 580              		.loc 1 701 3 view .LVU183
  702:./lwip-2.1.2/src/core/mem.c ****   mem_size_t ptr, ptr2;
+ 581              		.loc 1 702 3 view .LVU184
  703:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem, *mem2;
+ 582              		.loc 1 703 3 view .LVU185
  704:./lwip-2.1.2/src/core/mem.c ****   /* use the FREE_PROTECT here: it protects with sem OR SYS_ARCH_PROTECT */
  705:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_DECL_PROTECT();
+ 583              		.loc 1 705 31 view .LVU186
  706:./lwip-2.1.2/src/core/mem.c **** 
  707:./lwip-2.1.2/src/core/mem.c ****   /* Expand the size of the allocated memory region so that we can
  708:./lwip-2.1.2/src/core/mem.c ****      adjust for alignment. */
  709:./lwip-2.1.2/src/core/mem.c ****   newsize = (mem_size_t)LWIP_MEM_ALIGN_SIZE(new_size);
- 991              		.loc 1 709 25
- 992 0360 7B88     		ldrh	r3, [r7, #2]	@ movhi
- 993 0362 0333     		adds	r3, r3, #3
- 994 0364 9BB2     		uxth	r3, r3
- 995              		.loc 1 709 11
- 996 0366 23F00303 		bic	r3, r3, #3
- 997 036a FB84     		strh	r3, [r7, #38]	@ movhi
+ 584              		.loc 1 709 3 view .LVU187
+ 585              		.loc 1 709 25 is_stmt 0 view .LVU188
+ 586 014c CB1C     		adds	r3, r1, #3
+ 587              		.loc 1 709 11 view .LVU189
+ 588 014e 23F00303 		bic	r3, r3, #3
+ 589 0152 9BB2     		uxth	r3, r3
+ 590              	.LVL25:
  710:./lwip-2.1.2/src/core/mem.c ****   if (newsize < MIN_SIZE_ALIGNED) {
- 998              		.loc 1 710 6
- 999 036c FB8C     		ldrh	r3, [r7, #38]
- 1000 036e 0B2B     		cmp	r3, #11
- 1001 0370 01D8     		bhi	.L52
+ 591              		.loc 1 710 3 is_stmt 1 view .LVU190
+ 592 0154 0C2B     		cmp	r3, #12
+ 700:./lwip-2.1.2/src/core/mem.c ****   mem_size_t size, newsize;
+ 593              		.loc 1 700 1 is_stmt 0 view .LVU191
+ 594 0156 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 595              	.LCFI5:
+ 596              		.cfi_def_cfa_offset 24
+ 597              		.cfi_offset 4, -24
+ 598              		.cfi_offset 5, -20
+ 599              		.cfi_offset 6, -16
+ 600              		.cfi_offset 7, -12
+ 601              		.cfi_offset 8, -8
+ 602              		.cfi_offset 14, -4
+ 603 015a 1E46     		mov	r6, r3
+ 604 015c 38BF     		it	cc
+ 605 015e 0C26     		movcc	r6, #12
+ 606              	.LVL26:
  711:./lwip-2.1.2/src/core/mem.c ****     /* every data block must be at least MIN_SIZE_ALIGNED long */
  712:./lwip-2.1.2/src/core/mem.c ****     newsize = MIN_SIZE_ALIGNED;
- 1002              		.loc 1 712 13
- 1003 0372 0C23     		movs	r3, #12
- 1004 0374 FB84     		strh	r3, [r7, #38]	@ movhi
- 1005              	.L52:
  713:./lwip-2.1.2/src/core/mem.c ****   }
  714:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
  715:./lwip-2.1.2/src/core/mem.c ****   newsize += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
  716:./lwip-2.1.2/src/core/mem.c **** #endif
  717:./lwip-2.1.2/src/core/mem.c ****   if ((newsize > MEM_SIZE_ALIGNED) || (newsize < new_size)) {
- 1006              		.loc 1 717 6
- 1007 0376 FB8C     		ldrh	r3, [r7, #38]
- 1008 0378 B3F5805F 		cmp	r3, #4096
- 1009 037c 03D8     		bhi	.L53
- 1010              		.loc 1 717 36 discriminator 1
- 1011 037e FA8C     		ldrh	r2, [r7, #38]
- 1012 0380 7B88     		ldrh	r3, [r7, #2]
- 1013 0382 9A42     		cmp	r2, r3
- 1014 0384 01D2     		bcs	.L54
- 1015              	.L53:
+ 607              		.loc 1 717 3 is_stmt 1 view .LVU192
+ 700:./lwip-2.1.2/src/core/mem.c ****   mem_size_t size, newsize;
+ 608              		.loc 1 700 1 is_stmt 0 view .LVU193
+ 609 0160 82B0     		sub	sp, sp, #8
+ 610              	.LCFI6:
+ 611              		.cfi_def_cfa_offset 32
+ 612              		.loc 1 717 6 view .LVU194
+ 613 0162 B142     		cmp	r1, r6
+ 700:./lwip-2.1.2/src/core/mem.c ****   mem_size_t size, newsize;
+ 614              		.loc 1 700 1 view .LVU195
+ 615 0164 0190     		str	r0, [sp, #4]
+ 616              		.loc 1 717 6 view .LVU196
+ 617 0166 56D8     		bhi	.L56
+ 618 0168 B3F5805F 		cmp	r3, #4096
+ 619 016c 94BF     		ite	ls
+ 620 016e 0023     		movls	r3, #0
+ 621 0170 0123     		movhi	r3, #1
+ 622 0172 002B     		cmp	r3, #0
+ 623 0174 4FD1     		bne	.L56
  718:./lwip-2.1.2/src/core/mem.c ****     return NULL;
- 1016              		.loc 1 718 12
- 1017 0386 0023     		movs	r3, #0
- 1018 0388 B0E0     		b	.L55
- 1019              	.L54:
  719:./lwip-2.1.2/src/core/mem.c ****   }
  720:./lwip-2.1.2/src/core/mem.c **** 
  721:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("mem_trim: legal memory", (u8_t *)rmem >= (u8_t *)ram &&
  722:./lwip-2.1.2/src/core/mem.c ****               (u8_t *)rmem < (u8_t *)ram_end);
  723:./lwip-2.1.2/src/core/mem.c **** 
  724:./lwip-2.1.2/src/core/mem.c ****   if ((u8_t *)rmem < (u8_t *)ram || (u8_t *)rmem >= (u8_t *)ram_end) {
- 1020              		.loc 1 724 20
- 1021 038a 5A4B     		ldr	r3, .L66
- 1022 038c 1B68     		ldr	r3, [r3]
- 1023              		.loc 1 724 6
- 1024 038e 7A68     		ldr	r2, [r7, #4]
- 1025 0390 9A42     		cmp	r2, r3
- 1026 0392 04D3     		bcc	.L56
- 1027              		.loc 1 724 53 discriminator 1
- 1028 0394 584B     		ldr	r3, .L66+4
- 1029 0396 1B68     		ldr	r3, [r3]
- 1030              		.loc 1 724 34 discriminator 1
- 1031 0398 7A68     		ldr	r2, [r7, #4]
- 1032 039a 9A42     		cmp	r2, r3
- 1033 039c 13D3     		bcc	.L57
- 1034              	.L56:
- 1035              	.LBB102:
- 1036              	.LBB103:
- 1037              	.LBB104:
- 453:./inc/cmsis_gcc.h ****   return(result);
- 1038              		.loc 2 453 3
- 1039              		.syntax unified
- 1040              	@ 453 "./inc/cmsis_gcc.h" 1
- 1041 039e EFF31083 		MRS r3, primask
- 1042              	@ 0 "" 2
- 1043              		.thumb
- 1044              		.syntax unified
- 1045 03a2 FB60     		str	r3, [r7, #12]
- 454:./inc/cmsis_gcc.h **** }
- 1046              		.loc 2 454 9
- 1047 03a4 FB68     		ldr	r3, [r7, #12]
- 1048              	.LBE104:
- 1049              	.LBE103:
+ 624              		.loc 1 724 20 view .LVU197
+ 625 0176 384F     		ldr	r7, .L64
+ 626 0178 0446     		mov	r4, r0
+ 722:./lwip-2.1.2/src/core/mem.c **** 
+ 627              		.loc 1 722 46 is_stmt 1 view .LVU198
+ 628              		.loc 1 724 3 view .LVU199
+ 629              		.loc 1 724 20 is_stmt 0 view .LVU200
+ 630 017a 3A68     		ldr	r2, [r7]
+ 631              		.loc 1 724 6 view .LVU201
+ 632 017c 8242     		cmp	r2, r0
+ 633 017e 3CD8     		bhi	.L45
+ 634              		.loc 1 724 34 discriminator 1 view .LVU202
+ 635 0180 7968     		ldr	r1, [r7, #4]
+ 636              	.LVL27:
+ 637              		.loc 1 724 34 discriminator 1 view .LVU203
+ 638 0182 8142     		cmp	r1, r0
+ 639 0184 39D9     		bls	.L45
  725:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_trim: illegal memory\n"));
  726:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
  727:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_INC_LOCKED(illegal);
- 1050              		.loc 1 727 5
- 1051 03a6 3B61     		str	r3, [r7, #16]
- 1052              	.LBB105:
- 1053              	.LBB106:
- 209:./inc/cmsis_gcc.h **** }
- 1054              		.loc 2 209 3
- 1055              		.syntax unified
- 1056              	@ 209 "./inc/cmsis_gcc.h" 1
- 1057 03a8 72B6     		cpsid i
- 1058              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 1059              		.loc 2 210 1
- 1060              		.thumb
- 1061              		.syntax unified
- 1062 03aa 00BF     		nop
- 1063              	.LBE106:
- 1064              	.LBE105:
- 1065              	.LBB107:
- 1066              	.LBB108:
- 946:./inc/cmsis_gcc.h **** }
- 1067              		.loc 2 946 3
- 1068              		.syntax unified
- 1069              	@ 946 "./inc/cmsis_gcc.h" 1
- 1070 03ac BFF34F8F 		dsb 0xF
- 1071              	@ 0 "" 2
- 1072              		.loc 2 947 1
- 1073              		.thumb
- 1074              		.syntax unified
- 1075 03b0 00BF     		nop
- 1076              	.LBE108:
- 1077              	.LBE107:
- 1078              	.LBB109:
- 1079              	.LBB110:
- 935:./inc/cmsis_gcc.h **** }
- 1080              		.loc 2 935 3
- 1081              		.syntax unified
- 1082              	@ 935 "./inc/cmsis_gcc.h" 1
- 1083 03b2 BFF36F8F 		isb 0xF
- 1084              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 1085              		.loc 2 936 1
- 1086              		.thumb
- 1087              		.syntax unified
- 1088 03b6 00BF     		nop
- 1089              	.LBE110:
- 1090              	.LBE109:
- 1091              		.loc 1 727 5
- 1092 03b8 3B69     		ldr	r3, [r7, #16]
- 1093 03ba 002B     		cmp	r3, #0
- 1094 03bc 01D1     		bne	.L59
- 1095              	.LBB111:
- 1096              	.LBB112:
- 198:./inc/cmsis_gcc.h **** }
- 1097              		.loc 2 198 3
- 1098              		.syntax unified
- 1099              	@ 198 "./inc/cmsis_gcc.h" 1
- 1100 03be 62B6     		cpsie i
- 1101              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 1102              		.loc 2 199 1
- 1103              		.thumb
- 1104              		.syntax unified
- 1105 03c0 00BF     		nop
- 1106              	.L59:
- 1107              	.LBE112:
- 1108              	.LBE111:
- 1109              	.LBE102:
  728:./lwip-2.1.2/src/core/mem.c ****     return rmem;
- 1110              		.loc 1 728 12
- 1111 03c2 7B68     		ldr	r3, [r7, #4]
- 1112 03c4 92E0     		b	.L55
- 1113              	.L57:
  729:./lwip-2.1.2/src/core/mem.c ****   }
  730:./lwip-2.1.2/src/core/mem.c ****   /* Get the corresponding struct mem ... */
  731:./lwip-2.1.2/src/core/mem.c ****   /* cast through void* to get rid of alignment warnings */
  732:./lwip-2.1.2/src/core/mem.c ****   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
- 1114              		.loc 1 732 7
- 1115 03c6 7B68     		ldr	r3, [r7, #4]
- 1116 03c8 083B     		subs	r3, r3, #8
- 1117 03ca 3B62     		str	r3, [r7, #32]
+ 640              		.loc 1 732 3 is_stmt 1 view .LVU204
+ 641              	.LVL28:
  733:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
  734:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_check_element(mem);
  735:./lwip-2.1.2/src/core/mem.c **** #endif
  736:./lwip-2.1.2/src/core/mem.c ****   /* ... and its offset pointer */
  737:./lwip-2.1.2/src/core/mem.c ****   ptr = mem_to_ptr(mem);
- 1118              		.loc 1 737 9
- 1119 03cc 386A     		ldr	r0, [r7, #32]
- 1120 03ce FFF729FE 		bl	mem_to_ptr
- 1121 03d2 0346     		mov	r3, r0
- 1122 03d4 FB83     		strh	r3, [r7, #30]	@ movhi
+ 642              		.loc 1 737 3 view .LVU205
+ 643              	.LBB230:
+ 644              	.LBI230:
+ 457:./lwip-2.1.2/src/core/mem.c **** {
+ 645              		.loc 1 457 1 view .LVU206
+ 646              	.LBB231:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 647              		.loc 1 459 3 view .LVU207
+ 648              	.LBE231:
+ 649              	.LBE230:
+ 732:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
+ 650              		.loc 1 732 7 is_stmt 0 view .LVU208
+ 651 0186 A0F10808 		sub	r8, r0, #8
+ 652              	.LVL29:
  738:./lwip-2.1.2/src/core/mem.c **** 
  739:./lwip-2.1.2/src/core/mem.c ****   size = (mem_size_t)((mem_size_t)(mem->next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
- 1123              		.loc 1 739 39
- 1124 03d6 3B6A     		ldr	r3, [r7, #32]
- 1125 03d8 1A88     		ldrh	r2, [r3]
- 1126              		.loc 1 739 23
- 1127 03da FB8B     		ldrh	r3, [r7, #30]	@ movhi
- 1128 03dc D31A     		subs	r3, r2, r3
- 1129 03de 9BB2     		uxth	r3, r3
- 1130              		.loc 1 739 8
- 1131 03e0 083B     		subs	r3, r3, #8
- 1132 03e2 BB83     		strh	r3, [r7, #28]	@ movhi
+ 653              		.loc 1 739 8 view .LVU209
+ 654 018a 30F8085C 		ldrh	r5, [r0, #-8]
+ 655              	.LBB234:
+ 656              	.LBB232:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 657              		.loc 1 459 35 view .LVU210
+ 658 018e A8EB0208 		sub	r8, r8, r2
+ 659              	.LVL30:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 660              		.loc 1 459 35 view .LVU211
+ 661              	.LBE232:
+ 662              	.LBE234:
+ 663              		.loc 1 739 8 view .LVU212
+ 664 0192 083D     		subs	r5, r5, #8
+ 665              	.LBB235:
+ 666              	.LBB233:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 667              		.loc 1 459 10 view .LVU213
+ 668 0194 1FFA88F8 		uxth	r8, r8
+ 669              	.LVL31:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 670              		.loc 1 459 10 view .LVU214
+ 671              	.LBE233:
+ 672              	.LBE235:
+ 673              		.loc 1 739 3 is_stmt 1 view .LVU215
+ 674              		.loc 1 739 8 is_stmt 0 view .LVU216
+ 675 0198 A5EB0805 		sub	r5, r5, r8
+ 676 019c ADB2     		uxth	r5, r5
+ 677              	.LVL32:
  740:./lwip-2.1.2/src/core/mem.c ****   LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
+ 678              		.loc 1 740 66 is_stmt 1 view .LVU217
  741:./lwip-2.1.2/src/core/mem.c ****   if (newsize > size) {
- 1133              		.loc 1 741 6
- 1134 03e4 FA8C     		ldrh	r2, [r7, #38]
- 1135 03e6 BB8B     		ldrh	r3, [r7, #28]
- 1136 03e8 9A42     		cmp	r2, r3
- 1137 03ea 01D9     		bls	.L60
+ 679              		.loc 1 741 3 view .LVU218
+ 680              		.loc 1 741 6 is_stmt 0 view .LVU219
+ 681 019e B542     		cmp	r5, r6
+ 682 01a0 57D3     		bcc	.L57
  742:./lwip-2.1.2/src/core/mem.c ****     /* not supported */
  743:./lwip-2.1.2/src/core/mem.c ****     return NULL;
- 1138              		.loc 1 743 12
- 1139 03ec 0023     		movs	r3, #0
- 1140 03ee 7DE0     		b	.L55
- 1141              	.L60:
  744:./lwip-2.1.2/src/core/mem.c ****   }
  745:./lwip-2.1.2/src/core/mem.c ****   if (newsize == size) {
- 1142              		.loc 1 745 6
- 1143 03f0 FA8C     		ldrh	r2, [r7, #38]
- 1144 03f2 BB8B     		ldrh	r3, [r7, #28]
- 1145 03f4 9A42     		cmp	r2, r3
- 1146 03f6 01D1     		bne	.L61
+ 683              		.loc 1 745 3 is_stmt 1 view .LVU220
+ 684              		.loc 1 745 6 is_stmt 0 view .LVU221
+ 685 01a2 26D0     		beq	.L63
  746:./lwip-2.1.2/src/core/mem.c ****     /* No change in size, simply return */
  747:./lwip-2.1.2/src/core/mem.c ****     return rmem;
- 1147              		.loc 1 747 12
- 1148 03f8 7B68     		ldr	r3, [r7, #4]
- 1149 03fa 77E0     		b	.L55
- 1150              	.L61:
  748:./lwip-2.1.2/src/core/mem.c ****   }
  749:./lwip-2.1.2/src/core/mem.c **** 
  750:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
  751:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_PROTECT();
- 1151              		.loc 1 751 3
- 1152 03fc 3F48     		ldr	r0, .L66+8
- 1153 03fe FFF7FEFF 		bl	sys_mutex_lock
+ 686              		.loc 1 751 3 is_stmt 1 view .LVU222
+ 687 01a4 07F10C00 		add	r0, r7, #12
+ 688              	.LVL33:
+ 689              		.loc 1 751 3 is_stmt 0 view .LVU223
+ 690 01a8 FFF7FEFF 		bl	sys_mutex_lock
+ 691              	.LVL34:
  752:./lwip-2.1.2/src/core/mem.c **** 
  753:./lwip-2.1.2/src/core/mem.c ****   mem2 = ptr_to_mem(mem->next);
- 1154              		.loc 1 753 10
- 1155 0402 3B6A     		ldr	r3, [r7, #32]
- 1156 0404 1B88     		ldrh	r3, [r3]
- 1157 0406 1846     		mov	r0, r3
- 1158 0408 FFF7FAFD 		bl	ptr_to_mem
- 1159 040c B861     		str	r0, [r7, #24]
+ 692              		.loc 1 753 3 is_stmt 1 view .LVU224
+ 693              		.loc 1 753 10 is_stmt 0 view .LVU225
+ 694 01ac 34F8082C 		ldrh	r2, [r4, #-8]
+ 695              	.LVL35:
+ 696              	.LBB236:
+ 697              	.LBI236:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 698              		.loc 1 451 1 is_stmt 1 view .LVU226
+ 699              	.LBB237:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 700              		.loc 1 453 3 view .LVU227
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 701              		.loc 1 453 32 is_stmt 0 view .LVU228
+ 702 01b0 3B68     		ldr	r3, [r7]
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 703              		.loc 1 453 10 view .LVU229
+ 704 01b2 9918     		adds	r1, r3, r2
+ 705              	.LVL36:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 706              		.loc 1 453 10 view .LVU230
+ 707              	.LBE237:
+ 708              	.LBE236:
  754:./lwip-2.1.2/src/core/mem.c ****   if (mem2->used == 0) {
- 1160              		.loc 1 754 11
- 1161 040e BB69     		ldr	r3, [r7, #24]
- 1162 0410 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 1163              		.loc 1 754 6
- 1164 0412 002B     		cmp	r3, #0
- 1165 0414 33D1     		bne	.L62
- 1166              	.LBB113:
+ 709              		.loc 1 754 3 is_stmt 1 view .LVU231
+ 710              		.loc 1 754 6 is_stmt 0 view .LVU232
+ 711 01b4 0879     		ldrb	r0, [r1, #4]	@ zero_extendqisi2
+ 712 01b6 0028     		cmp	r0, #0
+ 713 01b8 31D1     		bne	.L49
+ 714              	.LBB238:
  755:./lwip-2.1.2/src/core/mem.c ****     /* The next struct is unused, we can simply move it at little */
  756:./lwip-2.1.2/src/core/mem.c ****     mem_size_t next;
+ 715              		.loc 1 756 5 is_stmt 1 view .LVU233
  757:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 716              		.loc 1 757 67 view .LVU234
  758:./lwip-2.1.2/src/core/mem.c ****     /* remember the old next pointer */
  759:./lwip-2.1.2/src/core/mem.c ****     next = mem2->next;
- 1167              		.loc 1 759 10
- 1168 0416 BB69     		ldr	r3, [r7, #24]
- 1169 0418 1B88     		ldrh	r3, [r3]	@ movhi
- 1170 041a BB82     		strh	r3, [r7, #20]	@ movhi
+ 717              		.loc 1 759 5 view .LVU235
+ 718              		.loc 1 759 10 is_stmt 0 view .LVU236
+ 719 01ba 985A     		ldrh	r0, [r3, r2]
+ 720              	.LVL37:
  760:./lwip-2.1.2/src/core/mem.c ****     /* create new struct mem which is moved directly after the shrinked mem */
  761:./lwip-2.1.2/src/core/mem.c ****     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
- 1171              		.loc 1 761 49
- 1172 041c FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1173 041e FB8C     		ldrh	r3, [r7, #38]	@ movhi
- 1174 0420 1344     		add	r3, r3, r2
- 1175 0422 9BB2     		uxth	r3, r3
- 1176              		.loc 1 761 10
- 1177 0424 0833     		adds	r3, r3, #8
- 1178 0426 FB82     		strh	r3, [r7, #22]	@ movhi
+ 721              		.loc 1 761 5 is_stmt 1 view .LVU237
+ 722              		.loc 1 761 10 is_stmt 0 view .LVU238
+ 723 01bc 08F10802 		add	r2, r8, #8
+ 724 01c0 1644     		add	r6, r6, r2
+ 725              	.LVL38:
  762:./lwip-2.1.2/src/core/mem.c ****     if (lfree == mem2) {
- 1179              		.loc 1 762 15
- 1180 0428 354B     		ldr	r3, .L66+12
- 1181 042a 1B68     		ldr	r3, [r3]
- 1182              		.loc 1 762 8
- 1183 042c BA69     		ldr	r2, [r7, #24]
- 1184 042e 9A42     		cmp	r2, r3
- 1185 0430 06D1     		bne	.L63
+ 726              		.loc 1 762 8 view .LVU239
+ 727 01c2 BA68     		ldr	r2, [r7, #8]
+ 761:./lwip-2.1.2/src/core/mem.c ****     if (lfree == mem2) {
+ 728              		.loc 1 761 10 view .LVU240
+ 729 01c4 B6B2     		uxth	r6, r6
+ 730              	.LVL39:
+ 731              		.loc 1 762 5 is_stmt 1 view .LVU241
+ 732              		.loc 1 762 8 is_stmt 0 view .LVU242
+ 733 01c6 8A42     		cmp	r2, r1
  763:./lwip-2.1.2/src/core/mem.c ****       lfree = ptr_to_mem(ptr2);
- 1186              		.loc 1 763 15
- 1187 0432 FB8A     		ldrh	r3, [r7, #22]
- 1188 0434 1846     		mov	r0, r3
- 1189 0436 FFF7E3FD 		bl	ptr_to_mem
- 1190 043a 0346     		mov	r3, r0
- 1191              		.loc 1 763 13
- 1192 043c 304A     		ldr	r2, .L66+12
- 1193 043e 1360     		str	r3, [r2]
- 1194              	.L63:
  764:./lwip-2.1.2/src/core/mem.c ****     }
  765:./lwip-2.1.2/src/core/mem.c ****     mem2 = ptr_to_mem(ptr2);
- 1195              		.loc 1 765 12
- 1196 0440 FB8A     		ldrh	r3, [r7, #22]
- 1197 0442 1846     		mov	r0, r3
- 1198 0444 FFF7DCFD 		bl	ptr_to_mem
- 1199 0448 B861     		str	r0, [r7, #24]
  766:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
- 1200              		.loc 1 766 16
- 1201 044a BB69     		ldr	r3, [r7, #24]
- 1202 044c 0022     		movs	r2, #0
- 1203 044e 1A71     		strb	r2, [r3, #4]
+ 734              		.loc 1 766 16 view .LVU243
+ 735 01c8 4FF00001 		mov	r1, #0
+ 736              	.LVL40:
+ 737              	.LBB239:
+ 738              	.LBB240:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 739              		.loc 1 453 10 view .LVU244
+ 740 01cc 03EB0602 		add	r2, r3, r6
+ 741              	.LBE240:
+ 742              	.LBE239:
+ 763:./lwip-2.1.2/src/core/mem.c ****       lfree = ptr_to_mem(ptr2);
+ 743              		.loc 1 763 7 is_stmt 1 view .LVU245
+ 744              	.LVL41:
+ 745              	.LBB242:
+ 746              	.LBI239:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 747              		.loc 1 451 1 view .LVU246
+ 748              	.LBB241:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 749              		.loc 1 453 3 view .LVU247
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 750              		.loc 1 453 3 is_stmt 0 view .LVU248
+ 751              	.LBE241:
+ 752              	.LBE242:
+ 763:./lwip-2.1.2/src/core/mem.c ****       lfree = ptr_to_mem(ptr2);
+ 753              		.loc 1 763 13 view .LVU249
+ 754 01d0 08BF     		it	eq
+ 755 01d2 BA60     		streq	r2, [r7, #8]
+ 765:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
+ 756              		.loc 1 765 5 is_stmt 1 view .LVU250
+ 757              	.LVL42:
+ 765:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
+ 758              		.loc 1 765 5 is_stmt 0 view .LVU251
+ 759              	.LBE238:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 760              		.loc 1 453 3 is_stmt 1 view .LVU252
+ 761              	.LBB243:
+ 762              		.loc 1 766 5 view .LVU253
  767:./lwip-2.1.2/src/core/mem.c ****     /* restore the next pointer */
  768:./lwip-2.1.2/src/core/mem.c ****     mem2->next = next;
- 1204              		.loc 1 768 16
- 1205 0450 BB69     		ldr	r3, [r7, #24]
- 1206 0452 BA8A     		ldrh	r2, [r7, #20]	@ movhi
- 1207 0454 1A80     		strh	r2, [r3]	@ movhi
+ 763              		.loc 1 768 16 is_stmt 0 view .LVU254
+ 764 01d4 1080     		strh	r0, [r2]	@ movhi
  769:./lwip-2.1.2/src/core/mem.c ****     /* link it back to mem */
  770:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
- 1208              		.loc 1 770 16
- 1209 0456 BB69     		ldr	r3, [r7, #24]
- 1210 0458 FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1211 045a 5A80     		strh	r2, [r3, #2]	@ movhi
+ 765              		.loc 1 770 16 view .LVU255
+ 766 01d6 A2F80280 		strh	r8, [r2, #2]	@ movhi
+ 766:./lwip-2.1.2/src/core/mem.c ****     /* restore the next pointer */
+ 767              		.loc 1 766 16 view .LVU256
+ 768 01da 1171     		strb	r1, [r2, #4]
+ 768:./lwip-2.1.2/src/core/mem.c ****     /* link it back to mem */
+ 769              		.loc 1 768 5 is_stmt 1 view .LVU257
+ 770              		.loc 1 770 5 view .LVU258
  771:./lwip-2.1.2/src/core/mem.c ****     /* link mem to it */
  772:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
- 1212              		.loc 1 772 15
- 1213 045c 3B6A     		ldr	r3, [r7, #32]
- 1214 045e FA8A     		ldrh	r2, [r7, #22]	@ movhi
- 1215 0460 1A80     		strh	r2, [r3]	@ movhi
+ 771              		.loc 1 772 5 view .LVU259
+ 772              		.loc 1 772 15 is_stmt 0 view .LVU260
+ 773 01dc 24F8086C 		strh	r6, [r4, #-8]	@ movhi
  773:./lwip-2.1.2/src/core/mem.c ****     /* last thing to restore linked list: as we have moved mem2,
  774:./lwip-2.1.2/src/core/mem.c ****      * let 'mem2->next->prev' point to mem2 again. but only if mem2->next is not
  775:./lwip-2.1.2/src/core/mem.c ****      * the end of the heap */
  776:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
- 1216              		.loc 1 776 13
- 1217 0462 BB69     		ldr	r3, [r7, #24]
- 1218 0464 1B88     		ldrh	r3, [r3]
- 1219              		.loc 1 776 8
- 1220 0466 B3F5805F 		cmp	r3, #4096
- 1221 046a 3BD0     		beq	.L64
+ 774              		.loc 1 776 5 is_stmt 1 view .LVU261
+ 775              		.loc 1 776 13 is_stmt 0 view .LVU262
+ 776 01e0 1288     		ldrh	r2, [r2]
+ 777              		.loc 1 776 8 view .LVU263
+ 778 01e2 B2F5805F 		cmp	r2, #4096
+ 779 01e6 01D0     		beq	.L53
+ 780              	.LVL43:
+ 781              	.L62:
+ 782              		.loc 1 776 8 view .LVU264
+ 783              	.LBE243:
  777:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
- 1222              		.loc 1 777 7
- 1223 046c BB69     		ldr	r3, [r7, #24]
- 1224 046e 1B88     		ldrh	r3, [r3]
- 1225 0470 1846     		mov	r0, r3
- 1226 0472 FFF7C5FD 		bl	ptr_to_mem
- 1227 0476 0246     		mov	r2, r0
- 1228              		.loc 1 777 36
- 1229 0478 FB8A     		ldrh	r3, [r7, #22]	@ movhi
- 1230 047a 5380     		strh	r3, [r2, #2]	@ movhi
- 1231 047c 32E0     		b	.L64
- 1232              	.L62:
- 1233              	.LBE113:
  778:./lwip-2.1.2/src/core/mem.c ****     }
  779:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_DEC_USED(used, (size - newsize));
  780:./lwip-2.1.2/src/core/mem.c ****     /* no need to plug holes, we've already done that */
  781:./lwip-2.1.2/src/core/mem.c ****   } else if (newsize + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED <= size) {
- 1234              		.loc 1 781 42
- 1235 047e FB8C     		ldrh	r3, [r7, #38]
- 1236 0480 03F11402 		add	r2, r3, #20
- 1237              		.loc 1 781 61
- 1238 0484 BB8B     		ldrh	r3, [r7, #28]
- 1239              		.loc 1 781 13
- 1240 0486 9A42     		cmp	r2, r3
- 1241 0488 2CD8     		bhi	.L64
  782:./lwip-2.1.2/src/core/mem.c ****     /* Next struct is used but there's room for another struct mem with
  783:./lwip-2.1.2/src/core/mem.c ****      * at least MIN_SIZE_ALIGNED of data.
  784:./lwip-2.1.2/src/core/mem.c ****      * Old size ('size') must be big enough to contain at least 'newsize' plus a struct mem
@@ -3009,78 +2678,37 @@
  787:./lwip-2.1.2/src/core/mem.c ****      *       region that couldn't hold data, but when mem->next gets freed,
  788:./lwip-2.1.2/src/core/mem.c ****      *       the 2 regions would be combined, resulting in more free memory */
  789:./lwip-2.1.2/src/core/mem.c ****     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
- 1242              		.loc 1 789 49
- 1243 048a FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1244 048c FB8C     		ldrh	r3, [r7, #38]	@ movhi
- 1245 048e 1344     		add	r3, r3, r2
- 1246 0490 9BB2     		uxth	r3, r3
- 1247              		.loc 1 789 10
- 1248 0492 0833     		adds	r3, r3, #8
- 1249 0494 FB82     		strh	r3, [r7, #22]	@ movhi
  790:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
  791:./lwip-2.1.2/src/core/mem.c ****     mem2 = ptr_to_mem(ptr2);
- 1250              		.loc 1 791 12
- 1251 0496 FB8A     		ldrh	r3, [r7, #22]
- 1252 0498 1846     		mov	r0, r3
- 1253 049a FFF7B1FD 		bl	ptr_to_mem
- 1254 049e B861     		str	r0, [r7, #24]
  792:./lwip-2.1.2/src/core/mem.c ****     if (mem2 < lfree) {
- 1255              		.loc 1 792 14
- 1256 04a0 174B     		ldr	r3, .L66+12
- 1257 04a2 1B68     		ldr	r3, [r3]
- 1258              		.loc 1 792 8
- 1259 04a4 BA69     		ldr	r2, [r7, #24]
- 1260 04a6 9A42     		cmp	r2, r3
- 1261 04a8 02D2     		bcs	.L65
  793:./lwip-2.1.2/src/core/mem.c ****       lfree = mem2;
- 1262              		.loc 1 793 13
- 1263 04aa 154A     		ldr	r2, .L66+12
- 1264 04ac BB69     		ldr	r3, [r7, #24]
- 1265 04ae 1360     		str	r3, [r2]
- 1266              	.L65:
  794:./lwip-2.1.2/src/core/mem.c ****     }
  795:./lwip-2.1.2/src/core/mem.c ****     mem2->used = 0;
- 1267              		.loc 1 795 16
- 1268 04b0 BB69     		ldr	r3, [r7, #24]
- 1269 04b2 0022     		movs	r2, #0
- 1270 04b4 1A71     		strb	r2, [r3, #4]
  796:./lwip-2.1.2/src/core/mem.c ****     mem2->next = mem->next;
- 1271              		.loc 1 796 21
- 1272 04b6 3B6A     		ldr	r3, [r7, #32]
- 1273 04b8 1A88     		ldrh	r2, [r3]
- 1274              		.loc 1 796 16
- 1275 04ba BB69     		ldr	r3, [r7, #24]
- 1276 04bc 1A80     		strh	r2, [r3]	@ movhi
  797:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
- 1277              		.loc 1 797 16
- 1278 04be BB69     		ldr	r3, [r7, #24]
- 1279 04c0 FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1280 04c2 5A80     		strh	r2, [r3, #2]	@ movhi
  798:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
- 1281              		.loc 1 798 15
- 1282 04c4 3B6A     		ldr	r3, [r7, #32]
- 1283 04c6 FA8A     		ldrh	r2, [r7, #22]	@ movhi
- 1284 04c8 1A80     		strh	r2, [r3]	@ movhi
  799:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
- 1285              		.loc 1 799 13
- 1286 04ca BB69     		ldr	r3, [r7, #24]
- 1287 04cc 1B88     		ldrh	r3, [r3]
- 1288              		.loc 1 799 8
- 1289 04ce B3F5805F 		cmp	r3, #4096
- 1290 04d2 07D0     		beq	.L64
  800:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
- 1291              		.loc 1 800 7
- 1292 04d4 BB69     		ldr	r3, [r7, #24]
- 1293 04d6 1B88     		ldrh	r3, [r3]
- 1294 04d8 1846     		mov	r0, r3
- 1295 04da FFF791FD 		bl	ptr_to_mem
- 1296 04de 0246     		mov	r2, r0
- 1297              		.loc 1 800 36
- 1298 04e0 FB8A     		ldrh	r3, [r7, #22]	@ movhi
- 1299 04e2 5380     		strh	r3, [r2, #2]	@ movhi
- 1300              	.L64:
+ 784              		.loc 1 800 7 is_stmt 1 view .LVU265
+ 785              	.LBB244:
+ 786              	.LBI244:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 787              		.loc 1 451 1 view .LVU266
+ 788              	.LBB245:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 789              		.loc 1 453 3 view .LVU267
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 790              		.loc 1 453 3 is_stmt 0 view .LVU268
+ 791              	.LBE245:
+ 792              	.LBE244:
+ 793              		.loc 1 800 36 view .LVU269
+ 794 01e8 1344     		add	r3, r3, r2
+ 795 01ea 5E80     		strh	r6, [r3, #2]	@ movhi
+ 796              	.LVL44:
+ 797              	.L53:
  801:./lwip-2.1.2/src/core/mem.c ****     }
  802:./lwip-2.1.2/src/core/mem.c ****     MEM_STATS_DEC_USED(used, (size - newsize));
+ 798              		.loc 1 802 47 is_stmt 1 view .LVU270
  803:./lwip-2.1.2/src/core/mem.c ****     /* the original mem->next is used, so no need to plug holes! */
  804:./lwip-2.1.2/src/core/mem.c ****   }
  805:./lwip-2.1.2/src/core/mem.c ****   /* else {
@@ -3093,45 +2721,285 @@
  812:./lwip-2.1.2/src/core/mem.c ****   mem_overflow_init_element(mem, new_size);
  813:./lwip-2.1.2/src/core/mem.c **** #endif
  814:./lwip-2.1.2/src/core/mem.c ****   MEM_SANITY();
+ 799              		.loc 1 814 15 view .LVU271
  815:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  816:./lwip-2.1.2/src/core/mem.c ****   mem_free_count = 1;
  817:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  818:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_FREE_UNPROTECT();
- 1301              		.loc 1 818 3
- 1302 04e4 0548     		ldr	r0, .L66+8
- 1303 04e6 FFF7FEFF 		bl	sys_mutex_unlock
+ 800              		.loc 1 818 3 view .LVU272
+ 801 01ec 1B48     		ldr	r0, .L64+4
+ 802 01ee FFF7FEFF 		bl	sys_mutex_unlock
+ 803              	.LVL45:
+ 804              	.L63:
  819:./lwip-2.1.2/src/core/mem.c ****   return rmem;
- 1304              		.loc 1 819 10
- 1305 04ea 7B68     		ldr	r3, [r7, #4]
- 1306              	.L55:
+ 805              		.loc 1 819 3 view .LVU273
+ 806              		.loc 1 819 10 is_stmt 0 view .LVU274
+ 807 01f2 2046     		mov	r0, r4
  820:./lwip-2.1.2/src/core/mem.c **** }
- 1307              		.loc 1 820 1
- 1308 04ec 1846     		mov	r0, r3
- 1309 04ee 2837     		adds	r7, r7, #40
- 1310              	.LCFI35:
- 1311              		.cfi_def_cfa_offset 8
- 1312 04f0 BD46     		mov	sp, r7
- 1313              	.LCFI36:
- 1314              		.cfi_def_cfa_register 13
- 1315              		@ sp needed
- 1316 04f2 80BD     		pop	{r7, pc}
- 1317              	.L67:
- 1318              		.align	2
- 1319              	.L66:
- 1320 04f4 14100000 		.word	ram
- 1321 04f8 18100000 		.word	ram_end
- 1322 04fc 1C100000 		.word	mem_mutex
- 1323 0500 20100000 		.word	lfree
- 1324              		.cfi_endproc
- 1325              	.LFE175:
- 1327              		.align	1
- 1328              		.global	mem_malloc
- 1329              		.syntax unified
- 1330              		.thumb
- 1331              		.thumb_func
- 1332              		.fpu fpv5-d16
- 1334              	mem_malloc:
- 1335              	.LFB176:
+ 808              		.loc 1 820 1 view .LVU275
+ 809 01f4 02B0     		add	sp, sp, #8
+ 810              	.LCFI7:
+ 811              		.cfi_remember_state
+ 812              		.cfi_def_cfa_offset 24
+ 813              		@ sp needed
+ 814 01f6 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 815              	.LVL46:
+ 816              	.L45:
+ 817              	.LCFI8:
+ 818              		.cfi_restore_state
+ 725:./lwip-2.1.2/src/core/mem.c ****     /* protect mem stats from concurrent access */
+ 819              		.loc 1 725 83 is_stmt 1 view .LVU276
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 820              		.loc 1 727 5 view .LVU277
+ 821              	.LBB246:
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 822              		.loc 1 727 5 view .LVU278
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 823              		.loc 1 727 5 view .LVU279
+ 824              	.LBB247:
+ 825              	.LBI247:
+ 449:./inc/cmsis_gcc.h **** {
+ 826              		.loc 2 449 31 view .LVU280
+ 827              	.LBB248:
+ 451:./inc/cmsis_gcc.h **** 
+ 828              		.loc 2 451 3 view .LVU281
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 829              		.loc 2 453 3 view .LVU282
+ 830              		.syntax unified
+ 831              	@ 453 "./inc/cmsis_gcc.h" 1
+ 832 01fa EFF31083 		MRS r3, primask
+ 833              	@ 0 "" 2
+ 834              	.LVL47:
+ 454:./inc/cmsis_gcc.h **** }
+ 835              		.loc 2 454 3 view .LVU283
+ 454:./inc/cmsis_gcc.h **** }
+ 836              		.loc 2 454 3 is_stmt 0 view .LVU284
+ 837              		.thumb
+ 838              		.syntax unified
+ 839              	.LBE248:
+ 840              	.LBE247:
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 841              		.loc 1 727 5 is_stmt 1 view .LVU285
+ 842              	.LBB249:
+ 843              	.LBI249:
+ 207:./inc/cmsis_gcc.h **** {
+ 844              		.loc 2 207 27 view .LVU286
+ 845              	.LBB250:
+ 209:./inc/cmsis_gcc.h **** }
+ 846              		.loc 2 209 3 view .LVU287
+ 847              		.syntax unified
+ 848              	@ 209 "./inc/cmsis_gcc.h" 1
+ 849 01fe 72B6     		cpsid i
+ 850              	@ 0 "" 2
+ 851              		.thumb
+ 852              		.syntax unified
+ 853              	.LBE250:
+ 854              	.LBE249:
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 855              		.loc 1 727 5 view .LVU288
+ 856              	.LBB251:
+ 857              	.LBI251:
+ 944:./inc/cmsis_gcc.h **** {
+ 858              		.loc 2 944 27 view .LVU289
+ 859              	.LBB252:
+ 860              		.loc 2 946 3 view .LVU290
+ 861              		.syntax unified
+ 862              	@ 946 "./inc/cmsis_gcc.h" 1
+ 863 0200 BFF34F8F 		dsb 0xF
+ 864              	@ 0 "" 2
+ 865              		.thumb
+ 866              		.syntax unified
+ 867              	.LBE252:
+ 868              	.LBE251:
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 869              		.loc 1 727 5 view .LVU291
+ 870              	.LBB253:
+ 871              	.LBI253:
+ 933:./inc/cmsis_gcc.h **** {
+ 872              		.loc 2 933 27 view .LVU292
+ 873              	.LBB254:
+ 935:./inc/cmsis_gcc.h **** }
+ 874              		.loc 2 935 3 view .LVU293
+ 875              		.syntax unified
+ 876              	@ 935 "./inc/cmsis_gcc.h" 1
+ 877 0204 BFF36F8F 		isb 0xF
+ 878              	@ 0 "" 2
+ 879              		.thumb
+ 880              		.syntax unified
+ 881              	.LBE254:
+ 882              	.LBE253:
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 883              		.loc 1 727 5 view .LVU294
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 884              		.loc 1 727 5 view .LVU295
+ 885 0208 002B     		cmp	r3, #0
+ 886 020a F2D1     		bne	.L63
+ 727:./lwip-2.1.2/src/core/mem.c ****     return rmem;
+ 887              		.loc 1 727 5 view .LVU296
+ 888              	.LBB255:
+ 889              	.LBI255:
+ 196:./inc/cmsis_gcc.h **** {
+ 890              		.loc 2 196 27 view .LVU297
+ 891              	.LBB256:
+ 198:./inc/cmsis_gcc.h **** }
+ 892              		.loc 2 198 3 view .LVU298
+ 893              		.syntax unified
+ 894              	@ 198 "./inc/cmsis_gcc.h" 1
+ 895 020c 62B6     		cpsie i
+ 896              	@ 0 "" 2
+ 199:./inc/cmsis_gcc.h **** 
+ 897              		.loc 2 199 1 is_stmt 0 view .LVU299
+ 898              		.thumb
+ 899              		.syntax unified
+ 900 020e 2046     		mov	r0, r4
+ 901              	.LVL48:
+ 902              	.L43:
+ 199:./inc/cmsis_gcc.h **** 
+ 903              		.loc 2 199 1 view .LVU300
+ 904              	.LBE256:
+ 905              	.LBE255:
+ 906              	.LBE246:
+ 907              		.loc 1 820 1 view .LVU301
+ 908 0210 02B0     		add	sp, sp, #8
+ 909              	.LCFI9:
+ 910              		.cfi_remember_state
+ 911              		.cfi_def_cfa_offset 24
+ 912              		@ sp needed
+ 913 0212 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 914              	.LVL49:
+ 915              	.L56:
+ 916              	.LCFI10:
+ 917              		.cfi_restore_state
+ 718:./lwip-2.1.2/src/core/mem.c ****   }
+ 918              		.loc 1 718 12 view .LVU302
+ 919 0216 0020     		movs	r0, #0
+ 920              	.LVL50:
+ 921              		.loc 1 820 1 view .LVU303
+ 922 0218 02B0     		add	sp, sp, #8
+ 923              	.LCFI11:
+ 924              		.cfi_remember_state
+ 925              		.cfi_def_cfa_offset 24
+ 926              		@ sp needed
+ 927 021a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 928              	.LVL51:
+ 929              	.L49:
+ 930              	.LCFI12:
+ 931              		.cfi_restore_state
+ 781:./lwip-2.1.2/src/core/mem.c ****     /* Next struct is used but there's room for another struct mem with
+ 932              		.loc 1 781 10 is_stmt 1 view .LVU304
+ 781:./lwip-2.1.2/src/core/mem.c ****     /* Next struct is used but there's room for another struct mem with
+ 933              		.loc 1 781 42 is_stmt 0 view .LVU305
+ 934 021e 06F11401 		add	r1, r6, #20
+ 935              	.LVL52:
+ 781:./lwip-2.1.2/src/core/mem.c ****     /* Next struct is used but there's room for another struct mem with
+ 936              		.loc 1 781 13 view .LVU306
+ 937 0222 A942     		cmp	r1, r5
+ 938 0224 E2D8     		bhi	.L53
+ 789:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 939              		.loc 1 789 5 is_stmt 1 view .LVU307
+ 789:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 940              		.loc 1 789 10 is_stmt 0 view .LVU308
+ 941 0226 08F10801 		add	r1, r8, #8
+ 792:./lwip-2.1.2/src/core/mem.c ****       lfree = mem2;
+ 942              		.loc 1 792 8 view .LVU309
+ 943 022a B868     		ldr	r0, [r7, #8]
+ 789:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 944              		.loc 1 789 10 view .LVU310
+ 945 022c 0E44     		add	r6, r6, r1
+ 946              	.LVL53:
+ 789:./lwip-2.1.2/src/core/mem.c ****     LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+ 947              		.loc 1 789 10 view .LVU311
+ 948 022e B6B2     		uxth	r6, r6
+ 949              	.LVL54:
+ 790:./lwip-2.1.2/src/core/mem.c ****     mem2 = ptr_to_mem(ptr2);
+ 950              		.loc 1 790 67 is_stmt 1 view .LVU312
+ 791:./lwip-2.1.2/src/core/mem.c ****     if (mem2 < lfree) {
+ 951              		.loc 1 791 5 view .LVU313
+ 952              	.LBB257:
+ 953              	.LBI257:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 954              		.loc 1 451 1 view .LVU314
+ 955              	.LBB258:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 956              		.loc 1 453 3 view .LVU315
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 957              		.loc 1 453 10 is_stmt 0 view .LVU316
+ 958 0230 9919     		adds	r1, r3, r6
+ 959              	.LVL55:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 960              		.loc 1 453 10 view .LVU317
+ 961              	.LBE258:
+ 962              	.LBE257:
+ 792:./lwip-2.1.2/src/core/mem.c ****       lfree = mem2;
+ 963              		.loc 1 792 5 is_stmt 1 view .LVU318
+ 792:./lwip-2.1.2/src/core/mem.c ****       lfree = mem2;
+ 964              		.loc 1 792 8 is_stmt 0 view .LVU319
+ 965 0232 8842     		cmp	r0, r1
+ 793:./lwip-2.1.2/src/core/mem.c ****     }
+ 966              		.loc 1 793 7 is_stmt 1 view .LVU320
+ 795:./lwip-2.1.2/src/core/mem.c ****     mem2->next = mem->next;
+ 967              		.loc 1 795 16 is_stmt 0 view .LVU321
+ 968 0234 4FF00000 		mov	r0, #0
+ 969 0238 0871     		strb	r0, [r1, #4]
+ 796:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
+ 970              		.loc 1 796 16 view .LVU322
+ 971 023a 9A53     		strh	r2, [r3, r6]	@ movhi
+ 797:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
+ 972              		.loc 1 797 16 view .LVU323
+ 973 023c A1F80280 		strh	r8, [r1, #2]	@ movhi
+ 798:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
+ 974              		.loc 1 798 15 view .LVU324
+ 975 0240 24F8086C 		strh	r6, [r4, #-8]	@ movhi
+ 799:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 976              		.loc 1 799 13 view .LVU325
+ 977 0244 9A5B     		ldrh	r2, [r3, r6]
+ 793:./lwip-2.1.2/src/core/mem.c ****     }
+ 978              		.loc 1 793 13 view .LVU326
+ 979 0246 88BF     		it	hi
+ 980 0248 B960     		strhi	r1, [r7, #8]
+ 795:./lwip-2.1.2/src/core/mem.c ****     mem2->next = mem->next;
+ 981              		.loc 1 795 5 is_stmt 1 view .LVU327
+ 796:./lwip-2.1.2/src/core/mem.c ****     mem2->prev = ptr;
+ 982              		.loc 1 796 5 view .LVU328
+ 797:./lwip-2.1.2/src/core/mem.c ****     mem->next = ptr2;
+ 983              		.loc 1 797 5 view .LVU329
+ 798:./lwip-2.1.2/src/core/mem.c ****     if (mem2->next != MEM_SIZE_ALIGNED) {
+ 984              		.loc 1 798 5 view .LVU330
+ 799:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 985              		.loc 1 799 5 view .LVU331
+ 799:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 986              		.loc 1 799 8 is_stmt 0 view .LVU332
+ 987 024a B2F5805F 		cmp	r2, #4096
+ 988 024e CBD1     		bne	.L62
+ 799:./lwip-2.1.2/src/core/mem.c ****       ptr_to_mem(mem2->next)->prev = ptr2;
+ 989              		.loc 1 799 8 view .LVU333
+ 990 0250 CCE7     		b	.L53
+ 991              	.LVL56:
+ 992              	.L57:
+ 718:./lwip-2.1.2/src/core/mem.c ****   }
+ 993              		.loc 1 718 12 view .LVU334
+ 994 0252 1846     		mov	r0, r3
+ 995              	.LVL57:
+ 718:./lwip-2.1.2/src/core/mem.c ****   }
+ 996              		.loc 1 718 12 view .LVU335
+ 997 0254 DCE7     		b	.L43
+ 998              	.L65:
+ 999 0256 00BF     		.align	2
+ 1000              	.L64:
+ 1001 0258 00000000 		.word	.LANCHOR0
+ 1002 025c 0C000000 		.word	.LANCHOR0+12
+ 1003              		.cfi_endproc
+ 1004              	.LFE175:
+ 1006              		.align	1
+ 1007              		.p2align 2,,3
+ 1008              		.global	mem_malloc
+ 1009              		.syntax unified
+ 1010              		.thumb
+ 1011              		.thumb_func
+ 1012              		.fpu fpv5-d16
+ 1014              	mem_malloc:
+ 1015              	.LVL58:
+ 1016              	.LFB176:
  821:./lwip-2.1.2/src/core/mem.c **** 
  822:./lwip-2.1.2/src/core/mem.c **** /**
  823:./lwip-2.1.2/src/core/mem.c ****  * Allocate a block of memory with a minimum of 'size' bytes.
@@ -3144,90 +3012,78 @@
  830:./lwip-2.1.2/src/core/mem.c **** void *
  831:./lwip-2.1.2/src/core/mem.c **** mem_malloc(mem_size_t size_in)
  832:./lwip-2.1.2/src/core/mem.c **** {
- 1336              		.loc 1 832 1
- 1337              		.cfi_startproc
- 1338              		@ args = 0, pretend = 0, frame = 32
- 1339              		@ frame_needed = 1, uses_anonymous_args = 0
- 1340 0504 80B5     		push	{r7, lr}
- 1341              	.LCFI37:
- 1342              		.cfi_def_cfa_offset 8
- 1343              		.cfi_offset 7, -8
- 1344              		.cfi_offset 14, -4
- 1345 0506 88B0     		sub	sp, sp, #32
- 1346              	.LCFI38:
- 1347              		.cfi_def_cfa_offset 40
- 1348 0508 00AF     		add	r7, sp, #0
- 1349              	.LCFI39:
- 1350              		.cfi_def_cfa_register 7
- 1351 050a 0346     		mov	r3, r0
- 1352 050c FB80     		strh	r3, [r7, #6]	@ movhi
+ 1017              		.loc 1 832 1 is_stmt 1 view -0
+ 1018              		.cfi_startproc
+ 1019              		@ args = 0, pretend = 0, frame = 0
+ 1020              		@ frame_needed = 0, uses_anonymous_args = 0
  833:./lwip-2.1.2/src/core/mem.c ****   mem_size_t ptr, ptr2, size;
+ 1021              		.loc 1 833 3 view .LVU337
  834:./lwip-2.1.2/src/core/mem.c ****   struct mem *mem, *mem2;
+ 1022              		.loc 1 834 3 view .LVU338
  835:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  836:./lwip-2.1.2/src/core/mem.c ****   u8_t local_mem_free_count = 0;
  837:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  838:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_DECL_PROTECT();
+ 1023              		.loc 1 838 32 view .LVU339
  839:./lwip-2.1.2/src/core/mem.c **** 
  840:./lwip-2.1.2/src/core/mem.c ****   if (size_in == 0) {
- 1353              		.loc 1 840 6
- 1354 050e FB88     		ldrh	r3, [r7, #6]
- 1355 0510 002B     		cmp	r3, #0
- 1356 0512 01D1     		bne	.L69
+ 1024              		.loc 1 840 3 view .LVU340
+ 1025              		.loc 1 840 6 is_stmt 0 view .LVU341
+ 1026 0260 0028     		cmp	r0, #0
+ 1027 0262 5FD0     		beq	.L90
  841:./lwip-2.1.2/src/core/mem.c ****     return NULL;
- 1357              		.loc 1 841 12
- 1358 0514 0023     		movs	r3, #0
- 1359 0516 9BE0     		b	.L70
- 1360              	.L69:
  842:./lwip-2.1.2/src/core/mem.c ****   }
  843:./lwip-2.1.2/src/core/mem.c **** 
  844:./lwip-2.1.2/src/core/mem.c ****   /* Expand the size of the allocated memory region so that we can
  845:./lwip-2.1.2/src/core/mem.c ****      adjust for alignment. */
  846:./lwip-2.1.2/src/core/mem.c ****   size = (mem_size_t)LWIP_MEM_ALIGN_SIZE(size_in);
- 1361              		.loc 1 846 22
- 1362 0518 FB88     		ldrh	r3, [r7, #6]	@ movhi
- 1363 051a 0333     		adds	r3, r3, #3
- 1364 051c 9BB2     		uxth	r3, r3
- 1365              		.loc 1 846 8
- 1366 051e 23F00303 		bic	r3, r3, #3
- 1367 0522 BB83     		strh	r3, [r7, #28]	@ movhi
+ 1028              		.loc 1 846 3 is_stmt 1 view .LVU342
+ 832:./lwip-2.1.2/src/core/mem.c ****   mem_size_t ptr, ptr2, size;
+ 1029              		.loc 1 832 1 is_stmt 0 view .LVU343
+ 1030 0264 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 1031              	.LCFI13:
+ 1032              		.cfi_def_cfa_offset 32
+ 1033              		.cfi_offset 3, -32
+ 1034              		.cfi_offset 4, -28
+ 1035              		.cfi_offset 5, -24
+ 1036              		.cfi_offset 6, -20
+ 1037              		.cfi_offset 7, -16
+ 1038              		.cfi_offset 8, -12
+ 1039              		.cfi_offset 9, -8
+ 1040              		.cfi_offset 14, -4
+ 1041              		.loc 1 846 22 view .LVU344
+ 1042 0268 C31C     		adds	r3, r0, #3
+ 1043              		.loc 1 846 8 view .LVU345
+ 1044 026a 23F00303 		bic	r3, r3, #3
+ 1045 026e 9BB2     		uxth	r3, r3
+ 1046              	.LVL59:
  847:./lwip-2.1.2/src/core/mem.c ****   if (size < MIN_SIZE_ALIGNED) {
- 1368              		.loc 1 847 6
- 1369 0524 BB8B     		ldrh	r3, [r7, #28]
- 1370 0526 0B2B     		cmp	r3, #11
- 1371 0528 01D8     		bhi	.L71
+ 1047              		.loc 1 847 3 is_stmt 1 view .LVU346
+ 1048 0270 0C2B     		cmp	r3, #12
+ 1049 0272 1E46     		mov	r6, r3
+ 1050 0274 38BF     		it	cc
+ 1051 0276 0C26     		movcc	r6, #12
+ 1052              	.LVL60:
  848:./lwip-2.1.2/src/core/mem.c ****     /* every data block must be at least MIN_SIZE_ALIGNED long */
  849:./lwip-2.1.2/src/core/mem.c ****     size = MIN_SIZE_ALIGNED;
- 1372              		.loc 1 849 10
- 1373 052a 0C23     		movs	r3, #12
- 1374 052c BB83     		strh	r3, [r7, #28]	@ movhi
- 1375              	.L71:
  850:./lwip-2.1.2/src/core/mem.c ****   }
  851:./lwip-2.1.2/src/core/mem.c **** #if MEM_OVERFLOW_CHECK
  852:./lwip-2.1.2/src/core/mem.c ****   size += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
  853:./lwip-2.1.2/src/core/mem.c **** #endif
  854:./lwip-2.1.2/src/core/mem.c ****   if ((size > MEM_SIZE_ALIGNED) || (size < size_in)) {
- 1376              		.loc 1 854 6
- 1377 052e BB8B     		ldrh	r3, [r7, #28]
- 1378 0530 B3F5805F 		cmp	r3, #4096
- 1379 0534 03D8     		bhi	.L72
- 1380              		.loc 1 854 33 discriminator 1
- 1381 0536 BA8B     		ldrh	r2, [r7, #28]
- 1382 0538 FB88     		ldrh	r3, [r7, #6]
- 1383 053a 9A42     		cmp	r2, r3
- 1384 053c 01D2     		bcs	.L73
- 1385              	.L72:
+ 1053              		.loc 1 854 3 view .LVU347
+ 1054              		.loc 1 854 6 is_stmt 0 view .LVU348
+ 1055 0278 8642     		cmp	r6, r0
+ 1056 027a 30D3     		bcc	.L80
+ 1057 027c B3F5805F 		cmp	r3, #4096
+ 1058 0280 2DD8     		bhi	.L80
  855:./lwip-2.1.2/src/core/mem.c ****     return NULL;
- 1386              		.loc 1 855 12
- 1387 053e 0023     		movs	r3, #0
- 1388 0540 86E0     		b	.L70
- 1389              	.L73:
  856:./lwip-2.1.2/src/core/mem.c ****   }
  857:./lwip-2.1.2/src/core/mem.c **** 
  858:./lwip-2.1.2/src/core/mem.c ****   /* protect the heap from concurrent access */
  859:./lwip-2.1.2/src/core/mem.c ****   sys_mutex_lock(&mem_mutex);
- 1390              		.loc 1 859 3
- 1391 0542 4548     		ldr	r0, .L83
- 1392 0544 FFF7FEFF 		bl	sys_mutex_lock
+ 1059              		.loc 1 859 3 is_stmt 1 view .LVU349
+ 1060 0282 304F     		ldr	r7, .L96
  860:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_PROTECT();
  861:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  862:./lwip-2.1.2/src/core/mem.c ****   /* run as long as a mem_free disturbed mem_malloc or mem_trim */
@@ -3239,23 +3095,54 @@
  868:./lwip-2.1.2/src/core/mem.c ****      * beginning with the lowest free block.
  869:./lwip-2.1.2/src/core/mem.c ****      */
  870:./lwip-2.1.2/src/core/mem.c ****     for (ptr = mem_to_ptr(lfree); ptr < MEM_SIZE_ALIGNED - size;
- 1393              		.loc 1 870 16
- 1394 0548 444B     		ldr	r3, .L83+4
- 1395 054a 1B68     		ldr	r3, [r3]
- 1396 054c 1846     		mov	r0, r3
- 1397 054e FFF769FD 		bl	mem_to_ptr
- 1398 0552 0346     		mov	r3, r0
- 1399 0554 FB83     		strh	r3, [r7, #30]	@ movhi
- 1400              		.loc 1 870 5
- 1401 0556 71E0     		b	.L74
- 1402              	.L82:
+ 1061              		.loc 1 870 58 is_stmt 0 view .LVU350
+ 1062 0284 C6F58055 		rsb	r5, r6, #4096
+ 859:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_PROTECT();
+ 1063              		.loc 1 859 3 view .LVU351
+ 1064 0288 07F10C00 		add	r0, r7, #12
+ 1065              	.LVL61:
+ 859:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_PROTECT();
+ 1066              		.loc 1 859 3 view .LVU352
+ 1067 028c FFF7FEFF 		bl	sys_mutex_lock
+ 1068              	.LVL62:
+ 860:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_PROTECT();
+ 1069              		.loc 1 860 27 is_stmt 1 view .LVU353
+ 1070              		.loc 1 870 5 view .LVU354
+ 1071              		.loc 1 870 16 is_stmt 0 view .LVU355
+ 1072 0290 D7F80890 		ldr	r9, [r7, #8]
+ 1073              	.LVL63:
+ 1074              	.LBB259:
+ 1075              	.LBI259:
+ 457:./lwip-2.1.2/src/core/mem.c **** {
+ 1076              		.loc 1 457 1 is_stmt 1 view .LVU356
+ 1077              	.LBB260:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 1078              		.loc 1 459 3 view .LVU357
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 1079              		.loc 1 459 35 is_stmt 0 view .LVU358
+ 1080 0294 3968     		ldr	r1, [r7]
+ 1081 0296 A9EB010C 		sub	ip, r9, r1
+ 1082              	.LBE260:
+ 1083              	.LBE259:
+ 1084              		.loc 1 870 39 view .LVU359
+ 1085 029a 1FFA8CF3 		uxth	r3, ip
+ 1086              		.loc 1 870 5 view .LVU360
+ 1087 029e AB42     		cmp	r3, r5
+ 1088              	.LBB262:
+ 1089              	.LBB261:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 1090              		.loc 1 459 10 view .LVU361
+ 1091 02a0 9C46     		mov	ip, r3
+ 1092              	.LVL64:
+ 459:./lwip-2.1.2/src/core/mem.c **** }
+ 1093              		.loc 1 459 10 view .LVU362
+ 1094              	.LBE261:
+ 1095              	.LBE262:
+ 1096              		.loc 1 870 35 is_stmt 1 view .LVU363
+ 1097              		.loc 1 870 5 is_stmt 0 view .LVU364
+ 1098 02a2 16D2     		bcs	.L68
  871:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
  872:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
- 1403              		.loc 1 872 13
- 1404 0558 FB8B     		ldrh	r3, [r7, #30]
- 1405 055a 1846     		mov	r0, r3
- 1406 055c FFF750FD 		bl	ptr_to_mem
- 1407 0560 7861     		str	r0, [r7, #20]
  873:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  874:./lwip-2.1.2/src/core/mem.c ****       mem_free_count = 0;
  875:./lwip-2.1.2/src/core/mem.c ****       LWIP_MEM_ALLOC_UNPROTECT();
@@ -3270,45 +3157,84 @@
  884:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  885:./lwip-2.1.2/src/core/mem.c **** 
  886:./lwip-2.1.2/src/core/mem.c ****       if ((!mem->used) &&
- 1408              		.loc 1 886 16
- 1409 0562 7B69     		ldr	r3, [r7, #20]
- 1410 0564 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 1411              		.loc 1 886 10
- 1412 0566 002B     		cmp	r3, #0
- 1413 0568 61D1     		bne	.L75
  887:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
- 1414              		.loc 1 887 15 discriminator 1
- 1415 056a 7B69     		ldr	r3, [r7, #20]
- 1416 056c 1B88     		ldrh	r3, [r3]
- 1417 056e 1A46     		mov	r2, r3
- 1418              		.loc 1 887 22 discriminator 1
- 1419 0570 FB8B     		ldrh	r3, [r7, #30]
- 1420 0572 D31A     		subs	r3, r2, r3
- 1421 0574 A3F10802 		sub	r2, r3, #8
- 1422              		.loc 1 887 51 discriminator 1
- 1423 0578 BB8B     		ldrh	r3, [r7, #28]
+ 1099              		.loc 1 887 22 view .LVU365
+ 1100 02a4 6FF00708 		mvn	r8, #7
+ 1101 02a8 08E0     		b	.L75
+ 1102              	.LVL65:
+ 1103              	.L94:
+ 1104              		.loc 1 887 15 discriminator 1 view .LVU366
+ 1105 02aa 31F803E0 		ldrh	lr, [r1, r3]
+ 1106              		.loc 1 887 22 discriminator 1 view .LVU367
+ 1107 02ae 7244     		add	r2, r2, lr
+ 1108 02b0 7346     		mov	r3, lr
  886:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
- 1424              		.loc 1 886 24 discriminator 1
- 1425 057a 9A42     		cmp	r2, r3
- 1426 057c 57D3     		bcc	.L75
+ 1109              		.loc 1 886 24 discriminator 1 view .LVU368
+ 1110 02b2 B242     		cmp	r2, r6
+ 1111 02b4 16D2     		bcs	.L93
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1112              		.loc 1 870 5 view .LVU369
+ 1113 02b6 9D42     		cmp	r5, r3
+ 1114              		.loc 1 887 15 view .LVU370
+ 1115 02b8 F446     		mov	ip, lr
+ 871:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1116              		.loc 1 871 10 is_stmt 1 view .LVU371
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1117              		.loc 1 453 3 view .LVU372
+ 1118              	.LVL66:
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1119              		.loc 1 870 35 view .LVU373
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1120              		.loc 1 870 5 is_stmt 0 view .LVU374
+ 1121 02ba 0AD9     		bls	.L68
+ 1122              	.LVL67:
+ 1123              	.L75:
+ 872:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1124              		.loc 1 872 7 is_stmt 1 view .LVU375
+ 1125              	.LBB263:
+ 1126              	.LBI263:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 1127              		.loc 1 451 1 view .LVU376
+ 1128              	.LBB264:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1129              		.loc 1 453 3 view .LVU377
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1130              		.loc 1 453 10 is_stmt 0 view .LVU378
+ 1131 02bc CC18     		adds	r4, r1, r3
+ 1132              	.LVL68:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1133              		.loc 1 453 10 view .LVU379
+ 1134              	.LBE264:
+ 1135              	.LBE263:
+ 886:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
+ 1136              		.loc 1 886 7 is_stmt 1 view .LVU380
+ 1137              		.loc 1 887 22 is_stmt 0 view .LVU381
+ 1138 02be A8EB0302 		sub	r2, r8, r3
+ 886:./lwip-2.1.2/src/core/mem.c ****           (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
+ 1139              		.loc 1 886 10 view .LVU382
+ 1140 02c2 2079     		ldrb	r0, [r4, #4]	@ zero_extendqisi2
+ 1141 02c4 0028     		cmp	r0, #0
+ 1142 02c6 F0D0     		beq	.L94
+ 1143              		.loc 1 887 15 view .LVU383
+ 1144 02c8 31F803C0 		ldrh	ip, [r1, r3]
+ 1145 02cc 6346     		mov	r3, ip
+ 871:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
+ 1146              		.loc 1 871 10 is_stmt 1 view .LVU384
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1147              		.loc 1 453 3 view .LVU385
+ 1148              	.LVL69:
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1149              		.loc 1 870 35 view .LVU386
+ 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
+ 1150              		.loc 1 870 5 is_stmt 0 view .LVU387
+ 1151 02ce 9D42     		cmp	r5, r3
+ 1152 02d0 F4D8     		bhi	.L75
+ 1153              	.LVL70:
+ 1154              	.L68:
  888:./lwip-2.1.2/src/core/mem.c ****         /* mem is not used and at least perfect fit is possible:
  889:./lwip-2.1.2/src/core/mem.c ****          * mem->next - (ptr + SIZEOF_STRUCT_MEM) gives us the 'user data size' of mem */
  890:./lwip-2.1.2/src/core/mem.c **** 
  891:./lwip-2.1.2/src/core/mem.c ****         if (mem->next - (ptr + SIZEOF_STRUCT_MEM) >= (size + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED))
- 1427              		.loc 1 891 16
- 1428 057e 7B69     		ldr	r3, [r7, #20]
- 1429 0580 1B88     		ldrh	r3, [r3]
- 1430 0582 1A46     		mov	r2, r3
- 1431              		.loc 1 891 23
- 1432 0584 FB8B     		ldrh	r3, [r7, #30]
- 1433 0586 D31A     		subs	r3, r2, r3
- 1434 0588 A3F10802 		sub	r2, r3, #8
- 1435              		.loc 1 891 80
- 1436 058c BB8B     		ldrh	r3, [r7, #28]
- 1437 058e 1433     		adds	r3, r3, #20
- 1438              		.loc 1 891 12
- 1439 0590 9A42     		cmp	r2, r3
- 1440 0592 28D3     		bcc	.L76
  892:./lwip-2.1.2/src/core/mem.c ****           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containin
  893:./lwip-2.1.2/src/core/mem.c ****            * at least MIN_SIZE_ALIGNED of data also fits in the 'user data space' of 'mem')
  894:./lwip-2.1.2/src/core/mem.c ****            * -> split large block, create empty remainder,
@@ -3320,70 +3246,18 @@
  900:./lwip-2.1.2/src/core/mem.c ****            *       the 2 regions would be combined, resulting in more free memory
  901:./lwip-2.1.2/src/core/mem.c ****            */
  902:./lwip-2.1.2/src/core/mem.c ****           ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + size);
- 1441              		.loc 1 902 55
- 1442 0594 FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1443 0596 BB8B     		ldrh	r3, [r7, #28]	@ movhi
- 1444 0598 1344     		add	r3, r3, r2
- 1445 059a 9BB2     		uxth	r3, r3
- 1446              		.loc 1 902 16
- 1447 059c 0833     		adds	r3, r3, #8
- 1448 059e 7B82     		strh	r3, [r7, #18]	@ movhi
  903:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
  904:./lwip-2.1.2/src/core/mem.c ****           /* create mem2 struct */
  905:./lwip-2.1.2/src/core/mem.c ****           mem2 = ptr_to_mem(ptr2);
- 1449              		.loc 1 905 18
- 1450 05a0 7B8A     		ldrh	r3, [r7, #18]
- 1451 05a2 1846     		mov	r0, r3
- 1452 05a4 FFF72CFD 		bl	ptr_to_mem
- 1453 05a8 F860     		str	r0, [r7, #12]
  906:./lwip-2.1.2/src/core/mem.c ****           mem2->used = 0;
- 1454              		.loc 1 906 22
- 1455 05aa FB68     		ldr	r3, [r7, #12]
- 1456 05ac 0022     		movs	r2, #0
- 1457 05ae 1A71     		strb	r2, [r3, #4]
  907:./lwip-2.1.2/src/core/mem.c ****           mem2->next = mem->next;
- 1458              		.loc 1 907 27
- 1459 05b0 7B69     		ldr	r3, [r7, #20]
- 1460 05b2 1A88     		ldrh	r2, [r3]
- 1461              		.loc 1 907 22
- 1462 05b4 FB68     		ldr	r3, [r7, #12]
- 1463 05b6 1A80     		strh	r2, [r3]	@ movhi
  908:./lwip-2.1.2/src/core/mem.c ****           mem2->prev = ptr;
- 1464              		.loc 1 908 22
- 1465 05b8 FB68     		ldr	r3, [r7, #12]
- 1466 05ba FA8B     		ldrh	r2, [r7, #30]	@ movhi
- 1467 05bc 5A80     		strh	r2, [r3, #2]	@ movhi
  909:./lwip-2.1.2/src/core/mem.c ****           /* and insert it between mem and mem->next */
  910:./lwip-2.1.2/src/core/mem.c ****           mem->next = ptr2;
- 1468              		.loc 1 910 21
- 1469 05be 7B69     		ldr	r3, [r7, #20]
- 1470 05c0 7A8A     		ldrh	r2, [r7, #18]	@ movhi
- 1471 05c2 1A80     		strh	r2, [r3]	@ movhi
  911:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
- 1472              		.loc 1 911 21
- 1473 05c4 7B69     		ldr	r3, [r7, #20]
- 1474 05c6 0122     		movs	r2, #1
- 1475 05c8 1A71     		strb	r2, [r3, #4]
  912:./lwip-2.1.2/src/core/mem.c **** 
  913:./lwip-2.1.2/src/core/mem.c ****           if (mem2->next != MEM_SIZE_ALIGNED) {
- 1476              		.loc 1 913 19
- 1477 05ca FB68     		ldr	r3, [r7, #12]
- 1478 05cc 1B88     		ldrh	r3, [r3]
- 1479              		.loc 1 913 14
- 1480 05ce B3F5805F 		cmp	r3, #4096
- 1481 05d2 0BD0     		beq	.L77
  914:./lwip-2.1.2/src/core/mem.c ****             ptr_to_mem(mem2->next)->prev = ptr2;
- 1482              		.loc 1 914 13
- 1483 05d4 FB68     		ldr	r3, [r7, #12]
- 1484 05d6 1B88     		ldrh	r3, [r3]
- 1485 05d8 1846     		mov	r0, r3
- 1486 05da FFF711FD 		bl	ptr_to_mem
- 1487 05de 0246     		mov	r2, r0
- 1488              		.loc 1 914 42
- 1489 05e0 7B8A     		ldrh	r3, [r7, #18]	@ movhi
- 1490 05e2 5380     		strh	r3, [r2, #2]	@ movhi
- 1491 05e4 02E0     		b	.L77
- 1492              	.L76:
  915:./lwip-2.1.2/src/core/mem.c ****           }
  916:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, (size + SIZEOF_STRUCT_MEM));
  917:./lwip-2.1.2/src/core/mem.c ****         } else {
@@ -3395,35 +3269,15 @@
  923:./lwip-2.1.2/src/core/mem.c ****            * will always be used at this point!
  924:./lwip-2.1.2/src/core/mem.c ****            */
  925:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
- 1493              		.loc 1 925 21
- 1494 05e6 7B69     		ldr	r3, [r7, #20]
- 1495 05e8 0122     		movs	r2, #1
- 1496 05ea 1A71     		strb	r2, [r3, #4]
- 1497              	.L77:
  926:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, mem->next - mem_to_ptr(mem));
  927:./lwip-2.1.2/src/core/mem.c ****         }
  928:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  929:./lwip-2.1.2/src/core/mem.c **** mem_malloc_adjust_lfree:
  930:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  931:./lwip-2.1.2/src/core/mem.c ****         if (mem == lfree) {
- 1498              		.loc 1 931 17
- 1499 05ec 1B4B     		ldr	r3, .L83+4
- 1500 05ee 1B68     		ldr	r3, [r3]
- 1501              		.loc 1 931 12
- 1502 05f0 7A69     		ldr	r2, [r7, #20]
- 1503 05f2 9A42     		cmp	r2, r3
- 1504 05f4 15D1     		bne	.L78
- 1505              	.LBB114:
  932:./lwip-2.1.2/src/core/mem.c ****           struct mem *cur = lfree;
- 1506              		.loc 1 932 23
- 1507 05f6 194B     		ldr	r3, .L83+4
- 1508 05f8 1B68     		ldr	r3, [r3]
- 1509 05fa BB61     		str	r3, [r7, #24]
  933:./lwip-2.1.2/src/core/mem.c ****           /* Find next free block after mem and update lowest free pointer */
  934:./lwip-2.1.2/src/core/mem.c ****           while (cur->used && cur != ram_end) {
- 1510              		.loc 1 934 17
- 1511 05fc 05E0     		b	.L79
- 1512              	.L81:
  935:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
  936:./lwip-2.1.2/src/core/mem.c ****             mem_free_count = 0;
  937:./lwip-2.1.2/src/core/mem.c ****             LWIP_MEM_ALLOC_UNPROTECT();
@@ -3436,46 +3290,12 @@
  944:./lwip-2.1.2/src/core/mem.c ****             }
  945:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  946:./lwip-2.1.2/src/core/mem.c ****             cur = ptr_to_mem(cur->next);
- 1513              		.loc 1 946 19
- 1514 05fe BB69     		ldr	r3, [r7, #24]
- 1515 0600 1B88     		ldrh	r3, [r3]
- 1516 0602 1846     		mov	r0, r3
- 1517 0604 FFF7FCFC 		bl	ptr_to_mem
- 1518 0608 B861     		str	r0, [r7, #24]
- 1519              	.L79:
- 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
- 1520              		.loc 1 934 21
- 1521 060a BB69     		ldr	r3, [r7, #24]
- 1522 060c 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
- 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
- 1523              		.loc 1 934 17
- 1524 060e 002B     		cmp	r3, #0
- 1525 0610 04D0     		beq	.L80
- 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
- 1526              		.loc 1 934 35 discriminator 1
- 1527 0612 134B     		ldr	r3, .L83+8
- 1528 0614 1B68     		ldr	r3, [r3]
- 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
- 1529              		.loc 1 934 28 discriminator 1
- 1530 0616 BA69     		ldr	r2, [r7, #24]
- 1531 0618 9A42     		cmp	r2, r3
- 1532 061a F0D1     		bne	.L81
- 1533              	.L80:
  947:./lwip-2.1.2/src/core/mem.c ****           }
  948:./lwip-2.1.2/src/core/mem.c ****           lfree = cur;
- 1534              		.loc 1 948 17
- 1535 061c 0F4A     		ldr	r2, .L83+4
- 1536 061e BB69     		ldr	r3, [r7, #24]
- 1537 0620 1360     		str	r3, [r2]
- 1538              	.L78:
- 1539              	.LBE114:
  949:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("mem_malloc: !lfree->used", ((lfree == ram_end) || (!lfree->used)));
  950:./lwip-2.1.2/src/core/mem.c ****         }
  951:./lwip-2.1.2/src/core/mem.c ****         LWIP_MEM_ALLOC_UNPROTECT();
  952:./lwip-2.1.2/src/core/mem.c ****         sys_mutex_unlock(&mem_mutex);
- 1540              		.loc 1 952 9
- 1541 0622 0D48     		ldr	r0, .L83
- 1542 0624 FFF7FEFF 		bl	sys_mutex_unlock
  953:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
  954:./lwip-2.1.2/src/core/mem.c ****                     (mem_ptr_t)mem + SIZEOF_STRUCT_MEM + size <= (mem_ptr_t)ram_end);
  955:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
@@ -3488,33 +3308,6 @@
  962:./lwip-2.1.2/src/core/mem.c **** #endif
  963:./lwip-2.1.2/src/core/mem.c ****         MEM_SANITY();
  964:./lwip-2.1.2/src/core/mem.c ****         return (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
- 1543              		.loc 1 964 48
- 1544 0628 7B69     		ldr	r3, [r7, #20]
- 1545 062a 0833     		adds	r3, r3, #8
- 1546 062c 10E0     		b	.L70
- 1547              	.L75:
- 871:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
- 1548              		.loc 1 871 16
- 1549 062e FB8B     		ldrh	r3, [r7, #30]
- 1550 0630 1846     		mov	r0, r3
- 1551 0632 FFF7E5FC 		bl	ptr_to_mem
- 1552 0636 0346     		mov	r3, r0
- 871:./lwip-2.1.2/src/core/mem.c ****       mem = ptr_to_mem(ptr);
- 1553              		.loc 1 871 14
- 1554 0638 1B88     		ldrh	r3, [r3]	@ movhi
- 1555 063a FB83     		strh	r3, [r7, #30]	@ movhi
- 1556              	.L74:
- 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
- 1557              		.loc 1 870 39 discriminator 1
- 1558 063c FA8B     		ldrh	r2, [r7, #30]
- 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
- 1559              		.loc 1 870 58 discriminator 1
- 1560 063e BB8B     		ldrh	r3, [r7, #28]
- 1561 0640 C3F58053 		rsb	r3, r3, #4096
- 870:./lwip-2.1.2/src/core/mem.c ****          ptr = ptr_to_mem(ptr)->next) {
- 1562              		.loc 1 870 5 discriminator 1
- 1563 0644 9A42     		cmp	r2, r3
- 1564 0646 87D3     		bcc	.L82
  965:./lwip-2.1.2/src/core/mem.c ****       }
  966:./lwip-2.1.2/src/core/mem.c ****     }
  967:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
@@ -3522,43 +3315,272 @@
  969:./lwip-2.1.2/src/core/mem.c ****   } while (local_mem_free_count != 0);
  970:./lwip-2.1.2/src/core/mem.c **** #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
  971:./lwip-2.1.2/src/core/mem.c ****   MEM_STATS_INC(err);
+ 1155              		.loc 1 971 21 is_stmt 1 view .LVU388
  972:./lwip-2.1.2/src/core/mem.c ****   LWIP_MEM_ALLOC_UNPROTECT();
+ 1156              		.loc 1 972 29 view .LVU389
  973:./lwip-2.1.2/src/core/mem.c ****   sys_mutex_unlock(&mem_mutex);
- 1565              		.loc 1 973 3
- 1566 0648 0348     		ldr	r0, .L83
- 1567 064a FFF7FEFF 		bl	sys_mutex_unlock
+ 1157              		.loc 1 973 3 view .LVU390
+ 1158 02d2 1D48     		ldr	r0, .L96+4
+ 1159 02d4 FFF7FEFF 		bl	sys_mutex_unlock
+ 1160              	.LVL71:
  974:./lwip-2.1.2/src/core/mem.c ****   LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_malloc: could not allocate %"S16_F" bytes\n
+ 1161              		.loc 1 974 116 view .LVU391
  975:./lwip-2.1.2/src/core/mem.c ****   return NULL;
- 1568              		.loc 1 975 10
- 1569 064e 0023     		movs	r3, #0
- 1570              	.L70:
+ 1162              		.loc 1 975 3 view .LVU392
+ 1163              		.loc 1 975 10 is_stmt 0 view .LVU393
+ 1164 02d8 0020     		movs	r0, #0
  976:./lwip-2.1.2/src/core/mem.c **** }
- 1571              		.loc 1 976 1
- 1572 0650 1846     		mov	r0, r3
- 1573 0652 2037     		adds	r7, r7, #32
- 1574              	.LCFI40:
- 1575              		.cfi_def_cfa_offset 8
- 1576 0654 BD46     		mov	sp, r7
- 1577              	.LCFI41:
- 1578              		.cfi_def_cfa_register 13
- 1579              		@ sp needed
- 1580 0656 80BD     		pop	{r7, pc}
- 1581              	.L84:
- 1582              		.align	2
- 1583              	.L83:
- 1584 0658 1C100000 		.word	mem_mutex
- 1585 065c 20100000 		.word	lfree
- 1586 0660 18100000 		.word	ram_end
- 1587              		.cfi_endproc
- 1588              	.LFE176:
- 1590              		.align	1
- 1591              		.global	mem_calloc
- 1592              		.syntax unified
- 1593              		.thumb
- 1594              		.thumb_func
- 1595              		.fpu fpv5-d16
- 1597              	mem_calloc:
- 1598              	.LFB177:
+ 1165              		.loc 1 976 1 view .LVU394
+ 1166 02da BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 1167              	.LVL72:
+ 1168              	.L80:
+ 841:./lwip-2.1.2/src/core/mem.c ****   }
+ 1169              		.loc 1 841 12 view .LVU395
+ 1170 02de 0020     		movs	r0, #0
+ 1171              	.LVL73:
+ 1172              		.loc 1 976 1 view .LVU396
+ 1173 02e0 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 1174              	.LVL74:
+ 1175              	.L93:
+ 891:./lwip-2.1.2/src/core/mem.c ****           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containin
+ 1176              		.loc 1 891 9 is_stmt 1 view .LVU397
+ 891:./lwip-2.1.2/src/core/mem.c ****           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containin
+ 1177              		.loc 1 891 80 is_stmt 0 view .LVU398
+ 1178 02e4 06F11403 		add	r3, r6, #20
+ 891:./lwip-2.1.2/src/core/mem.c ****           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containin
+ 1179              		.loc 1 891 12 view .LVU399
+ 1180 02e8 9A42     		cmp	r2, r3
+ 1181 02ea 1CD3     		bcc	.L71
+ 902:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
+ 1182              		.loc 1 902 11 is_stmt 1 view .LVU400
+ 902:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
+ 1183              		.loc 1 902 16 is_stmt 0 view .LVU401
+ 1184 02ec 06F10803 		add	r3, r6, #8
+ 911:./lwip-2.1.2/src/core/mem.c **** 
+ 1185              		.loc 1 911 21 view .LVU402
+ 1186 02f0 0125     		movs	r5, #1
+ 902:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
+ 1187              		.loc 1 902 16 view .LVU403
+ 1188 02f2 6344     		add	r3, r3, ip
+ 1189 02f4 9BB2     		uxth	r3, r3
+ 1190              	.LVL75:
+ 903:./lwip-2.1.2/src/core/mem.c ****           /* create mem2 struct */
+ 1191              		.loc 1 903 67 is_stmt 1 view .LVU404
+ 905:./lwip-2.1.2/src/core/mem.c ****           mem2->used = 0;
+ 1192              		.loc 1 905 11 view .LVU405
+ 1193              	.LBB265:
+ 1194              	.LBI265:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 1195              		.loc 1 451 1 view .LVU406
+ 1196              	.LBB266:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1197              		.loc 1 453 3 view .LVU407
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1198              		.loc 1 453 10 is_stmt 0 view .LVU408
+ 1199 02f6 CA18     		adds	r2, r1, r3
+ 1200              	.LVL76:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1201              		.loc 1 453 10 view .LVU409
+ 1202              	.LBE266:
+ 1203              	.LBE265:
+ 906:./lwip-2.1.2/src/core/mem.c ****           mem2->next = mem->next;
+ 1204              		.loc 1 906 11 is_stmt 1 view .LVU410
+ 906:./lwip-2.1.2/src/core/mem.c ****           mem2->next = mem->next;
+ 1205              		.loc 1 906 22 is_stmt 0 view .LVU411
+ 1206 02f8 1071     		strb	r0, [r2, #4]
+ 907:./lwip-2.1.2/src/core/mem.c ****           mem2->prev = ptr;
+ 1207              		.loc 1 907 11 is_stmt 1 view .LVU412
+ 907:./lwip-2.1.2/src/core/mem.c ****           mem2->prev = ptr;
+ 1208              		.loc 1 907 22 is_stmt 0 view .LVU413
+ 1209 02fa 21F803E0 		strh	lr, [r1, r3]	@ movhi
+ 908:./lwip-2.1.2/src/core/mem.c ****           /* and insert it between mem and mem->next */
+ 1210              		.loc 1 908 11 is_stmt 1 view .LVU414
+ 908:./lwip-2.1.2/src/core/mem.c ****           /* and insert it between mem and mem->next */
+ 1211              		.loc 1 908 22 is_stmt 0 view .LVU415
+ 1212 02fe A2F802C0 		strh	ip, [r2, #2]	@ movhi
+ 910:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
+ 1213              		.loc 1 910 11 is_stmt 1 view .LVU416
+ 911:./lwip-2.1.2/src/core/mem.c **** 
+ 1214              		.loc 1 911 21 is_stmt 0 view .LVU417
+ 1215 0302 2571     		strb	r5, [r4, #4]
+ 910:./lwip-2.1.2/src/core/mem.c ****           mem->used = 1;
+ 1216              		.loc 1 910 21 view .LVU418
+ 1217 0304 2380     		strh	r3, [r4]	@ movhi
+ 911:./lwip-2.1.2/src/core/mem.c **** 
+ 1218              		.loc 1 911 11 is_stmt 1 view .LVU419
+ 913:./lwip-2.1.2/src/core/mem.c ****             ptr_to_mem(mem2->next)->prev = ptr2;
+ 1219              		.loc 1 913 11 view .LVU420
+ 913:./lwip-2.1.2/src/core/mem.c ****             ptr_to_mem(mem2->next)->prev = ptr2;
+ 1220              		.loc 1 913 19 is_stmt 0 view .LVU421
+ 1221 0306 CA5A     		ldrh	r2, [r1, r3]
+ 1222              	.LVL77:
+ 913:./lwip-2.1.2/src/core/mem.c ****             ptr_to_mem(mem2->next)->prev = ptr2;
+ 1223              		.loc 1 913 14 view .LVU422
+ 1224 0308 B2F5805F 		cmp	r2, #4096
+ 1225 030c 01D0     		beq	.L72
+ 914:./lwip-2.1.2/src/core/mem.c ****           }
+ 1226              		.loc 1 914 13 is_stmt 1 view .LVU423
+ 1227              	.LVL78:
+ 1228              	.LBB267:
+ 1229              	.LBI267:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 1230              		.loc 1 451 1 view .LVU424
+ 1231              	.LBB268:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1232              		.loc 1 453 3 view .LVU425
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1233              		.loc 1 453 3 is_stmt 0 view .LVU426
+ 1234              	.LBE268:
+ 1235              	.LBE267:
+ 914:./lwip-2.1.2/src/core/mem.c ****           }
+ 1236              		.loc 1 914 42 view .LVU427
+ 1237 030e 0A44     		add	r2, r2, r1
+ 1238 0310 5380     		strh	r3, [r2, #2]	@ movhi
+ 1239              	.LVL79:
+ 1240              	.L72:
+ 926:./lwip-2.1.2/src/core/mem.c ****         }
+ 1241              		.loc 1 926 64 is_stmt 1 view .LVU428
+ 931:./lwip-2.1.2/src/core/mem.c ****           struct mem *cur = lfree;
+ 1242              		.loc 1 931 9 view .LVU429
+ 931:./lwip-2.1.2/src/core/mem.c ****           struct mem *cur = lfree;
+ 1243              		.loc 1 931 12 is_stmt 0 view .LVU430
+ 1244 0312 A145     		cmp	r9, r4
+ 1245 0314 0AD0     		beq	.L95
+ 1246              	.L78:
+ 1247              	.LBB269:
+ 949:./lwip-2.1.2/src/core/mem.c ****         }
+ 1248              		.loc 1 949 90 is_stmt 1 view .LVU431
+ 1249              	.LBE269:
+ 951:./lwip-2.1.2/src/core/mem.c ****         sys_mutex_unlock(&mem_mutex);
+ 1250              		.loc 1 951 35 view .LVU432
+ 952:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
+ 1251              		.loc 1 952 9 view .LVU433
+ 1252 0316 0C48     		ldr	r0, .L96+4
+ 1253 0318 FFF7FEFF 		bl	sys_mutex_unlock
+ 1254              	.LVL80:
+ 954:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
+ 1255              		.loc 1 954 85 view .LVU434
+ 956:./lwip-2.1.2/src/core/mem.c ****         LWIP_ASSERT("mem_malloc: sanity check alignment",
+ 1256              		.loc 1 956 79 view .LVU435
+ 958:./lwip-2.1.2/src/core/mem.c **** 
+ 1257              		.loc 1 958 67 view .LVU436
+ 963:./lwip-2.1.2/src/core/mem.c ****         return (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
+ 1258              		.loc 1 963 21 view .LVU437
+ 964:./lwip-2.1.2/src/core/mem.c ****       }
+ 1259              		.loc 1 964 9 view .LVU438
+ 964:./lwip-2.1.2/src/core/mem.c ****       }
+ 1260              		.loc 1 964 48 is_stmt 0 view .LVU439
+ 1261 031c 04F10800 		add	r0, r4, #8
+ 1262              		.loc 1 976 1 view .LVU440
+ 1263 0320 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 1264              	.LVL81:
+ 1265              	.L90:
+ 1266              	.LCFI14:
+ 1267              		.cfi_def_cfa_offset 0
+ 1268              		.cfi_restore 3
+ 1269              		.cfi_restore 4
+ 1270              		.cfi_restore 5
+ 1271              		.cfi_restore 6
+ 1272              		.cfi_restore 7
+ 1273              		.cfi_restore 8
+ 1274              		.cfi_restore 9
+ 1275              		.cfi_restore 14
+ 1276              		.loc 1 976 1 view .LVU441
+ 1277 0324 7047     		bx	lr
+ 1278              	.LVL82:
+ 1279              	.L71:
+ 1280              	.LCFI15:
+ 1281              		.cfi_def_cfa_offset 32
+ 1282              		.cfi_offset 3, -32
+ 1283              		.cfi_offset 4, -28
+ 1284              		.cfi_offset 5, -24
+ 1285              		.cfi_offset 6, -20
+ 1286              		.cfi_offset 7, -16
+ 1287              		.cfi_offset 8, -12
+ 1288              		.cfi_offset 9, -8
+ 1289              		.cfi_offset 14, -4
+ 925:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, mem->next - mem_to_ptr(mem));
+ 1290              		.loc 1 925 11 is_stmt 1 view .LVU442
+ 925:./lwip-2.1.2/src/core/mem.c ****           MEM_STATS_INC_USED(used, mem->next - mem_to_ptr(mem));
+ 1291              		.loc 1 925 21 is_stmt 0 view .LVU443
+ 1292 0326 0123     		movs	r3, #1
+ 1293 0328 2371     		strb	r3, [r4, #4]
+ 1294 032a F2E7     		b	.L72
+ 1295              	.L95:
+ 1296              	.LVL83:
+ 1297              	.LBB274:
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1298              		.loc 1 934 17 is_stmt 1 view .LVU444
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1299              		.loc 1 934 35 is_stmt 0 view .LVU445
+ 1300 032c 7868     		ldr	r0, [r7, #4]
+ 1301 032e 2346     		mov	r3, r4
+ 1302 0330 03E0     		b	.L76
+ 1303              	.LVL84:
+ 1304              	.L74:
+ 1305              	.LBB270:
+ 1306              	.LBB271:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1307              		.loc 1 453 32 view .LVU446
+ 1308 0332 1B88     		ldrh	r3, [r3]
+ 1309              	.LVL85:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1310              		.loc 1 453 10 view .LVU447
+ 1311 0334 0B44     		add	r3, r3, r1
+ 1312              	.LVL86:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1313              		.loc 1 453 10 view .LVU448
+ 1314              	.LBE271:
+ 1315              	.LBE270:
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1316              		.loc 1 934 17 is_stmt 1 view .LVU449
+ 1317 0336 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 1318 0338 0AB1     		cbz	r2, .L73
+ 1319              	.LVL87:
+ 1320              	.L76:
+ 946:./lwip-2.1.2/src/core/mem.c ****           }
+ 1321              		.loc 1 946 13 discriminator 1 view .LVU450
+ 1322              	.LBB273:
+ 1323              	.LBI270:
+ 451:./lwip-2.1.2/src/core/mem.c **** {
+ 1324              		.loc 1 451 1 discriminator 1 view .LVU451
+ 1325              	.LBB272:
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1326              		.loc 1 453 3 discriminator 1 view .LVU452
+ 453:./lwip-2.1.2/src/core/mem.c **** }
+ 1327              		.loc 1 453 3 is_stmt 0 discriminator 1 view .LVU453
+ 1328              	.LBE272:
+ 1329              	.LBE273:
+ 934:./lwip-2.1.2/src/core/mem.c **** #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+ 1330              		.loc 1 934 28 discriminator 1 view .LVU454
+ 1331 033a 9842     		cmp	r0, r3
+ 1332 033c F9D1     		bne	.L74
+ 1333              	.LVL88:
+ 1334              	.L73:
+ 948:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("mem_malloc: !lfree->used", ((lfree == ram_end) || (!lfree->used)));
+ 1335              		.loc 1 948 11 is_stmt 1 view .LVU455
+ 948:./lwip-2.1.2/src/core/mem.c ****           LWIP_ASSERT("mem_malloc: !lfree->used", ((lfree == ram_end) || (!lfree->used)));
+ 1336              		.loc 1 948 17 is_stmt 0 view .LVU456
+ 1337 033e BB60     		str	r3, [r7, #8]
+ 1338 0340 E9E7     		b	.L78
+ 1339              	.L97:
+ 1340 0342 00BF     		.align	2
+ 1341              	.L96:
+ 1342 0344 00000000 		.word	.LANCHOR0
+ 1343 0348 0C000000 		.word	.LANCHOR0+12
+ 1344              	.LBE274:
+ 1345              		.cfi_endproc
+ 1346              	.LFE176:
+ 1348              		.align	1
+ 1349              		.p2align 2,,3
+ 1350              		.global	mem_calloc
+ 1351              		.syntax unified
+ 1352              		.thumb
+ 1353              		.thumb_func
+ 1354              		.fpu fpv5-d16
+ 1356              	mem_calloc:
+ 1357              	.LVL89:
+ 1358              	.LFB177:
  977:./lwip-2.1.2/src/core/mem.c **** 
  978:./lwip-2.1.2/src/core/mem.c **** #endif /* MEM_USE_POOLS */
  979:./lwip-2.1.2/src/core/mem.c **** 
@@ -3583,137 +3605,131 @@
  998:./lwip-2.1.2/src/core/mem.c **** void *
  999:./lwip-2.1.2/src/core/mem.c **** mem_calloc(mem_size_t count, mem_size_t size)
 1000:./lwip-2.1.2/src/core/mem.c **** {
- 1599              		.loc 1 1000 1
- 1600              		.cfi_startproc
- 1601              		@ args = 0, pretend = 0, frame = 16
- 1602              		@ frame_needed = 1, uses_anonymous_args = 0
- 1603 0664 80B5     		push	{r7, lr}
- 1604              	.LCFI42:
- 1605              		.cfi_def_cfa_offset 8
- 1606              		.cfi_offset 7, -8
- 1607              		.cfi_offset 14, -4
- 1608 0666 84B0     		sub	sp, sp, #16
- 1609              	.LCFI43:
- 1610              		.cfi_def_cfa_offset 24
- 1611 0668 00AF     		add	r7, sp, #0
- 1612              	.LCFI44:
- 1613              		.cfi_def_cfa_register 7
- 1614 066a 0346     		mov	r3, r0
- 1615 066c 0A46     		mov	r2, r1
- 1616 066e FB80     		strh	r3, [r7, #6]	@ movhi
- 1617 0670 1346     		mov	r3, r2	@ movhi
- 1618 0672 BB80     		strh	r3, [r7, #4]	@ movhi
+ 1359              		.loc 1 1000 1 is_stmt 1 view -0
+ 1360              		.cfi_startproc
+ 1361              		@ args = 0, pretend = 0, frame = 0
+ 1362              		@ frame_needed = 0, uses_anonymous_args = 0
 1001:./lwip-2.1.2/src/core/mem.c ****   void *p;
+ 1363              		.loc 1 1001 3 view .LVU458
 1002:./lwip-2.1.2/src/core/mem.c ****   size_t alloc_size = (size_t)count * (size_t)size;
- 1619              		.loc 1 1002 23
- 1620 0674 FB88     		ldrh	r3, [r7, #6]
- 1621              		.loc 1 1002 39
- 1622 0676 BA88     		ldrh	r2, [r7, #4]
- 1623              		.loc 1 1002 10
- 1624 0678 02FB03F3 		mul	r3, r2, r3
- 1625 067c FB60     		str	r3, [r7, #12]
+ 1364              		.loc 1 1002 3 view .LVU459
+1000:./lwip-2.1.2/src/core/mem.c ****   void *p;
+ 1365              		.loc 1 1000 1 is_stmt 0 view .LVU460
+ 1366 034c 38B5     		push	{r3, r4, r5, lr}
+ 1367              	.LCFI16:
+ 1368              		.cfi_def_cfa_offset 16
+ 1369              		.cfi_offset 3, -16
+ 1370              		.cfi_offset 4, -12
+ 1371              		.cfi_offset 5, -8
+ 1372              		.cfi_offset 14, -4
+ 1373              		.loc 1 1002 10 view .LVU461
+ 1374 034e 01FB00F4 		mul	r4, r1, r0
+ 1375              	.LVL90:
 1003:./lwip-2.1.2/src/core/mem.c **** 
 1004:./lwip-2.1.2/src/core/mem.c ****   if ((size_t)(mem_size_t)alloc_size != alloc_size) {
- 1626              		.loc 1 1004 15
- 1627 067e FB68     		ldr	r3, [r7, #12]
- 1628 0680 9BB2     		uxth	r3, r3
- 1629              		.loc 1 1004 7
- 1630 0682 1A46     		mov	r2, r3
- 1631              		.loc 1 1004 6
- 1632 0684 FB68     		ldr	r3, [r7, #12]
- 1633 0686 9342     		cmp	r3, r2
- 1634 0688 01D0     		beq	.L86
+ 1376              		.loc 1 1004 3 is_stmt 1 view .LVU462
+ 1377              		.loc 1 1004 6 is_stmt 0 view .LVU463
+ 1378 0352 A3B2     		uxth	r3, r4
+ 1379 0354 9C42     		cmp	r4, r3
+ 1380 0356 0AD1     		bne	.L100
 1005:./lwip-2.1.2/src/core/mem.c ****     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("mem_calloc: could not allocate %"SZT_F" bytes
 1006:./lwip-2.1.2/src/core/mem.c ****     return NULL;
- 1635              		.loc 1 1006 12
- 1636 068a 0023     		movs	r3, #0
- 1637 068c 0EE0     		b	.L87
- 1638              	.L86:
 1007:./lwip-2.1.2/src/core/mem.c ****   }
 1008:./lwip-2.1.2/src/core/mem.c **** 
 1009:./lwip-2.1.2/src/core/mem.c ****   /* allocate 'count' objects of size 'size' */
 1010:./lwip-2.1.2/src/core/mem.c ****   p = mem_malloc((mem_size_t)alloc_size);
- 1639              		.loc 1 1010 7
- 1640 068e FB68     		ldr	r3, [r7, #12]
- 1641 0690 9BB2     		uxth	r3, r3
- 1642 0692 1846     		mov	r0, r3
- 1643 0694 FFF7FEFF 		bl	mem_malloc
- 1644 0698 B860     		str	r0, [r7, #8]
+ 1381              		.loc 1 1010 3 is_stmt 1 view .LVU464
+ 1382              		.loc 1 1010 7 is_stmt 0 view .LVU465
+ 1383 0358 1846     		mov	r0, r3
+ 1384              	.LVL91:
+ 1385              		.loc 1 1010 7 view .LVU466
+ 1386 035a FFF7FEFF 		bl	mem_malloc
+ 1387              	.LVL92:
 1011:./lwip-2.1.2/src/core/mem.c ****   if (p) {
- 1645              		.loc 1 1011 6
- 1646 069a BB68     		ldr	r3, [r7, #8]
- 1647 069c 002B     		cmp	r3, #0
- 1648 069e 04D0     		beq	.L88
+ 1388              		.loc 1 1011 3 is_stmt 1 view .LVU467
+ 1389              		.loc 1 1011 6 is_stmt 0 view .LVU468
+ 1390 035e 0546     		mov	r5, r0
+ 1391 0360 18B1     		cbz	r0, .L98
 1012:./lwip-2.1.2/src/core/mem.c ****     /* zero the memory */
 1013:./lwip-2.1.2/src/core/mem.c ****     memset(p, 0, alloc_size);
- 1649              		.loc 1 1013 5
- 1650 06a0 FA68     		ldr	r2, [r7, #12]
- 1651 06a2 0021     		movs	r1, #0
- 1652 06a4 B868     		ldr	r0, [r7, #8]
- 1653 06a6 FFF7FEFF 		bl	memset
- 1654              	.L88:
+ 1392              		.loc 1 1013 5 is_stmt 1 view .LVU469
+ 1393 0362 2246     		mov	r2, r4
+ 1394 0364 0021     		movs	r1, #0
+ 1395 0366 FFF7FEFF 		bl	memset
+ 1396              	.LVL93:
+ 1397              	.L98:
 1014:./lwip-2.1.2/src/core/mem.c ****   }
 1015:./lwip-2.1.2/src/core/mem.c ****   return p;
- 1655              		.loc 1 1015 10
- 1656 06aa BB68     		ldr	r3, [r7, #8]
- 1657              	.L87:
 1016:./lwip-2.1.2/src/core/mem.c **** }
- 1658              		.loc 1 1016 1
- 1659 06ac 1846     		mov	r0, r3
- 1660 06ae 1037     		adds	r7, r7, #16
- 1661              	.LCFI45:
- 1662              		.cfi_def_cfa_offset 8
- 1663 06b0 BD46     		mov	sp, r7
- 1664              	.LCFI46:
- 1665              		.cfi_def_cfa_register 13
- 1666              		@ sp needed
- 1667 06b2 80BD     		pop	{r7, pc}
- 1668              		.cfi_endproc
- 1669              	.LFE177:
- 1671              	.Letext0:
- 1672              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\lib\\gcc\\arm-
- 1673              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1674              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1675              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
- 1676              		.file 7 "./lwip-2.1.2/src/include/lwip/mem.h"
- 1677              		.file 8 "./inc/cmsis_os2.h"
- 1678              		.file 9 "./inc/arch/sys_arch.h"
- 1679              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
- 1680              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1398              		.loc 1 1016 1 is_stmt 0 view .LVU470
+ 1399 036a 2846     		mov	r0, r5
+ 1400 036c 38BD     		pop	{r3, r4, r5, pc}
+ 1401              	.LVL94:
+ 1402              	.L100:
+1006:./lwip-2.1.2/src/core/mem.c ****   }
+ 1403              		.loc 1 1006 12 view .LVU471
+ 1404 036e 0025     		movs	r5, #0
+ 1405              		.loc 1 1016 1 view .LVU472
+ 1406 0370 2846     		mov	r0, r5
+ 1407              	.LVL95:
+ 1408              		.loc 1 1016 1 view .LVU473
+ 1409 0372 38BD     		pop	{r3, r4, r5, pc}
+ 1410              		.loc 1 1016 1 view .LVU474
+ 1411              		.cfi_endproc
+ 1412              	.LFE177:
+ 1414              		.global	ram_heap
+ 1415              		.bss
+ 1416              		.align	2
+ 1417              		.set	.LANCHOR0,. + 0
+ 1420              	ram:
+ 1421 0000 00000000 		.space	4
+ 1424              	ram_end:
+ 1425 0004 00000000 		.space	4
+ 1428              	lfree:
+ 1429 0008 00000000 		.space	4
+ 1432              	mem_mutex:
+ 1433 000c 00000000 		.space	4
+ 1436              	ram_heap:
+ 1437 0010 00000000 		.space	4115
+ 1437      00000000 
+ 1437      00000000 
+ 1437      00000000 
+ 1437      00000000 
+ 1438              		.text
+ 1439              	.Letext0:
+ 1440              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\lib\\gcc\\arm-
+ 1441              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1442              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1443              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1444              		.file 7 "./lwip-2.1.2/src/include/lwip/mem.h"
+ 1445              		.file 8 "./inc/cmsis_os2.h"
+ 1446              		.file 9 "./inc/arch/sys_arch.h"
+ 1447              		.file 10 "./lwip-2.1.2/src/include/lwip/err.h"
+ 1448              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1449              		.file 12 "./lwip-2.1.2/src/include/lwip/sys.h"
+ 1450              		.file 13 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 mem.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:21     .bss:00000000 ram_heap
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:18     .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:24     .bss:00001014 ram
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:28     .bss:00001018 ram_end
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:32     .bss:0000101c mem_mutex
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:36     .bss:00001020 lfree
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:40     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:47     .text:00000000 ptr_to_mem
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:90     .text:00000020 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:94     .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:100    .text:00000024 mem_to_ptr
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:142    .text:00000044 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:146    .text:00000048 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:152    .text:00000048 plug_holes
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:299    .text:0000010c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:304    .text:00000114 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:311    .text:00000114 mem_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:399    .text:00000184 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:407    .text:00000198 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:413    .text:00000198 mem_link_valid
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:510    .text:0000020c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:514    .text:00000210 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:521    .text:00000210 mem_free
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:957    .text:00000344 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:964    .text:00000354 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:971    .text:00000354 mem_trim
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1320   .text:000004f4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1327   .text:00000504 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1334   .text:00000504 mem_malloc
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1584   .text:00000658 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1590   .text:00000664 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccEX7Xxg.s:1597   .text:00000664 mem_calloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:25     .text:00000000 mem_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:95     .text:00000030 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1436   .bss:00000010 ram_heap
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:100    .text:00000038 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:108    .text:00000038 mem_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:560    .text:00000144 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:565    .text:0000014c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:573    .text:0000014c mem_trim
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1001   .text:00000258 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1006   .text:00000260 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1014   .text:00000260 mem_malloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1342   .text:00000344 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1348   .text:0000034c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1356   .text:0000034c mem_calloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1416   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1420   .bss:00000000 ram
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1424   .bss:00000004 ram_end
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1428   .bss:00000008 lfree
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccV06NFb.s:1432   .bss:0000000c mem_mutex
 
 UNDEFINED SYMBOLS
 sys_mutex_new

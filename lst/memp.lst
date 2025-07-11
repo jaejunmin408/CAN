@@ -6,300 +6,25 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"memp.c"
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.global	memp_memory_UDP_PCB_base
-  17              		.bss
-  18              		.align	2
-  21              	memp_memory_UDP_PCB_base:
-  22 0000 00000000 		.space	131
-  22      00000000 
-  22      00000000 
-  22      00000000 
-  22      00000000 
-  23 0083 00       		.align	2
-  24              	memp_tab_UDP_PCB:
-  25 0084 00000000 		.space	4
-  27              		.global	memp_UDP_PCB
-  28              		.section	.rodata
-  29              		.align	2
-  32              	memp_UDP_PCB:
-  33 0000 2000     		.short	32
-  34 0002 0400     		.short	4
-  35 0004 00000000 		.word	memp_memory_UDP_PCB_base
-  36 0008 84000000 		.word	memp_tab_UDP_PCB
-  37              		.global	memp_memory_TCP_PCB_base
-  38              		.bss
-  39              		.align	2
-  42              	memp_memory_TCP_PCB_base:
-  43 0088 00000000 		.space	783
-  43      00000000 
-  43      00000000 
-  43      00000000 
-  43      00000000 
-  44 0397 00       		.align	2
-  45              	memp_tab_TCP_PCB:
-  46 0398 00000000 		.space	4
-  48              		.global	memp_TCP_PCB
-  49              		.section	.rodata
-  50              		.align	2
-  53              	memp_TCP_PCB:
-  54 000c 9C00     		.short	156
-  55 000e 0500     		.short	5
-  56 0010 00000000 		.word	memp_memory_TCP_PCB_base
-  57 0014 98030000 		.word	memp_tab_TCP_PCB
-  58              		.global	memp_memory_TCP_PCB_LISTEN_base
-  59              		.bss
-  60              		.align	2
-  63              	memp_memory_TCP_PCB_LISTEN_base:
-  64 039c 00000000 		.space	227
-  64      00000000 
-  64      00000000 
-  64      00000000 
-  64      00000000 
-  65 047f 00       		.align	2
-  66              	memp_tab_TCP_PCB_LISTEN:
-  67 0480 00000000 		.space	4
-  69              		.global	memp_TCP_PCB_LISTEN
-  70              		.section	.rodata
-  71              		.align	2
-  74              	memp_TCP_PCB_LISTEN:
-  75 0018 1C00     		.short	28
-  76 001a 0800     		.short	8
-  77 001c 00000000 		.word	memp_memory_TCP_PCB_LISTEN_base
-  78 0020 80040000 		.word	memp_tab_TCP_PCB_LISTEN
-  79              		.global	memp_memory_TCP_SEG_base
-  80              		.bss
-  81              		.align	2
-  84              	memp_memory_TCP_SEG_base:
-  85 0484 00000000 		.space	259
-  85      00000000 
-  85      00000000 
-  85      00000000 
-  85      00000000 
-  86 0587 00       		.align	2
-  87              	memp_tab_TCP_SEG:
-  88 0588 00000000 		.space	4
-  90              		.global	memp_TCP_SEG
-  91              		.section	.rodata
-  92              		.align	2
-  95              	memp_TCP_SEG:
-  96 0024 1000     		.short	16
-  97 0026 1000     		.short	16
-  98 0028 00000000 		.word	memp_memory_TCP_SEG_base
-  99 002c 88050000 		.word	memp_tab_TCP_SEG
- 100              		.global	memp_memory_REASSDATA_base
- 101              		.bss
- 102              		.align	2
- 105              	memp_memory_REASSDATA_base:
- 106 058c 00000000 		.space	163
- 106      00000000 
- 106      00000000 
- 106      00000000 
- 106      00000000 
- 107 062f 00       		.align	2
- 108              	memp_tab_REASSDATA:
- 109 0630 00000000 		.space	4
- 111              		.global	memp_REASSDATA
- 112              		.section	.rodata
- 113              		.align	2
- 116              	memp_REASSDATA:
- 117 0030 2000     		.short	32
- 118 0032 0500     		.short	5
- 119 0034 00000000 		.word	memp_memory_REASSDATA_base
- 120 0038 30060000 		.word	memp_tab_REASSDATA
- 121              		.global	memp_memory_FRAG_PBUF_base
- 122              		.bss
- 123              		.align	2
- 126              	memp_memory_FRAG_PBUF_base:
- 127 0634 00000000 		.space	363
- 127      00000000 
- 127      00000000 
- 127      00000000 
- 127      00000000 
- 128 079f 00       		.align	2
- 129              	memp_tab_FRAG_PBUF:
- 130 07a0 00000000 		.space	4
- 132              		.global	memp_FRAG_PBUF
- 133              		.section	.rodata
- 134              		.align	2
- 137              	memp_FRAG_PBUF:
- 138 003c 1800     		.short	24
- 139 003e 0F00     		.short	15
- 140 0040 00000000 		.word	memp_memory_FRAG_PBUF_base
- 141 0044 A0070000 		.word	memp_tab_FRAG_PBUF
- 142              		.global	memp_memory_NETBUF_base
- 143              		.bss
- 144              		.align	2
- 147              	memp_memory_NETBUF_base:
- 148 07a4 00000000 		.space	35
- 148      00000000 
- 148      00000000 
- 148      00000000 
- 148      00000000 
- 149 07c7 00       		.align	2
- 150              	memp_tab_NETBUF:
- 151 07c8 00000000 		.space	4
- 153              		.global	memp_NETBUF
- 154              		.section	.rodata
- 155              		.align	2
- 158              	memp_NETBUF:
- 159 0048 1000     		.short	16
- 160 004a 0200     		.short	2
- 161 004c 00000000 		.word	memp_memory_NETBUF_base
- 162 0050 C8070000 		.word	memp_tab_NETBUF
- 163              		.global	memp_memory_NETCONN_base
- 164              		.bss
- 165              		.align	2
- 168              	memp_memory_NETCONN_base:
- 169 07cc 00000000 		.space	163
- 169      00000000 
- 169      00000000 
- 169      00000000 
- 169      00000000 
- 170 086f 00       		.align	2
- 171              	memp_tab_NETCONN:
- 172 0870 00000000 		.space	4
- 174              		.global	memp_NETCONN
- 175              		.section	.rodata
- 176              		.align	2
- 179              	memp_NETCONN:
- 180 0054 2800     		.short	40
- 181 0056 0400     		.short	4
- 182 0058 00000000 		.word	memp_memory_NETCONN_base
- 183 005c 70080000 		.word	memp_tab_NETCONN
- 184              		.global	memp_memory_TCPIP_MSG_API_base
- 185              		.bss
- 186              		.align	2
- 189              	memp_memory_TCPIP_MSG_API_base:
- 190 0874 00000000 		.space	131
- 190      00000000 
- 190      00000000 
- 190      00000000 
- 190      00000000 
- 191 08f7 00       		.align	2
- 192              	memp_tab_TCPIP_MSG_API:
- 193 08f8 00000000 		.space	4
- 195              		.global	memp_TCPIP_MSG_API
- 196              		.section	.rodata
- 197              		.align	2
- 200              	memp_TCPIP_MSG_API:
- 201 0060 1000     		.short	16
- 202 0062 0800     		.short	8
- 203 0064 00000000 		.word	memp_memory_TCPIP_MSG_API_base
- 204 0068 F8080000 		.word	memp_tab_TCPIP_MSG_API
- 205              		.global	memp_memory_TCPIP_MSG_INPKT_base
- 206              		.bss
- 207              		.align	2
- 210              	memp_memory_TCPIP_MSG_INPKT_base:
- 211 08fc 00000000 		.space	131
- 211      00000000 
- 211      00000000 
- 211      00000000 
- 211      00000000 
- 212 097f 00       		.align	2
- 213              	memp_tab_TCPIP_MSG_INPKT:
- 214 0980 00000000 		.space	4
- 216              		.global	memp_TCPIP_MSG_INPKT
- 217              		.section	.rodata
- 218              		.align	2
- 221              	memp_TCPIP_MSG_INPKT:
- 222 006c 1000     		.short	16
- 223 006e 0800     		.short	8
- 224 0070 00000000 		.word	memp_memory_TCPIP_MSG_INPKT_base
- 225 0074 80090000 		.word	memp_tab_TCPIP_MSG_INPKT
- 226              		.global	memp_memory_SYS_TIMEOUT_base
- 227              		.bss
- 228              		.align	2
- 231              	memp_memory_SYS_TIMEOUT_base:
- 232 0984 00000000 		.space	83
- 232      00000000 
- 232      00000000 
- 232      00000000 
- 232      00000000 
- 233 09d7 00       		.align	2
- 234              	memp_tab_SYS_TIMEOUT:
- 235 09d8 00000000 		.space	4
- 237              		.global	memp_SYS_TIMEOUT
- 238              		.section	.rodata
- 239              		.align	2
- 242              	memp_SYS_TIMEOUT:
- 243 0078 1000     		.short	16
- 244 007a 0500     		.short	5
- 245 007c 00000000 		.word	memp_memory_SYS_TIMEOUT_base
- 246 0080 D8090000 		.word	memp_tab_SYS_TIMEOUT
- 247              		.global	memp_memory_PBUF_base
- 248              		.bss
- 249              		.align	2
- 252              	memp_memory_PBUF_base:
- 253 09dc 00000000 		.space	259
- 253      00000000 
- 253      00000000 
- 253      00000000 
- 253      00000000 
- 254 0adf 00       		.align	2
- 255              	memp_tab_PBUF:
- 256 0ae0 00000000 		.space	4
- 258              		.global	memp_PBUF
- 259              		.section	.rodata
- 260              		.align	2
- 263              	memp_PBUF:
- 264 0084 1000     		.short	16
- 265 0086 1000     		.short	16
- 266 0088 00000000 		.word	memp_memory_PBUF_base
- 267 008c E00A0000 		.word	memp_tab_PBUF
- 268              		.global	memp_memory_PBUF_POOL_base
- 269              		.bss
- 270              		.align	2
- 273              	memp_memory_PBUF_POOL_base:
- 274 0ae4 00000000 		.space	9731
- 274      00000000 
- 274      00000000 
- 274      00000000 
- 274      00000000 
- 275 30e7 00       		.align	2
- 276              	memp_tab_PBUF_POOL:
- 277 30e8 00000000 		.space	4
- 279              		.global	memp_PBUF_POOL
- 280              		.section	.rodata
- 281              		.align	2
- 284              	memp_PBUF_POOL:
- 285 0090 6002     		.short	608
- 286 0092 1000     		.short	16
- 287 0094 00000000 		.word	memp_memory_PBUF_POOL_base
- 288 0098 E8300000 		.word	memp_tab_PBUF_POOL
- 289              		.global	memp_pools
- 290              		.align	2
- 293              	memp_pools:
- 294 009c 00000000 		.word	memp_UDP_PCB
- 295 00a0 00000000 		.word	memp_TCP_PCB
- 296 00a4 00000000 		.word	memp_TCP_PCB_LISTEN
- 297 00a8 00000000 		.word	memp_TCP_SEG
- 298 00ac 00000000 		.word	memp_REASSDATA
- 299 00b0 00000000 		.word	memp_FRAG_PBUF
- 300 00b4 00000000 		.word	memp_NETBUF
- 301 00b8 00000000 		.word	memp_NETCONN
- 302 00bc 00000000 		.word	memp_TCPIP_MSG_API
- 303 00c0 00000000 		.word	memp_TCPIP_MSG_INPKT
- 304 00c4 00000000 		.word	memp_SYS_TIMEOUT
- 305 00c8 00000000 		.word	memp_PBUF
- 306 00cc 00000000 		.word	memp_PBUF_POOL
- 307              		.text
- 308              		.align	1
- 309              		.global	memp_init_pool
- 310              		.arch armv7e-m
- 311              		.syntax unified
- 312              		.thumb
- 313              		.thumb_func
- 314              		.fpu fpv5-d16
- 316              	memp_init_pool:
- 317              	.LFB169:
- 318              		.file 1 "./lwip-2.1.2/src/core/memp.c"
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	memp_init_pool
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	memp_init_pool:
+  26              	.LVL0:
+  27              	.LFB169:
+  28              		.file 1 "./lwip-2.1.2/src/core/memp.c"
    1:./lwip-2.1.2/src/core/memp.c **** /**
    2:./lwip-2.1.2/src/core/memp.c ****  * @file
    3:./lwip-2.1.2/src/core/memp.c ****  * Dynamic pool memory manager
@@ -476,43 +201,31 @@
  174:./lwip-2.1.2/src/core/memp.c **** void
  175:./lwip-2.1.2/src/core/memp.c **** memp_init_pool(const struct memp_desc *desc)
  176:./lwip-2.1.2/src/core/memp.c **** {
- 319              		.loc 1 176 1
- 320              		.cfi_startproc
- 321              		@ args = 0, pretend = 0, frame = 16
- 322              		@ frame_needed = 1, uses_anonymous_args = 0
- 323              		@ link register save eliminated.
- 324 0000 80B4     		push	{r7}
- 325              	.LCFI0:
- 326              		.cfi_def_cfa_offset 4
- 327              		.cfi_offset 7, -4
- 328 0002 85B0     		sub	sp, sp, #20
- 329              	.LCFI1:
- 330              		.cfi_def_cfa_offset 24
- 331 0004 00AF     		add	r7, sp, #0
- 332              	.LCFI2:
- 333              		.cfi_def_cfa_register 7
- 334 0006 7860     		str	r0, [r7, #4]
+  29              		.loc 1 176 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
  177:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
  178:./lwip-2.1.2/src/core/memp.c ****   LWIP_UNUSED_ARG(desc);
  179:./lwip-2.1.2/src/core/memp.c **** #else
  180:./lwip-2.1.2/src/core/memp.c ****   int i;
+  34              		.loc 1 180 3 view .LVU1
  181:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+  35              		.loc 1 181 3 view .LVU2
  182:./lwip-2.1.2/src/core/memp.c **** 
  183:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = NULL;
- 335              		.loc 1 183 8
- 336 0008 7B68     		ldr	r3, [r7, #4]
- 337 000a 9B68     		ldr	r3, [r3, #8]
- 338              		.loc 1 183 14
- 339 000c 0022     		movs	r2, #0
- 340 000e 1A60     		str	r2, [r3]
+  36              		.loc 1 183 3 view .LVU3
+ 176:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+  37              		.loc 1 176 1 is_stmt 0 view .LVU4
+  38 0000 30B4     		push	{r4, r5}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 4, -8
+  42              		.cfi_offset 5, -4
+  43              		.loc 1 183 14 view .LVU5
+  44 0002 0021     		movs	r1, #0
  184:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
- 341              		.loc 1 184 25
- 342 0010 7B68     		ldr	r3, [r7, #4]
- 343 0012 5B68     		ldr	r3, [r3, #4]
- 344 0014 0333     		adds	r3, r3, #3
- 345 0016 23F00303 		bic	r3, r3, #3
- 346              		.loc 1 184 8
- 347 001a BB60     		str	r3, [r7, #8]
  185:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
  186:./lwip-2.1.2/src/core/memp.c ****   /* force memset on pool memory */
  187:./lwip-2.1.2/src/core/memp.c ****   memset(memp, 0, (size_t)desc->num * (MEMP_SIZE + desc->size
@@ -523,57 +236,71 @@
  192:./lwip-2.1.2/src/core/memp.c **** #endif
  193:./lwip-2.1.2/src/core/memp.c ****   /* create a linked list of memp elements */
  194:./lwip-2.1.2/src/core/memp.c ****   for (i = 0; i < desc->num; ++i) {
- 348              		.loc 1 194 10
- 349 001c 0023     		movs	r3, #0
- 350 001e FB60     		str	r3, [r7, #12]
- 351              		.loc 1 194 3
- 352 0020 11E0     		b	.L2
- 353              	.L3:
+  45              		.loc 1 194 23 view .LVU6
+  46 0004 4588     		ldrh	r5, [r0, #2]
+ 183:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+  47              		.loc 1 183 8 view .LVU7
+  48 0006 D0E90134 		ldrd	r3, r4, [r0, #4]
+ 183:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+  49              		.loc 1 183 14 view .LVU8
+  50 000a 2160     		str	r1, [r4]
+ 184:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+  51              		.loc 1 184 3 is_stmt 1 view .LVU9
+  52              	.LVL1:
+  53              		.loc 1 194 3 view .LVU10
+  54              		.loc 1 194 15 view .LVU11
+  55              		.loc 1 194 3 is_stmt 0 view .LVU12
+  56 000c 75B1     		cbz	r5, .L1
+  57 000e 0333     		adds	r3, r3, #3
+  58              	.LVL2:
  195:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
- 354              		.loc 1 195 23 discriminator 3
- 355 0022 7B68     		ldr	r3, [r7, #4]
- 356 0024 9B68     		ldr	r3, [r3, #8]
- 357              		.loc 1 195 18 discriminator 3
- 358 0026 1A68     		ldr	r2, [r3]
- 359              		.loc 1 195 16 discriminator 3
- 360 0028 BB68     		ldr	r3, [r7, #8]
- 361 002a 1A60     		str	r2, [r3]
  196:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp;
- 362              		.loc 1 196 10 discriminator 3
- 363 002c 7B68     		ldr	r3, [r7, #4]
- 364 002e 9B68     		ldr	r3, [r3, #8]
- 365              		.loc 1 196 16 discriminator 3
- 366 0030 BA68     		ldr	r2, [r7, #8]
- 367 0032 1A60     		str	r2, [r3]
  197:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
  198:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_init_element(memp, desc);
  199:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
  200:./lwip-2.1.2/src/core/memp.c ****     /* cast through void* to get rid of alignment warnings */
  201:./lwip-2.1.2/src/core/memp.c ****     memp = (struct memp *)(void *)((u8_t *)memp + MEMP_SIZE + desc->size
- 368              		.loc 1 201 67 discriminator 3
- 369 0034 7B68     		ldr	r3, [r7, #4]
- 370 0036 1B88     		ldrh	r3, [r3]
- 371 0038 1A46     		mov	r2, r3
- 372              		.loc 1 201 10 discriminator 3
- 373 003a BB68     		ldr	r3, [r7, #8]
- 374 003c 1344     		add	r3, r3, r2
- 375 003e BB60     		str	r3, [r7, #8]
+  59              		.loc 1 201 67 view .LVU13
+  60 0010 B0F800C0 		ldrh	ip, [r0]
  194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
- 376              		.loc 1 194 30 discriminator 3
- 377 0040 FB68     		ldr	r3, [r7, #12]
- 378 0042 0133     		adds	r3, r3, #1
- 379 0044 FB60     		str	r3, [r7, #12]
- 380              	.L2:
+  61              		.loc 1 194 10 view .LVU14
+  62 0014 0A46     		mov	r2, r1
+  63 0016 23F00303 		bic	r3, r3, #3
+  64              	.LVL3:
+  65              	.L3:
+ 195:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+  66              		.loc 1 195 5 is_stmt 1 discriminator 3 view .LVU15
  194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
- 381              		.loc 1 194 23 discriminator 1
- 382 0046 7B68     		ldr	r3, [r7, #4]
- 383 0048 5B88     		ldrh	r3, [r3, #2]
- 384 004a 1A46     		mov	r2, r3
+  67              		.loc 1 194 30 is_stmt 0 discriminator 3 view .LVU16
+  68 001a 0132     		adds	r2, r2, #1
+  69              	.LVL4:
+  70              		.loc 1 201 10 discriminator 3 view .LVU17
+  71 001c 03EB0C00 		add	r0, r3, ip
+ 195:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+  72              		.loc 1 195 16 discriminator 3 view .LVU18
+  73 0020 1960     		str	r1, [r3]
+ 196:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+  74              		.loc 1 196 5 is_stmt 1 discriminator 3 view .LVU19
+  75 0022 1946     		mov	r1, r3
  194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
- 385              		.loc 1 194 3 discriminator 1
- 386 004c FB68     		ldr	r3, [r7, #12]
- 387 004e 9342     		cmp	r3, r2
- 388 0050 E7DB     		blt	.L3
+  76              		.loc 1 194 3 is_stmt 0 discriminator 3 view .LVU20
+  77 0024 AA42     		cmp	r2, r5
+ 196:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+  78              		.loc 1 196 16 discriminator 3 view .LVU21
+  79 0026 2360     		str	r3, [r4]
+  80              		.loc 1 201 5 is_stmt 1 discriminator 3 view .LVU22
+  81              	.LVL5:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+  82              		.loc 1 194 30 discriminator 3 view .LVU23
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+  83              		.loc 1 194 15 discriminator 3 view .LVU24
+  84              		.loc 1 201 10 is_stmt 0 discriminator 3 view .LVU25
+  85 0028 0346     		mov	r3, r0
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+  86              		.loc 1 194 3 discriminator 3 view .LVU26
+  87 002a F6D1     		bne	.L3
+  88              	.LVL6:
+  89              	.L1:
  202:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
  203:./lwip-2.1.2/src/core/memp.c ****                                    + MEM_SANITY_REGION_AFTER_ALIGNED
  204:./lwip-2.1.2/src/core/memp.c **** #endif
@@ -588,31 +315,24 @@
  213:./lwip-2.1.2/src/core/memp.c ****   desc->stats->name  = desc->desc;
  214:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_STATS && (defined(LWIP_DEBUG) || LWIP_STATS_DISPLAY) */
  215:./lwip-2.1.2/src/core/memp.c **** }
- 389              		.loc 1 215 1
- 390 0052 00BF     		nop
- 391 0054 00BF     		nop
- 392 0056 1437     		adds	r7, r7, #20
- 393              	.LCFI3:
- 394              		.cfi_def_cfa_offset 4
- 395 0058 BD46     		mov	sp, r7
- 396              	.LCFI4:
- 397              		.cfi_def_cfa_register 13
- 398              		@ sp needed
- 399 005a 5DF8047B 		ldr	r7, [sp], #4
- 400              	.LCFI5:
- 401              		.cfi_restore 7
- 402              		.cfi_def_cfa_offset 0
- 403 005e 7047     		bx	lr
- 404              		.cfi_endproc
- 405              	.LFE169:
- 407              		.align	1
- 408              		.global	memp_init
- 409              		.syntax unified
- 410              		.thumb
- 411              		.thumb_func
- 412              		.fpu fpv5-d16
- 414              	memp_init:
- 415              	.LFB170:
+  90              		.loc 1 215 1 view .LVU27
+  91 002c 30BC     		pop	{r4, r5}
+  92              	.LCFI1:
+  93              		.cfi_restore 5
+  94              		.cfi_restore 4
+  95              		.cfi_def_cfa_offset 0
+  96 002e 7047     		bx	lr
+  97              		.cfi_endproc
+  98              	.LFE169:
+ 100              		.align	1
+ 101              		.p2align 2,,3
+ 102              		.global	memp_init
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.fpu fpv5-d16
+ 108              	memp_init:
+ 109              	.LFB170:
  216:./lwip-2.1.2/src/core/memp.c **** 
  217:./lwip-2.1.2/src/core/memp.c **** /**
  218:./lwip-2.1.2/src/core/memp.c ****  * Initializes lwIP built-in pools.
@@ -623,49 +343,154 @@
  223:./lwip-2.1.2/src/core/memp.c **** void
  224:./lwip-2.1.2/src/core/memp.c **** memp_init(void)
  225:./lwip-2.1.2/src/core/memp.c **** {
- 416              		.loc 1 225 1
- 417              		.cfi_startproc
- 418              		@ args = 0, pretend = 0, frame = 8
- 419              		@ frame_needed = 1, uses_anonymous_args = 0
- 420 0060 80B5     		push	{r7, lr}
- 421              	.LCFI6:
- 422              		.cfi_def_cfa_offset 8
- 423              		.cfi_offset 7, -8
- 424              		.cfi_offset 14, -4
- 425 0062 82B0     		sub	sp, sp, #8
- 426              	.LCFI7:
- 427              		.cfi_def_cfa_offset 16
- 428 0064 00AF     		add	r7, sp, #0
- 429              	.LCFI8:
- 430              		.cfi_def_cfa_register 7
+ 110              		.loc 1 225 1 is_stmt 1 view -0
+ 111              		.cfi_startproc
+ 112              		@ args = 0, pretend = 0, frame = 0
+ 113              		@ frame_needed = 0, uses_anonymous_args = 0
  226:./lwip-2.1.2/src/core/memp.c ****   u16_t i;
+ 114              		.loc 1 226 3 view .LVU29
  227:./lwip-2.1.2/src/core/memp.c **** 
  228:./lwip-2.1.2/src/core/memp.c ****   /* for every pool: */
  229:./lwip-2.1.2/src/core/memp.c ****   for (i = 0; i < LWIP_ARRAYSIZE(memp_pools); i++) {
- 431              		.loc 1 229 10
- 432 0066 0023     		movs	r3, #0
- 433 0068 FB80     		strh	r3, [r7, #6]	@ movhi
- 434              		.loc 1 229 3
- 435 006a 09E0     		b	.L5
- 436              	.L6:
+ 115              		.loc 1 229 3 view .LVU30
+ 116              	.LVL7:
+ 117              		.loc 1 229 15 view .LVU31
+ 225:./lwip-2.1.2/src/core/memp.c ****   u16_t i;
+ 118              		.loc 1 225 1 is_stmt 0 view .LVU32
+ 119 0030 F0B5     		push	{r4, r5, r6, r7, lr}
+ 120              	.LCFI2:
+ 121              		.cfi_def_cfa_offset 20
+ 122              		.cfi_offset 4, -20
+ 123              		.cfi_offset 5, -16
+ 124              		.cfi_offset 6, -12
+ 125              		.cfi_offset 7, -8
+ 126              		.cfi_offset 14, -4
+ 225:./lwip-2.1.2/src/core/memp.c ****   u16_t i;
+ 127              		.loc 1 225 1 view .LVU33
+ 128 0032 134B     		ldr	r3, .L19
+ 129 0034 0425     		movs	r5, #4
+ 130 0036 DFF84CE0 		ldr	lr, .L19+4
+ 131              	.LBB26:
+ 132              	.LBB27:
+ 183:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+ 133              		.loc 1 183 14 view .LVU34
+ 134 003a 0027     		movs	r7, #0
+ 135              	.LBE27:
+ 136              	.LBE26:
+ 225:./lwip-2.1.2/src/core/memp.c ****   u16_t i;
+ 137              		.loc 1 225 1 view .LVU35
+ 138 003c 03F18404 		add	r4, r3, #132
+ 139 0040 0EF13006 		add	r6, lr, #48
+ 140 0044 AEF10C02 		sub	r2, lr, #12
+ 141              	.LVL8:
+ 142              	.L14:
  230:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
- 437              		.loc 1 230 5 discriminator 3
- 438 006c FB88     		ldrh	r3, [r7, #6]
- 439 006e 084A     		ldr	r2, .L7
- 440 0070 52F82330 		ldr	r3, [r2, r3, lsl #2]
- 441 0074 1846     		mov	r0, r3
- 442 0076 FFF7FEFF 		bl	memp_init_pool
+ 143              		.loc 1 230 5 is_stmt 1 discriminator 3 view .LVU36
+ 144              	.LBB30:
+ 145              	.LBI26:
+ 175:./lwip-2.1.2/src/core/memp.c **** {
+ 146              		.loc 1 175 1 discriminator 3 view .LVU37
+ 147              	.LBB28:
+ 180:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+ 148              		.loc 1 180 3 discriminator 3 view .LVU38
+ 181:./lwip-2.1.2/src/core/memp.c **** 
+ 149              		.loc 1 181 3 discriminator 3 view .LVU39
+ 183:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+ 150              		.loc 1 183 3 discriminator 3 view .LVU40
+ 184:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
+ 151              		.loc 1 184 25 is_stmt 0 discriminator 3 view .LVU41
+ 152 0048 0333     		adds	r3, r3, #3
+ 183:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)LWIP_MEM_ALIGN(desc->base);
+ 153              		.loc 1 183 14 discriminator 3 view .LVU42
+ 154 004a 2760     		str	r7, [r4]
+ 184:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
+ 155              		.loc 1 184 3 is_stmt 1 discriminator 3 view .LVU43
+ 184:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
+ 156              		.loc 1 184 25 is_stmt 0 discriminator 3 view .LVU44
+ 157 004c 23F00303 		bic	r3, r3, #3
+ 158              	.LVL9:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 159              		.loc 1 194 3 is_stmt 1 discriminator 3 view .LVU45
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 160              		.loc 1 194 15 discriminator 3 view .LVU46
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 161              		.loc 1 194 3 is_stmt 0 discriminator 3 view .LVU47
+ 162 0050 65B1     		cbz	r5, .L13
+ 201:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 163              		.loc 1 201 67 view .LVU48
+ 164 0052 0021     		movs	r1, #0
+ 165 0054 B2F800C0 		ldrh	ip, [r2]
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 166              		.loc 1 194 10 view .LVU49
+ 167 0058 0A46     		mov	r2, r1
+ 168              	.LVL10:
+ 169              	.L12:
+ 195:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp;
+ 170              		.loc 1 195 5 is_stmt 1 view .LVU50
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 171              		.loc 1 194 30 is_stmt 0 view .LVU51
+ 172 005a 0132     		adds	r2, r2, #1
+ 173              	.LVL11:
+ 201:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 174              		.loc 1 201 10 view .LVU52
+ 175 005c 03EB0C00 		add	r0, r3, ip
+ 195:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp;
+ 176              		.loc 1 195 16 view .LVU53
+ 177 0060 1960     		str	r1, [r3]
+ 196:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 178              		.loc 1 196 5 is_stmt 1 view .LVU54
+ 179 0062 1946     		mov	r1, r3
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 180              		.loc 1 194 3 is_stmt 0 view .LVU55
+ 181 0064 AA42     		cmp	r2, r5
+ 196:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 182              		.loc 1 196 16 view .LVU56
+ 183 0066 2360     		str	r3, [r4]
+ 201:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 184              		.loc 1 201 5 is_stmt 1 view .LVU57
+ 185              	.LVL12:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 186              		.loc 1 194 30 view .LVU58
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 187              		.loc 1 194 15 view .LVU59
+ 201:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 188              		.loc 1 201 10 is_stmt 0 view .LVU60
+ 189 0068 0346     		mov	r3, r0
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 190              		.loc 1 194 3 view .LVU61
+ 191 006a F6D1     		bne	.L12
+ 192              	.LVL13:
+ 193              	.L13:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 194              		.loc 1 194 3 view .LVU62
+ 195              	.LBE28:
+ 196              	.LBE30:
  229:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
- 443              		.loc 1 229 48 discriminator 3
- 444 007a FB88     		ldrh	r3, [r7, #6]
- 445 007c 0133     		adds	r3, r3, #1
- 446 007e FB80     		strh	r3, [r7, #6]	@ movhi
- 447              	.L5:
+ 197              		.loc 1 229 47 is_stmt 1 view .LVU63
  229:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
- 448              		.loc 1 229 3 discriminator 1
- 449 0080 FB88     		ldrh	r3, [r7, #6]
- 450 0082 0C2B     		cmp	r3, #12
- 451 0084 F2D9     		bls	.L6
+ 198              		.loc 1 229 15 view .LVU64
+ 229:./lwip-2.1.2/src/core/memp.c ****     memp_init_pool(memp_pools[i]);
+ 199              		.loc 1 229 3 is_stmt 0 view .LVU65
+ 200 006c 7645     		cmp	r6, lr
+ 201 006e 05D0     		beq	.L18
+ 202              		.loc 1 230 5 view .LVU66
+ 203 0070 5EF8042F 		ldr	r2, [lr, #4]!
+ 204              	.LVL14:
+ 205              	.LBB31:
+ 206              	.LBB29:
+ 184:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_INIT
+ 207              		.loc 1 184 25 view .LVU67
+ 208 0074 D2E90134 		ldrd	r3, r4, [r2, #4]
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 209              		.loc 1 194 23 view .LVU68
+ 210 0078 5588     		ldrh	r5, [r2, #2]
+ 211 007a E5E7     		b	.L14
+ 212              	.LVL15:
+ 213              	.L18:
+ 194:./lwip-2.1.2/src/core/memp.c ****     memp->next = *desc->tab;
+ 214              		.loc 1 194 23 view .LVU69
+ 215              	.LBE29:
+ 216              	.LBE31:
  231:./lwip-2.1.2/src/core/memp.c **** 
  232:./lwip-2.1.2/src/core/memp.c **** #if LWIP_STATS && MEMP_STATS
  233:./lwip-2.1.2/src/core/memp.c ****     lwip_stats.memp[i] = memp_pools[i]->stats;
@@ -677,30 +502,25 @@
  239:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_all();
  240:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK >= 2 */
  241:./lwip-2.1.2/src/core/memp.c **** }
- 452              		.loc 1 241 1
- 453 0086 00BF     		nop
- 454 0088 00BF     		nop
- 455 008a 0837     		adds	r7, r7, #8
- 456              	.LCFI9:
- 457              		.cfi_def_cfa_offset 8
- 458 008c BD46     		mov	sp, r7
- 459              	.LCFI10:
- 460              		.cfi_def_cfa_register 13
- 461              		@ sp needed
- 462 008e 80BD     		pop	{r7, pc}
- 463              	.L8:
- 464              		.align	2
- 465              	.L7:
- 466 0090 00000000 		.word	memp_pools
- 467              		.cfi_endproc
- 468              	.LFE170:
- 470              		.align	1
- 471              		.syntax unified
- 472              		.thumb
- 473              		.thumb_func
- 474              		.fpu fpv5-d16
- 476              	do_memp_malloc_pool:
- 477              	.LFB171:
+ 217              		.loc 1 241 1 view .LVU70
+ 218 007c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 219              	.L20:
+ 220 007e 00BF     		.align	2
+ 221              	.L19:
+ 222 0080 00000000 		.word	.LANCHOR0
+ 223 0084 0C000000 		.word	.LANCHOR1+12
+ 224              		.cfi_endproc
+ 225              	.LFE170:
+ 227              		.align	1
+ 228              		.p2align 2,,3
+ 229              		.global	memp_malloc_pool
+ 230              		.syntax unified
+ 231              		.thumb
+ 232              		.thumb_func
+ 233              		.fpu fpv5-d16
+ 235              	memp_malloc_pool:
+ 236              	.LVL16:
+ 237              	.LFB172:
  242:./lwip-2.1.2/src/core/memp.c **** 
  243:./lwip-2.1.2/src/core/memp.c **** static void *
  244:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
@@ -709,25 +529,104 @@
  247:./lwip-2.1.2/src/core/memp.c **** do_memp_malloc_pool_fn(const struct memp_desc *desc, const char *file, const int line)
  248:./lwip-2.1.2/src/core/memp.c **** #endif
  249:./lwip-2.1.2/src/core/memp.c **** {
- 478              		.loc 1 249 1
- 479              		.cfi_startproc
- 480              		@ args = 0, pretend = 0, frame = 24
- 481              		@ frame_needed = 1, uses_anonymous_args = 0
- 482              		@ link register save eliminated.
- 483 0094 80B4     		push	{r7}
- 484              	.LCFI11:
- 485              		.cfi_def_cfa_offset 4
- 486              		.cfi_offset 7, -4
- 487 0096 87B0     		sub	sp, sp, #28
- 488              	.LCFI12:
- 489              		.cfi_def_cfa_offset 32
- 490 0098 00AF     		add	r7, sp, #0
- 491              	.LCFI13:
- 492              		.cfi_def_cfa_register 7
- 493 009a 7860     		str	r0, [r7, #4]
- 494              	.LBB24:
- 495              	.LBB25:
- 496              		.file 2 "./inc/cmsis_gcc.h"
+ 250:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
+ 251:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 252:./lwip-2.1.2/src/core/memp.c **** 
+ 253:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 254:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc->size));
+ 255:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 256:./lwip-2.1.2/src/core/memp.c **** #else /* MEMP_MEM_MALLOC */
+ 257:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
+ 258:./lwip-2.1.2/src/core/memp.c **** 
+ 259:./lwip-2.1.2/src/core/memp.c ****   memp = *desc->tab;
+ 260:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 261:./lwip-2.1.2/src/core/memp.c **** 
+ 262:./lwip-2.1.2/src/core/memp.c ****   if (memp != NULL) {
+ 263:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 264:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK == 1
+ 265:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_check_element(memp, desc);
+ 266:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 267:./lwip-2.1.2/src/core/memp.c **** 
+ 268:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp->next;
+ 269:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 270:./lwip-2.1.2/src/core/memp.c ****     memp->next = NULL;
+ 271:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 272:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 273:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 274:./lwip-2.1.2/src/core/memp.c ****     memp->file = file;
+ 275:./lwip-2.1.2/src/core/memp.c ****     memp->line = line;
+ 276:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
+ 277:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_init_element(memp, desc);
+ 278:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 279:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
+ 280:./lwip-2.1.2/src/core/memp.c ****     LWIP_ASSERT("memp_malloc: memp properly aligned",
+ 281:./lwip-2.1.2/src/core/memp.c ****                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
+ 282:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 283:./lwip-2.1.2/src/core/memp.c ****     desc->stats->used++;
+ 284:./lwip-2.1.2/src/core/memp.c ****     if (desc->stats->used > desc->stats->max) {
+ 285:./lwip-2.1.2/src/core/memp.c ****       desc->stats->max = desc->stats->used;
+ 286:./lwip-2.1.2/src/core/memp.c ****     }
+ 287:./lwip-2.1.2/src/core/memp.c **** #endif
+ 288:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
+ 289:./lwip-2.1.2/src/core/memp.c ****     /* cast through u8_t* to get rid of alignment warnings */
+ 290:./lwip-2.1.2/src/core/memp.c ****     return ((u8_t *)memp + MEMP_SIZE);
+ 291:./lwip-2.1.2/src/core/memp.c ****   } else {
+ 292:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 293:./lwip-2.1.2/src/core/memp.c ****     desc->stats->err++;
+ 294:./lwip-2.1.2/src/core/memp.c **** #endif
+ 295:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
+ 296:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 297:./lwip-2.1.2/src/core/memp.c ****   }
+ 298:./lwip-2.1.2/src/core/memp.c **** 
+ 299:./lwip-2.1.2/src/core/memp.c ****   return NULL;
+ 300:./lwip-2.1.2/src/core/memp.c **** }
+ 301:./lwip-2.1.2/src/core/memp.c **** 
+ 302:./lwip-2.1.2/src/core/memp.c **** /**
+ 303:./lwip-2.1.2/src/core/memp.c ****  * Get an element from a custom pool.
+ 304:./lwip-2.1.2/src/core/memp.c ****  *
+ 305:./lwip-2.1.2/src/core/memp.c ****  * @param desc the pool to get an element from
+ 306:./lwip-2.1.2/src/core/memp.c ****  *
+ 307:./lwip-2.1.2/src/core/memp.c ****  * @return a pointer to the allocated memory or a NULL pointer on error
+ 308:./lwip-2.1.2/src/core/memp.c ****  */
+ 309:./lwip-2.1.2/src/core/memp.c **** void *
+ 310:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 311:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool(const struct memp_desc *desc)
+ 312:./lwip-2.1.2/src/core/memp.c **** #else
+ 313:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool_fn(const struct memp_desc *desc, const char *file, const int line)
+ 314:./lwip-2.1.2/src/core/memp.c **** #endif
+ 315:./lwip-2.1.2/src/core/memp.c **** {
+ 238              		.loc 1 315 1 is_stmt 1 view -0
+ 239              		.cfi_startproc
+ 240              		@ args = 0, pretend = 0, frame = 0
+ 241              		@ frame_needed = 0, uses_anonymous_args = 0
+ 242              		@ link register save eliminated.
+ 316:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("invalid pool desc", desc != NULL);
+ 243              		.loc 1 316 49 view .LVU72
+ 317:./lwip-2.1.2/src/core/memp.c ****   if (desc == NULL) {
+ 244              		.loc 1 317 3 view .LVU73
+ 245              		.loc 1 317 6 is_stmt 0 view .LVU74
+ 246 0088 80B1     		cbz	r0, .L25
+ 318:./lwip-2.1.2/src/core/memp.c ****     return NULL;
+ 319:./lwip-2.1.2/src/core/memp.c ****   }
+ 320:./lwip-2.1.2/src/core/memp.c **** 
+ 321:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
+ 322:./lwip-2.1.2/src/core/memp.c ****   return do_memp_malloc_pool(desc);
+ 247              		.loc 1 322 3 is_stmt 1 view .LVU75
+ 248              	.LVL17:
+ 249              	.LBB46:
+ 250              	.LBI46:
+ 245:./lwip-2.1.2/src/core/memp.c **** #else
+ 251              		.loc 1 245 1 view .LVU76
+ 252              	.LBB47:
+ 250:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 253              		.loc 1 250 3 view .LVU77
+ 251:./lwip-2.1.2/src/core/memp.c **** 
+ 254              		.loc 1 251 3 view .LVU78
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 255              		.loc 1 257 3 view .LVU79
+ 256              	.LBB48:
+ 257              	.LBI48:
+ 258              		.file 2 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -1177,50 +1076,47 @@
  447:./inc/cmsis_gcc.h ****   \return               Priority Mask value
  448:./inc/cmsis_gcc.h ****  */
  449:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 259              		.loc 2 449 31 view .LVU80
+ 260              	.LBB49:
  450:./inc/cmsis_gcc.h **** {
  451:./inc/cmsis_gcc.h ****   uint32_t result;
+ 261              		.loc 2 451 3 view .LVU81
  452:./inc/cmsis_gcc.h **** 
  453:./inc/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
- 497              		.loc 2 453 3
- 498              		.syntax unified
- 499              	@ 453 "./inc/cmsis_gcc.h" 1
- 500 009c EFF31083 		MRS r3, primask
- 501              	@ 0 "" 2
- 502              		.thumb
- 503              		.syntax unified
- 504 00a0 FB60     		str	r3, [r7, #12]
+ 262              		.loc 2 453 3 view .LVU82
+ 263              		.syntax unified
+ 264              	@ 453 "./inc/cmsis_gcc.h" 1
+ 265 008a EFF31082 		MRS r2, primask
+ 266              	@ 0 "" 2
+ 267              	.LVL18:
  454:./inc/cmsis_gcc.h ****   return(result);
- 505              		.loc 2 454 9
- 506 00a2 FB68     		ldr	r3, [r7, #12]
- 507              	.LBE25:
- 508              	.LBE24:
- 250:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
- 251:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
- 252:./lwip-2.1.2/src/core/memp.c **** 
- 253:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
- 254:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)mem_malloc(MEMP_SIZE + MEMP_ALIGN_SIZE(desc->size));
- 255:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
- 256:./lwip-2.1.2/src/core/memp.c **** #else /* MEMP_MEM_MALLOC */
- 257:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
- 509              		.loc 1 257 3
- 510 00a4 7B61     		str	r3, [r7, #20]
- 511              	.LBB26:
- 512              	.LBB27:
+ 268              		.loc 2 454 3 view .LVU83
+ 269              		.loc 2 454 3 is_stmt 0 view .LVU84
+ 270              		.thumb
+ 271              		.syntax unified
+ 272              	.LBE49:
+ 273              	.LBE48:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 274              		.loc 1 257 3 is_stmt 1 view .LVU85
+ 275              	.LBB50:
+ 276              	.LBI50:
+ 207:./inc/cmsis_gcc.h **** {
+ 277              		.loc 2 207 27 view .LVU86
+ 278              	.LBB51:
  209:./inc/cmsis_gcc.h **** }
- 513              		.loc 2 209 3
- 514              		.syntax unified
- 515              	@ 209 "./inc/cmsis_gcc.h" 1
- 516 00a6 72B6     		cpsid i
- 517              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 518              		.loc 2 210 1
- 519              		.thumb
- 520              		.syntax unified
- 521 00a8 00BF     		nop
- 522              	.LBE27:
- 523              	.LBE26:
- 524              	.LBB28:
- 525              	.LBB29:
+ 279              		.loc 2 209 3 view .LVU87
+ 280              		.syntax unified
+ 281              	@ 209 "./inc/cmsis_gcc.h" 1
+ 282 008e 72B6     		cpsid i
+ 283              	@ 0 "" 2
+ 284              		.thumb
+ 285              		.syntax unified
+ 286              	.LBE51:
+ 287              	.LBE50:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 288              		.loc 1 257 3 view .LVU88
+ 289              	.LBB52:
+ 290              	.LBI52:
  455:./inc/cmsis_gcc.h **** }
  456:./inc/cmsis_gcc.h **** 
  457:./inc/cmsis_gcc.h **** 
@@ -1711,242 +1607,123 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 291              		.loc 2 944 27 view .LVU89
+ 292              	.LBB53:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 526              		.loc 2 946 3
- 527              		.syntax unified
- 528              	@ 946 "./inc/cmsis_gcc.h" 1
- 529 00aa BFF34F8F 		dsb 0xF
- 530              	@ 0 "" 2
- 947:./inc/cmsis_gcc.h **** }
- 531              		.loc 2 947 1
- 532              		.thumb
- 533              		.syntax unified
- 534 00ae 00BF     		nop
- 535              	.LBE29:
- 536              	.LBE28:
- 537              	.LBB30:
- 538              	.LBB31:
+ 293              		.loc 2 946 3 view .LVU90
+ 294              		.syntax unified
+ 295              	@ 946 "./inc/cmsis_gcc.h" 1
+ 296 0090 BFF34F8F 		dsb 0xF
+ 297              	@ 0 "" 2
+ 298              		.thumb
+ 299              		.syntax unified
+ 300              	.LBE53:
+ 301              	.LBE52:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 302              		.loc 1 257 3 view .LVU91
+ 303              	.LBB54:
+ 304              	.LBI54:
+ 933:./inc/cmsis_gcc.h **** {
+ 305              		.loc 2 933 27 view .LVU92
+ 306              	.LBB55:
  935:./inc/cmsis_gcc.h **** }
- 539              		.loc 2 935 3
- 540              		.syntax unified
- 541              	@ 935 "./inc/cmsis_gcc.h" 1
- 542 00b0 BFF36F8F 		isb 0xF
- 543              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 544              		.loc 2 936 1
- 545              		.thumb
- 546              		.syntax unified
- 547 00b4 00BF     		nop
- 548              	.LBE31:
- 549              	.LBE30:
- 258:./lwip-2.1.2/src/core/memp.c **** 
- 259:./lwip-2.1.2/src/core/memp.c ****   memp = *desc->tab;
- 550              		.loc 1 259 15
- 551 00b6 7B68     		ldr	r3, [r7, #4]
- 552 00b8 9B68     		ldr	r3, [r3, #8]
- 553              		.loc 1 259 8
- 554 00ba 1B68     		ldr	r3, [r3]
- 555 00bc 3B61     		str	r3, [r7, #16]
- 260:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
- 261:./lwip-2.1.2/src/core/memp.c **** 
- 262:./lwip-2.1.2/src/core/memp.c ****   if (memp != NULL) {
- 556              		.loc 1 262 6
- 557 00be 3B69     		ldr	r3, [r7, #16]
- 558 00c0 002B     		cmp	r3, #0
- 559 00c2 0BD0     		beq	.L11
- 263:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
- 264:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK == 1
- 265:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_check_element(memp, desc);
- 266:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
- 267:./lwip-2.1.2/src/core/memp.c **** 
- 268:./lwip-2.1.2/src/core/memp.c ****     *desc->tab = memp->next;
- 560              		.loc 1 268 10
- 561 00c4 7B68     		ldr	r3, [r7, #4]
- 562 00c6 9B68     		ldr	r3, [r3, #8]
- 563              		.loc 1 268 22
- 564 00c8 3A69     		ldr	r2, [r7, #16]
- 565 00ca 1268     		ldr	r2, [r2]
- 566              		.loc 1 268 16
- 567 00cc 1A60     		str	r2, [r3]
- 269:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
- 270:./lwip-2.1.2/src/core/memp.c ****     memp->next = NULL;
- 271:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
- 272:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
- 273:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
- 274:./lwip-2.1.2/src/core/memp.c ****     memp->file = file;
- 275:./lwip-2.1.2/src/core/memp.c ****     memp->line = line;
- 276:./lwip-2.1.2/src/core/memp.c **** #if MEMP_MEM_MALLOC
- 277:./lwip-2.1.2/src/core/memp.c ****     memp_overflow_init_element(memp, desc);
- 278:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
- 279:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_OVERFLOW_CHECK */
- 280:./lwip-2.1.2/src/core/memp.c ****     LWIP_ASSERT("memp_malloc: memp properly aligned",
- 281:./lwip-2.1.2/src/core/memp.c ****                 ((mem_ptr_t)memp % MEM_ALIGNMENT) == 0);
- 282:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
- 283:./lwip-2.1.2/src/core/memp.c ****     desc->stats->used++;
- 284:./lwip-2.1.2/src/core/memp.c ****     if (desc->stats->used > desc->stats->max) {
- 285:./lwip-2.1.2/src/core/memp.c ****       desc->stats->max = desc->stats->used;
- 286:./lwip-2.1.2/src/core/memp.c ****     }
- 287:./lwip-2.1.2/src/core/memp.c **** #endif
- 288:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
- 568              		.loc 1 288 5
- 569 00ce 7B69     		ldr	r3, [r7, #20]
- 570 00d0 002B     		cmp	r3, #0
- 571 00d2 01D1     		bne	.L12
- 572              	.LBB32:
- 573              	.LBB33:
+ 307              		.loc 2 935 3 view .LVU93
+ 308              		.syntax unified
+ 309              	@ 935 "./inc/cmsis_gcc.h" 1
+ 310 0094 BFF36F8F 		isb 0xF
+ 311              	@ 0 "" 2
+ 312              		.thumb
+ 313              		.syntax unified
+ 314              	.LBE55:
+ 315              	.LBE54:
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 316              		.loc 1 259 3 view .LVU94
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 317              		.loc 1 259 15 is_stmt 0 view .LVU95
+ 318 0098 8368     		ldr	r3, [r0, #8]
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 319              		.loc 1 259 8 view .LVU96
+ 320 009a 1868     		ldr	r0, [r3]
+ 321              	.LVL19:
+ 262:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 322              		.loc 1 262 3 is_stmt 1 view .LVU97
+ 262:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 323              		.loc 1 262 6 is_stmt 0 view .LVU98
+ 324 009c 20B1     		cbz	r0, .L24
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 325              		.loc 1 268 5 is_stmt 1 view .LVU99
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 326              		.loc 1 268 22 is_stmt 0 view .LVU100
+ 327 009e 0168     		ldr	r1, [r0]
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 328              		.loc 1 268 16 view .LVU101
+ 329 00a0 1960     		str	r1, [r3]
+ 281:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 330              		.loc 1 281 56 is_stmt 1 view .LVU102
+ 288:./lwip-2.1.2/src/core/memp.c ****     /* cast through u8_t* to get rid of alignment warnings */
+ 331              		.loc 1 288 5 view .LVU103
+ 332 00a2 02B9     		cbnz	r2, .L21
+ 333              	.L26:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 334              		.loc 1 295 5 view .LVU104
+ 335              	.LBB56:
+ 336              	.LBI56:
+ 196:./inc/cmsis_gcc.h **** {
+ 337              		.loc 2 196 27 view .LVU105
+ 338              	.LBB57:
  198:./inc/cmsis_gcc.h **** }
- 574              		.loc 2 198 3
- 575              		.syntax unified
- 576              	@ 198 "./inc/cmsis_gcc.h" 1
- 577 00d4 62B6     		cpsie i
- 578              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 579              		.loc 2 199 1
- 580              		.thumb
- 581              		.syntax unified
- 582 00d6 00BF     		nop
- 583              	.L12:
- 584              	.LBE33:
- 585              	.LBE32:
- 289:./lwip-2.1.2/src/core/memp.c ****     /* cast through u8_t* to get rid of alignment warnings */
- 290:./lwip-2.1.2/src/core/memp.c ****     return ((u8_t *)memp + MEMP_SIZE);
- 586              		.loc 1 290 26
- 587 00d8 3B69     		ldr	r3, [r7, #16]
- 588 00da 05E0     		b	.L13
- 589              	.L11:
- 291:./lwip-2.1.2/src/core/memp.c ****   } else {
- 292:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
- 293:./lwip-2.1.2/src/core/memp.c ****     desc->stats->err++;
- 294:./lwip-2.1.2/src/core/memp.c **** #endif
- 295:./lwip-2.1.2/src/core/memp.c ****     SYS_ARCH_UNPROTECT(old_level);
- 590              		.loc 1 295 5
- 591 00dc 7B69     		ldr	r3, [r7, #20]
- 592 00de 002B     		cmp	r3, #0
- 593 00e0 01D1     		bne	.L14
- 594              	.LBB34:
- 595              	.LBB35:
+ 339              		.loc 2 198 3 view .LVU106
+ 340              		.syntax unified
+ 341              	@ 198 "./inc/cmsis_gcc.h" 1
+ 342 00a4 62B6     		cpsie i
+ 343              	@ 0 "" 2
+ 344              	.LVL20:
+ 345              		.thumb
+ 346              		.syntax unified
+ 347              	.L21:
  198:./inc/cmsis_gcc.h **** }
- 596              		.loc 2 198 3
- 597              		.syntax unified
- 598              	@ 198 "./inc/cmsis_gcc.h" 1
- 599 00e2 62B6     		cpsie i
- 600              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 601              		.loc 2 199 1
- 602              		.thumb
- 603              		.syntax unified
- 604 00e4 00BF     		nop
- 605              	.L14:
- 606              	.LBE35:
- 607              	.LBE34:
- 296:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
- 297:./lwip-2.1.2/src/core/memp.c ****   }
- 298:./lwip-2.1.2/src/core/memp.c **** 
- 299:./lwip-2.1.2/src/core/memp.c ****   return NULL;
- 608              		.loc 1 299 10
- 609 00e6 0023     		movs	r3, #0
- 610              	.L13:
- 300:./lwip-2.1.2/src/core/memp.c **** }
- 611              		.loc 1 300 1
- 612 00e8 1846     		mov	r0, r3
- 613 00ea 1C37     		adds	r7, r7, #28
- 614              	.LCFI14:
- 615              		.cfi_def_cfa_offset 4
- 616 00ec BD46     		mov	sp, r7
- 617              	.LCFI15:
- 618              		.cfi_def_cfa_register 13
- 619              		@ sp needed
- 620 00ee 5DF8047B 		ldr	r7, [sp], #4
- 621              	.LCFI16:
- 622              		.cfi_restore 7
- 623              		.cfi_def_cfa_offset 0
- 624 00f2 7047     		bx	lr
- 625              		.cfi_endproc
- 626              	.LFE171:
- 628              		.align	1
- 629              		.global	memp_malloc_pool
- 630              		.syntax unified
- 631              		.thumb
- 632              		.thumb_func
- 633              		.fpu fpv5-d16
- 635              	memp_malloc_pool:
- 636              	.LFB172:
- 301:./lwip-2.1.2/src/core/memp.c **** 
- 302:./lwip-2.1.2/src/core/memp.c **** /**
- 303:./lwip-2.1.2/src/core/memp.c ****  * Get an element from a custom pool.
- 304:./lwip-2.1.2/src/core/memp.c ****  *
- 305:./lwip-2.1.2/src/core/memp.c ****  * @param desc the pool to get an element from
- 306:./lwip-2.1.2/src/core/memp.c ****  *
- 307:./lwip-2.1.2/src/core/memp.c ****  * @return a pointer to the allocated memory or a NULL pointer on error
- 308:./lwip-2.1.2/src/core/memp.c ****  */
- 309:./lwip-2.1.2/src/core/memp.c **** void *
- 310:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
- 311:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool(const struct memp_desc *desc)
- 312:./lwip-2.1.2/src/core/memp.c **** #else
- 313:./lwip-2.1.2/src/core/memp.c **** memp_malloc_pool_fn(const struct memp_desc *desc, const char *file, const int line)
- 314:./lwip-2.1.2/src/core/memp.c **** #endif
- 315:./lwip-2.1.2/src/core/memp.c **** {
- 637              		.loc 1 315 1
- 638              		.cfi_startproc
- 639              		@ args = 0, pretend = 0, frame = 8
- 640              		@ frame_needed = 1, uses_anonymous_args = 0
- 641 00f4 80B5     		push	{r7, lr}
- 642              	.LCFI17:
- 643              		.cfi_def_cfa_offset 8
- 644              		.cfi_offset 7, -8
- 645              		.cfi_offset 14, -4
- 646 00f6 82B0     		sub	sp, sp, #8
- 647              	.LCFI18:
- 648              		.cfi_def_cfa_offset 16
- 649 00f8 00AF     		add	r7, sp, #0
- 650              	.LCFI19:
- 651              		.cfi_def_cfa_register 7
- 652 00fa 7860     		str	r0, [r7, #4]
- 316:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("invalid pool desc", desc != NULL);
- 317:./lwip-2.1.2/src/core/memp.c ****   if (desc == NULL) {
- 653              		.loc 1 317 6
- 654 00fc 7B68     		ldr	r3, [r7, #4]
- 655 00fe 002B     		cmp	r3, #0
- 656 0100 01D1     		bne	.L16
- 318:./lwip-2.1.2/src/core/memp.c ****     return NULL;
- 657              		.loc 1 318 12
- 658 0102 0023     		movs	r3, #0
- 659 0104 03E0     		b	.L17
- 660              	.L16:
- 319:./lwip-2.1.2/src/core/memp.c ****   }
- 320:./lwip-2.1.2/src/core/memp.c **** 
- 321:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
- 322:./lwip-2.1.2/src/core/memp.c ****   return do_memp_malloc_pool(desc);
- 661              		.loc 1 322 10
- 662 0106 7868     		ldr	r0, [r7, #4]
- 663 0108 FFF7C4FF 		bl	do_memp_malloc_pool
- 664 010c 0346     		mov	r3, r0
- 665              	.L17:
+ 348              		.loc 2 198 3 is_stmt 0 view .LVU107
+ 349              	.LBE57:
+ 350              	.LBE56:
+ 351              	.LBE47:
+ 352              	.LBE46:
  323:./lwip-2.1.2/src/core/memp.c **** #else
  324:./lwip-2.1.2/src/core/memp.c ****   return do_memp_malloc_pool_fn(desc, file, line);
  325:./lwip-2.1.2/src/core/memp.c **** #endif
  326:./lwip-2.1.2/src/core/memp.c **** }
- 666              		.loc 1 326 1
- 667 010e 1846     		mov	r0, r3
- 668 0110 0837     		adds	r7, r7, #8
- 669              	.LCFI20:
- 670              		.cfi_def_cfa_offset 8
- 671 0112 BD46     		mov	sp, r7
- 672              	.LCFI21:
- 673              		.cfi_def_cfa_register 13
- 674              		@ sp needed
- 675 0114 80BD     		pop	{r7, pc}
- 676              		.cfi_endproc
- 677              	.LFE172:
- 679              		.align	1
- 680              		.global	memp_malloc
- 681              		.syntax unified
- 682              		.thumb
- 683              		.thumb_func
- 684              		.fpu fpv5-d16
- 686              	memp_malloc:
- 687              	.LFB173:
+ 353              		.loc 1 326 1 view .LVU108
+ 354 00a6 7047     		bx	lr
+ 355              	.LVL21:
+ 356              	.L24:
+ 357              	.LBB59:
+ 358              	.LBB58:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 359              		.loc 1 295 5 is_stmt 1 view .LVU109
+ 360 00a8 002A     		cmp	r2, #0
+ 361 00aa FBD0     		beq	.L26
+ 362              	.LVL22:
+ 363              	.L25:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 364              		.loc 1 295 5 is_stmt 0 view .LVU110
+ 365              	.LBE58:
+ 366              	.LBE59:
+ 318:./lwip-2.1.2/src/core/memp.c ****   }
+ 367              		.loc 1 318 12 view .LVU111
+ 368 00ac 0020     		movs	r0, #0
+ 369 00ae 7047     		bx	lr
+ 370              		.cfi_endproc
+ 371              	.LFE172:
+ 373              		.align	1
+ 374              		.p2align 2,,3
+ 375              		.global	memp_malloc
+ 376              		.syntax unified
+ 377              		.thumb
+ 378              		.thumb_func
+ 379              		.fpu fpv5-d16
+ 381              	memp_malloc:
+ 382              	.LVL23:
+ 383              	.LFB173:
  327:./lwip-2.1.2/src/core/memp.c **** 
  328:./lwip-2.1.2/src/core/memp.c **** /**
  329:./lwip-2.1.2/src/core/memp.c ****  * Get an element from a specific pool.
@@ -1962,33 +1739,20 @@
  339:./lwip-2.1.2/src/core/memp.c **** memp_malloc_fn(memp_t type, const char *file, const int line)
  340:./lwip-2.1.2/src/core/memp.c **** #endif
  341:./lwip-2.1.2/src/core/memp.c **** {
- 688              		.loc 1 341 1
- 689              		.cfi_startproc
- 690              		@ args = 0, pretend = 0, frame = 16
- 691              		@ frame_needed = 1, uses_anonymous_args = 0
- 692 0116 80B5     		push	{r7, lr}
- 693              	.LCFI22:
- 694              		.cfi_def_cfa_offset 8
- 695              		.cfi_offset 7, -8
- 696              		.cfi_offset 14, -4
- 697 0118 84B0     		sub	sp, sp, #16
- 698              	.LCFI23:
- 699              		.cfi_def_cfa_offset 24
- 700 011a 00AF     		add	r7, sp, #0
- 701              	.LCFI24:
- 702              		.cfi_def_cfa_register 7
- 703 011c 0346     		mov	r3, r0
- 704 011e FB71     		strb	r3, [r7, #7]
+ 384              		.loc 1 341 1 is_stmt 1 view -0
+ 385              		.cfi_startproc
+ 386              		@ args = 0, pretend = 0, frame = 0
+ 387              		@ frame_needed = 0, uses_anonymous_args = 0
+ 388              		@ link register save eliminated.
  342:./lwip-2.1.2/src/core/memp.c ****   void *memp;
+ 389              		.loc 1 342 3 view .LVU113
  343:./lwip-2.1.2/src/core/memp.c ****   LWIP_ERROR("memp_malloc: type < MEMP_MAX", (type < MEMP_MAX), return NULL;);
- 705              		.loc 1 343 3
- 706 0120 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 707 0122 0C2B     		cmp	r3, #12
- 708 0124 01D9     		bls	.L19
- 709              		.loc 1 343 3 is_stmt 0 discriminator 1
- 710 0126 0023     		movs	r3, #0
- 711 0128 08E0     		b	.L20
- 712              	.L19:
+ 390              		.loc 1 343 3 view .LVU114
+ 391              		.loc 1 343 3 view .LVU115
+ 392 00b0 0C28     		cmp	r0, #12
+ 393 00b2 14D8     		bhi	.L31
+ 394              		.loc 1 343 3 discriminator 2 view .LVU116
+ 395              		.loc 1 343 3 discriminator 2 view .LVU117
  344:./lwip-2.1.2/src/core/memp.c **** 
  345:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK >= 2
  346:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_all();
@@ -1996,66 +1760,195 @@
  348:./lwip-2.1.2/src/core/memp.c **** 
  349:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_OVERFLOW_CHECK
  350:./lwip-2.1.2/src/core/memp.c ****   memp = do_memp_malloc_pool(memp_pools[type]);
- 713              		.loc 1 350 10 is_stmt 1
- 714 012a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 715 012c 054A     		ldr	r2, .L21
- 716 012e 52F82330 		ldr	r3, [r2, r3, lsl #2]
- 717 0132 1846     		mov	r0, r3
- 718 0134 FFF7AEFF 		bl	do_memp_malloc_pool
- 719 0138 F860     		str	r0, [r7, #12]
+ 396              		.loc 1 350 3 discriminator 2 view .LVU118
+ 397              		.loc 1 350 10 is_stmt 0 discriminator 2 view .LVU119
+ 398 00b4 0B4B     		ldr	r3, .L33
+ 399 00b6 03EB8000 		add	r0, r3, r0, lsl #2
+ 400              	.LVL24:
+ 401              		.loc 1 350 10 discriminator 2 view .LVU120
+ 402 00ba C368     		ldr	r3, [r0, #12]
+ 403              	.LVL25:
+ 404              	.LBB74:
+ 405              	.LBI74:
+ 245:./lwip-2.1.2/src/core/memp.c **** #else
+ 406              		.loc 1 245 1 is_stmt 1 discriminator 2 view .LVU121
+ 407              	.LBB75:
+ 250:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 408              		.loc 1 250 3 discriminator 2 view .LVU122
+ 251:./lwip-2.1.2/src/core/memp.c **** 
+ 409              		.loc 1 251 3 discriminator 2 view .LVU123
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 410              		.loc 1 257 3 discriminator 2 view .LVU124
+ 411              	.LBB76:
+ 412              	.LBI76:
+ 449:./inc/cmsis_gcc.h **** {
+ 413              		.loc 2 449 31 discriminator 2 view .LVU125
+ 414              	.LBB77:
+ 451:./inc/cmsis_gcc.h **** 
+ 415              		.loc 2 451 3 discriminator 2 view .LVU126
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 416              		.loc 2 453 3 discriminator 2 view .LVU127
+ 417              		.syntax unified
+ 418              	@ 453 "./inc/cmsis_gcc.h" 1
+ 419 00bc EFF31082 		MRS r2, primask
+ 420              	@ 0 "" 2
+ 421              	.LVL26:
+ 454:./inc/cmsis_gcc.h **** }
+ 422              		.loc 2 454 3 discriminator 2 view .LVU128
+ 454:./inc/cmsis_gcc.h **** }
+ 423              		.loc 2 454 3 is_stmt 0 discriminator 2 view .LVU129
+ 424              		.thumb
+ 425              		.syntax unified
+ 426              	.LBE77:
+ 427              	.LBE76:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 428              		.loc 1 257 3 is_stmt 1 discriminator 2 view .LVU130
+ 429              	.LBB78:
+ 430              	.LBI78:
+ 207:./inc/cmsis_gcc.h **** {
+ 431              		.loc 2 207 27 discriminator 2 view .LVU131
+ 432              	.LBB79:
+ 209:./inc/cmsis_gcc.h **** }
+ 433              		.loc 2 209 3 discriminator 2 view .LVU132
+ 434              		.syntax unified
+ 435              	@ 209 "./inc/cmsis_gcc.h" 1
+ 436 00c0 72B6     		cpsid i
+ 437              	@ 0 "" 2
+ 438              		.thumb
+ 439              		.syntax unified
+ 440              	.LBE79:
+ 441              	.LBE78:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 442              		.loc 1 257 3 discriminator 2 view .LVU133
+ 443              	.LBB80:
+ 444              	.LBI80:
+ 944:./inc/cmsis_gcc.h **** {
+ 445              		.loc 2 944 27 discriminator 2 view .LVU134
+ 446              	.LBB81:
+ 447              		.loc 2 946 3 discriminator 2 view .LVU135
+ 448              		.syntax unified
+ 449              	@ 946 "./inc/cmsis_gcc.h" 1
+ 450 00c2 BFF34F8F 		dsb 0xF
+ 451              	@ 0 "" 2
+ 452              		.thumb
+ 453              		.syntax unified
+ 454              	.LBE81:
+ 455              	.LBE80:
+ 257:./lwip-2.1.2/src/core/memp.c **** 
+ 456              		.loc 1 257 3 discriminator 2 view .LVU136
+ 457              	.LBB82:
+ 458              	.LBI82:
+ 933:./inc/cmsis_gcc.h **** {
+ 459              		.loc 2 933 27 discriminator 2 view .LVU137
+ 460              	.LBB83:
+ 935:./inc/cmsis_gcc.h **** }
+ 461              		.loc 2 935 3 discriminator 2 view .LVU138
+ 462              		.syntax unified
+ 463              	@ 935 "./inc/cmsis_gcc.h" 1
+ 464 00c6 BFF36F8F 		isb 0xF
+ 465              	@ 0 "" 2
+ 466              		.thumb
+ 467              		.syntax unified
+ 468              	.LBE83:
+ 469              	.LBE82:
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 470              		.loc 1 259 3 discriminator 2 view .LVU139
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 471              		.loc 1 259 15 is_stmt 0 discriminator 2 view .LVU140
+ 472 00ca 9B68     		ldr	r3, [r3, #8]
+ 473              	.LVL27:
+ 259:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_MEM_MALLOC */
+ 474              		.loc 1 259 8 discriminator 2 view .LVU141
+ 475 00cc 1868     		ldr	r0, [r3]
+ 476              	.LVL28:
+ 262:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 477              		.loc 1 262 3 is_stmt 1 discriminator 2 view .LVU142
+ 262:./lwip-2.1.2/src/core/memp.c **** #if !MEMP_MEM_MALLOC
+ 478              		.loc 1 262 6 is_stmt 0 discriminator 2 view .LVU143
+ 479 00ce 20B1     		cbz	r0, .L30
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 480              		.loc 1 268 5 is_stmt 1 view .LVU144
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 481              		.loc 1 268 22 is_stmt 0 view .LVU145
+ 482 00d0 0168     		ldr	r1, [r0]
+ 268:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK
+ 483              		.loc 1 268 16 view .LVU146
+ 484 00d2 1960     		str	r1, [r3]
+ 281:./lwip-2.1.2/src/core/memp.c **** #if MEMP_STATS
+ 485              		.loc 1 281 56 is_stmt 1 view .LVU147
+ 288:./lwip-2.1.2/src/core/memp.c ****     /* cast through u8_t* to get rid of alignment warnings */
+ 486              		.loc 1 288 5 view .LVU148
+ 487 00d4 02B9     		cbnz	r2, .L27
+ 488              	.L32:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 489              		.loc 1 295 5 view .LVU149
+ 490              	.LBB84:
+ 491              	.LBI84:
+ 196:./inc/cmsis_gcc.h **** {
+ 492              		.loc 2 196 27 view .LVU150
+ 493              	.LBB85:
+ 198:./inc/cmsis_gcc.h **** }
+ 494              		.loc 2 198 3 view .LVU151
+ 495              		.syntax unified
+ 496              	@ 198 "./inc/cmsis_gcc.h" 1
+ 497 00d6 62B6     		cpsie i
+ 498              	@ 0 "" 2
+ 499              	.LVL29:
+ 500              		.thumb
+ 501              		.syntax unified
+ 502              	.L27:
+ 198:./inc/cmsis_gcc.h **** }
+ 503              		.loc 2 198 3 is_stmt 0 view .LVU152
+ 504              	.LBE85:
+ 505              	.LBE84:
+ 506              	.LBE75:
+ 507              	.LBE74:
  351:./lwip-2.1.2/src/core/memp.c **** #else
  352:./lwip-2.1.2/src/core/memp.c ****   memp = do_memp_malloc_pool_fn(memp_pools[type], file, line);
  353:./lwip-2.1.2/src/core/memp.c **** #endif
  354:./lwip-2.1.2/src/core/memp.c **** 
  355:./lwip-2.1.2/src/core/memp.c ****   return memp;
- 720              		.loc 1 355 10
- 721 013a FB68     		ldr	r3, [r7, #12]
- 722              	.L20:
  356:./lwip-2.1.2/src/core/memp.c **** }
- 723              		.loc 1 356 1
- 724 013c 1846     		mov	r0, r3
- 725 013e 1037     		adds	r7, r7, #16
- 726              	.LCFI25:
- 727              		.cfi_def_cfa_offset 8
- 728 0140 BD46     		mov	sp, r7
- 729              	.LCFI26:
- 730              		.cfi_def_cfa_register 13
- 731              		@ sp needed
- 732 0142 80BD     		pop	{r7, pc}
- 733              	.L22:
- 734              		.align	2
- 735              	.L21:
- 736 0144 00000000 		.word	memp_pools
- 737              		.cfi_endproc
- 738              	.LFE173:
- 740              		.align	1
- 741              		.syntax unified
- 742              		.thumb
- 743              		.thumb_func
- 744              		.fpu fpv5-d16
- 746              	do_memp_free_pool:
- 747              	.LFB174:
+ 508              		.loc 1 356 1 view .LVU153
+ 509 00d8 7047     		bx	lr
+ 510              	.LVL30:
+ 511              	.L30:
+ 512              	.LBB87:
+ 513              	.LBB86:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 514              		.loc 1 295 5 is_stmt 1 view .LVU154
+ 515 00da 002A     		cmp	r2, #0
+ 516 00dc FBD0     		beq	.L32
+ 517              	.LVL31:
+ 518              	.L31:
+ 295:./lwip-2.1.2/src/core/memp.c ****     LWIP_DEBUGF(MEMP_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("memp_malloc: out of memory in pool %s\n", de
+ 519              		.loc 1 295 5 is_stmt 0 view .LVU155
+ 520              	.LBE86:
+ 521              	.LBE87:
+ 343:./lwip-2.1.2/src/core/memp.c **** 
+ 522              		.loc 1 343 3 view .LVU156
+ 523 00de 0020     		movs	r0, #0
+ 524 00e0 7047     		bx	lr
+ 525              	.L34:
+ 526 00e2 00BF     		.align	2
+ 527              	.L33:
+ 528 00e4 00000000 		.word	.LANCHOR1
+ 529              		.cfi_endproc
+ 530              	.LFE173:
+ 532              		.align	1
+ 533              		.p2align 2,,3
+ 534              		.global	memp_free_pool
+ 535              		.syntax unified
+ 536              		.thumb
+ 537              		.thumb_func
+ 538              		.fpu fpv5-d16
+ 540              	memp_free_pool:
+ 541              	.LVL32:
+ 542              	.LFB175:
  357:./lwip-2.1.2/src/core/memp.c **** 
  358:./lwip-2.1.2/src/core/memp.c **** static void
  359:./lwip-2.1.2/src/core/memp.c **** do_memp_free_pool(const struct memp_desc *desc, void *mem)
  360:./lwip-2.1.2/src/core/memp.c **** {
- 748              		.loc 1 360 1
- 749              		.cfi_startproc
- 750              		@ args = 0, pretend = 0, frame = 24
- 751              		@ frame_needed = 1, uses_anonymous_args = 0
- 752              		@ link register save eliminated.
- 753 0148 80B4     		push	{r7}
- 754              	.LCFI27:
- 755              		.cfi_def_cfa_offset 4
- 756              		.cfi_offset 7, -4
- 757 014a 87B0     		sub	sp, sp, #28
- 758              	.LCFI28:
- 759              		.cfi_def_cfa_offset 32
- 760 014c 00AF     		add	r7, sp, #0
- 761              	.LCFI29:
- 762              		.cfi_def_cfa_register 7
- 763 014e 7860     		str	r0, [r7, #4]
- 764 0150 3960     		str	r1, [r7]
  361:./lwip-2.1.2/src/core/memp.c ****   struct memp *memp;
  362:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
  363:./lwip-2.1.2/src/core/memp.c **** 
@@ -2064,73 +1957,8 @@
  366:./lwip-2.1.2/src/core/memp.c **** 
  367:./lwip-2.1.2/src/core/memp.c ****   /* cast through void* to get rid of alignment warnings */
  368:./lwip-2.1.2/src/core/memp.c ****   memp = (struct memp *)(void *)((u8_t *)mem - MEMP_SIZE);
- 765              		.loc 1 368 8
- 766 0152 3B68     		ldr	r3, [r7]
- 767 0154 7B61     		str	r3, [r7, #20]
- 768              	.LBB36:
- 769              	.LBB37:
- 453:./inc/cmsis_gcc.h ****   return(result);
- 770              		.loc 2 453 3
- 771              		.syntax unified
- 772              	@ 453 "./inc/cmsis_gcc.h" 1
- 773 0156 EFF31083 		MRS r3, primask
- 774              	@ 0 "" 2
- 775              		.thumb
- 776              		.syntax unified
- 777 015a FB60     		str	r3, [r7, #12]
- 454:./inc/cmsis_gcc.h **** }
- 778              		.loc 2 454 9
- 779 015c FB68     		ldr	r3, [r7, #12]
- 780              	.LBE37:
- 781              	.LBE36:
  369:./lwip-2.1.2/src/core/memp.c **** 
  370:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_PROTECT(old_level);
- 782              		.loc 1 370 3
- 783 015e 3B61     		str	r3, [r7, #16]
- 784              	.LBB38:
- 785              	.LBB39:
- 209:./inc/cmsis_gcc.h **** }
- 786              		.loc 2 209 3
- 787              		.syntax unified
- 788              	@ 209 "./inc/cmsis_gcc.h" 1
- 789 0160 72B6     		cpsid i
- 790              	@ 0 "" 2
- 210:./inc/cmsis_gcc.h **** 
- 791              		.loc 2 210 1
- 792              		.thumb
- 793              		.syntax unified
- 794 0162 00BF     		nop
- 795              	.LBE39:
- 796              	.LBE38:
- 797              	.LBB40:
- 798              	.LBB41:
- 946:./inc/cmsis_gcc.h **** }
- 799              		.loc 2 946 3
- 800              		.syntax unified
- 801              	@ 946 "./inc/cmsis_gcc.h" 1
- 802 0164 BFF34F8F 		dsb 0xF
- 803              	@ 0 "" 2
- 804              		.loc 2 947 1
- 805              		.thumb
- 806              		.syntax unified
- 807 0168 00BF     		nop
- 808              	.LBE41:
- 809              	.LBE40:
- 810              	.LBB42:
- 811              	.LBB43:
- 935:./inc/cmsis_gcc.h **** }
- 812              		.loc 2 935 3
- 813              		.syntax unified
- 814              	@ 935 "./inc/cmsis_gcc.h" 1
- 815 016a BFF36F8F 		isb 0xF
- 816              	@ 0 "" 2
- 936:./inc/cmsis_gcc.h **** 
- 817              		.loc 2 936 1
- 818              		.thumb
- 819              		.syntax unified
- 820 016e 00BF     		nop
- 821              	.LBE43:
- 822              	.LBE42:
  371:./lwip-2.1.2/src/core/memp.c **** 
  372:./lwip-2.1.2/src/core/memp.c **** #if MEMP_OVERFLOW_CHECK == 1
  373:./lwip-2.1.2/src/core/memp.c ****   memp_overflow_check_element(memp, desc);
@@ -2146,73 +1974,15 @@
  383:./lwip-2.1.2/src/core/memp.c ****   mem_free(memp);
  384:./lwip-2.1.2/src/core/memp.c **** #else /* MEMP_MEM_MALLOC */
  385:./lwip-2.1.2/src/core/memp.c ****   memp->next = *desc->tab;
- 823              		.loc 1 385 21
- 824 0170 7B68     		ldr	r3, [r7, #4]
- 825 0172 9B68     		ldr	r3, [r3, #8]
- 826              		.loc 1 385 16
- 827 0174 1A68     		ldr	r2, [r3]
- 828              		.loc 1 385 14
- 829 0176 7B69     		ldr	r3, [r7, #20]
- 830 0178 1A60     		str	r2, [r3]
  386:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
- 831              		.loc 1 386 8
- 832 017a 7B68     		ldr	r3, [r7, #4]
- 833 017c 9B68     		ldr	r3, [r3, #8]
- 834              		.loc 1 386 14
- 835 017e 7A69     		ldr	r2, [r7, #20]
- 836 0180 1A60     		str	r2, [r3]
  387:./lwip-2.1.2/src/core/memp.c **** 
  388:./lwip-2.1.2/src/core/memp.c **** #if MEMP_SANITY_CHECK
  389:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("memp sanity", memp_sanity(desc));
  390:./lwip-2.1.2/src/core/memp.c **** #endif /* MEMP_SANITY_CHECK */
  391:./lwip-2.1.2/src/core/memp.c **** 
  392:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_UNPROTECT(old_level);
- 837              		.loc 1 392 3
- 838 0182 3B69     		ldr	r3, [r7, #16]
- 839 0184 002B     		cmp	r3, #0
- 840 0186 01D1     		bne	.L26
- 841              	.LBB44:
- 842              	.LBB45:
- 198:./inc/cmsis_gcc.h **** }
- 843              		.loc 2 198 3
- 844              		.syntax unified
- 845              	@ 198 "./inc/cmsis_gcc.h" 1
- 846 0188 62B6     		cpsie i
- 847              	@ 0 "" 2
- 199:./inc/cmsis_gcc.h **** 
- 848              		.loc 2 199 1
- 849              		.thumb
- 850              		.syntax unified
- 851 018a 00BF     		nop
- 852              	.L26:
- 853              	.LBE45:
- 854              	.LBE44:
  393:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
  394:./lwip-2.1.2/src/core/memp.c **** }
- 855              		.loc 1 394 1
- 856 018c 00BF     		nop
- 857 018e 1C37     		adds	r7, r7, #28
- 858              	.LCFI30:
- 859              		.cfi_def_cfa_offset 4
- 860 0190 BD46     		mov	sp, r7
- 861              	.LCFI31:
- 862              		.cfi_def_cfa_register 13
- 863              		@ sp needed
- 864 0192 5DF8047B 		ldr	r7, [sp], #4
- 865              	.LCFI32:
- 866              		.cfi_restore 7
- 867              		.cfi_def_cfa_offset 0
- 868 0196 7047     		bx	lr
- 869              		.cfi_endproc
- 870              	.LFE174:
- 872              		.align	1
- 873              		.global	memp_free_pool
- 874              		.syntax unified
- 875              		.thumb
- 876              		.thumb_func
- 877              		.fpu fpv5-d16
- 879              	memp_free_pool:
- 880              	.LFB175:
  395:./lwip-2.1.2/src/core/memp.c **** 
  396:./lwip-2.1.2/src/core/memp.c **** /**
  397:./lwip-2.1.2/src/core/memp.c ****  * Put a custom pool element back into its pool.
@@ -2223,67 +1993,169 @@
  402:./lwip-2.1.2/src/core/memp.c **** void
  403:./lwip-2.1.2/src/core/memp.c **** memp_free_pool(const struct memp_desc *desc, void *mem)
  404:./lwip-2.1.2/src/core/memp.c **** {
- 881              		.loc 1 404 1
- 882              		.cfi_startproc
- 883              		@ args = 0, pretend = 0, frame = 8
- 884              		@ frame_needed = 1, uses_anonymous_args = 0
- 885 0198 80B5     		push	{r7, lr}
- 886              	.LCFI33:
- 887              		.cfi_def_cfa_offset 8
- 888              		.cfi_offset 7, -8
- 889              		.cfi_offset 14, -4
- 890 019a 82B0     		sub	sp, sp, #8
- 891              	.LCFI34:
- 892              		.cfi_def_cfa_offset 16
- 893 019c 00AF     		add	r7, sp, #0
- 894              	.LCFI35:
- 895              		.cfi_def_cfa_register 7
- 896 019e 7860     		str	r0, [r7, #4]
- 897 01a0 3960     		str	r1, [r7]
+ 543              		.loc 1 404 1 is_stmt 1 view -0
+ 544              		.cfi_startproc
+ 545              		@ args = 0, pretend = 0, frame = 0
+ 546              		@ frame_needed = 0, uses_anonymous_args = 0
+ 547              		@ link register save eliminated.
  405:./lwip-2.1.2/src/core/memp.c ****   LWIP_ASSERT("invalid pool desc", desc != NULL);
+ 548              		.loc 1 405 49 view .LVU158
  406:./lwip-2.1.2/src/core/memp.c ****   if ((desc == NULL) || (mem == NULL)) {
- 898              		.loc 1 406 6
- 899 01a2 7B68     		ldr	r3, [r7, #4]
- 900 01a4 002B     		cmp	r3, #0
- 901 01a6 07D0     		beq	.L31
- 902              		.loc 1 406 22 discriminator 1
- 903 01a8 3B68     		ldr	r3, [r7]
- 904 01aa 002B     		cmp	r3, #0
- 905 01ac 04D0     		beq	.L31
+ 549              		.loc 1 406 3 view .LVU159
+ 550              		.loc 1 406 6 is_stmt 0 view .LVU160
+ 551 00e8 68B1     		cbz	r0, .L35
+ 552 00ea 61B1     		cbz	r1, .L35
  407:./lwip-2.1.2/src/core/memp.c ****     return;
  408:./lwip-2.1.2/src/core/memp.c ****   }
  409:./lwip-2.1.2/src/core/memp.c **** 
  410:./lwip-2.1.2/src/core/memp.c ****   do_memp_free_pool(desc, mem);
- 906              		.loc 1 410 3
- 907 01ae 3968     		ldr	r1, [r7]
- 908 01b0 7868     		ldr	r0, [r7, #4]
- 909 01b2 FFF7C9FF 		bl	do_memp_free_pool
- 910 01b6 00E0     		b	.L27
- 911              	.L31:
- 407:./lwip-2.1.2/src/core/memp.c ****     return;
- 912              		.loc 1 407 5
- 913 01b8 00BF     		nop
- 914              	.L27:
+ 553              		.loc 1 410 3 is_stmt 1 view .LVU161
+ 554              	.LVL33:
+ 555              	.LBB100:
+ 556              	.LBI100:
+ 359:./lwip-2.1.2/src/core/memp.c **** {
+ 557              		.loc 1 359 1 view .LVU162
+ 558              	.LBB101:
+ 361:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 559              		.loc 1 361 3 view .LVU163
+ 362:./lwip-2.1.2/src/core/memp.c **** 
+ 560              		.loc 1 362 3 view .LVU164
+ 365:./lwip-2.1.2/src/core/memp.c **** 
+ 561              		.loc 1 365 53 view .LVU165
+ 368:./lwip-2.1.2/src/core/memp.c **** 
+ 562              		.loc 1 368 3 view .LVU166
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 563              		.loc 1 370 3 view .LVU167
+ 564              	.LBB102:
+ 565              	.LBI102:
+ 449:./inc/cmsis_gcc.h **** {
+ 566              		.loc 2 449 31 view .LVU168
+ 567              	.LBB103:
+ 451:./inc/cmsis_gcc.h **** 
+ 568              		.loc 2 451 3 view .LVU169
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 569              		.loc 2 453 3 view .LVU170
+ 570              		.syntax unified
+ 571              	@ 453 "./inc/cmsis_gcc.h" 1
+ 572 00ec EFF31082 		MRS r2, primask
+ 573              	@ 0 "" 2
+ 574              	.LVL34:
+ 454:./inc/cmsis_gcc.h **** }
+ 575              		.loc 2 454 3 view .LVU171
+ 454:./inc/cmsis_gcc.h **** }
+ 576              		.loc 2 454 3 is_stmt 0 view .LVU172
+ 577              		.thumb
+ 578              		.syntax unified
+ 579              	.LBE103:
+ 580              	.LBE102:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 581              		.loc 1 370 3 is_stmt 1 view .LVU173
+ 582              	.LBB104:
+ 583              	.LBI104:
+ 207:./inc/cmsis_gcc.h **** {
+ 584              		.loc 2 207 27 view .LVU174
+ 585              	.LBB105:
+ 209:./inc/cmsis_gcc.h **** }
+ 586              		.loc 2 209 3 view .LVU175
+ 587              		.syntax unified
+ 588              	@ 209 "./inc/cmsis_gcc.h" 1
+ 589 00f0 72B6     		cpsid i
+ 590              	@ 0 "" 2
+ 591              		.thumb
+ 592              		.syntax unified
+ 593              	.LBE105:
+ 594              	.LBE104:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 595              		.loc 1 370 3 view .LVU176
+ 596              	.LBB106:
+ 597              	.LBI106:
+ 944:./inc/cmsis_gcc.h **** {
+ 598              		.loc 2 944 27 view .LVU177
+ 599              	.LBB107:
+ 600              		.loc 2 946 3 view .LVU178
+ 601              		.syntax unified
+ 602              	@ 946 "./inc/cmsis_gcc.h" 1
+ 603 00f2 BFF34F8F 		dsb 0xF
+ 604              	@ 0 "" 2
+ 605              		.thumb
+ 606              		.syntax unified
+ 607              	.LBE107:
+ 608              	.LBE106:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 609              		.loc 1 370 3 view .LVU179
+ 610              	.LBB108:
+ 611              	.LBI108:
+ 933:./inc/cmsis_gcc.h **** {
+ 612              		.loc 2 933 27 view .LVU180
+ 613              	.LBB109:
+ 935:./inc/cmsis_gcc.h **** }
+ 614              		.loc 2 935 3 view .LVU181
+ 615              		.syntax unified
+ 616              	@ 935 "./inc/cmsis_gcc.h" 1
+ 617 00f6 BFF36F8F 		isb 0xF
+ 618              	@ 0 "" 2
+ 619              		.thumb
+ 620              		.syntax unified
+ 621              	.LBE109:
+ 622              	.LBE108:
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 623              		.loc 1 385 3 view .LVU182
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 624              		.loc 1 385 21 is_stmt 0 view .LVU183
+ 625 00fa 8368     		ldr	r3, [r0, #8]
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 626              		.loc 1 385 16 view .LVU184
+ 627 00fc 1868     		ldr	r0, [r3]
+ 628              	.LVL35:
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 629              		.loc 1 385 14 view .LVU185
+ 630 00fe 0860     		str	r0, [r1]
+ 386:./lwip-2.1.2/src/core/memp.c **** 
+ 631              		.loc 1 386 3 is_stmt 1 view .LVU186
+ 386:./lwip-2.1.2/src/core/memp.c **** 
+ 632              		.loc 1 386 14 is_stmt 0 view .LVU187
+ 633 0100 1960     		str	r1, [r3]
+ 392:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 634              		.loc 1 392 3 is_stmt 1 view .LVU188
+ 635 0102 02B9     		cbnz	r2, .L35
+ 392:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 636              		.loc 1 392 3 view .LVU189
+ 637              	.LBB110:
+ 638              	.LBI110:
+ 196:./inc/cmsis_gcc.h **** {
+ 639              		.loc 2 196 27 view .LVU190
+ 640              	.LBB111:
+ 198:./inc/cmsis_gcc.h **** }
+ 641              		.loc 2 198 3 view .LVU191
+ 642              		.syntax unified
+ 643              	@ 198 "./inc/cmsis_gcc.h" 1
+ 644 0104 62B6     		cpsie i
+ 645              	@ 0 "" 2
+ 646              	.LVL36:
+ 647              		.thumb
+ 648              		.syntax unified
+ 649              	.L35:
+ 198:./inc/cmsis_gcc.h **** }
+ 650              		.loc 2 198 3 is_stmt 0 view .LVU192
+ 651              	.LBE111:
+ 652              	.LBE110:
+ 653              	.LBE101:
+ 654              	.LBE100:
  411:./lwip-2.1.2/src/core/memp.c **** }
- 915              		.loc 1 411 1
- 916 01ba 0837     		adds	r7, r7, #8
- 917              	.LCFI36:
- 918              		.cfi_def_cfa_offset 8
- 919 01bc BD46     		mov	sp, r7
- 920              	.LCFI37:
- 921              		.cfi_def_cfa_register 13
- 922              		@ sp needed
- 923 01be 80BD     		pop	{r7, pc}
- 924              		.cfi_endproc
- 925              	.LFE175:
- 927              		.align	1
- 928              		.global	memp_free
- 929              		.syntax unified
- 930              		.thumb
- 931              		.thumb_func
- 932              		.fpu fpv5-d16
- 934              	memp_free:
- 935              	.LFB176:
+ 655              		.loc 1 411 1 view .LVU193
+ 656 0106 7047     		bx	lr
+ 657              		.cfi_endproc
+ 658              	.LFE175:
+ 660              		.align	1
+ 661              		.p2align 2,,3
+ 662              		.global	memp_free
+ 663              		.syntax unified
+ 664              		.thumb
+ 665              		.thumb_func
+ 666              		.fpu fpv5-d16
+ 668              	memp_free:
+ 669              	.LVL37:
+ 670              	.LFB176:
  412:./lwip-2.1.2/src/core/memp.c **** 
  413:./lwip-2.1.2/src/core/memp.c **** /**
  414:./lwip-2.1.2/src/core/memp.c ****  * Put an element back into its pool.
@@ -2294,39 +2166,27 @@
  419:./lwip-2.1.2/src/core/memp.c **** void
  420:./lwip-2.1.2/src/core/memp.c **** memp_free(memp_t type, void *mem)
  421:./lwip-2.1.2/src/core/memp.c **** {
- 936              		.loc 1 421 1
- 937              		.cfi_startproc
- 938              		@ args = 0, pretend = 0, frame = 8
- 939              		@ frame_needed = 1, uses_anonymous_args = 0
- 940 01c0 80B5     		push	{r7, lr}
- 941              	.LCFI38:
- 942              		.cfi_def_cfa_offset 8
- 943              		.cfi_offset 7, -8
- 944              		.cfi_offset 14, -4
- 945 01c2 82B0     		sub	sp, sp, #8
- 946              	.LCFI39:
- 947              		.cfi_def_cfa_offset 16
- 948 01c4 00AF     		add	r7, sp, #0
- 949              	.LCFI40:
- 950              		.cfi_def_cfa_register 7
- 951 01c6 0346     		mov	r3, r0
- 952 01c8 3960     		str	r1, [r7]
- 953 01ca FB71     		strb	r3, [r7, #7]
+ 671              		.loc 1 421 1 is_stmt 1 view -0
+ 672              		.cfi_startproc
+ 673              		@ args = 0, pretend = 0, frame = 0
+ 674              		@ frame_needed = 0, uses_anonymous_args = 0
+ 675              		@ link register save eliminated.
  422:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_MEMP_AVAILABLE
  423:./lwip-2.1.2/src/core/memp.c ****   struct memp *old_first;
  424:./lwip-2.1.2/src/core/memp.c **** #endif
  425:./lwip-2.1.2/src/core/memp.c **** 
  426:./lwip-2.1.2/src/core/memp.c ****   LWIP_ERROR("memp_free: type < MEMP_MAX", (type < MEMP_MAX), return;);
- 954              		.loc 1 426 3
- 955 01cc FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 956 01ce 0C2B     		cmp	r3, #12
- 957 01d0 0BD8     		bhi	.L36
+ 676              		.loc 1 426 3 view .LVU195
+ 677              		.loc 1 426 3 view .LVU196
+ 678              		.loc 1 426 3 view .LVU197
+ 679              		.loc 1 426 3 view .LVU198
  427:./lwip-2.1.2/src/core/memp.c **** 
  428:./lwip-2.1.2/src/core/memp.c ****   if (mem == NULL) {
- 958              		.loc 1 428 6
- 959 01d2 3B68     		ldr	r3, [r7]
- 960 01d4 002B     		cmp	r3, #0
- 961 01d6 0AD0     		beq	.L37
+ 680              		.loc 1 428 3 view .LVU199
+ 681              		.loc 1 428 6 is_stmt 0 view .LVU200
+ 682 0108 0C28     		cmp	r0, #12
+ 683 010a 11D8     		bhi	.L40
+ 684 010c 81B1     		cbz	r1, .L40
  429:./lwip-2.1.2/src/core/memp.c ****     return;
  430:./lwip-2.1.2/src/core/memp.c ****   }
  431:./lwip-2.1.2/src/core/memp.c **** 
@@ -2339,24 +2199,144 @@
  438:./lwip-2.1.2/src/core/memp.c **** #endif
  439:./lwip-2.1.2/src/core/memp.c **** 
  440:./lwip-2.1.2/src/core/memp.c ****   do_memp_free_pool(memp_pools[type], mem);
- 962              		.loc 1 440 3
- 963 01d8 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 964 01da 074A     		ldr	r2, .L38
- 965 01dc 52F82330 		ldr	r3, [r2, r3, lsl #2]
- 966 01e0 3968     		ldr	r1, [r7]
- 967 01e2 1846     		mov	r0, r3
- 968 01e4 FFF7B0FF 		bl	do_memp_free_pool
- 969 01e8 02E0     		b	.L32
- 970              	.L36:
- 426:./lwip-2.1.2/src/core/memp.c **** 
- 971              		.loc 1 426 3
- 972 01ea 00BF     		nop
- 973 01ec 00E0     		b	.L32
- 974              	.L37:
- 429:./lwip-2.1.2/src/core/memp.c ****     return;
- 975              		.loc 1 429 5
- 976 01ee 00BF     		nop
- 977              	.L32:
+ 685              		.loc 1 440 3 is_stmt 1 view .LVU201
+ 686 010e 094B     		ldr	r3, .L45
+ 687 0110 03EB8000 		add	r0, r3, r0, lsl #2
+ 688              	.LVL38:
+ 689              		.loc 1 440 3 is_stmt 0 view .LVU202
+ 690 0114 C368     		ldr	r3, [r0, #12]
+ 691              	.LVL39:
+ 692              	.LBB124:
+ 693              	.LBI124:
+ 359:./lwip-2.1.2/src/core/memp.c **** {
+ 694              		.loc 1 359 1 is_stmt 1 view .LVU203
+ 695              	.LBB125:
+ 361:./lwip-2.1.2/src/core/memp.c ****   SYS_ARCH_DECL_PROTECT(old_level);
+ 696              		.loc 1 361 3 view .LVU204
+ 362:./lwip-2.1.2/src/core/memp.c **** 
+ 697              		.loc 1 362 3 view .LVU205
+ 365:./lwip-2.1.2/src/core/memp.c **** 
+ 698              		.loc 1 365 53 view .LVU206
+ 368:./lwip-2.1.2/src/core/memp.c **** 
+ 699              		.loc 1 368 3 view .LVU207
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 700              		.loc 1 370 3 view .LVU208
+ 701              	.LBB126:
+ 702              	.LBI126:
+ 449:./inc/cmsis_gcc.h **** {
+ 703              		.loc 2 449 31 view .LVU209
+ 704              	.LBB127:
+ 451:./inc/cmsis_gcc.h **** 
+ 705              		.loc 2 451 3 view .LVU210
+ 453:./inc/cmsis_gcc.h ****   return(result);
+ 706              		.loc 2 453 3 view .LVU211
+ 707              		.syntax unified
+ 708              	@ 453 "./inc/cmsis_gcc.h" 1
+ 709 0116 EFF31082 		MRS r2, primask
+ 710              	@ 0 "" 2
+ 711              	.LVL40:
+ 454:./inc/cmsis_gcc.h **** }
+ 712              		.loc 2 454 3 view .LVU212
+ 454:./inc/cmsis_gcc.h **** }
+ 713              		.loc 2 454 3 is_stmt 0 view .LVU213
+ 714              		.thumb
+ 715              		.syntax unified
+ 716              	.LBE127:
+ 717              	.LBE126:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 718              		.loc 1 370 3 is_stmt 1 view .LVU214
+ 719              	.LBB128:
+ 720              	.LBI128:
+ 207:./inc/cmsis_gcc.h **** {
+ 721              		.loc 2 207 27 view .LVU215
+ 722              	.LBB129:
+ 209:./inc/cmsis_gcc.h **** }
+ 723              		.loc 2 209 3 view .LVU216
+ 724              		.syntax unified
+ 725              	@ 209 "./inc/cmsis_gcc.h" 1
+ 726 011a 72B6     		cpsid i
+ 727              	@ 0 "" 2
+ 728              		.thumb
+ 729              		.syntax unified
+ 730              	.LBE129:
+ 731              	.LBE128:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 732              		.loc 1 370 3 view .LVU217
+ 733              	.LBB130:
+ 734              	.LBI130:
+ 944:./inc/cmsis_gcc.h **** {
+ 735              		.loc 2 944 27 view .LVU218
+ 736              	.LBB131:
+ 737              		.loc 2 946 3 view .LVU219
+ 738              		.syntax unified
+ 739              	@ 946 "./inc/cmsis_gcc.h" 1
+ 740 011c BFF34F8F 		dsb 0xF
+ 741              	@ 0 "" 2
+ 742              		.thumb
+ 743              		.syntax unified
+ 744              	.LBE131:
+ 745              	.LBE130:
+ 370:./lwip-2.1.2/src/core/memp.c **** 
+ 746              		.loc 1 370 3 view .LVU220
+ 747              	.LBB132:
+ 748              	.LBI132:
+ 933:./inc/cmsis_gcc.h **** {
+ 749              		.loc 2 933 27 view .LVU221
+ 750              	.LBB133:
+ 935:./inc/cmsis_gcc.h **** }
+ 751              		.loc 2 935 3 view .LVU222
+ 752              		.syntax unified
+ 753              	@ 935 "./inc/cmsis_gcc.h" 1
+ 754 0120 BFF36F8F 		isb 0xF
+ 755              	@ 0 "" 2
+ 756              		.thumb
+ 757              		.syntax unified
+ 758              	.LBE133:
+ 759              	.LBE132:
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 760              		.loc 1 385 3 view .LVU223
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 761              		.loc 1 385 21 is_stmt 0 view .LVU224
+ 762 0124 9B68     		ldr	r3, [r3, #8]
+ 763              	.LVL41:
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 764              		.loc 1 385 16 view .LVU225
+ 765 0126 1868     		ldr	r0, [r3]
+ 766              	.LVL42:
+ 385:./lwip-2.1.2/src/core/memp.c ****   *desc->tab = memp;
+ 767              		.loc 1 385 14 view .LVU226
+ 768 0128 0860     		str	r0, [r1]
+ 386:./lwip-2.1.2/src/core/memp.c **** 
+ 769              		.loc 1 386 3 is_stmt 1 view .LVU227
+ 386:./lwip-2.1.2/src/core/memp.c **** 
+ 770              		.loc 1 386 14 is_stmt 0 view .LVU228
+ 771 012a 1960     		str	r1, [r3]
+ 392:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 772              		.loc 1 392 3 is_stmt 1 view .LVU229
+ 773 012c 02B9     		cbnz	r2, .L40
+ 392:./lwip-2.1.2/src/core/memp.c **** #endif /* !MEMP_MEM_MALLOC */
+ 774              		.loc 1 392 3 view .LVU230
+ 775              	.LBB134:
+ 776              	.LBI134:
+ 196:./inc/cmsis_gcc.h **** {
+ 777              		.loc 2 196 27 view .LVU231
+ 778              	.LBB135:
+ 198:./inc/cmsis_gcc.h **** }
+ 779              		.loc 2 198 3 view .LVU232
+ 780              		.syntax unified
+ 781              	@ 198 "./inc/cmsis_gcc.h" 1
+ 782 012e 62B6     		cpsie i
+ 783              	@ 0 "" 2
+ 784              	.LVL43:
+ 785              		.thumb
+ 786              		.syntax unified
+ 787              	.L40:
+ 198:./inc/cmsis_gcc.h **** }
+ 788              		.loc 2 198 3 is_stmt 0 view .LVU233
+ 789              	.LBE135:
+ 790              	.LBE134:
+ 791              	.LBE125:
+ 792              	.LBE124:
  441:./lwip-2.1.2/src/core/memp.c **** 
  442:./lwip-2.1.2/src/core/memp.c **** #ifdef LWIP_HOOK_MEMP_AVAILABLE
  443:./lwip-2.1.2/src/core/memp.c ****   if (old_first == NULL) {
@@ -2364,86 +2344,306 @@
  445:./lwip-2.1.2/src/core/memp.c ****   }
  446:./lwip-2.1.2/src/core/memp.c **** #endif
  447:./lwip-2.1.2/src/core/memp.c **** }
- 978              		.loc 1 447 1
- 979 01f0 0837     		adds	r7, r7, #8
- 980              	.LCFI41:
- 981              		.cfi_def_cfa_offset 8
- 982 01f2 BD46     		mov	sp, r7
- 983              	.LCFI42:
- 984              		.cfi_def_cfa_register 13
- 985              		@ sp needed
- 986 01f4 80BD     		pop	{r7, pc}
- 987              	.L39:
- 988 01f6 00BF     		.align	2
- 989              	.L38:
- 990 01f8 00000000 		.word	memp_pools
- 991              		.cfi_endproc
- 992              	.LFE176:
- 994              	.Letext0:
- 995              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 996              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 997              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
- 998              		.file 6 "./lwip-2.1.2/src/include/lwip/memp.h"
- 999              		.file 7 "./lwip-2.1.2/src/include/lwip/priv/memp_priv.h"
- 1000              		.file 8 "./lwip-2.1.2/src/include/lwip/priv/memp_std.h"
- 1001              		.file 9 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 793              		.loc 1 447 1 view .LVU234
+ 794 0130 7047     		bx	lr
+ 795              	.L46:
+ 796 0132 00BF     		.align	2
+ 797              	.L45:
+ 798 0134 00000000 		.word	.LANCHOR1
+ 799              		.cfi_endproc
+ 800              	.LFE176:
+ 802              		.global	memp_pools
+ 803              		.global	memp_PBUF_POOL
+ 804              		.global	memp_memory_PBUF_POOL_base
+ 805              		.global	memp_PBUF
+ 806              		.global	memp_memory_PBUF_base
+ 807              		.global	memp_SYS_TIMEOUT
+ 808              		.global	memp_memory_SYS_TIMEOUT_base
+ 809              		.global	memp_TCPIP_MSG_INPKT
+ 810              		.global	memp_memory_TCPIP_MSG_INPKT_base
+ 811              		.global	memp_TCPIP_MSG_API
+ 812              		.global	memp_memory_TCPIP_MSG_API_base
+ 813              		.global	memp_NETCONN
+ 814              		.global	memp_memory_NETCONN_base
+ 815              		.global	memp_NETBUF
+ 816              		.global	memp_memory_NETBUF_base
+ 817              		.global	memp_FRAG_PBUF
+ 818              		.global	memp_memory_FRAG_PBUF_base
+ 819              		.global	memp_REASSDATA
+ 820              		.global	memp_memory_REASSDATA_base
+ 821              		.global	memp_TCP_SEG
+ 822              		.global	memp_memory_TCP_SEG_base
+ 823              		.global	memp_TCP_PCB_LISTEN
+ 824              		.global	memp_memory_TCP_PCB_LISTEN_base
+ 825              		.global	memp_TCP_PCB
+ 826              		.global	memp_memory_TCP_PCB_base
+ 827              		.global	memp_UDP_PCB
+ 828              		.global	memp_memory_UDP_PCB_base
+ 829              		.section	.rodata
+ 830              		.align	2
+ 831              		.set	.LANCHOR1,. + 0
+ 834              	memp_UDP_PCB:
+ 835 0000 2000     		.short	32
+ 836 0002 0400     		.short	4
+ 837 0004 00000000 		.word	memp_memory_UDP_PCB_base
+ 838 0008 84000000 		.word	memp_tab_UDP_PCB
+ 841              	memp_pools:
+ 842 000c 00000000 		.word	memp_UDP_PCB
+ 843 0010 00000000 		.word	memp_TCP_PCB
+ 844 0014 00000000 		.word	memp_TCP_PCB_LISTEN
+ 845 0018 00000000 		.word	memp_TCP_SEG
+ 846 001c 00000000 		.word	memp_REASSDATA
+ 847 0020 00000000 		.word	memp_FRAG_PBUF
+ 848 0024 00000000 		.word	memp_NETBUF
+ 849 0028 00000000 		.word	memp_NETCONN
+ 850 002c 00000000 		.word	memp_TCPIP_MSG_API
+ 851 0030 00000000 		.word	memp_TCPIP_MSG_INPKT
+ 852 0034 00000000 		.word	memp_SYS_TIMEOUT
+ 853 0038 00000000 		.word	memp_PBUF
+ 854 003c 00000000 		.word	memp_PBUF_POOL
+ 857              	memp_PBUF_POOL:
+ 858 0040 6002     		.short	608
+ 859 0042 1000     		.short	16
+ 860 0044 00000000 		.word	memp_memory_PBUF_POOL_base
+ 861 0048 88000000 		.word	memp_tab_PBUF_POOL
+ 864              	memp_PBUF:
+ 865 004c 1000     		.short	16
+ 866 004e 1000     		.short	16
+ 867 0050 00000000 		.word	memp_memory_PBUF_base
+ 868 0054 90260000 		.word	memp_tab_PBUF
+ 871              	memp_SYS_TIMEOUT:
+ 872 0058 1000     		.short	16
+ 873 005a 0500     		.short	5
+ 874 005c 00000000 		.word	memp_memory_SYS_TIMEOUT_base
+ 875 0060 98270000 		.word	memp_tab_SYS_TIMEOUT
+ 878              	memp_TCPIP_MSG_INPKT:
+ 879 0064 1000     		.short	16
+ 880 0066 0800     		.short	8
+ 881 0068 00000000 		.word	memp_memory_TCPIP_MSG_INPKT_base
+ 882 006c F0270000 		.word	memp_tab_TCPIP_MSG_INPKT
+ 885              	memp_TCPIP_MSG_API:
+ 886 0070 1000     		.short	16
+ 887 0072 0800     		.short	8
+ 888 0074 00000000 		.word	memp_memory_TCPIP_MSG_API_base
+ 889 0078 78280000 		.word	memp_tab_TCPIP_MSG_API
+ 892              	memp_NETCONN:
+ 893 007c 2800     		.short	40
+ 894 007e 0400     		.short	4
+ 895 0080 00000000 		.word	memp_memory_NETCONN_base
+ 896 0084 00290000 		.word	memp_tab_NETCONN
+ 899              	memp_NETBUF:
+ 900 0088 1000     		.short	16
+ 901 008a 0200     		.short	2
+ 902 008c 00000000 		.word	memp_memory_NETBUF_base
+ 903 0090 A8290000 		.word	memp_tab_NETBUF
+ 906              	memp_FRAG_PBUF:
+ 907 0094 1800     		.short	24
+ 908 0096 0F00     		.short	15
+ 909 0098 00000000 		.word	memp_memory_FRAG_PBUF_base
+ 910 009c D0290000 		.word	memp_tab_FRAG_PBUF
+ 913              	memp_REASSDATA:
+ 914 00a0 2000     		.short	32
+ 915 00a2 0500     		.short	5
+ 916 00a4 00000000 		.word	memp_memory_REASSDATA_base
+ 917 00a8 402B0000 		.word	memp_tab_REASSDATA
+ 920              	memp_TCP_SEG:
+ 921 00ac 1000     		.short	16
+ 922 00ae 1000     		.short	16
+ 923 00b0 00000000 		.word	memp_memory_TCP_SEG_base
+ 924 00b4 E82B0000 		.word	memp_tab_TCP_SEG
+ 927              	memp_TCP_PCB_LISTEN:
+ 928 00b8 1C00     		.short	28
+ 929 00ba 0800     		.short	8
+ 930 00bc 00000000 		.word	memp_memory_TCP_PCB_LISTEN_base
+ 931 00c0 F02C0000 		.word	memp_tab_TCP_PCB_LISTEN
+ 934              	memp_TCP_PCB:
+ 935 00c4 9C00     		.short	156
+ 936 00c6 0500     		.short	5
+ 937 00c8 00000000 		.word	memp_memory_TCP_PCB_base
+ 938 00cc D82D0000 		.word	memp_tab_TCP_PCB
+ 939              		.bss
+ 940              		.align	2
+ 941              		.set	.LANCHOR0,. + 0
+ 944              	memp_memory_UDP_PCB_base:
+ 945 0000 00000000 		.space	131
+ 945      00000000 
+ 945      00000000 
+ 945      00000000 
+ 945      00000000 
+ 946 0083 00       		.space	1
+ 949              	memp_tab_UDP_PCB:
+ 950 0084 00000000 		.space	4
+ 953              	memp_tab_PBUF_POOL:
+ 954 0088 00000000 		.space	4
+ 957              	memp_memory_PBUF_POOL_base:
+ 958 008c 00000000 		.space	9731
+ 958      00000000 
+ 958      00000000 
+ 958      00000000 
+ 958      00000000 
+ 959 268f 00       		.space	1
+ 962              	memp_tab_PBUF:
+ 963 2690 00000000 		.space	4
+ 966              	memp_memory_PBUF_base:
+ 967 2694 00000000 		.space	259
+ 967      00000000 
+ 967      00000000 
+ 967      00000000 
+ 967      00000000 
+ 968 2797 00       		.space	1
+ 971              	memp_tab_SYS_TIMEOUT:
+ 972 2798 00000000 		.space	4
+ 975              	memp_memory_SYS_TIMEOUT_base:
+ 976 279c 00000000 		.space	83
+ 976      00000000 
+ 976      00000000 
+ 976      00000000 
+ 976      00000000 
+ 977 27ef 00       		.space	1
+ 980              	memp_tab_TCPIP_MSG_INPKT:
+ 981 27f0 00000000 		.space	4
+ 984              	memp_memory_TCPIP_MSG_INPKT_base:
+ 985 27f4 00000000 		.space	131
+ 985      00000000 
+ 985      00000000 
+ 985      00000000 
+ 985      00000000 
+ 986 2877 00       		.space	1
+ 989              	memp_tab_TCPIP_MSG_API:
+ 990 2878 00000000 		.space	4
+ 993              	memp_memory_TCPIP_MSG_API_base:
+ 994 287c 00000000 		.space	131
+ 994      00000000 
+ 994      00000000 
+ 994      00000000 
+ 994      00000000 
+ 995 28ff 00       		.space	1
+ 998              	memp_tab_NETCONN:
+ 999 2900 00000000 		.space	4
+ 1002              	memp_memory_NETCONN_base:
+ 1003 2904 00000000 		.space	163
+ 1003      00000000 
+ 1003      00000000 
+ 1003      00000000 
+ 1003      00000000 
+ 1004 29a7 00       		.space	1
+ 1007              	memp_tab_NETBUF:
+ 1008 29a8 00000000 		.space	4
+ 1011              	memp_memory_NETBUF_base:
+ 1012 29ac 00000000 		.space	35
+ 1012      00000000 
+ 1012      00000000 
+ 1012      00000000 
+ 1012      00000000 
+ 1013 29cf 00       		.space	1
+ 1016              	memp_tab_FRAG_PBUF:
+ 1017 29d0 00000000 		.space	4
+ 1020              	memp_memory_FRAG_PBUF_base:
+ 1021 29d4 00000000 		.space	363
+ 1021      00000000 
+ 1021      00000000 
+ 1021      00000000 
+ 1021      00000000 
+ 1022 2b3f 00       		.space	1
+ 1025              	memp_tab_REASSDATA:
+ 1026 2b40 00000000 		.space	4
+ 1029              	memp_memory_REASSDATA_base:
+ 1030 2b44 00000000 		.space	163
+ 1030      00000000 
+ 1030      00000000 
+ 1030      00000000 
+ 1030      00000000 
+ 1031 2be7 00       		.space	1
+ 1034              	memp_tab_TCP_SEG:
+ 1035 2be8 00000000 		.space	4
+ 1038              	memp_memory_TCP_SEG_base:
+ 1039 2bec 00000000 		.space	259
+ 1039      00000000 
+ 1039      00000000 
+ 1039      00000000 
+ 1039      00000000 
+ 1040 2cef 00       		.space	1
+ 1043              	memp_tab_TCP_PCB_LISTEN:
+ 1044 2cf0 00000000 		.space	4
+ 1047              	memp_memory_TCP_PCB_LISTEN_base:
+ 1048 2cf4 00000000 		.space	227
+ 1048      00000000 
+ 1048      00000000 
+ 1048      00000000 
+ 1048      00000000 
+ 1049 2dd7 00       		.space	1
+ 1052              	memp_tab_TCP_PCB:
+ 1053 2dd8 00000000 		.space	4
+ 1056              	memp_memory_TCP_PCB_base:
+ 1057 2ddc 00000000 		.space	783
+ 1057      00000000 
+ 1057      00000000 
+ 1057      00000000 
+ 1057      00000000 
+ 1058              		.text
+ 1059              	.Letext0:
+ 1060              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1061              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1062              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 1063              		.file 6 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 1064              		.file 7 "./lwip-2.1.2/src/include/lwip/priv/memp_priv.h"
+ 1065              		.file 8 "./lwip-2.1.2/src/include/lwip/priv/memp_std.h"
+ 1066              		.file 9 "./lwip-2.1.2/src/include/lwip/netif.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 memp.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:21     .bss:00000000 memp_memory_UDP_PCB_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:18     .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:24     .bss:00000084 memp_tab_UDP_PCB
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:32     .rodata:00000000 memp_UDP_PCB
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:29     .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:42     .bss:00000088 memp_memory_TCP_PCB_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:45     .bss:00000398 memp_tab_TCP_PCB
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:53     .rodata:0000000c memp_TCP_PCB
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:63     .bss:0000039c memp_memory_TCP_PCB_LISTEN_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:66     .bss:00000480 memp_tab_TCP_PCB_LISTEN
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:74     .rodata:00000018 memp_TCP_PCB_LISTEN
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:84     .bss:00000484 memp_memory_TCP_SEG_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:87     .bss:00000588 memp_tab_TCP_SEG
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:95     .rodata:00000024 memp_TCP_SEG
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:105    .bss:0000058c memp_memory_REASSDATA_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:108    .bss:00000630 memp_tab_REASSDATA
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:116    .rodata:00000030 memp_REASSDATA
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:126    .bss:00000634 memp_memory_FRAG_PBUF_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:129    .bss:000007a0 memp_tab_FRAG_PBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:137    .rodata:0000003c memp_FRAG_PBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:147    .bss:000007a4 memp_memory_NETBUF_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:150    .bss:000007c8 memp_tab_NETBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:158    .rodata:00000048 memp_NETBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:168    .bss:000007cc memp_memory_NETCONN_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:171    .bss:00000870 memp_tab_NETCONN
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:179    .rodata:00000054 memp_NETCONN
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:189    .bss:00000874 memp_memory_TCPIP_MSG_API_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:192    .bss:000008f8 memp_tab_TCPIP_MSG_API
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:200    .rodata:00000060 memp_TCPIP_MSG_API
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:210    .bss:000008fc memp_memory_TCPIP_MSG_INPKT_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:213    .bss:00000980 memp_tab_TCPIP_MSG_INPKT
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:221    .rodata:0000006c memp_TCPIP_MSG_INPKT
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:231    .bss:00000984 memp_memory_SYS_TIMEOUT_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:234    .bss:000009d8 memp_tab_SYS_TIMEOUT
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:242    .rodata:00000078 memp_SYS_TIMEOUT
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:252    .bss:000009dc memp_memory_PBUF_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:255    .bss:00000ae0 memp_tab_PBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:263    .rodata:00000084 memp_PBUF
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:273    .bss:00000ae4 memp_memory_PBUF_POOL_base
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:276    .bss:000030e8 memp_tab_PBUF_POOL
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:284    .rodata:00000090 memp_PBUF_POOL
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:293    .rodata:0000009c memp_pools
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:308    .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:316    .text:00000000 memp_init_pool
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:414    .text:00000060 memp_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:466    .text:00000090 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:470    .text:00000094 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:476    .text:00000094 do_memp_malloc_pool
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:635    .text:000000f4 memp_malloc_pool
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:686    .text:00000116 memp_malloc
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:736    .text:00000144 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:740    .text:00000148 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:746    .text:00000148 do_memp_free_pool
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:879    .text:00000198 memp_free_pool
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:934    .text:000001c0 memp_free
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc1ixkhM.s:990    .text:000001f8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:25     .text:00000000 memp_init_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:108    .text:00000030 memp_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:222    .text:00000080 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:227    .text:00000088 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:235    .text:00000088 memp_malloc_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:381    .text:000000b0 memp_malloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:528    .text:000000e4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:532    .text:000000e8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:540    .text:000000e8 memp_free_pool
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:668    .text:00000108 memp_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:798    .text:00000134 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:841    .rodata:0000000c memp_pools
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:857    .rodata:00000040 memp_PBUF_POOL
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:957    .bss:0000008c memp_memory_PBUF_POOL_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:864    .rodata:0000004c memp_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:966    .bss:00002694 memp_memory_PBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:871    .rodata:00000058 memp_SYS_TIMEOUT
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:975    .bss:0000279c memp_memory_SYS_TIMEOUT_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:878    .rodata:00000064 memp_TCPIP_MSG_INPKT
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:984    .bss:000027f4 memp_memory_TCPIP_MSG_INPKT_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:885    .rodata:00000070 memp_TCPIP_MSG_API
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:993    .bss:0000287c memp_memory_TCPIP_MSG_API_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:892    .rodata:0000007c memp_NETCONN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1002   .bss:00002904 memp_memory_NETCONN_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:899    .rodata:00000088 memp_NETBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1011   .bss:000029ac memp_memory_NETBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:906    .rodata:00000094 memp_FRAG_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1020   .bss:000029d4 memp_memory_FRAG_PBUF_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:913    .rodata:000000a0 memp_REASSDATA
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1029   .bss:00002b44 memp_memory_REASSDATA_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:920    .rodata:000000ac memp_TCP_SEG
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1038   .bss:00002bec memp_memory_TCP_SEG_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:927    .rodata:000000b8 memp_TCP_PCB_LISTEN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1047   .bss:00002cf4 memp_memory_TCP_PCB_LISTEN_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:934    .rodata:000000c4 memp_TCP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1056   .bss:00002ddc memp_memory_TCP_PCB_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:834    .rodata:00000000 memp_UDP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:944    .bss:00000000 memp_memory_UDP_PCB_base
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:830    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:949    .bss:00000084 memp_tab_UDP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:953    .bss:00000088 memp_tab_PBUF_POOL
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:962    .bss:00002690 memp_tab_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:971    .bss:00002798 memp_tab_SYS_TIMEOUT
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:980    .bss:000027f0 memp_tab_TCPIP_MSG_INPKT
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:989    .bss:00002878 memp_tab_TCPIP_MSG_API
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:998    .bss:00002900 memp_tab_NETCONN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1007   .bss:000029a8 memp_tab_NETBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1016   .bss:000029d0 memp_tab_FRAG_PBUF
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1025   .bss:00002b40 memp_tab_REASSDATA
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1034   .bss:00002be8 memp_tab_TCP_SEG
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1043   .bss:00002cf0 memp_tab_TCP_PCB_LISTEN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:1052   .bss:00002dd8 memp_tab_TCP_PCB
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccFkw3QX.s:940    .bss:00000000 $d
 
 NO UNDEFINED SYMBOLS

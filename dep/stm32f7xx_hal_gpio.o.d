@@ -16,8 +16,8 @@ obj/stm32f7xx_hal_gpio.o: src/stm32f7xx_hal_gpio.c inc/stm32f7xx_hal.h \
  inc/stm32f7xx_hal_gpio_ex.h inc/stm32f7xx_hal_dma.h \
  inc/stm32f7xx_hal_dma_ex.h inc/stm32f7xx_hal_cortex.h \
  inc/stm32f7xx_hal_eth.h inc/stm32f7xx_hal_flash.h \
- inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_sd.h \
- inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h
+ inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_iwdg.h \
+ inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h
 inc/stm32f7xx_hal.h:
 inc/stm32f7xx_hal_conf.h:
 inc/stm32f7xx_hal_rcc.h:
@@ -49,6 +49,7 @@ inc/stm32f7xx_hal_cortex.h:
 inc/stm32f7xx_hal_eth.h:
 inc/stm32f7xx_hal_flash.h:
 inc/stm32f7xx_hal_flash_ex.h:
+inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:

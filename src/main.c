@@ -6,6 +6,7 @@
 #include "hardware.h"
 #include "cmsis_os2.h"
 #include "stm32f7xx_hal.h"
+#include "stm32f765xx.h"
 #include "main.h"
 
 #include "lwip/tcpip.h"
@@ -53,7 +54,7 @@ static uint8_t LED_toggleCAN5;
 static uint8_t LED_toggleCAN6;
 
 uint32_t lastGreetingTick_CAN2 = 0;
-
+IWDG_HandleTypeDef hiwdg;
 
 
 //! @brief      a timer based on a high prio thread
@@ -82,6 +83,25 @@ static void  main_greeting ( void)
 	CAN_Write ( CAN_BUS1, &msg);
 }
 
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Window = 4095;
+  hiwdg.Init.Reload = 4095;
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
+
+}
 
 
 //! @brief      primary thread
@@ -112,7 +132,7 @@ static void  thread_main ( void  *argument)
 	// enable PHY, deassert reset
 	HW_ENA_ETH_PHY;
 	osDelay ( DLY_MS(75));	// for 100Base-TX
-	
+	HAL_IWDG_Refresh(&hiwdg);
 	
 	// init lwip stack
 	tcpip_init( NULL, NULL );
@@ -122,7 +142,7 @@ static void  thread_main ( void  *argument)
   	IP_ADDRESS[0] = 192;
   	IP_ADDRESS[1] = 168;
   	IP_ADDRESS[2] = 20;
-  	IP_ADDRESS[3] = 70;
+  	IP_ADDRESS[3] = 72;
   	NETMASK_ADDRESS[0] = 255;
   	NETMASK_ADDRESS[1] = 255;
   	NETMASK_ADDRESS[2] = 255;
@@ -159,15 +179,18 @@ static void  thread_main ( void  *argument)
 	// // start dhcp
 	// dhcp_start ( &gnetif);
 	startDebug(NULL);
+	HAL_IWDG_Refresh(&hiwdg);
 	main_greeting();
 
 	task01_init(NULL);
   	task02_init(NULL);
   	UDP_task(NULL);
+	HAL_IWDG_Refresh(&hiwdg);
 
 	while ( 1)
 	{
-		osThreadSuspend(osThreadGetId());
+		//osThreadSuspend(osThreadGetId());
+		HAL_IWDG_Refresh(&hiwdg);
 		CANTxMsg_t  msg;
 
 
@@ -327,7 +350,8 @@ static void  thread_main ( void  *argument)
 		uint32_t now = HAL_GetTick();
 		if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
 
-		osDelay ( DLY_MS(5000));
+		osDelay ( DLY_MS(1000));
+		HAL_IWDG_Refresh(&hiwdg);
 
 		// if ( dhcp_supplied_address ( &gnetif))
 		// {
@@ -354,6 +378,7 @@ static void  thread_main ( void  *argument)
 	while(1)
 	{	
 		osDelay ( DLY_MS(1000));
+		HAL_IWDG_Refresh(&hiwdg);
 	}
 
 }
@@ -370,10 +395,15 @@ int  main ( void)
 	SCB_DisableDCache();
 
 	// finalize initialization
+	
 	HW_Init();
+	HAL_Init();
+	MX_IWDG_Init();
+
 	__enable_irq();
 	
-	
+	HAL_IWDG_Refresh(&hiwdg);
+
 	// initialize kernel
 	osKernelInitialize();
 	
@@ -386,7 +416,12 @@ int  main ( void)
 
 		attr.stack_size = 4*1024;
 
-		osThreadNew ( thread_main, NULL, &attr);
+		osThreadId_t tid = osThreadNew ( thread_main, NULL, &attr);
+		if (tid == NULL) {
+        printf("Task creation failed!\n");
+		}
+
+	
 	}
 	
 	// create a timer
@@ -397,7 +432,11 @@ int  main ( void)
 	
 	// should not reach this point !
 	while(1)
-	 {}
+	 {
+		
+		HAL_IWDG_Refresh(&hiwdg);
+		osDelay(1);
+	 }
 }
 
 
