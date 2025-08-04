@@ -1,6 +1,7 @@
 #include "cmsis_os2.h"
 #include "main.h"
 #include "startDebug.h"
+#include <stm32f7xx_hal_iwdg.h>
 
 
 extern osMessageQueueId_t debugQueue;

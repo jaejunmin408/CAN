@@ -3249,8 +3249,8 @@
   13:./src/udp_total.c **** 
   14:./src/udp_total.c **** /* Private typedef -----------------------------------------------------------*/
   15:./src/udp_total.c **** #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
-  16:./src/udp_total.c **** #define UDP_CLIENT_PORT    7   /* define the UDP remote connection port */
-  17:./src/udp_total.c **** #define UDP_SYSTEM_PORT    10 
+  16:./src/udp_total.c **** #define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
+  17:./src/udp_total.c **** #define UDP_SYSTEM_PORT    7010
   18:./src/udp_total.c **** 
   19:./src/udp_total.c **** 
   20:./src/udp_total.c **** 
@@ -3268,7 +3268,7 @@
   32:./src/udp_total.c **** osThreadId_t UDPHandle;                       //[user custom] RTOS memory setting + osPriority
   33:./src/udp_total.c **** const osThreadAttr_t UDP_attributes = {
   34:./src/udp_total.c ****   .name = "udp_send", 
-  35:./src/udp_total.c ****   .stack_size = 2048,
+  35:./src/udp_total.c ****   .stack_size = 2048, 
   36:./src/udp_total.c ****   .priority = (osPriority_t) osPriorityNormal,
   37:./src/udp_total.c **** };
   38:./src/udp_total.c **** 
@@ -3496,7 +3496,7 @@
   73:./src/udp_total.c ****   err_t err;
   74:./src/udp_total.c ****   
   75:./src/udp_total.c ****   /* Create a new UDP control block  */
-  76:./src/udp_total.c **** upcb = udp_new();
+  76:./src/udp_total.c ****   upcb = udp_new();
   77:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
   78:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
   79:./src/udp_total.c **** 
@@ -3934,7 +3934,7 @@
   73:./src/udp_total.c ****   
  594              		.loc 3 73 3 view .LVU120
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 595              		.loc 3 76 1 view .LVU121
+ 595              		.loc 3 76 3 view .LVU121
   71:./src/udp_total.c ****   ip_addr_t DestIPaddr;
  596              		.loc 3 71 1 is_stmt 0 view .LVU122
  597 0198 30B5     		push	{r4, r5, lr}
@@ -3947,111 +3947,111 @@
  604              	.LCFI18:
  605              		.cfi_def_cfa_offset 24
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 606              		.loc 3 76 6 view .LVU123
- 607 019c 134C     		ldr	r4, .L45
+ 606              		.loc 3 76 8 view .LVU123
+ 607 019c 144C     		ldr	r4, .L45
   77:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
  608              		.loc 3 77 3 view .LVU124
- 609 019e 144D     		ldr	r5, .L45+4
+ 609 019e 154D     		ldr	r5, .L45+4
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 610              		.loc 3 76 8 view .LVU125
+ 610              		.loc 3 76 10 view .LVU125
  611 01a0 FFF7FEFF 		bl	udp_new
  612              	.LVL51:
   78:./src/udp_total.c **** 
  613              		.loc 3 78 8 view .LVU126
- 614 01a4 0722     		movs	r2, #7
- 615 01a6 01A9     		add	r1, sp, #4
+ 614 01a4 41F27A72 		movw	r2, #6010
+ 615 01a8 01A9     		add	r1, sp, #4
   76:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 616              		.loc 3 76 6 view .LVU127
- 617 01a8 6066     		str	r0, [r4, #100]
+ 616              		.loc 3 76 8 view .LVU127
+ 617 01aa 6066     		str	r0, [r4, #100]
   77:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
  618              		.loc 3 77 3 is_stmt 1 view .LVU128
- 619 01aa 0195     		str	r5, [sp, #4]
+ 619 01ac 0195     		str	r5, [sp, #4]
   78:./src/udp_total.c **** 
  620              		.loc 3 78 3 view .LVU129
   78:./src/udp_total.c **** 
  621              		.loc 3 78 8 is_stmt 0 view .LVU130
- 622 01ac FFF7FEFF 		bl	udp_connect
+ 622 01ae FFF7FEFF 		bl	udp_connect
  623              	.LVL52:
   80:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
  624              		.loc 3 80 3 is_stmt 1 view .LVU131
   80:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
  625              		.loc 3 80 14 is_stmt 0 view .LVU132
- 626 01b0 FFF7FEFF 		bl	udp_new
+ 626 01b2 FFF7FEFF 		bl	udp_new
  627              	.LVL53:
   82:./src/udp_total.c **** 
  628              		.loc 3 82 8 view .LVU133
- 629 01b4 01A9     		add	r1, sp, #4
- 630 01b6 0A22     		movs	r2, #10
+ 629 01b6 01A9     		add	r1, sp, #4
+ 630 01b8 41F66232 		movw	r2, #7010
   81:./src/udp_total.c ****   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
  631              		.loc 3 81 3 view .LVU134
- 632 01b8 0195     		str	r5, [sp, #4]
+ 632 01bc 0195     		str	r5, [sp, #4]
   80:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
  633              		.loc 3 80 12 view .LVU135
- 634 01ba A066     		str	r0, [r4, #104]
+ 634 01be A066     		str	r0, [r4, #104]
   81:./src/udp_total.c ****   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
  635              		.loc 3 81 3 is_stmt 1 view .LVU136
   82:./src/udp_total.c **** 
  636              		.loc 3 82 3 view .LVU137
   82:./src/udp_total.c **** 
  637              		.loc 3 82 8 is_stmt 0 view .LVU138
- 638 01bc FFF7FEFF 		bl	udp_connect
+ 638 01c0 FFF7FEFF 		bl	udp_connect
  639              	.LVL54:
   84:./src/udp_total.c ****   if (!udp_server_pcb)
  640              		.loc 3 84 3 is_stmt 1 view .LVU139
   84:./src/udp_total.c ****   if (!udp_server_pcb)
  641              		.loc 3 84 20 is_stmt 0 view .LVU140
- 642 01c0 FFF7FEFF 		bl	udp_new
+ 642 01c4 FFF7FEFF 		bl	udp_new
  643              	.LVL55:
   84:./src/udp_total.c ****   if (!udp_server_pcb)
  644              		.loc 3 84 18 view .LVU141
- 645 01c4 E066     		str	r0, [r4, #108]
+ 645 01c8 E066     		str	r0, [r4, #108]
   85:./src/udp_total.c ****   {
  646              		.loc 3 85 3 is_stmt 1 view .LVU142
   85:./src/udp_total.c ****   {
  647              		.loc 3 85 6 is_stmt 0 view .LVU143
- 648 01c6 58B1     		cbz	r0, .L44
+ 648 01ca 58B1     		cbz	r0, .L44
  649              	.L42:
   89:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
  650              		.loc 3 89 3 is_stmt 1 view .LVU144
- 651 01c8 41F69072 		movw	r2, #8080
- 652 01cc 0949     		ldr	r1, .L45+8
- 653 01ce FFF7FEFF 		bl	udp_bind
+ 651 01cc 41F69072 		movw	r2, #8080
+ 652 01d0 0949     		ldr	r1, .L45+8
+ 653 01d2 FFF7FEFF 		bl	udp_bind
  654              	.LVL56:
   90:./src/udp_total.c **** }
  655              		.loc 3 90 3 view .LVU145
- 656 01d2 0022     		movs	r2, #0
- 657 01d4 0849     		ldr	r1, .L45+12
- 658 01d6 E06E     		ldr	r0, [r4, #108]
- 659 01d8 FFF7FEFF 		bl	udp_recv
+ 656 01d6 0022     		movs	r2, #0
+ 657 01d8 0849     		ldr	r1, .L45+12
+ 658 01da E06E     		ldr	r0, [r4, #108]
+ 659 01dc FFF7FEFF 		bl	udp_recv
  660              	.LVL57:
   91:./src/udp_total.c **** 
  661              		.loc 3 91 1 is_stmt 0 view .LVU146
- 662 01dc 03B0     		add	sp, sp, #12
+ 662 01e0 03B0     		add	sp, sp, #12
  663              	.LCFI19:
  664              		.cfi_remember_state
  665              		.cfi_def_cfa_offset 12
  666              		@ sp needed
- 667 01de 30BD     		pop	{r4, r5, pc}
+ 667 01e2 30BD     		pop	{r4, r5, pc}
  668              	.L44:
  669              	.LCFI20:
  670              		.cfi_restore_state
   87:./src/udp_total.c ****   }
  671              		.loc 3 87 5 is_stmt 1 view .LVU147
- 672 01e0 0648     		ldr	r0, .L45+16
- 673 01e2 FFF7FEFF 		bl	udp_client_send
+ 672 01e4 0648     		ldr	r0, .L45+16
+ 673 01e6 FFF7FEFF 		bl	udp_client_send
  674              	.LVL58:
   89:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
  675              		.loc 3 89 3 is_stmt 0 view .LVU148
- 676 01e6 E06E     		ldr	r0, [r4, #108]
- 677 01e8 EEE7     		b	.L42
+ 676 01ea E06E     		ldr	r0, [r4, #108]
+ 677 01ec EEE7     		b	.L42
  678              	.L46:
- 679 01ea 00BF     		.align	2
+ 679 01ee 00BF     		.align	2
  680              	.L45:
- 681 01ec 00000000 		.word	.LANCHOR1
- 682 01f0 C0A81445 		.word	1158981824
- 683 01f4 00000000 		.word	ip_addr_any
- 684 01f8 00000000 		.word	udp_receive_callback
- 685 01fc 90000000 		.word	.LC5
+ 681 01f0 00000000 		.word	.LANCHOR1
+ 682 01f4 C0A81445 		.word	1158981824
+ 683 01f8 00000000 		.word	ip_addr_any
+ 684 01fc 00000000 		.word	udp_receive_callback
+ 685 0200 90000000 		.word	.LC5
  686              		.cfi_endproc
  687              	.LFE170:
  689              		.section	.rodata.str1.4
@@ -4092,53 +4092,53 @@
  711              		.loc 3 157 5 view .LVU151
  154:./src/udp_total.c ****     (void)argument;
  712              		.loc 3 154 1 is_stmt 0 view .LVU152
- 713 0200 08B5     		push	{r3, lr}
+ 713 0204 08B5     		push	{r3, lr}
  714              	.LCFI21:
  715              		.cfi_def_cfa_offset 8
  716              		.cfi_offset 3, -8
  717              		.cfi_offset 14, -4
  718              		.loc 3 157 17 view .LVU153
- 719 0202 074A     		ldr	r2, .L51
- 720 0204 0021     		movs	r1, #0
- 721 0206 0748     		ldr	r0, .L51+4
+ 719 0206 074A     		ldr	r2, .L51
+ 720 0208 0021     		movs	r1, #0
+ 721 020a 0748     		ldr	r0, .L51+4
  722              	.LVL60:
  723              		.loc 3 157 17 view .LVU154
- 724 0208 FFF7FEFF 		bl	osThreadNew
+ 724 020c FFF7FEFF 		bl	osThreadNew
  725              	.LVL61:
  726              		.loc 3 157 15 view .LVU155
- 727 020c 064B     		ldr	r3, .L51+8
- 728 020e 1867     		str	r0, [r3, #112]
+ 727 0210 064B     		ldr	r3, .L51+8
+ 728 0212 1867     		str	r0, [r3, #112]
  158:./src/udp_total.c ****     if(UDPHandle == NULL)
  729              		.loc 3 158 5 is_stmt 1 view .LVU156
  730              		.loc 3 158 7 is_stmt 0 view .LVU157
- 731 0210 00B1     		cbz	r0, .L50
+ 731 0214 00B1     		cbz	r0, .L50
  159:./src/udp_total.c ****     {
  160:./src/udp_total.c ****       printf("[CHECK] task creation failed!, not enough total heap memory\n");
  161:./src/udp_total.c ****     }
  162:./src/udp_total.c **** }
  732              		.loc 3 162 1 view .LVU158
- 733 0212 08BD     		pop	{r3, pc}
+ 733 0216 08BD     		pop	{r3, pc}
  734              	.L50:
  160:./src/udp_total.c ****     }
  735              		.loc 3 160 7 is_stmt 1 view .LVU159
- 736 0214 0548     		ldr	r0, .L51+12
+ 736 0218 0548     		ldr	r0, .L51+12
  737              		.loc 3 162 1 is_stmt 0 view .LVU160
- 738 0216 BDE80840 		pop	{r3, lr}
+ 738 021a BDE80840 		pop	{r3, lr}
  739              	.LCFI22:
  740              		.cfi_restore 14
  741              		.cfi_restore 3
  742              		.cfi_def_cfa_offset 0
  160:./src/udp_total.c ****     }
  743              		.loc 3 160 7 view .LVU161
- 744 021a FFF7FEBF 		b	puts
+ 744 021e FFF7FEBF 		b	puts
  745              	.LVL62:
  746              	.L52:
- 747 021e 00BF     		.align	2
+ 747 0222 00BF     		.align	2
  748              	.L51:
- 749 0220 00000000 		.word	.LANCHOR2
- 750 0224 00000000 		.word	UDP_thread
- 751 0228 00000000 		.word	.LANCHOR1
- 752 022c A8000000 		.word	.LC6
+ 749 0224 00000000 		.word	.LANCHOR2
+ 750 0228 00000000 		.word	UDP_thread
+ 751 022c 00000000 		.word	.LANCHOR1
+ 752 0230 A8000000 		.word	.LC6
  753              		.cfi_endproc
  754              	.LFE174:
  756              		.global	UDP_attributes
@@ -4224,37 +4224,37 @@
  835              		.file 18 "./lwip-2.1.2/src/include/lwip/netif.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 udp_total.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:24     .text:00000000 __NVIC_SystemReset
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:89     .text:0000001c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:95     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:102    .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:110    .text:00000024 udp_receive_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:263    .text:00000098 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:272    .text:000000a4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:280    .text:000000a4 udp_echoclient_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:365    .text:00000104 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:370    .text:0000010c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:378    .text:0000010c UDP_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:427    .text:0000011c udp_client_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:567    .text:00000188 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:579    .text:00000198 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:587    .text:00000198 udp_total_connect
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:681    .text:000001ec $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:695    .text:00000200 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:703    .text:00000200 UDP_task
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:749    .text:00000220 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:779    .rodata:00000000 UDP_attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:817    .bss:00000070 UDPHandle
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:794    .data:00000004 JUMP_FW_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:790    .data:00000000 JUMP_BOOT_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:813    .bss:0000006c udp_server_pcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:809    .bss:00000068 upcb_sys
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:805    .bss:00000064 upcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:801    .bss:00000000 data
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:775    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:786    .data:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccso8P51.s:797    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:24     .text:00000000 __NVIC_SystemReset
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:89     .text:0000001c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:95     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:102    .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:110    .text:00000024 udp_receive_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:263    .text:00000098 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:272    .text:000000a4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:280    .text:000000a4 udp_echoclient_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:365    .text:00000104 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:370    .text:0000010c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:378    .text:0000010c UDP_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:427    .text:0000011c udp_client_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:567    .text:00000188 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:579    .text:00000198 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:587    .text:00000198 udp_total_connect
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:681    .text:000001f0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:695    .text:00000204 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:703    .text:00000204 UDP_task
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:749    .text:00000224 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:779    .rodata:00000000 UDP_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:817    .bss:00000070 UDPHandle
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:794    .data:00000004 JUMP_FW_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:790    .data:00000000 JUMP_BOOT_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:813    .bss:0000006c udp_server_pcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:809    .bss:00000068 upcb_sys
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:805    .bss:00000064 upcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:801    .bss:00000000 data
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:775    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:786    .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccj12LRs.s:797    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 memcpy

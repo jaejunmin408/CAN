@@ -8083,9 +8083,9 @@ typedef struct
 #define FMC_BTR1_ADDHLD_2          (0x4U << FMC_BTR1_ADDHLD_Pos)               /*!< 0x00000040 */
 #define FMC_BTR1_ADDHLD_3          (0x8U << FMC_BTR1_ADDHLD_Pos)               /*!< 0x00000080 */
 #define FMC_BTR1_DATAST_Pos        (8U)                                        
-#define FMC_BTR1_DATAST_Msk        (0xFFU << FMC_BTR1_DATAST_Pos)              /*!< 0x0000FF00 */
-#define FMC_BTR1_DATAST            FMC_BTR1_DATAST_Msk                         /*!<DATAST [3:0] bits (Data-phase duration) */
-#define FMC_BTR1_DATAST_0          (0x01U << FMC_BTR1_DATAST_Pos)              /*!< 0x00000100 */
+#define FMC_1_DATAST_Msk        (0xFFU << FMC_BTR1_DATAST_Pos)              /*!< 0x0000FF00 */
+#define FMC_1_DATAST            FMC_BTR1_DATAST_Msk                         /*!<DATAST [3:0] bits (Data-phase duration) */
+#define FMC_1_DATAST_0          (0x01U << FMC_BTRST_Pos)              /*!< 0x00000100 */
 #define FMC_BTR1_DATAST_1          (0x02U << FMC_BTR1_DATAST_Pos)              /*!< 0x00000200 */
 #define FMC_BTR1_DATAST_2          (0x04U << FMC_BTR1_DATAST_Pos)              /*!< 0x00000400 */
 #define FMC_BTR1_DATAST_3          (0x08U << FMC_BTR1_DATAST_Pos)              /*!< 0x00000800 */

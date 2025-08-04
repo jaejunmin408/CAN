@@ -29,7 +29,7 @@ obj/startDebug.o: src/startDebug.c inc/startDebug.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\machine\types.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\stdio.h \
  inc/main.h lwip-2.1.2/src/include/lwip/pbuf.h \
- lwip-2.1.2/src/include/lwip/opt.h inc/lwipopts.h \
+ lwip-2.1.2/src/include/lwip/opt.h inc/lwipopts.h inc/main.h \
  lwip-2.1.2/src/include/lwip/debug.h lwip-2.1.2/src/include/lwip/arch.h \
  inc/arch/cc.h inc/cpu.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdlib.h \
@@ -68,20 +68,20 @@ obj/startDebug.o: src/startDebug.c inc/startDebug.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\string.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\strings.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\string.h \
- inc/udp_total.h inc/ethernetif.h inc/cmsis_os2.h \
+ inc/udp_total.h inc/ethernetif.h inc/cmsis_os2.h inc/cmsis_os2.h \
  lwip-2.1.2/src/include/lwip/tcpip.h \
  lwip-2.1.2/src/include/lwip/timeouts.h lwip-2.1.2/src/include/lwip/sys.h \
- inc/arch/sys_arch.h inc/cmsis_os2.h inc/stm32f7xx_hal.h \
- inc/stm32f7xx_hal_conf.h inc/stm32f7xx_hal_rcc.h inc/stm32f7xx_hal_def.h \
- inc/ARMCM7_DP.h inc/core_cm7.h inc/cmsis_version.h inc/cmsis_compiler.h \
- inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_stm32f7xx.h inc/stm32f7xx.h \
- inc/stm32f765xx.h inc/Legacy/stm32_hal_legacy.h \
- inc/stm32f7xx_hal_rcc_ex.h inc/stm32f7xx_hal_gpio.h \
- inc/stm32f7xx_hal_gpio_ex.h inc/stm32f7xx_hal_dma.h \
- inc/stm32f7xx_hal_dma_ex.h inc/stm32f7xx_hal_cortex.h \
- inc/stm32f7xx_hal_eth.h inc/stm32f7xx_hal_flash.h \
- inc/stm32f7xx_hal_flash_ex.h inc/stm32f7xx_hal_iwdg.h \
- inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h inc/stm32f7xx_hal_mmc.h
+ inc/arch/sys_arch.h inc/stm32f7xx_hal.h inc/stm32f7xx_hal_conf.h \
+ inc/stm32f7xx_hal_rcc.h inc/stm32f7xx_hal_def.h inc/ARMCM7_DP.h \
+ inc/core_cm7.h inc/cmsis_version.h inc/cmsis_compiler.h inc/cmsis_gcc.h \
+ inc/mpu_armv7.h inc/system_stm32f7xx.h inc/stm32f7xx.h inc/stm32f765xx.h \
+ inc/Legacy/stm32_hal_legacy.h inc/stm32f7xx_hal_rcc_ex.h \
+ inc/stm32f7xx_hal_gpio.h inc/stm32f7xx_hal_gpio_ex.h \
+ inc/stm32f7xx_hal_dma.h inc/stm32f7xx_hal_dma_ex.h \
+ inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_eth.h \
+ inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
+ inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h \
+ inc/stm32f7xx_hal_mmc.h inc/stm32f765xx.h
 inc/startDebug.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdio.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\_ansi.h:
@@ -116,6 +116,7 @@ inc/main.h:
 lwip-2.1.2/src/include/lwip/pbuf.h:
 lwip-2.1.2/src/include/lwip/opt.h:
 inc/lwipopts.h:
+inc/main.h:
 lwip-2.1.2/src/include/lwip/debug.h:
 lwip-2.1.2/src/include/lwip/arch.h:
 inc/arch/cc.h:
@@ -167,11 +168,11 @@ c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-e
 inc/udp_total.h:
 inc/ethernetif.h:
 inc/cmsis_os2.h:
+inc/cmsis_os2.h:
 lwip-2.1.2/src/include/lwip/tcpip.h:
 lwip-2.1.2/src/include/lwip/timeouts.h:
 lwip-2.1.2/src/include/lwip/sys.h:
 inc/arch/sys_arch.h:
-inc/cmsis_os2.h:
 inc/stm32f7xx_hal.h:
 inc/stm32f7xx_hal_conf.h:
 inc/stm32f7xx_hal_rcc.h:
@@ -199,3 +200,4 @@ inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:
+inc/stm32f765xx.h:

@@ -6,7 +6,7 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 30, 6
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"reset.c"
@@ -14,16 +14,15 @@
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
   16              		.align	1
-  17              		.p2align 2,,3
-  18              		.global	write_boot_flag_soft_reset
-  19              		.arch armv7e-m
-  20              		.syntax unified
-  21              		.thumb
-  22              		.thumb_func
-  23              		.fpu fpv5-d16
-  25              	write_boot_flag_soft_reset:
-  26              	.LFB144:
-  27              		.file 1 "./src/reset.c"
+  17              		.global	write_boot_flag_soft_reset
+  18              		.arch armv7e-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv5-d16
+  24              	write_boot_flag_soft_reset:
+  25              	.LFB144:
+  26              		.file 1 "./src/reset.c"
    1:./src/reset.c **** #include "ARMCM7_DP.h"
    2:./src/reset.c **** #include "reset.h"
    3:./src/reset.c **** #include "main.h"
@@ -36,202 +35,232 @@
   10:./src/reset.c **** 
   11:./src/reset.c **** void write_boot_flag_soft_reset(void)
   12:./src/reset.c **** {
-  28              		.loc 1 12 1 view -0
-  29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32              		@ link register save eliminated.
+  27              		.loc 1 12 1
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32 0000 80B4     		push	{r7}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 4
+  35              		.cfi_offset 7, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_register 7
   13:./src/reset.c ****     RTC->BKP1R = BOOT_FLAG_SOFT_RESET;  // BPK1R = DR1
-  33              		.loc 1 13 5 view .LVU1
-  34              		.loc 1 13 16 is_stmt 0 view .LVU2
-  35 0000 024B     		ldr	r3, .L3
-  36 0002 4AF2A552 		movw	r2, #42405
-  37 0006 5A65     		str	r2, [r3, #84]
+  39              		.loc 1 13 8
+  40 0004 044B     		ldr	r3, .L2
+  41              		.loc 1 13 16
+  42 0006 4AF2A552 		movw	r2, #42405
+  43 000a 5A65     		str	r2, [r3, #84]
   14:./src/reset.c **** }
-  38              		.loc 1 14 1 view .LVU3
-  39 0008 7047     		bx	lr
-  40              	.L4:
-  41 000a 00BF     		.align	2
-  42              	.L3:
-  43 000c 00280040 		.word	1073752064
-  44              		.cfi_endproc
-  45              	.LFE144:
-  47              		.align	1
-  48              		.p2align 2,,3
-  49              		.global	clear_boot_flag
-  50              		.syntax unified
-  51              		.thumb
-  52              		.thumb_func
-  53              		.fpu fpv5-d16
-  55              	clear_boot_flag:
-  56              	.LFB145:
+  44              		.loc 1 14 1
+  45 000c 00BF     		nop
+  46 000e BD46     		mov	sp, r7
+  47              	.LCFI2:
+  48              		.cfi_def_cfa_register 13
+  49              		@ sp needed
+  50 0010 5DF8047B 		ldr	r7, [sp], #4
+  51              	.LCFI3:
+  52              		.cfi_restore 7
+  53              		.cfi_def_cfa_offset 0
+  54 0014 7047     		bx	lr
+  55              	.L3:
+  56 0016 00BF     		.align	2
+  57              	.L2:
+  58 0018 00280040 		.word	1073752064
+  59              		.cfi_endproc
+  60              	.LFE144:
+  62              		.align	1
+  63              		.global	clear_boot_flag
+  64              		.syntax unified
+  65              		.thumb
+  66              		.thumb_func
+  67              		.fpu fpv5-d16
+  69              	clear_boot_flag:
+  70              	.LFB145:
   15:./src/reset.c **** 
   16:./src/reset.c **** void clear_boot_flag(void)
   17:./src/reset.c **** {
-  57              		.loc 1 17 1 is_stmt 1 view -0
-  58              		.cfi_startproc
-  59              		@ args = 0, pretend = 0, frame = 0
-  60              		@ frame_needed = 0, uses_anonymous_args = 0
-  61              		@ link register save eliminated.
+  71              		.loc 1 17 1
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 1, uses_anonymous_args = 0
+  75              		@ link register save eliminated.
+  76 001c 80B4     		push	{r7}
+  77              	.LCFI4:
+  78              		.cfi_def_cfa_offset 4
+  79              		.cfi_offset 7, -4
+  80 001e 00AF     		add	r7, sp, #0
+  81              	.LCFI5:
+  82              		.cfi_def_cfa_register 7
   18:./src/reset.c ****     RTC->BKP1R = 0;
-  62              		.loc 1 18 5 view .LVU5
-  63              		.loc 1 18 16 is_stmt 0 view .LVU6
-  64 0010 014B     		ldr	r3, .L6
-  65 0012 0022     		movs	r2, #0
-  66 0014 5A65     		str	r2, [r3, #84]
+  83              		.loc 1 18 8
+  84 0020 034B     		ldr	r3, .L5
+  85              		.loc 1 18 16
+  86 0022 0022     		movs	r2, #0
+  87 0024 5A65     		str	r2, [r3, #84]
   19:./src/reset.c **** }
-  67              		.loc 1 19 1 view .LVU7
-  68 0016 7047     		bx	lr
-  69              	.L7:
-  70              		.align	2
-  71              	.L6:
-  72 0018 00280040 		.word	1073752064
-  73              		.cfi_endproc
-  74              	.LFE145:
-  76              		.align	1
-  77              		.p2align 2,,3
-  78              		.global	is_soft_reset
-  79              		.syntax unified
-  80              		.thumb
-  81              		.thumb_func
-  82              		.fpu fpv5-d16
-  84              	is_soft_reset:
-  85              	.LFB146:
+  88              		.loc 1 19 1
+  89 0026 00BF     		nop
+  90 0028 BD46     		mov	sp, r7
+  91              	.LCFI6:
+  92              		.cfi_def_cfa_register 13
+  93              		@ sp needed
+  94 002a 5DF8047B 		ldr	r7, [sp], #4
+  95              	.LCFI7:
+  96              		.cfi_restore 7
+  97              		.cfi_def_cfa_offset 0
+  98 002e 7047     		bx	lr
+  99              	.L6:
+ 100              		.align	2
+ 101              	.L5:
+ 102 0030 00280040 		.word	1073752064
+ 103              		.cfi_endproc
+ 104              	.LFE145:
+ 106              		.align	1
+ 107              		.global	is_soft_reset
+ 108              		.syntax unified
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.fpu fpv5-d16
+ 113              	is_soft_reset:
+ 114              	.LFB146:
   20:./src/reset.c **** 
   21:./src/reset.c **** uint8_t is_soft_reset(void)
   22:./src/reset.c **** {
-  86              		.loc 1 22 1 is_stmt 1 view -0
-  87              		.cfi_startproc
-  88              		@ args = 0, pretend = 0, frame = 0
-  89              		@ frame_needed = 0, uses_anonymous_args = 0
-  90              		@ link register save eliminated.
+ 115              		.loc 1 22 1
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 8
+ 118              		@ frame_needed = 1, uses_anonymous_args = 0
+ 119              		@ link register save eliminated.
+ 120 0034 80B4     		push	{r7}
+ 121              	.LCFI8:
+ 122              		.cfi_def_cfa_offset 4
+ 123              		.cfi_offset 7, -4
+ 124 0036 83B0     		sub	sp, sp, #12
+ 125              	.LCFI9:
+ 126              		.cfi_def_cfa_offset 16
+ 127 0038 00AF     		add	r7, sp, #0
+ 128              	.LCFI10:
+ 129              		.cfi_def_cfa_register 7
   23:./src/reset.c ****     uint32_t val = RTC->BKP1R;
-  91              		.loc 1 23 5 view .LVU9
-  92              		.loc 1 23 14 is_stmt 0 view .LVU10
-  93 001c 044A     		ldr	r2, .L9
+ 130              		.loc 1 23 23
+ 131 003a 084B     		ldr	r3, .L9
+ 132              		.loc 1 23 14
+ 133 003c 5B6D     		ldr	r3, [r3, #84]
+ 134 003e 7B60     		str	r3, [r7, #4]
   24:./src/reset.c ****     return (val == BOOT_FLAG_SOFT_RESET);
-  94              		.loc 1 24 17 view .LVU11
-  95 001e 4AF2A553 		movw	r3, #42405
-  23:./src/reset.c ****     uint32_t val = RTC->BKP1R;
-  96              		.loc 1 23 14 view .LVU12
-  97 0022 506D     		ldr	r0, [r2, #84]
-  98              	.LVL0:
-  99              		.loc 1 24 5 is_stmt 1 view .LVU13
+ 135              		.loc 1 24 17
+ 136 0040 7B68     		ldr	r3, [r7, #4]
+ 137 0042 4AF2A552 		movw	r2, #42405
+ 138 0046 9342     		cmp	r3, r2
+ 139 0048 0CBF     		ite	eq
+ 140 004a 0123     		moveq	r3, #1
+ 141 004c 0023     		movne	r3, #0
+ 142 004e DBB2     		uxtb	r3, r3
   25:./src/reset.c **** }
- 100              		.loc 1 25 1 is_stmt 0 view .LVU14
- 101 0024 C01A     		subs	r0, r0, r3
- 102              	.LVL1:
- 103              		.loc 1 25 1 view .LVU15
- 104 0026 B0FA80F0 		clz	r0, r0
- 105              	.LVL2:
- 106              		.loc 1 25 1 view .LVU16
- 107 002a 4009     		lsrs	r0, r0, #5
- 108 002c 7047     		bx	lr
- 109              	.L10:
- 110 002e 00BF     		.align	2
- 111              	.L9:
- 112 0030 00280040 		.word	1073752064
- 113              		.cfi_endproc
- 114              	.LFE146:
- 116              		.align	1
- 117              		.p2align 2,,3
- 118              		.global	MX_RTC_Init
- 119              		.syntax unified
- 120              		.thumb
- 121              		.thumb_func
- 122              		.fpu fpv5-d16
- 124              	MX_RTC_Init:
- 125              	.LFB147:
+ 143              		.loc 1 25 1
+ 144 0050 1846     		mov	r0, r3
+ 145 0052 0C37     		adds	r7, r7, #12
+ 146              	.LCFI11:
+ 147              		.cfi_def_cfa_offset 4
+ 148 0054 BD46     		mov	sp, r7
+ 149              	.LCFI12:
+ 150              		.cfi_def_cfa_register 13
+ 151              		@ sp needed
+ 152 0056 5DF8047B 		ldr	r7, [sp], #4
+ 153              	.LCFI13:
+ 154              		.cfi_restore 7
+ 155              		.cfi_def_cfa_offset 0
+ 156 005a 7047     		bx	lr
+ 157              	.L10:
+ 158              		.align	2
+ 159              	.L9:
+ 160 005c 00280040 		.word	1073752064
+ 161              		.cfi_endproc
+ 162              	.LFE146:
+ 164              		.align	1
+ 165              		.global	MX_RTC_Init
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.fpu fpv5-d16
+ 171              	MX_RTC_Init:
+ 172              	.LFB147:
   26:./src/reset.c **** 
   27:./src/reset.c **** 
   28:./src/reset.c **** void MX_RTC_Init(void)
   29:./src/reset.c **** {
- 126              		.loc 1 29 1 is_stmt 1 view -0
- 127              		.cfi_startproc
- 128              		@ args = 0, pretend = 0, frame = 0
- 129              		@ frame_needed = 0, uses_anonymous_args = 0
- 130              		@ link register save eliminated.
-  30:./src/reset.c ****     /** Enable access to RTC and Backup domain */
-  31:./src/reset.c ****     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
- 131              		.loc 1 31 5 view .LVU18
- 132              		.loc 1 31 18 is_stmt 0 view .LVU19
- 133 0034 074B     		ldr	r3, .L12
-  32:./src/reset.c ****     PWR->CR1 |= PWR_CR1_DBP; 
- 134              		.loc 1 32 14 view .LVU20
- 135 0036 0849     		ldr	r1, .L12+4
+ 173              		.loc 1 29 1
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ 176              		@ frame_needed = 1, uses_anonymous_args = 0
+ 177              		@ link register save eliminated.
+ 178 0060 80B4     		push	{r7}
+ 179              	.LCFI14:
+ 180              		.cfi_def_cfa_offset 4
+ 181              		.cfi_offset 7, -4
+ 182 0062 00AF     		add	r7, sp, #0
+ 183              	.LCFI15:
+ 184              		.cfi_def_cfa_register 7
+  30:./src/reset.c ****     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+ 185              		.loc 1 30 18
+ 186 0064 0B4B     		ldr	r3, .L12
+ 187 0066 1B6C     		ldr	r3, [r3, #64]
+ 188 0068 0A4A     		ldr	r2, .L12
+ 189 006a 43F08053 		orr	r3, r3, #268435456
+ 190 006e 1364     		str	r3, [r2, #64]
   31:./src/reset.c ****     PWR->CR1 |= PWR_CR1_DBP; 
- 136              		.loc 1 31 18 view .LVU21
- 137 0038 1A6C     		ldr	r2, [r3, #64]
- 138 003a 42F08052 		orr	r2, r2, #268435456
- 139 003e 1A64     		str	r2, [r3, #64]
- 140              		.loc 1 32 5 is_stmt 1 view .LVU22
- 141              		.loc 1 32 14 is_stmt 0 view .LVU23
- 142 0040 0A68     		ldr	r2, [r1]
- 143 0042 42F48072 		orr	r2, r2, #256
- 144 0046 0A60     		str	r2, [r1]
-  33:./src/reset.c ****     // __HAL_RCC_PWR_CLK_ENABLE();
-  34:./src/reset.c ****     // HAL_PWR_EnableBkUpAccess();  // 백업 도메인 접근 허용
-  35:./src/reset.c **** 
-  36:./src/reset.c ****     RCC->BDCR |= RCC_BDCR_RTCEN;           // RTC 클럭 Enable
- 145              		.loc 1 36 5 is_stmt 1 view .LVU24
- 146              		.loc 1 36 15 is_stmt 0 view .LVU25
- 147 0048 1A6F     		ldr	r2, [r3, #112]
- 148 004a 42F40042 		orr	r2, r2, #32768
- 149 004e 1A67     		str	r2, [r3, #112]
-  37:./src/reset.c **** 
-  38:./src/reset.c ****     //__HAL_RCC_LSE_CONFIG(RCC_LSE_ON); // 또는 RCC_LSI_ON
-  39:./src/reset.c **** 
-  40:./src/reset.c ****     // while (__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET)
-  41:./src/reset.c ****     // {
-  42:./src/reset.c ****     //     // wait until LSE is ready
-  43:./src/reset.c ****     // }
-  44:./src/reset.c **** 
-  45:./src/reset.c ****     // /** Select RTC clock source */
-  46:./src/reset.c ****     // __HAL_RCC_RTC_CONFIG(RCC_RTCCLKSOURCE_LSE);  // LSE를 RTC 클럭 소스로 사용
-  47:./src/reset.c **** 
-  48:./src/reset.c ****     // /** Enable RTC Clock */
-  49:./src/reset.c ****     // __HAL_RCC_RTC_ENABLE();
-  50:./src/reset.c **** 
-  51:./src/reset.c ****     // /** Initialize RTC with default values */
-  52:./src/reset.c ****     // hrtc.Instance = RTC;
-  53:./src/reset.c ****     // hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
-  54:./src/reset.c ****     // hrtc.Init.AsynchPrediv = 127;
-  55:./src/reset.c ****     // hrtc.Init.SynchPrediv = 255;
-  56:./src/reset.c ****     // hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
-  57:./src/reset.c ****     // hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-  58:./src/reset.c ****     // hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-  59:./src/reset.c **** 
-  60:./src/reset.c ****     // if (HAL_RTC_Init(&hrtc) != HAL_OK)
-  61:./src/reset.c ****     // {
-  62:./src/reset.c ****     //     Error_Handler();  // 에러 처리 루틴
-  63:./src/reset.c ****     // }
-  64:./src/reset.c **** }...
- 150              		.loc 1 64 1 view .LVU26
- 151 0050 7047     		bx	lr
- 152              	.L13:
- 153 0052 00BF     		.align	2
- 154              	.L12:
- 155 0054 00380240 		.word	1073887232
- 156 0058 00700040 		.word	1073770496
- 157              		.cfi_endproc
- 158              	.LFE147:
- 160              	.Letext0:
- 161              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 162              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 163              		.file 4 "./inc/stm32f765xx.h"
+ 191              		.loc 1 31 14
+ 192 0070 094B     		ldr	r3, .L12+4
+ 193 0072 1B68     		ldr	r3, [r3]
+ 194 0074 084A     		ldr	r2, .L12+4
+ 195 0076 43F48073 		orr	r3, r3, #256
+ 196 007a 1360     		str	r3, [r2]
+  32:./src/reset.c ****     RCC->BDCR |= RCC_BDCR_RTCEN;           // RTC 클럭 Enabl
+ 197              		.loc 1 32 15
+ 198 007c 054B     		ldr	r3, .L12
+ 199 007e 1B6F     		ldr	r3, [r3, #112]
+ 200 0080 044A     		ldr	r2, .L12
+ 201 0082 43F40043 		orr	r3, r3, #32768
+ 202 0086 1367     		str	r3, [r2, #112]
+  33:./src/reset.c **** }...
+ 203              		.loc 1 33 1
+ 204 0088 00BF     		nop
+ 205 008a BD46     		mov	sp, r7
+ 206              	.LCFI16:
+ 207              		.cfi_def_cfa_register 13
+ 208              		@ sp needed
+ 209 008c 5DF8047B 		ldr	r7, [sp], #4
+ 210              	.LCFI17:
+ 211              		.cfi_restore 7
+ 212              		.cfi_def_cfa_offset 0
+ 213 0090 7047     		bx	lr
+ 214              	.L13:
+ 215 0092 00BF     		.align	2
+ 216              	.L12:
+ 217 0094 00380240 		.word	1073887232
+ 218 0098 00700040 		.word	1073770496
+ 219              		.cfi_endproc
+ 220              	.LFE147:
+ 222              	.Letext0:
+ 223              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 224              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 225              		.file 4 "./inc/stm32f765xx.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 reset.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:25     .text:00000000 write_boot_flag_soft_reset
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:43     .text:0000000c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:47     .text:00000010 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:55     .text:00000010 clear_boot_flag
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:72     .text:00000018 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:76     .text:0000001c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:84     .text:0000001c is_soft_reset
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:112    .text:00000030 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:116    .text:00000034 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:124    .text:00000034 MX_RTC_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccIVOLsk.s:155    .text:00000054 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:24     .text:00000000 write_boot_flag_soft_reset
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:58     .text:00000018 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:62     .text:0000001c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:69     .text:0000001c clear_boot_flag
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:102    .text:00000030 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:106    .text:00000034 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:113    .text:00000034 is_soft_reset
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:160    .text:0000005c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:164    .text:00000060 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:171    .text:00000060 MX_RTC_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccRymRWF.s:217    .text:00000094 $d
 
 NO UNDEFINED SYMBOLS

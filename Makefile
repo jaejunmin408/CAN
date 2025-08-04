@@ -54,6 +54,8 @@ CSRC += $(SRC_FOLDER)/udp_total.c
 CSRC += $(SRC_FOLDER)/startDebug.c
 CSRC += $(SRC_FOLDER)/task01.c
 CSRC += $(SRC_FOLDER)/task02.c
+CSRC += $(SRC_FOLDER)/task03.c
+CSRC += $(SRC_FOLDER)/task04.c
 CSRC += $(SRC_FOLDER)/reset.c
 CSRC += $(SRC_FOLDER)/firmware_tag.c
 

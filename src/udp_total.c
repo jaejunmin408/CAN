@@ -13,8 +13,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT    7   /* define the UDP remote connection port */
-#define UDP_SYSTEM_PORT    10 
+#define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
+#define UDP_SYSTEM_PORT    7010
 
 
 
@@ -32,7 +32,7 @@ const char *JUMP_FW_STR = "RESET SSSAAA";
 osThreadId_t UDPHandle;                       //[user custom] RTOS memory setting + osPriority
 const osThreadAttr_t UDP_attributes = {
   .name = "udp_send", 
-  .stack_size = 2048,
+  .stack_size = 2048, 
   .priority = (osPriority_t) osPriorityNormal,
 };
 
@@ -73,7 +73,7 @@ void udp_total_connect(void)
   err_t err;
   
   /* Create a new UDP control block  */
-upcb = udp_new();
+  upcb = udp_new();
   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
 

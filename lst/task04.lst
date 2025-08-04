@@ -1,0 +1,675 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"task04.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.rodata.str1.4,"aMS",%progbits,1
+  17              		.align	2
+  18              	.LC0:
+  19 0000 5B46575D 		.ascii	"[FW] CAN3 \000"
+  19      2043414E 
+  19      332000
+  20 000b 00       		.align	2
+  21              	.LC1:
+  22 000c 5B46575D 		.ascii	"[FW]  ID : 0x%03X,  DLC : %d\012\000"
+  22      20204944 
+  22      203A2030 
+  22      78253033 
+  22      582C2020 
+  23 002a 0000     		.align	2
+  24              	.LC2:
+  25 002c 5B46575D 		.ascii	"[FW]\000"
+  25      00
+  26 0031 000000   		.align	2
+  27              	.LC3:
+  28 0034 20307825 		.ascii	" 0x%02X\000"
+  28      30325800 
+  29              		.align	2
+  30              	.LC4:
+  31 003c EC958C20 		.ascii	"\354\225\214 \354\210\230 \354\227\206\353\212\224 "
+  31      EC889820 
+  31      EC9786EB 
+  31      8A9420
+  32 004b 43414E20 		.ascii	"CAN \354\210\230\354\213\240 \353\262\204\354\212\244"
+  32      EC8898EC 
+  32      8BA020EB 
+  32      B284EC8A 
+  32      A4
+  33 005c 3A206842 		.ascii	": hBus=%d, ID=0x%03X\012\000"
+  33      75733D25 
+  33      642C2049 
+  33      443D3078 
+  33      25303358 
+  34              		.text
+  35              		.align	1
+  36              		.p2align 2,,3
+  37              		.global	task04_thread
+  38              		.arch armv7e-m
+  39              		.syntax unified
+  40              		.thumb
+  41              		.thumb_func
+  42              		.fpu fpv5-d16
+  44              	task04_thread:
+  45              	.LVL0:
+  46              	.LFB147:
+  47              		.file 1 "./src/task04.c"
+   1:./src/task04.c **** #include "cmsis_os2.h"
+   2:./src/task04.c **** #include "main.h"
+   3:./src/task04.c **** #include "startDebug.h"
+   4:./src/task04.c **** #include "can.h"
+   5:./src/task04.c **** #include "can_user.h"
+   6:./src/task04.c **** #include "hardware.h"
+   7:./src/task04.c **** #include <stm32f7xx_hal_iwdg.h>
+   8:./src/task04.c **** #include "udp_total.h"
+   9:./src/task04.c **** #include "task04.h"
+  10:./src/task04.c **** 
+  11:./src/task04.c **** 
+  12:./src/task04.c **** 
+  13:./src/task04.c **** extern osMessageQueueId_t debugQueue;
+  14:./src/task04.c **** extern IWDG_HandleTypeDef hiwdg;
+  15:./src/task04.c **** 
+  16:./src/task04.c **** 
+  17:./src/task04.c **** osThreadId_t Task04Handle;
+  18:./src/task04.c **** const osThreadAttr_t Task04_attributes = {
+  19:./src/task04.c ****   .name = "Task04",
+  20:./src/task04.c ****   .stack_size = 1024 * 5,
+  21:./src/task04.c ****   .priority = (osPriority_t) osPriorityLow1,
+  22:./src/task04.c **** };
+  23:./src/task04.c **** 
+  24:./src/task04.c **** 
+  25:./src/task04.c **** // static void  main_greeting ( void)
+  26:./src/task04.c **** // {
+  27:./src/task04.c **** // 	CANTxMsg_t  msg;
+  28:./src/task04.c **** 	
+  29:./src/task04.c **** 	
+  30:./src/task04.c **** // 	msg.bufftype = CAN_BUFFER_TX_MSG;
+  31:./src/task04.c **** // 	msg.dlc      = CAN_LEN8_DLC;
+  32:./src/task04.c **** // 	msg.msgtype  = CAN_MSGTYPE_STANDARD;
+  33:./src/task04.c **** // 	msg.id       = 0x123;
+  34:./src/task04.c **** 	
+  35:./src/task04.c **** // 	msg.data32[0] = 0x67452301;
+  36:./src/task04.c **** // 	msg.data32[1] = 0xEFCDAB89;
+  37:./src/task04.c **** 	
+  38:./src/task04.c **** // 	// patch byte 0 with FPGA version
+  39:./src/task04.c **** // 	msg.data8[0] = HW_FPGA_VERSION;
+  40:./src/task04.c **** 	
+  41:./src/task04.c **** // 	// Send message
+  42:./src/task04.c **** // 	CAN_Write ( CAN_BUS1, &msg);
+  43:./src/task04.c **** // }
+  44:./src/task04.c **** 
+  45:./src/task04.c **** 
+  46:./src/task04.c **** void task04_thread(void *argument)
+  47:./src/task04.c **** {
+  48              		.loc 1 47 1 view -0
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 128
+  51              		@ frame_needed = 0, uses_anonymous_args = 0
+  48:./src/task04.c ****   (void)argument;
+  52              		.loc 1 48 3 view .LVU1
+  49:./src/task04.c **** 
+  50:./src/task04.c ****   // init CAN
+  51:./src/task04.c **** 	CAN_UserInit();
+  53              		.loc 1 51 2 view .LVU2
+  47:./src/task04.c ****   (void)argument;
+  54              		.loc 1 47 1 is_stmt 0 view .LVU3
+  55 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  56              	.LCFI0:
+  57              		.cfi_def_cfa_offset 36
+  58              		.cfi_offset 4, -36
+  59              		.cfi_offset 5, -32
+  60              		.cfi_offset 6, -28
+  61              		.cfi_offset 7, -24
+  62              		.cfi_offset 8, -20
+  63              		.cfi_offset 9, -16
+  64              		.cfi_offset 10, -12
+  65              		.cfi_offset 11, -8
+  66              		.cfi_offset 14, -4
+  67 0004 A1B0     		sub	sp, sp, #132
+  68              	.LCFI1:
+  69              		.cfi_def_cfa_offset 168
+  70 0006 2C4D     		ldr	r5, .L16
+  71 0008 DFF8C0B0 		ldr	fp, .L16+20
+  72              		.loc 1 51 2 view .LVU4
+  73 000c FFF7FEFF 		bl	CAN_UserInit
+  74              	.LVL1:
+  75              		.loc 1 51 2 view .LVU5
+  76 0010 DFF8BCA0 		ldr	r10, .L16+24
+  77              	.LBB2:
+  52:./src/task04.c **** 
+  53:./src/task04.c ****   // set green LEDs for CANs
+  54:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
+  55:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+  56:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+  57:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
+  58:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
+  59:./src/task04.c **** 	// HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
+  60:./src/task04.c **** 
+  61:./src/task04.c ****   //main_greeting();
+  62:./src/task04.c ****   for(;;)
+  63:./src/task04.c ****   {
+  64:./src/task04.c ****     HAL_IWDG_Refresh(&hiwdg);
+  78              		.loc 1 64 5 view .LVU6
+  79 0014 DFF8BC80 		ldr	r8, .L16+28
+  80              	.LBB3:
+  65:./src/task04.c **** 
+  66:./src/task04.c ****     static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
+  67:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+  68:./src/task04.c **** 		{
+  69:./src/task04.c **** 			switch ( RxMsg.hBus)
+  70:./src/task04.c **** 			{
+  71:./src/task04.c **** 				
+  72:./src/task04.c **** 				case CAN_BUS3:
+  73:./src/task04.c **** 					// message received from CAN1
+  74:./src/task04.c **** 					LED_toggleCAN3 ^= 1;
+  75:./src/task04.c **** 
+  76:./src/task04.c **** 					if ( LED_toggleCAN3)
+  77:./src/task04.c **** 					{
+  78:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
+  79:./src/task04.c **** 					}
+  80:./src/task04.c **** 					
+  81:./src/task04.c **** 					else
+  82:./src/task04.c **** 					{
+  83:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+  84:./src/task04.c **** 					}
+  85:./src/task04.c **** 
+  86:./src/task04.c **** 					printf("[FW] CAN3 \n");
+  87:./src/task04.c **** 					printf("[FW]  ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+  88:./src/task04.c **** 				
+  89:./src/task04.c **** 					char buf[128]; 
+  90:./src/task04.c **** 					snprintf(buf, sizeof(buf), "[FW]");
+  91:./src/task04.c **** 
+  92:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+  93:./src/task04.c **** 					{
+  94:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+  95:./src/task04.c **** 					}
+  96:./src/task04.c **** 					printf("%s\n", buf);
+  97:./src/task04.c **** 
+  98:./src/task04.c **** 
+  99:./src/task04.c **** 					// // catch ID 123h and convert it from classical CAN to CAN-FD
+ 100:./src/task04.c **** 					// if ( RxMsg.id == 0x123  &&  RxMsg.msgtype == CAN_MSGTYPE_STANDARD)
+ 101:./src/task04.c **** 					// {
+ 102:./src/task04.c **** 					// 	// overwrite msgtype
+ 103:./src/task04.c **** 					// 	RxMsg.msgtype = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
+ 104:./src/task04.c **** 
+ 105:./src/task04.c **** 					// 	// set dlc to 12 data bytes
+ 106:./src/task04.c **** 					// 	RxMsg.dlc = CAN_LEN12_DLC;
+ 107:./src/task04.c **** 
+ 108:./src/task04.c **** 					// 	// add some other data
+ 109:./src/task04.c **** 					// 	RxMsg.data8[8] = 0x11;
+ 110:./src/task04.c **** 					// 	RxMsg.data8[9] = 0x22;
+ 111:./src/task04.c **** 					// 	RxMsg.data8[10] = 0x33;
+ 112:./src/task04.c **** 					// 	RxMsg.data8[11] = 0x44;
+ 113:./src/task04.c **** 					// }
+ 114:./src/task04.c **** 
+ 115:./src/task04.c ****  					// // forward message to CAN2
+ 116:./src/task04.c **** 					// CAN_Write ( CAN_BUS2, &RxMsg);
+ 117:./src/task04.c **** 					break;
+ 118:./src/task04.c **** 					default:
+ 119:./src/task04.c **** 					printf("알 수 없는 CAN 수신 버스: hBus=%d, ID=0x%03X\n", RxMsg.hBus, RxMsg.id);
+  81              		.loc 1 119 6 view .LVU7
+  82 0018 DFF8BC90 		ldr	r9, .L16+32
+  83 001c 06E0     		b	.L9
+  84              	.L3:
+  85              		.loc 1 119 6 is_stmt 1 view .LVU8
+  86 001e AA69     		ldr	r2, [r5, #24]
+  87 0020 4846     		mov	r0, r9
+  88 0022 FFF7FEFF 		bl	printf
+  89              	.LVL2:
+ 120:./src/task04.c **** 					break;
+  90              		.loc 1 120 6 view .LVU9
+  91              	.L2:
+  92              	.LBE3:
+ 121:./src/task04.c **** 					
+ 122:./src/task04.c **** 					
+ 123:./src/task04.c **** 				// case CAN_BUS2:
+ 124:./src/task04.c **** 				// 	// message received from CAN2
+ 125:./src/task04.c **** 				// 	LED_toggleCAN2 ^= 1;
+ 126:./src/task04.c **** 
+ 127:./src/task04.c **** 				// 	if ( LED_toggleCAN2)
+ 128:./src/task04.c **** 				// 	{
+ 129:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
+ 130:./src/task04.c **** 				// 	}
+ 131:./src/task04.c **** 					
+ 132:./src/task04.c **** 				// 	else
+ 133:./src/task04.c **** 				// 	{
+ 134:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+ 135:./src/task04.c **** 				// 	}
+ 136:./src/task04.c **** 					
+ 137:./src/task04.c ****                 // 	if (RxMsg.id == 0x123 && RxMsg.dlc >= 1 && RxMsg.data8[0] == HW_FPGA_VERSION)
+ 138:./src/task04.c ****                 // 	{
+ 139:./src/task04.c ****                 //    		HW_SetLED(HW_LED_CAN2, HW_LED_ORANGE);
+ 140:./src/task04.c ****                 //     	lastGreetingTick_CAN2 = HAL_GetTick();
+ 141:./src/task04.c ****                 // 	}
+ 142:./src/task04.c **** 
+ 143:./src/task04.c **** 				// 	// CAN1 will be classic CAN only. If msgs will have more than
+ 144:./src/task04.c **** 				// 	// eight bytes you have to fragment them manually.
+ 145:./src/task04.c **** 				// 	RxMsg.msgtype &= ~( CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS);
+ 146:./src/task04.c **** 
+ 147:./src/task04.c **** 				// 	printf("[FW]  First byte: 0x%02X\n", RxMsg.data8[8]);
+ 148:./src/task04.c **** 				// 	// forward message to CAN1
+ 149:./src/task04.c **** 				// 	CAN_Write ( CAN_BUS1, &RxMsg);
+ 150:./src/task04.c **** 				// 	break;
+ 151:./src/task04.c **** 					
+ 152:./src/task04.c **** 					
+ 153:./src/task04.c **** 				// case CAN_BUS3:
+ 154:./src/task04.c **** 				// 	// message received from CAN3
+ 155:./src/task04.c **** 				// 	LED_toggleCAN3 ^= 1;
+ 156:./src/task04.c **** 
+ 157:./src/task04.c **** 				// 	if ( LED_toggleCAN3)
+ 158:./src/task04.c **** 				// 	{
+ 159:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
+ 160:./src/task04.c **** 				// 	}
+ 161:./src/task04.c **** 					
+ 162:./src/task04.c **** 				// 	else
+ 163:./src/task04.c **** 				// 	{
+ 164:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+ 165:./src/task04.c **** 				// 	}
+ 166:./src/task04.c **** 					
+ 167:./src/task04.c **** 				// 	// forward message to CAN4
+ 168:./src/task04.c **** 				// 	CAN_Write ( CAN_BUS4, &RxMsg);
+ 169:./src/task04.c **** 				// 	break;
+ 170:./src/task04.c **** 					
+ 171:./src/task04.c **** 					
+ 172:./src/task04.c **** 				// case CAN_BUS4:
+ 173:./src/task04.c **** 				// 	// message received from CAN4
+ 174:./src/task04.c **** 				// 	LED_toggleCAN4 ^= 1;
+ 175:./src/task04.c **** 
+ 176:./src/task04.c **** 				// 	if ( LED_toggleCAN4)
+ 177:./src/task04.c **** 				// 	{
+ 178:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
+ 179:./src/task04.c **** 				// 	}
+ 180:./src/task04.c **** 					
+ 181:./src/task04.c **** 				// 	else
+ 182:./src/task04.c **** 				// 	{
+ 183:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
+ 184:./src/task04.c **** 				// 	}
+ 185:./src/task04.c **** 					
+ 186:./src/task04.c **** 				// 	// forward message to CAN3
+ 187:./src/task04.c **** 				// 	CAN_Write ( CAN_BUS3, &RxMsg);
+ 188:./src/task04.c **** 				// 	break;
+ 189:./src/task04.c **** 					
+ 190:./src/task04.c **** 					
+ 191:./src/task04.c **** 				// case CAN_BUS5:
+ 192:./src/task04.c **** 				// 	// message received from CAN5
+ 193:./src/task04.c **** 				// 	LED_toggleCAN5 ^= 1;
+ 194:./src/task04.c **** 
+ 195:./src/task04.c **** 				// 	if ( LED_toggleCAN5)
+ 196:./src/task04.c **** 				// 	{
+ 197:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
+ 198:./src/task04.c **** 				// 	}
+ 199:./src/task04.c **** 					
+ 200:./src/task04.c **** 				// 	else
+ 201:./src/task04.c **** 				// 	{
+ 202:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
+ 203:./src/task04.c **** 				// 	}
+ 204:./src/task04.c **** 					
+ 205:./src/task04.c **** 				// 	// forward message to CAN6
+ 206:./src/task04.c **** 				// 	CAN_Write ( CAN_BUS6, &RxMsg);
+ 207:./src/task04.c **** 				// 	break;
+ 208:./src/task04.c **** 					
+ 209:./src/task04.c **** 					
+ 210:./src/task04.c **** 				// case CAN_BUS6:
+ 211:./src/task04.c **** 				// 	// message received from CAN6
+ 212:./src/task04.c **** 				// 	LED_toggleCAN6 ^= 1;
+ 213:./src/task04.c **** 
+ 214:./src/task04.c **** 				// 	if ( LED_toggleCAN6)
+ 215:./src/task04.c **** 				// 	{
+ 216:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
+ 217:./src/task04.c **** 				// 	}
+ 218:./src/task04.c **** 					
+ 219:./src/task04.c **** 				// 	else
+ 220:./src/task04.c **** 				// 	{
+ 221:./src/task04.c **** 				// 		HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
+ 222:./src/task04.c **** 				// 	}
+ 223:./src/task04.c **** 					
+ 224:./src/task04.c **** 				// 	// forward message to CAN5
+ 225:./src/task04.c **** 				// 	CAN_Write ( CAN_BUS5, &RxMsg);
+ 226:./src/task04.c **** 				// 	break;
+ 227:./src/task04.c **** 			}
+ 228:./src/task04.c **** 		}
+ 229:./src/task04.c **** 
+ 230:./src/task04.c **** 		// uint32_t now = HAL_GetTick();
+ 231:./src/task04.c **** 		// if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
+ 232:./src/task04.c **** 
+ 233:./src/task04.c **** 		osDelay (DLY_MS(1));	//DLY_MS(1)
+  93              		.loc 1 233 3 view .LVU10
+  94 0026 0520     		movs	r0, #5
+  95 0028 FFF7FEFF 		bl	osDelay
+  96              	.LVL3:
+  97              	.LBE2:
+  62:./src/task04.c ****   {
+  98              		.loc 1 62 8 view .LVU11
+  99              	.L9:
+  62:./src/task04.c ****   {
+ 100              		.loc 1 62 3 view .LVU12
+ 101              	.LBB10:
+  64:./src/task04.c **** 
+ 102              		.loc 1 64 5 view .LVU13
+ 103 002c 4046     		mov	r0, r8
+ 104 002e FFF7FEFF 		bl	HAL_IWDG_Refresh
+ 105              	.LVL4:
+  66:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+ 106              		.loc 1 66 5 view .LVU14
+  67:./src/task04.c **** 		{
+ 107              		.loc 1 67 7 view .LVU15
+  67:./src/task04.c **** 		{
+ 108              		.loc 1 67 12 is_stmt 0 view .LVU16
+ 109 0032 2946     		mov	r1, r5
+ 110 0034 FF20     		movs	r0, #255
+ 111 0036 FFF7FEFF 		bl	CAN_UserRead
+ 112              	.LVL5:
+  67:./src/task04.c **** 		{
+ 113              		.loc 1 67 10 view .LVU17
+ 114 003a 0028     		cmp	r0, #0
+ 115 003c F3D1     		bne	.L2
+  69:./src/task04.c **** 			{
+ 116              		.loc 1 69 4 is_stmt 1 view .LVU18
+  69:./src/task04.c **** 			{
+ 117              		.loc 1 69 18 is_stmt 0 view .LVU19
+ 118 003e E978     		ldrb	r1, [r5, #3]	@ zero_extendqisi2
+ 119 0040 0909     		lsrs	r1, r1, #4
+  69:./src/task04.c **** 			{
+ 120              		.loc 1 69 4 view .LVU20
+ 121 0042 0229     		cmp	r1, #2
+ 122 0044 EBD1     		bne	.L3
+ 123              	.LBB9:
+  74:./src/task04.c **** 
+ 124              		.loc 1 74 6 is_stmt 1 view .LVU21
+  74:./src/task04.c **** 
+ 125              		.loc 1 74 21 is_stmt 0 view .LVU22
+ 126 0046 9BF80030 		ldrb	r3, [fp]	@ zero_extendqisi2
+ 127 004a 83F00102 		eor	r2, r3, #1
+  76:./src/task04.c **** 					{
+ 128              		.loc 1 76 9 view .LVU23
+ 129 004e 012B     		cmp	r3, #1
+  74:./src/task04.c **** 
+ 130              		.loc 1 74 21 view .LVU24
+ 131 0050 8BF80020 		strb	r2, [fp]
+  76:./src/task04.c **** 					{
+ 132              		.loc 1 76 6 is_stmt 1 view .LVU25
+  76:./src/task04.c **** 					{
+ 133              		.loc 1 76 9 is_stmt 0 view .LVU26
+ 134 0054 2CD0     		beq	.L4
+  78:./src/task04.c **** 					}
+ 135              		.loc 1 78 7 is_stmt 1 view .LVU27
+ 136 0056 0321     		movs	r1, #3
+ 137 0058 0846     		mov	r0, r1
+ 138 005a FFF7FEFF 		bl	HW_SetLED
+ 139              	.LVL6:
+ 140              	.L5:
+  86:./src/task04.c **** 					printf("[FW]  ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 141              		.loc 1 86 6 view .LVU28
+ 142 005e 1748     		ldr	r0, .L16+4
+ 143 0060 FFF7FEFF 		bl	puts
+ 144              	.LVL7:
+  87:./src/task04.c **** 				
+ 145              		.loc 1 87 6 view .LVU29
+  87:./src/task04.c **** 				
+ 146              		.loc 1 87 62 is_stmt 0 view .LVU30
+ 147 0064 2A7D     		ldrb	r2, [r5, #20]	@ zero_extendqisi2
+  87:./src/task04.c **** 				
+ 148              		.loc 1 87 6 view .LVU31
+ 149 0066 A969     		ldr	r1, [r5, #24]
+ 150 0068 1548     		ldr	r0, .L16+8
+ 151 006a 1209     		lsrs	r2, r2, #4
+ 152 006c FFF7FEFF 		bl	printf
+ 153              	.LVL8:
+  89:./src/task04.c **** 					snprintf(buf, sizeof(buf), "[FW]");
+ 154              		.loc 1 89 6 is_stmt 1 view .LVU32
+  90:./src/task04.c **** 
+ 155              		.loc 1 90 6 view .LVU33
+ 156              	.LBB4:
+  92:./src/task04.c **** 					{
+ 157              		.loc 1 92 31 is_stmt 0 view .LVU34
+ 158 0070 2B7D     		ldrb	r3, [r5, #20]	@ zero_extendqisi2
+ 159              	.LBE4:
+  90:./src/task04.c **** 
+ 160              		.loc 1 90 6 view .LVU35
+ 161 0072 9AE80300 		ldm	r10, {r0, r1}
+ 162              	.LBB7:
+  92:./src/task04.c **** 					{
+ 163              		.loc 1 92 6 view .LVU36
+ 164 0076 1B09     		lsrs	r3, r3, #4
+ 165              	.LBE7:
+  90:./src/task04.c **** 
+ 166              		.loc 1 90 6 view .LVU37
+ 167 0078 0090     		str	r0, [sp]
+ 168 007a 8DF80410 		strb	r1, [sp, #4]
+  92:./src/task04.c **** 					{
+ 169              		.loc 1 92 6 is_stmt 1 view .LVU38
+ 170              	.LBB8:
+  92:./src/task04.c **** 					{
+ 171              		.loc 1 92 11 view .LVU39
+ 172              	.LVL9:
+  92:./src/task04.c **** 					{
+ 173              		.loc 1 92 22 view .LVU40
+  92:./src/task04.c **** 					{
+ 174              		.loc 1 92 6 is_stmt 0 view .LVU41
+ 175 007e 13D0     		beq	.L6
+ 176 0080 104E     		ldr	r6, .L16+12
+ 177              	.LBB5:
+  94:./src/task04.c **** 					}
+ 178              		.loc 1 94 7 view .LVU42
+ 179 0082 114F     		ldr	r7, .L16+16
+ 180              	.LVL10:
+ 181              	.L7:
+  94:./src/task04.c **** 					}
+ 182              		.loc 1 94 7 is_stmt 1 discriminator 3 view .LVU43
+ 183 0084 3446     		mov	r4, r6
+  94:./src/task04.c **** 					}
+ 184              		.loc 1 94 22 is_stmt 0 discriminator 3 view .LVU44
+ 185 0086 6846     		mov	r0, sp
+ 186 0088 FFF7FEFF 		bl	strlen
+ 187              	.LVL11:
+  94:./src/task04.c **** 					}
+ 188              		.loc 1 94 7 discriminator 3 view .LVU45
+ 189 008c 16F8013F 		ldrb	r3, [r6, #1]!	@ zero_extendqisi2
+ 190              	.LVL12:
+  94:./src/task04.c **** 					}
+ 191              		.loc 1 94 7 discriminator 3 view .LVU46
+ 192              	.LBE5:
+  92:./src/task04.c **** 					{
+ 193              		.loc 1 92 6 discriminator 3 view .LVU47
+ 194 0090 1A3C     		subs	r4, r4, #26
+ 195              	.LVL13:
+ 196              	.LBB6:
+  94:./src/task04.c **** 					}
+ 197              		.loc 1 94 7 discriminator 3 view .LVU48
+ 198 0092 C0F18001 		rsb	r1, r0, #128
+ 199 0096 3A46     		mov	r2, r7
+ 200 0098 6844     		add	r0, r0, sp
+ 201 009a FFF7FEFF 		bl	snprintf
+ 202              	.LVL14:
+ 203              	.LBE6:
+  92:./src/task04.c **** 					{
+ 204              		.loc 1 92 37 is_stmt 1 discriminator 3 view .LVU49
+  92:./src/task04.c **** 					{
+ 205              		.loc 1 92 22 discriminator 3 view .LVU50
+  92:./src/task04.c **** 					{
+ 206              		.loc 1 92 6 is_stmt 0 discriminator 3 view .LVU51
+ 207 009e 641B     		subs	r4, r4, r5
+  92:./src/task04.c **** 					{
+ 208              		.loc 1 92 31 discriminator 3 view .LVU52
+ 209 00a0 2B7D     		ldrb	r3, [r5, #20]	@ zero_extendqisi2
+  92:./src/task04.c **** 					{
+ 210              		.loc 1 92 6 discriminator 3 view .LVU53
+ 211 00a2 B4EB131F 		cmp	r4, r3, lsr #4
+ 212 00a6 EDDB     		blt	.L7
+ 213              	.LVL15:
+ 214              	.L6:
+  92:./src/task04.c **** 					{
+ 215              		.loc 1 92 6 discriminator 3 view .LVU54
+ 216              	.LBE8:
+  96:./src/task04.c **** 
+ 217              		.loc 1 96 6 is_stmt 1 view .LVU55
+ 218 00a8 6846     		mov	r0, sp
+ 219 00aa FFF7FEFF 		bl	puts
+ 220              	.LVL16:
+ 117:./src/task04.c **** 					default:
+ 221              		.loc 1 117 6 view .LVU56
+ 222 00ae BAE7     		b	.L2
+ 223              	.L4:
+  83:./src/task04.c **** 					}
+ 224              		.loc 1 83 7 view .LVU57
+ 225 00b0 0320     		movs	r0, #3
+ 226 00b2 FFF7FEFF 		bl	HW_SetLED
+ 227              	.LVL17:
+ 228 00b6 D2E7     		b	.L5
+ 229              	.L17:
+ 230              		.align	2
+ 231              	.L16:
+ 232 00b8 00000000 		.word	.LANCHOR0
+ 233 00bc 00000000 		.word	.LC0
+ 234 00c0 0C000000 		.word	.LC1
+ 235 00c4 1B000000 		.word	.LANCHOR0+27
+ 236 00c8 34000000 		.word	.LC3
+ 237 00cc 00000000 		.word	.LANCHOR1
+ 238 00d0 2C000000 		.word	.LC2
+ 239 00d4 00000000 		.word	hiwdg
+ 240 00d8 3C000000 		.word	.LC4
+ 241              	.LBE9:
+ 242              	.LBE10:
+ 243              		.cfi_endproc
+ 244              	.LFE147:
+ 246              		.align	1
+ 247              		.p2align 2,,3
+ 248              		.global	task04_init
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 252              		.fpu fpv5-d16
+ 254              	task04_init:
+ 255              	.LVL18:
+ 256              	.LFB148:
+ 234:./src/task04.c ****   }
+ 235:./src/task04.c **** }
+ 236:./src/task04.c **** 
+ 237:./src/task04.c **** void task04_init(void *argument)
+ 238:./src/task04.c **** {
+ 257              		.loc 1 238 1 view -0
+ 258              		.cfi_startproc
+ 259              		@ args = 0, pretend = 0, frame = 0
+ 260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 239:./src/task04.c ****     (void)argument;
+ 261              		.loc 1 239 5 view .LVU59
+ 240:./src/task04.c **** 
+ 241:./src/task04.c ****     Task04Handle = osThreadNew(task04_thread, NULL, &Task04_attributes);
+ 262              		.loc 1 241 5 view .LVU60
+ 238:./src/task04.c ****     (void)argument;
+ 263              		.loc 1 238 1 is_stmt 0 view .LVU61
+ 264 00dc 08B5     		push	{r3, lr}
+ 265              	.LCFI2:
+ 266              		.cfi_def_cfa_offset 8
+ 267              		.cfi_offset 3, -8
+ 268              		.cfi_offset 14, -4
+ 269              		.loc 1 241 20 view .LVU62
+ 270 00de 044A     		ldr	r2, .L20
+ 271 00e0 0021     		movs	r1, #0
+ 272 00e2 0448     		ldr	r0, .L20+4
+ 273              	.LVL19:
+ 274              		.loc 1 241 20 view .LVU63
+ 275 00e4 FFF7FEFF 		bl	osThreadNew
+ 276              	.LVL20:
+ 277              		.loc 1 241 18 view .LVU64
+ 278 00e8 034B     		ldr	r3, .L20+8
+ 279 00ea 5860     		str	r0, [r3, #4]
+ 242:./src/task04.c **** 
+ 243:./src/task04.c **** }...
+ 280              		.loc 1 243 1 view .LVU65
+ 281 00ec 08BD     		pop	{r3, pc}
+ 282              	.L21:
+ 283 00ee 00BF     		.align	2
+ 284              	.L20:
+ 285 00f0 00000000 		.word	.LANCHOR2
+ 286 00f4 00000000 		.word	task04_thread
+ 287 00f8 00000000 		.word	.LANCHOR1
+ 288              		.cfi_endproc
+ 289              	.LFE148:
+ 291              		.global	Task04_attributes
+ 292              		.section	.rodata.str1.4
+ 293 0072 0000     		.align	2
+ 294              	.LC5:
+ 295 0074 5461736B 		.ascii	"Task04\000"
+ 295      303400
+ 296              		.global	Task04Handle
+ 297              		.section	.rodata
+ 298              		.align	2
+ 299              		.set	.LANCHOR2,. + 0
+ 302              	Task04_attributes:
+ 303 0000 74000000 		.word	.LC5
+ 304 0004 00000000 		.space	16
+ 304      00000000 
+ 304      00000000 
+ 304      00000000 
+ 305 0014 00140000 		.word	5120
+ 306 0018 09000000 		.word	9
+ 307 001c 00000000 		.space	8
+ 307      00000000 
+ 308              		.bss
+ 309              		.align	2
+ 310              		.set	.LANCHOR1,. + 0
+ 313              	LED_toggleCAN3:
+ 314 0000 00       		.space	1
+ 315 0001 000000   		.space	3
+ 318              	Task04Handle:
+ 319 0004 00000000 		.space	4
+ 320              		.section	.bss.dtcm,"aw",%nobits
+ 321              		.align	2
+ 322              		.set	.LANCHOR0,. + 0
+ 325              	RxMsg.0:
+ 326 0000 00000000 		.space	96
+ 326      00000000 
+ 326      00000000 
+ 326      00000000 
+ 326      00000000 
+ 327              		.text
+ 328              	.Letext0:
+ 329              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 330              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 331              		.file 4 "./inc/cmsis_os2.h"
+ 332              		.file 5 "./inc/can_user.h"
+ 333              		.file 6 "./inc/stm32f765xx.h"
+ 334              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
+ 335              		.file 8 "./inc/task04.h"
+ 336              		.file 9 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 337              		.file 10 "./inc/hardware.h"
+ 338              		.file 11 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:00000000 task04.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:17     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:35     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:44     .text:00000000 task04_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:232    .text:000000b8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:246    .text:000000dc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:254    .text:000000dc task04_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:285    .text:000000f0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:302    .rodata:00000000 Task04_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:318    .bss:00000004 Task04Handle
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:298    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:309    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:313    .bss:00000000 LED_toggleCAN3
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:321    .bss.dtcm:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cczRFYR8.s:325    .bss.dtcm:00000000 RxMsg.0
+
+UNDEFINED SYMBOLS
+CAN_UserInit
+printf
+osDelay
+HAL_IWDG_Refresh
+CAN_UserRead
+HW_SetLED
+puts
+strlen
+snprintf
+hiwdg
+osThreadNew
