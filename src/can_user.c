@@ -120,47 +120,47 @@ void  CAN_UserInit ( void)
 	// init CAN1
 	CAN_Initialize ( CAN_BUS1, &Timing_CANx[CAN_BUS1]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS1, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS1, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 	
 	
 	
 	// init CAN2
 	CAN_Initialize ( CAN_BUS2, &Timing_CANx[CAN_BUS2]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS2, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS2, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 	
 	
 	
 	// init CAN3
 	CAN_Initialize ( CAN_BUS3, &Timing_CANx[CAN_BUS3]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS3, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS3, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 	
 	
 	
 	// init CAN4
 	CAN_Initialize ( CAN_BUS4, &Timing_CANx[CAN_BUS4]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 	
 	
 	
 	// init CAN5
 	CAN_Initialize ( CAN_BUS5, &Timing_CANx[CAN_BUS5]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS5, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS5, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 	
 	
 	
 	// init CAN6
 	CAN_Initialize ( CAN_BUS6, &Timing_CANx[CAN_BUS6]);
 	
-	// receive all 11 bit standard CAN-IDs
-	CAN_FilterAdd ( CAN_BUS6, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+	// receive all extended CAN-FD
+	CAN_FilterAdd ( CAN_BUS6, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
 }
 

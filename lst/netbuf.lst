@@ -1,0 +1,895 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"netbuf.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	netbuf_new
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	netbuf_new:
+  26              	.LFB25:
+  27              		.file 1 "./lwip-2.1.2/src/api/netbuf.c"
+   1:./lwip-2.1.2/src/api/netbuf.c **** /**
+   2:./lwip-2.1.2/src/api/netbuf.c ****  * @file
+   3:./lwip-2.1.2/src/api/netbuf.c ****  * Network buffer management
+   4:./lwip-2.1.2/src/api/netbuf.c ****  *
+   5:./lwip-2.1.2/src/api/netbuf.c ****  * @defgroup netbuf Network buffers
+   6:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netconn
+   7:./lwip-2.1.2/src/api/netbuf.c ****  * Network buffer descriptor for @ref netconn. Based on @ref pbuf internally
+   8:./lwip-2.1.2/src/api/netbuf.c ****  * to avoid copying data around.\n
+   9:./lwip-2.1.2/src/api/netbuf.c ****  * Buffers must not be shared accross multiple threads, all functions except
+  10:./lwip-2.1.2/src/api/netbuf.c ****  * netbuf_new() and netbuf_delete() are not thread-safe.
+  11:./lwip-2.1.2/src/api/netbuf.c ****  */
+  12:./lwip-2.1.2/src/api/netbuf.c **** 
+  13:./lwip-2.1.2/src/api/netbuf.c **** /*
+  14:./lwip-2.1.2/src/api/netbuf.c ****  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+  15:./lwip-2.1.2/src/api/netbuf.c ****  * All rights reserved.
+  16:./lwip-2.1.2/src/api/netbuf.c ****  *
+  17:./lwip-2.1.2/src/api/netbuf.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  18:./lwip-2.1.2/src/api/netbuf.c ****  * are permitted provided that the following conditions are met:
+  19:./lwip-2.1.2/src/api/netbuf.c ****  *
+  20:./lwip-2.1.2/src/api/netbuf.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  21:./lwip-2.1.2/src/api/netbuf.c ****  *    this list of conditions and the following disclaimer.
+  22:./lwip-2.1.2/src/api/netbuf.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  23:./lwip-2.1.2/src/api/netbuf.c ****  *    this list of conditions and the following disclaimer in the documentation
+  24:./lwip-2.1.2/src/api/netbuf.c ****  *    and/or other materials provided with the distribution.
+  25:./lwip-2.1.2/src/api/netbuf.c ****  * 3. The name of the author may not be used to endorse or promote products
+  26:./lwip-2.1.2/src/api/netbuf.c ****  *    derived from this software without specific prior written permission.
+  27:./lwip-2.1.2/src/api/netbuf.c ****  *
+  28:./lwip-2.1.2/src/api/netbuf.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  29:./lwip-2.1.2/src/api/netbuf.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  30:./lwip-2.1.2/src/api/netbuf.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  31:./lwip-2.1.2/src/api/netbuf.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  32:./lwip-2.1.2/src/api/netbuf.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  33:./lwip-2.1.2/src/api/netbuf.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  34:./lwip-2.1.2/src/api/netbuf.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  35:./lwip-2.1.2/src/api/netbuf.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  36:./lwip-2.1.2/src/api/netbuf.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  37:./lwip-2.1.2/src/api/netbuf.c ****  * OF SUCH DAMAGE.
+  38:./lwip-2.1.2/src/api/netbuf.c ****  *
+  39:./lwip-2.1.2/src/api/netbuf.c ****  * This file is part of the lwIP TCP/IP stack.
+  40:./lwip-2.1.2/src/api/netbuf.c ****  *
+  41:./lwip-2.1.2/src/api/netbuf.c ****  * Author: Adam Dunkels <adam@sics.se>
+  42:./lwip-2.1.2/src/api/netbuf.c ****  *
+  43:./lwip-2.1.2/src/api/netbuf.c ****  */
+  44:./lwip-2.1.2/src/api/netbuf.c **** 
+  45:./lwip-2.1.2/src/api/netbuf.c **** #include "lwip/opt.h"
+  46:./lwip-2.1.2/src/api/netbuf.c **** 
+  47:./lwip-2.1.2/src/api/netbuf.c **** #if LWIP_NETCONN /* don't build if not configured for use in lwipopts.h */
+  48:./lwip-2.1.2/src/api/netbuf.c **** 
+  49:./lwip-2.1.2/src/api/netbuf.c **** #include "lwip/netbuf.h"
+  50:./lwip-2.1.2/src/api/netbuf.c **** #include "lwip/memp.h"
+  51:./lwip-2.1.2/src/api/netbuf.c **** 
+  52:./lwip-2.1.2/src/api/netbuf.c **** #include <string.h>
+  53:./lwip-2.1.2/src/api/netbuf.c **** 
+  54:./lwip-2.1.2/src/api/netbuf.c **** /**
+  55:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+  56:./lwip-2.1.2/src/api/netbuf.c ****  * Create (allocate) and initialize a new netbuf.
+  57:./lwip-2.1.2/src/api/netbuf.c ****  * The netbuf doesn't yet contain a packet buffer!
+  58:./lwip-2.1.2/src/api/netbuf.c ****  *
+  59:./lwip-2.1.2/src/api/netbuf.c ****  * @return a pointer to a new netbuf
+  60:./lwip-2.1.2/src/api/netbuf.c ****  *         NULL on lack of memory
+  61:./lwip-2.1.2/src/api/netbuf.c ****  */
+  62:./lwip-2.1.2/src/api/netbuf.c **** struct
+  63:./lwip-2.1.2/src/api/netbuf.c **** netbuf *netbuf_new(void)
+  64:./lwip-2.1.2/src/api/netbuf.c **** {
+  28              		.loc 1 64 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  65:./lwip-2.1.2/src/api/netbuf.c ****   struct netbuf *buf;
+  32              		.loc 1 65 3 view .LVU1
+  66:./lwip-2.1.2/src/api/netbuf.c **** 
+  67:./lwip-2.1.2/src/api/netbuf.c ****   buf = (struct netbuf *)memp_malloc(MEMP_NETBUF);
+  33              		.loc 1 67 3 view .LVU2
+  64:./lwip-2.1.2/src/api/netbuf.c ****   struct netbuf *buf;
+  34              		.loc 1 64 1 is_stmt 0 view .LVU3
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+  40              		.loc 1 67 26 view .LVU4
+  41 0002 0620     		movs	r0, #6
+  42 0004 FFF7FEFF 		bl	memp_malloc
+  43              	.LVL0:
+  68:./lwip-2.1.2/src/api/netbuf.c ****   if (buf != NULL) {
+  44              		.loc 1 68 3 is_stmt 1 view .LVU5
+  45              		.loc 1 68 6 is_stmt 0 view .LVU6
+  46 0008 20B1     		cbz	r0, .L1
+  69:./lwip-2.1.2/src/api/netbuf.c ****     memset(buf, 0, sizeof(struct netbuf));
+  47              		.loc 1 69 5 is_stmt 1 view .LVU7
+  48 000a 0023     		movs	r3, #0
+  49 000c 0360     		str	r3, [r0]	@ unaligned
+  50 000e 4360     		str	r3, [r0, #4]	@ unaligned
+  51 0010 8360     		str	r3, [r0, #8]	@ unaligned
+  52 0012 C360     		str	r3, [r0, #12]	@ unaligned
+  70:./lwip-2.1.2/src/api/netbuf.c ****   }
+  71:./lwip-2.1.2/src/api/netbuf.c ****   return buf;
+  53              		.loc 1 71 3 view .LVU8
+  54              	.L1:
+  72:./lwip-2.1.2/src/api/netbuf.c **** }
+  55              		.loc 1 72 1 is_stmt 0 view .LVU9
+  56 0014 08BD     		pop	{r3, pc}
+  57              		.cfi_endproc
+  58              	.LFE25:
+  60              		.align	1
+  61 0016 00BF     		.p2align 2,,3
+  62              		.global	netbuf_delete
+  63              		.syntax unified
+  64              		.thumb
+  65              		.thumb_func
+  66              		.fpu fpv5-d16
+  68              	netbuf_delete:
+  69              	.LVL1:
+  70              	.LFB26:
+  73:./lwip-2.1.2/src/api/netbuf.c **** 
+  74:./lwip-2.1.2/src/api/netbuf.c **** /**
+  75:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+  76:./lwip-2.1.2/src/api/netbuf.c ****  * Deallocate a netbuf allocated by netbuf_new().
+  77:./lwip-2.1.2/src/api/netbuf.c ****  *
+  78:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf pointer to a netbuf allocated by netbuf_new()
+  79:./lwip-2.1.2/src/api/netbuf.c ****  */
+  80:./lwip-2.1.2/src/api/netbuf.c **** void
+  81:./lwip-2.1.2/src/api/netbuf.c **** netbuf_delete(struct netbuf *buf)
+  82:./lwip-2.1.2/src/api/netbuf.c **** {
+  71              		.loc 1 82 1 is_stmt 1 view -0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  83:./lwip-2.1.2/src/api/netbuf.c ****   if (buf != NULL) {
+  75              		.loc 1 83 3 view .LVU11
+  76              		.loc 1 83 6 is_stmt 0 view .LVU12
+  77 0018 70B1     		cbz	r0, .L8
+  84:./lwip-2.1.2/src/api/netbuf.c ****     if (buf->p != NULL) {
+  78              		.loc 1 84 5 is_stmt 1 view .LVU13
+  82:./lwip-2.1.2/src/api/netbuf.c ****   if (buf != NULL) {
+  79              		.loc 1 82 1 is_stmt 0 view .LVU14
+  80 001a 10B5     		push	{r4, lr}
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 8
+  83              		.cfi_offset 4, -8
+  84              		.cfi_offset 14, -4
+  85 001c 0446     		mov	r4, r0
+  86              		.loc 1 84 12 view .LVU15
+  87 001e 0068     		ldr	r0, [r0]
+  88              	.LVL2:
+  89              		.loc 1 84 8 view .LVU16
+  90 0020 20B1     		cbz	r0, .L10
+  85:./lwip-2.1.2/src/api/netbuf.c ****       pbuf_free(buf->p);
+  91              		.loc 1 85 7 is_stmt 1 view .LVU17
+  92 0022 FFF7FEFF 		bl	pbuf_free
+  93              	.LVL3:
+  86:./lwip-2.1.2/src/api/netbuf.c ****       buf->p = buf->ptr = NULL;
+  94              		.loc 1 86 7 view .LVU18
+  95              		.loc 1 86 25 is_stmt 0 view .LVU19
+  96 0026 0023     		movs	r3, #0
+  97              		.loc 1 86 14 view .LVU20
+  98 0028 C4E90033 		strd	r3, r3, [r4]
+  99              	.L10:
+  87:./lwip-2.1.2/src/api/netbuf.c ****     }
+  88:./lwip-2.1.2/src/api/netbuf.c ****     memp_free(MEMP_NETBUF, buf);
+ 100              		.loc 1 88 5 is_stmt 1 view .LVU21
+ 101 002c 2146     		mov	r1, r4
+ 102 002e 0620     		movs	r0, #6
+  89:./lwip-2.1.2/src/api/netbuf.c ****   }
+  90:./lwip-2.1.2/src/api/netbuf.c **** }
+ 103              		.loc 1 90 1 is_stmt 0 view .LVU22
+ 104 0030 BDE81040 		pop	{r4, lr}
+ 105              	.LCFI2:
+ 106              		.cfi_restore 14
+ 107              		.cfi_restore 4
+ 108              		.cfi_def_cfa_offset 0
+ 109              	.LVL4:
+  88:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 110              		.loc 1 88 5 view .LVU23
+ 111 0034 FFF7FEBF 		b	memp_free
+ 112              	.LVL5:
+ 113              	.L8:
+  88:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 114              		.loc 1 88 5 view .LVU24
+ 115 0038 7047     		bx	lr
+ 116              		.cfi_endproc
+ 117              	.LFE26:
+ 119              		.align	1
+ 120 003a 00BF     		.p2align 2,,3
+ 121              		.global	netbuf_alloc
+ 122              		.syntax unified
+ 123              		.thumb
+ 124              		.thumb_func
+ 125              		.fpu fpv5-d16
+ 127              	netbuf_alloc:
+ 128              	.LVL6:
+ 129              	.LFB27:
+  91:./lwip-2.1.2/src/api/netbuf.c **** 
+  92:./lwip-2.1.2/src/api/netbuf.c **** /**
+  93:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+  94:./lwip-2.1.2/src/api/netbuf.c ****  * Allocate memory for a packet buffer for a given netbuf.
+  95:./lwip-2.1.2/src/api/netbuf.c ****  *
+  96:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf the netbuf for which to allocate a packet buffer
+  97:./lwip-2.1.2/src/api/netbuf.c ****  * @param size the size of the packet buffer to allocate
+  98:./lwip-2.1.2/src/api/netbuf.c ****  * @return pointer to the allocated memory
+  99:./lwip-2.1.2/src/api/netbuf.c ****  *         NULL if no memory could be allocated
+ 100:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 101:./lwip-2.1.2/src/api/netbuf.c **** void *
+ 102:./lwip-2.1.2/src/api/netbuf.c **** netbuf_alloc(struct netbuf *buf, u16_t size)
+ 103:./lwip-2.1.2/src/api/netbuf.c **** {
+ 130              		.loc 1 103 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
+ 134              		.loc 1 104 3 view .LVU26
+ 135              		.loc 1 104 3 view .LVU27
+ 136 003c A0B1     		cbz	r0, .L31
+ 137              		.loc 1 104 3 discriminator 2 view .LVU28
+ 138              		.loc 1 104 3 discriminator 2 view .LVU29
+ 105:./lwip-2.1.2/src/api/netbuf.c **** 
+ 106:./lwip-2.1.2/src/api/netbuf.c ****   /* Deallocate any previously allocated memory. */
+ 107:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p != NULL) {
+ 139              		.loc 1 107 3 discriminator 2 view .LVU30
+ 103:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
+ 140              		.loc 1 103 1 is_stmt 0 discriminator 2 view .LVU31
+ 141 003e 38B5     		push	{r3, r4, r5, lr}
+ 142              	.LCFI3:
+ 143              		.cfi_def_cfa_offset 16
+ 144              		.cfi_offset 3, -16
+ 145              		.cfi_offset 4, -12
+ 146              		.cfi_offset 5, -8
+ 147              		.cfi_offset 14, -4
+ 148 0040 0446     		mov	r4, r0
+ 149              		.loc 1 107 10 discriminator 2 view .LVU32
+ 150 0042 0068     		ldr	r0, [r0]
+ 151              	.LVL7:
+ 152              		.loc 1 107 10 discriminator 2 view .LVU33
+ 153 0044 0D46     		mov	r5, r1
+ 154              		.loc 1 107 6 discriminator 2 view .LVU34
+ 155 0046 08B1     		cbz	r0, .L20
+ 108:./lwip-2.1.2/src/api/netbuf.c ****     pbuf_free(buf->p);
+ 156              		.loc 1 108 5 is_stmt 1 view .LVU35
+ 157 0048 FFF7FEFF 		bl	pbuf_free
+ 158              	.LVL8:
+ 159              	.L20:
+ 109:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 110:./lwip-2.1.2/src/api/netbuf.c ****   buf->p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
+ 160              		.loc 1 110 3 view .LVU36
+ 161              		.loc 1 110 12 is_stmt 0 view .LVU37
+ 162 004c 4FF42072 		mov	r2, #640
+ 163 0050 2946     		mov	r1, r5
+ 164 0052 3620     		movs	r0, #54
+ 165 0054 FFF7FEFF 		bl	pbuf_alloc
+ 166              	.LVL9:
+ 167 0058 0346     		mov	r3, r0
+ 168              		.loc 1 110 10 view .LVU38
+ 169 005a 2060     		str	r0, [r4]
+ 111:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p == NULL) {
+ 170              		.loc 1 111 3 is_stmt 1 view .LVU39
+ 171              		.loc 1 111 6 is_stmt 0 view .LVU40
+ 172 005c 10B1     		cbz	r0, .L21
+ 112:./lwip-2.1.2/src/api/netbuf.c ****     return NULL;
+ 113:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 114:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ASSERT("check that first pbuf can hold size",
+ 115:./lwip-2.1.2/src/api/netbuf.c ****               (buf->p->len >= size));
+ 173              		.loc 1 115 37 is_stmt 1 view .LVU41
+ 116:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->p;
+ 174              		.loc 1 116 3 view .LVU42
+ 117:./lwip-2.1.2/src/api/netbuf.c ****   return buf->p->payload;
+ 175              		.loc 1 117 16 is_stmt 0 view .LVU43
+ 176 005e 4068     		ldr	r0, [r0, #4]
+ 116:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->p;
+ 177              		.loc 1 116 12 view .LVU44
+ 178 0060 6360     		str	r3, [r4, #4]
+ 179              		.loc 1 117 3 is_stmt 1 view .LVU45
+ 118:./lwip-2.1.2/src/api/netbuf.c **** }
+ 180              		.loc 1 118 1 is_stmt 0 view .LVU46
+ 181 0062 38BD     		pop	{r3, r4, r5, pc}
+ 182              	.LVL10:
+ 183              	.L21:
+ 104:./lwip-2.1.2/src/api/netbuf.c **** 
+ 184              		.loc 1 104 3 view .LVU47
+ 185 0064 0020     		movs	r0, #0
+ 186              		.loc 1 118 1 view .LVU48
+ 187 0066 38BD     		pop	{r3, r4, r5, pc}
+ 188              	.LVL11:
+ 189              	.L31:
+ 190              	.LCFI4:
+ 191              		.cfi_def_cfa_offset 0
+ 192              		.cfi_restore 3
+ 193              		.cfi_restore 4
+ 194              		.cfi_restore 5
+ 195              		.cfi_restore 14
+ 104:./lwip-2.1.2/src/api/netbuf.c **** 
+ 196              		.loc 1 104 3 view .LVU49
+ 197 0068 0020     		movs	r0, #0
+ 198              	.LVL12:
+ 199              		.loc 1 118 1 view .LVU50
+ 200 006a 7047     		bx	lr
+ 201              		.cfi_endproc
+ 202              	.LFE27:
+ 204              		.align	1
+ 205              		.p2align 2,,3
+ 206              		.global	netbuf_free
+ 207              		.syntax unified
+ 208              		.thumb
+ 209              		.thumb_func
+ 210              		.fpu fpv5-d16
+ 212              	netbuf_free:
+ 213              	.LVL13:
+ 214              	.LFB28:
+ 119:./lwip-2.1.2/src/api/netbuf.c **** 
+ 120:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 121:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 122:./lwip-2.1.2/src/api/netbuf.c ****  * Free the packet buffer included in a netbuf
+ 123:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 124:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf pointer to the netbuf which contains the packet buffer to free
+ 125:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 126:./lwip-2.1.2/src/api/netbuf.c **** void
+ 127:./lwip-2.1.2/src/api/netbuf.c **** netbuf_free(struct netbuf *buf)
+ 128:./lwip-2.1.2/src/api/netbuf.c **** {
+ 215              		.loc 1 128 1 is_stmt 1 view -0
+ 216              		.cfi_startproc
+ 217              		@ args = 0, pretend = 0, frame = 0
+ 218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
+ 219              		.loc 1 129 3 view .LVU52
+ 220              		.loc 1 129 3 view .LVU53
+ 221 006c 48B1     		cbz	r0, .L42
+ 222              		.loc 1 129 3 discriminator 2 view .LVU54
+ 223              		.loc 1 129 3 discriminator 2 view .LVU55
+ 130:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p != NULL) {
+ 224              		.loc 1 130 3 discriminator 2 view .LVU56
+ 128:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
+ 225              		.loc 1 128 1 is_stmt 0 discriminator 2 view .LVU57
+ 226 006e 10B5     		push	{r4, lr}
+ 227              	.LCFI5:
+ 228              		.cfi_def_cfa_offset 8
+ 229              		.cfi_offset 4, -8
+ 230              		.cfi_offset 14, -4
+ 231 0070 0446     		mov	r4, r0
+ 232              		.loc 1 130 10 discriminator 2 view .LVU58
+ 233 0072 0068     		ldr	r0, [r0]
+ 234              	.LVL14:
+ 235              		.loc 1 130 6 discriminator 2 view .LVU59
+ 236 0074 08B1     		cbz	r0, .L34
+ 131:./lwip-2.1.2/src/api/netbuf.c ****     pbuf_free(buf->p);
+ 237              		.loc 1 131 5 is_stmt 1 view .LVU60
+ 238 0076 FFF7FEFF 		bl	pbuf_free
+ 239              	.LVL15:
+ 240              	.L34:
+ 132:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 133:./lwip-2.1.2/src/api/netbuf.c ****   buf->p = buf->ptr = NULL;
+ 241              		.loc 1 133 3 view .LVU61
+ 242              		.loc 1 133 21 is_stmt 0 view .LVU62
+ 243 007a 0023     		movs	r3, #0
+ 244              		.loc 1 133 10 view .LVU63
+ 245 007c C4E90033 		strd	r3, r3, [r4]
+ 134:./lwip-2.1.2/src/api/netbuf.c **** #if LWIP_CHECKSUM_ON_COPY
+ 135:./lwip-2.1.2/src/api/netbuf.c ****   buf->flags = 0;
+ 136:./lwip-2.1.2/src/api/netbuf.c ****   buf->toport_chksum = 0;
+ 137:./lwip-2.1.2/src/api/netbuf.c **** #endif /* LWIP_CHECKSUM_ON_COPY */
+ 138:./lwip-2.1.2/src/api/netbuf.c **** }
+ 246              		.loc 1 138 1 view .LVU64
+ 247 0080 10BD     		pop	{r4, pc}
+ 248              	.LVL16:
+ 249              	.L42:
+ 250              	.LCFI6:
+ 251              		.cfi_def_cfa_offset 0
+ 252              		.cfi_restore 4
+ 253              		.cfi_restore 14
+ 254              		.loc 1 138 1 view .LVU65
+ 255 0082 7047     		bx	lr
+ 256              		.cfi_endproc
+ 257              	.LFE28:
+ 259              		.align	1
+ 260              		.p2align 2,,3
+ 261              		.global	netbuf_ref
+ 262              		.syntax unified
+ 263              		.thumb
+ 264              		.thumb_func
+ 265              		.fpu fpv5-d16
+ 267              	netbuf_ref:
+ 268              	.LVL17:
+ 269              	.LFB29:
+ 139:./lwip-2.1.2/src/api/netbuf.c **** 
+ 140:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 141:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 142:./lwip-2.1.2/src/api/netbuf.c ****  * Let a netbuf reference existing (non-volatile) data.
+ 143:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 144:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf netbuf which should reference the data
+ 145:./lwip-2.1.2/src/api/netbuf.c ****  * @param dataptr pointer to the data to reference
+ 146:./lwip-2.1.2/src/api/netbuf.c ****  * @param size size of the data
+ 147:./lwip-2.1.2/src/api/netbuf.c ****  * @return ERR_OK if data is referenced
+ 148:./lwip-2.1.2/src/api/netbuf.c ****  *         ERR_MEM if data couldn't be referenced due to lack of memory
+ 149:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 150:./lwip-2.1.2/src/api/netbuf.c **** err_t
+ 151:./lwip-2.1.2/src/api/netbuf.c **** netbuf_ref(struct netbuf *buf, const void *dataptr, u16_t size)
+ 152:./lwip-2.1.2/src/api/netbuf.c **** {
+ 270              		.loc 1 152 1 is_stmt 1 view -0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 0
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
+ 274              		.loc 1 153 3 view .LVU67
+ 275              		.loc 1 153 3 view .LVU68
+ 276 0084 A8B1     		cbz	r0, .L49
+ 277              		.loc 1 153 3 discriminator 2 view .LVU69
+ 278              		.loc 1 153 3 discriminator 2 view .LVU70
+ 154:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p != NULL) {
+ 279              		.loc 1 154 3 discriminator 2 view .LVU71
+ 152:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
+ 280              		.loc 1 152 1 is_stmt 0 discriminator 2 view .LVU72
+ 281 0086 70B5     		push	{r4, r5, r6, lr}
+ 282              	.LCFI7:
+ 283              		.cfi_def_cfa_offset 16
+ 284              		.cfi_offset 4, -16
+ 285              		.cfi_offset 5, -12
+ 286              		.cfi_offset 6, -8
+ 287              		.cfi_offset 14, -4
+ 288 0088 0446     		mov	r4, r0
+ 289              		.loc 1 154 10 discriminator 2 view .LVU73
+ 290 008a 0068     		ldr	r0, [r0]
+ 291              	.LVL18:
+ 292              		.loc 1 154 10 discriminator 2 view .LVU74
+ 293 008c 0E46     		mov	r6, r1
+ 294 008e 1546     		mov	r5, r2
+ 295              		.loc 1 154 6 discriminator 2 view .LVU75
+ 296 0090 08B1     		cbz	r0, .L47
+ 155:./lwip-2.1.2/src/api/netbuf.c ****     pbuf_free(buf->p);
+ 297              		.loc 1 155 5 is_stmt 1 view .LVU76
+ 298 0092 FFF7FEFF 		bl	pbuf_free
+ 299              	.LVL19:
+ 300              	.L47:
+ 156:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 157:./lwip-2.1.2/src/api/netbuf.c ****   buf->p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
+ 301              		.loc 1 157 3 view .LVU77
+ 302              		.loc 1 157 12 is_stmt 0 view .LVU78
+ 303 0096 4122     		movs	r2, #65
+ 304 0098 0021     		movs	r1, #0
+ 305 009a 3620     		movs	r0, #54
+ 306 009c FFF7FEFF 		bl	pbuf_alloc
+ 307              	.LVL20:
+ 308 00a0 0346     		mov	r3, r0
+ 309              		.loc 1 157 10 view .LVU79
+ 310 00a2 2060     		str	r0, [r4]
+ 158:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p == NULL) {
+ 311              		.loc 1 158 3 is_stmt 1 view .LVU80
+ 312              		.loc 1 158 6 is_stmt 0 view .LVU81
+ 313 00a4 40B1     		cbz	r0, .L57
+ 159:./lwip-2.1.2/src/api/netbuf.c ****     buf->ptr = NULL;
+ 160:./lwip-2.1.2/src/api/netbuf.c ****     return ERR_MEM;
+ 161:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 162:./lwip-2.1.2/src/api/netbuf.c ****   ((struct pbuf_rom *)buf->p)->payload = dataptr;
+ 314              		.loc 1 162 3 is_stmt 1 view .LVU82
+ 315              		.loc 1 162 40 is_stmt 0 view .LVU83
+ 316 00a6 4660     		str	r6, [r0, #4]
+ 163:./lwip-2.1.2/src/api/netbuf.c ****   buf->p->len = buf->p->tot_len = size;
+ 317              		.loc 1 163 3 is_stmt 1 view .LVU84
+ 318              		.loc 1 163 33 is_stmt 0 view .LVU85
+ 319 00a8 0581     		strh	r5, [r0, #8]	@ movhi
+ 320              		.loc 1 163 15 view .LVU86
+ 321 00aa 4581     		strh	r5, [r0, #10]	@ movhi
+ 164:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->p;
+ 322              		.loc 1 164 3 is_stmt 1 view .LVU87
+ 165:./lwip-2.1.2/src/api/netbuf.c ****   return ERR_OK;
+ 323              		.loc 1 165 10 is_stmt 0 view .LVU88
+ 324 00ac 0020     		movs	r0, #0
+ 164:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->p;
+ 325              		.loc 1 164 12 view .LVU89
+ 326 00ae 6360     		str	r3, [r4, #4]
+ 327              		.loc 1 165 3 is_stmt 1 view .LVU90
+ 166:./lwip-2.1.2/src/api/netbuf.c **** }
+ 328              		.loc 1 166 1 is_stmt 0 view .LVU91
+ 329 00b0 70BD     		pop	{r4, r5, r6, pc}
+ 330              	.LVL21:
+ 331              	.L49:
+ 332              	.LCFI8:
+ 333              		.cfi_def_cfa_offset 0
+ 334              		.cfi_restore 4
+ 335              		.cfi_restore 5
+ 336              		.cfi_restore 6
+ 337              		.cfi_restore 14
+ 153:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->p != NULL) {
+ 338              		.loc 1 153 3 view .LVU92
+ 339 00b2 6FF00F00 		mvn	r0, #15
+ 340              	.LVL22:
+ 341              		.loc 1 166 1 view .LVU93
+ 342 00b6 7047     		bx	lr
+ 343              	.LVL23:
+ 344              	.L57:
+ 345              	.LCFI9:
+ 346              		.cfi_def_cfa_offset 16
+ 347              		.cfi_offset 4, -16
+ 348              		.cfi_offset 5, -12
+ 349              		.cfi_offset 6, -8
+ 350              		.cfi_offset 14, -4
+ 159:./lwip-2.1.2/src/api/netbuf.c ****     return ERR_MEM;
+ 351              		.loc 1 159 5 is_stmt 1 view .LVU94
+ 160:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 352              		.loc 1 160 12 is_stmt 0 view .LVU95
+ 353 00b8 4FF0FF30 		mov	r0, #-1
+ 159:./lwip-2.1.2/src/api/netbuf.c ****     return ERR_MEM;
+ 354              		.loc 1 159 14 view .LVU96
+ 355 00bc 6360     		str	r3, [r4, #4]
+ 160:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 356              		.loc 1 160 5 is_stmt 1 view .LVU97
+ 357              		.loc 1 166 1 is_stmt 0 view .LVU98
+ 358 00be 70BD     		pop	{r4, r5, r6, pc}
+ 359              		.loc 1 166 1 view .LVU99
+ 360              		.cfi_endproc
+ 361              	.LFE29:
+ 363              		.align	1
+ 364              		.p2align 2,,3
+ 365              		.global	netbuf_chain
+ 366              		.syntax unified
+ 367              		.thumb
+ 368              		.thumb_func
+ 369              		.fpu fpv5-d16
+ 371              	netbuf_chain:
+ 372              	.LVL24:
+ 373              	.LFB30:
+ 167:./lwip-2.1.2/src/api/netbuf.c **** 
+ 168:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 169:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 170:./lwip-2.1.2/src/api/netbuf.c ****  * Chain one netbuf to another (@see pbuf_chain)
+ 171:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 172:./lwip-2.1.2/src/api/netbuf.c ****  * @param head the first netbuf
+ 173:./lwip-2.1.2/src/api/netbuf.c ****  * @param tail netbuf to chain after head, freed by this function, may not be reference after retur
+ 174:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 175:./lwip-2.1.2/src/api/netbuf.c **** void
+ 176:./lwip-2.1.2/src/api/netbuf.c **** netbuf_chain(struct netbuf *head, struct netbuf *tail)
+ 177:./lwip-2.1.2/src/api/netbuf.c **** {
+ 374              		.loc 1 177 1 is_stmt 1 view -0
+ 375              		.cfi_startproc
+ 376              		@ args = 0, pretend = 0, frame = 0
+ 377              		@ frame_needed = 0, uses_anonymous_args = 0
+ 178:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
+ 378              		.loc 1 178 3 view .LVU101
+ 379              		.loc 1 178 3 view .LVU102
+ 380              		.loc 1 178 3 view .LVU103
+ 381              		.loc 1 178 3 view .LVU104
+ 179:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_chain: invalid tail", (tail != NULL), return;);
+ 382              		.loc 1 179 3 view .LVU105
+ 383              		.loc 1 179 3 view .LVU106
+ 384 00c0 80B1     		cbz	r0, .L61
+ 177:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
+ 385              		.loc 1 177 1 is_stmt 0 view .LVU107
+ 386 00c2 38B5     		push	{r3, r4, r5, lr}
+ 387              	.LCFI10:
+ 388              		.cfi_def_cfa_offset 16
+ 389              		.cfi_offset 3, -16
+ 390              		.cfi_offset 4, -12
+ 391              		.cfi_offset 5, -8
+ 392              		.cfi_offset 14, -4
+ 393 00c4 0D46     		mov	r5, r1
+ 394              		.loc 1 179 3 view .LVU108
+ 395 00c6 61B1     		cbz	r1, .L58
+ 396              		.loc 1 179 3 is_stmt 1 discriminator 2 view .LVU109
+ 397              		.loc 1 179 3 discriminator 2 view .LVU110
+ 180:./lwip-2.1.2/src/api/netbuf.c ****   pbuf_cat(head->p, tail->p);
+ 398              		.loc 1 180 3 discriminator 2 view .LVU111
+ 399 00c8 0446     		mov	r4, r0
+ 400 00ca 0968     		ldr	r1, [r1]
+ 401              	.LVL25:
+ 402              		.loc 1 180 3 is_stmt 0 discriminator 2 view .LVU112
+ 403 00cc 0068     		ldr	r0, [r0]
+ 404              	.LVL26:
+ 405              		.loc 1 180 3 discriminator 2 view .LVU113
+ 406 00ce FFF7FEFF 		bl	pbuf_cat
+ 407              	.LVL27:
+ 181:./lwip-2.1.2/src/api/netbuf.c ****   head->ptr = head->p;
+ 408              		.loc 1 181 3 is_stmt 1 discriminator 2 view .LVU114
+ 409              		.loc 1 181 13 is_stmt 0 discriminator 2 view .LVU115
+ 410 00d2 2368     		ldr	r3, [r4]
+ 182:./lwip-2.1.2/src/api/netbuf.c ****   memp_free(MEMP_NETBUF, tail);
+ 411              		.loc 1 182 3 discriminator 2 view .LVU116
+ 412 00d4 2946     		mov	r1, r5
+ 413 00d6 0620     		movs	r0, #6
+ 181:./lwip-2.1.2/src/api/netbuf.c ****   head->ptr = head->p;
+ 414              		.loc 1 181 13 discriminator 2 view .LVU117
+ 415 00d8 6360     		str	r3, [r4, #4]
+ 416              		.loc 1 182 3 is_stmt 1 discriminator 2 view .LVU118
+ 183:./lwip-2.1.2/src/api/netbuf.c **** }
+ 417              		.loc 1 183 1 is_stmt 0 discriminator 2 view .LVU119
+ 418 00da BDE83840 		pop	{r3, r4, r5, lr}
+ 419              	.LCFI11:
+ 420              		.cfi_remember_state
+ 421              		.cfi_restore 14
+ 422              		.cfi_restore 5
+ 423              		.cfi_restore 4
+ 424              		.cfi_restore 3
+ 425              		.cfi_def_cfa_offset 0
+ 426              	.LVL28:
+ 182:./lwip-2.1.2/src/api/netbuf.c ****   memp_free(MEMP_NETBUF, tail);
+ 427              		.loc 1 182 3 discriminator 2 view .LVU120
+ 428 00de FFF7FEBF 		b	memp_free
+ 429              	.LVL29:
+ 430              	.L58:
+ 431              	.LCFI12:
+ 432              		.cfi_restore_state
+ 433              		.loc 1 183 1 view .LVU121
+ 434 00e2 38BD     		pop	{r3, r4, r5, pc}
+ 435              	.L61:
+ 436              	.LCFI13:
+ 437              		.cfi_def_cfa_offset 0
+ 438              		.cfi_restore 3
+ 439              		.cfi_restore 4
+ 440              		.cfi_restore 5
+ 441              		.cfi_restore 14
+ 442 00e4 7047     		bx	lr
+ 443              		.cfi_endproc
+ 444              	.LFE30:
+ 446              		.align	1
+ 447 00e6 00BF     		.p2align 2,,3
+ 448              		.global	netbuf_data
+ 449              		.syntax unified
+ 450              		.thumb
+ 451              		.thumb_func
+ 452              		.fpu fpv5-d16
+ 454              	netbuf_data:
+ 455              	.LVL30:
+ 456              	.LFB31:
+ 184:./lwip-2.1.2/src/api/netbuf.c **** 
+ 185:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 186:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 187:./lwip-2.1.2/src/api/netbuf.c ****  * Get the data pointer and length of the data inside a netbuf.
+ 188:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 189:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf netbuf to get the data from
+ 190:./lwip-2.1.2/src/api/netbuf.c ****  * @param dataptr pointer to a void pointer where to store the data pointer
+ 191:./lwip-2.1.2/src/api/netbuf.c ****  * @param len pointer to an u16_t where the length of the data is stored
+ 192:./lwip-2.1.2/src/api/netbuf.c ****  * @return ERR_OK if the information was retrieved,
+ 193:./lwip-2.1.2/src/api/netbuf.c ****  *         ERR_BUF on error.
+ 194:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 195:./lwip-2.1.2/src/api/netbuf.c **** err_t
+ 196:./lwip-2.1.2/src/api/netbuf.c **** netbuf_data(struct netbuf *buf, void **dataptr, u16_t *len)
+ 197:./lwip-2.1.2/src/api/netbuf.c **** {
+ 457              		.loc 1 197 1 is_stmt 1 view -0
+ 458              		.cfi_startproc
+ 459              		@ args = 0, pretend = 0, frame = 0
+ 460              		@ frame_needed = 0, uses_anonymous_args = 0
+ 461              		@ link register save eliminated.
+ 198:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_data: invalid buf", (buf != NULL), return ERR_ARG;);
+ 462              		.loc 1 198 3 view .LVU123
+ 463              		.loc 1 198 3 view .LVU124
+ 464              		.loc 1 198 3 view .LVU125
+ 465              		.loc 1 198 3 view .LVU126
+ 199:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
+ 466              		.loc 1 199 3 view .LVU127
+ 467              		.loc 1 199 3 view .LVU128
+ 468              		.loc 1 199 3 view .LVU129
+ 469              		.loc 1 199 3 view .LVU130
+ 200:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
+ 470              		.loc 1 200 3 view .LVU131
+ 471              		.loc 1 200 3 view .LVU132
+ 472 00e8 002A     		cmp	r2, #0
+ 473 00ea 18BF     		it	ne
+ 474 00ec 0029     		cmpne	r1, #0
+ 475 00ee 0FD0     		beq	.L66
+ 476 00f0 0346     		mov	r3, r0
+ 477 00f2 B0FA80F0 		clz	r0, r0
+ 478              	.LVL31:
+ 479              		.loc 1 200 3 is_stmt 0 view .LVU133
+ 480 00f6 4009     		lsrs	r0, r0, #5
+ 481 00f8 53B1     		cbz	r3, .L66
+ 482              		.loc 1 200 3 is_stmt 1 discriminator 2 view .LVU134
+ 483              		.loc 1 200 3 discriminator 2 view .LVU135
+ 201:./lwip-2.1.2/src/api/netbuf.c **** 
+ 202:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr == NULL) {
+ 484              		.loc 1 202 3 discriminator 2 view .LVU136
+ 197:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_data: invalid buf", (buf != NULL), return ERR_ARG;);
+ 485              		.loc 1 197 1 is_stmt 0 discriminator 2 view .LVU137
+ 486 00fa 10B4     		push	{r4}
+ 487              	.LCFI14:
+ 488              		.cfi_def_cfa_offset 4
+ 489              		.cfi_offset 4, -4
+ 490              		.loc 1 202 10 discriminator 2 view .LVU138
+ 491 00fc 5C68     		ldr	r4, [r3, #4]
+ 492              		.loc 1 202 6 discriminator 2 view .LVU139
+ 493 00fe 54B1     		cbz	r4, .L67
+ 203:./lwip-2.1.2/src/api/netbuf.c ****     return ERR_BUF;
+ 204:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 205:./lwip-2.1.2/src/api/netbuf.c ****   *dataptr = buf->ptr->payload;
+ 494              		.loc 1 205 3 is_stmt 1 view .LVU140
+ 495              		.loc 1 205 22 is_stmt 0 view .LVU141
+ 496 0100 6468     		ldr	r4, [r4, #4]
+ 497              		.loc 1 205 12 view .LVU142
+ 498 0102 0C60     		str	r4, [r1]
+ 206:./lwip-2.1.2/src/api/netbuf.c ****   *len = buf->ptr->len;
+ 499              		.loc 1 206 3 is_stmt 1 view .LVU143
+ 500              		.loc 1 206 18 is_stmt 0 view .LVU144
+ 501 0104 5B68     		ldr	r3, [r3, #4]
+ 502              	.LVL32:
+ 503              		.loc 1 206 18 view .LVU145
+ 504 0106 5B89     		ldrh	r3, [r3, #10]
+ 505              		.loc 1 206 8 view .LVU146
+ 506 0108 1380     		strh	r3, [r2]	@ movhi
+ 207:./lwip-2.1.2/src/api/netbuf.c ****   return ERR_OK;
+ 507              		.loc 1 207 3 is_stmt 1 view .LVU147
+ 508              	.L65:
+ 208:./lwip-2.1.2/src/api/netbuf.c **** }
+ 509              		.loc 1 208 1 is_stmt 0 view .LVU148
+ 510 010a 5DF8044B 		ldr	r4, [sp], #4
+ 511              	.LCFI15:
+ 512              		.cfi_restore 4
+ 513              		.cfi_def_cfa_offset 0
+ 514 010e 7047     		bx	lr
+ 515              	.L66:
+ 200:./lwip-2.1.2/src/api/netbuf.c **** 
+ 516              		.loc 1 200 3 view .LVU149
+ 517 0110 6FF00F00 		mvn	r0, #15
+ 518              		.loc 1 208 1 view .LVU150
+ 519 0114 7047     		bx	lr
+ 520              	.LVL33:
+ 521              	.L67:
+ 522              	.LCFI16:
+ 523              		.cfi_def_cfa_offset 4
+ 524              		.cfi_offset 4, -4
+ 203:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 525              		.loc 1 203 12 view .LVU151
+ 526 0116 6FF00100 		mvn	r0, #1
+ 527 011a F6E7     		b	.L65
+ 528              		.cfi_endproc
+ 529              	.LFE31:
+ 531              		.align	1
+ 532              		.p2align 2,,3
+ 533              		.global	netbuf_next
+ 534              		.syntax unified
+ 535              		.thumb
+ 536              		.thumb_func
+ 537              		.fpu fpv5-d16
+ 539              	netbuf_next:
+ 540              	.LVL34:
+ 541              	.LFB32:
+ 209:./lwip-2.1.2/src/api/netbuf.c **** 
+ 210:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 211:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 212:./lwip-2.1.2/src/api/netbuf.c ****  * Move the current data pointer of a packet buffer contained in a netbuf
+ 213:./lwip-2.1.2/src/api/netbuf.c ****  * to the next part.
+ 214:./lwip-2.1.2/src/api/netbuf.c ****  * The packet buffer itself is not modified.
+ 215:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 216:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf the netbuf to modify
+ 217:./lwip-2.1.2/src/api/netbuf.c ****  * @return -1 if there is no next part
+ 218:./lwip-2.1.2/src/api/netbuf.c ****  *         1  if moved to the next part but now there is no next part
+ 219:./lwip-2.1.2/src/api/netbuf.c ****  *         0  if moved to the next part and there are still more parts
+ 220:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 221:./lwip-2.1.2/src/api/netbuf.c **** s8_t
+ 222:./lwip-2.1.2/src/api/netbuf.c **** netbuf_next(struct netbuf *buf)
+ 223:./lwip-2.1.2/src/api/netbuf.c **** {
+ 542              		.loc 1 223 1 is_stmt 1 view -0
+ 543              		.cfi_startproc
+ 544              		@ args = 0, pretend = 0, frame = 0
+ 545              		@ frame_needed = 0, uses_anonymous_args = 0
+ 546              		@ link register save eliminated.
+ 224:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
+ 547              		.loc 1 224 3 view .LVU153
+ 548              		.loc 1 224 3 view .LVU154
+ 549 011c 40B1     		cbz	r0, .L75
+ 550              		.loc 1 224 3 discriminator 2 view .LVU155
+ 551              		.loc 1 224 3 discriminator 2 view .LVU156
+ 225:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 552              		.loc 1 225 3 discriminator 2 view .LVU157
+ 553              		.loc 1 225 15 is_stmt 0 discriminator 2 view .LVU158
+ 554 011e 4368     		ldr	r3, [r0, #4]
+ 555 0120 1A68     		ldr	r2, [r3]
+ 556              		.loc 1 225 6 discriminator 2 view .LVU159
+ 557 0122 2AB1     		cbz	r2, .L75
+ 226:./lwip-2.1.2/src/api/netbuf.c ****     return -1;
+ 227:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 228:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->ptr->next;
+ 558              		.loc 1 228 3 is_stmt 1 view .LVU160
+ 229:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 559              		.loc 1 229 6 is_stmt 0 view .LVU161
+ 560 0124 1368     		ldr	r3, [r2]
+ 228:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 561              		.loc 1 228 12 view .LVU162
+ 562 0126 4260     		str	r2, [r0, #4]
+ 563              		.loc 1 229 3 is_stmt 1 view .LVU163
+ 224:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 564              		.loc 1 224 3 is_stmt 0 view .LVU164
+ 565 0128 B3FA83F0 		clz	r0, r3
+ 566              	.LVL35:
+ 224:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 567              		.loc 1 224 3 view .LVU165
+ 568 012c 4009     		lsrs	r0, r0, #5
+ 569 012e 7047     		bx	lr
+ 570              	.LVL36:
+ 571              	.L75:
+ 224:./lwip-2.1.2/src/api/netbuf.c ****   if (buf->ptr->next == NULL) {
+ 572              		.loc 1 224 3 view .LVU166
+ 573 0130 4FF0FF30 		mov	r0, #-1
+ 574              	.LVL37:
+ 230:./lwip-2.1.2/src/api/netbuf.c ****     return 1;
+ 231:./lwip-2.1.2/src/api/netbuf.c ****   }
+ 232:./lwip-2.1.2/src/api/netbuf.c ****   return 0;
+ 233:./lwip-2.1.2/src/api/netbuf.c **** }
+ 575              		.loc 1 233 1 view .LVU167
+ 576 0134 7047     		bx	lr
+ 577              		.cfi_endproc
+ 578              	.LFE32:
+ 580              		.align	1
+ 581 0136 00BF     		.p2align 2,,3
+ 582              		.global	netbuf_first
+ 583              		.syntax unified
+ 584              		.thumb
+ 585              		.thumb_func
+ 586              		.fpu fpv5-d16
+ 588              	netbuf_first:
+ 589              	.LVL38:
+ 590              	.LFB33:
+ 234:./lwip-2.1.2/src/api/netbuf.c **** 
+ 235:./lwip-2.1.2/src/api/netbuf.c **** /**
+ 236:./lwip-2.1.2/src/api/netbuf.c ****  * @ingroup netbuf
+ 237:./lwip-2.1.2/src/api/netbuf.c ****  * Move the current data pointer of a packet buffer contained in a netbuf
+ 238:./lwip-2.1.2/src/api/netbuf.c ****  * to the beginning of the packet.
+ 239:./lwip-2.1.2/src/api/netbuf.c ****  * The packet buffer itself is not modified.
+ 240:./lwip-2.1.2/src/api/netbuf.c ****  *
+ 241:./lwip-2.1.2/src/api/netbuf.c ****  * @param buf the netbuf to modify
+ 242:./lwip-2.1.2/src/api/netbuf.c ****  */
+ 243:./lwip-2.1.2/src/api/netbuf.c **** void
+ 244:./lwip-2.1.2/src/api/netbuf.c **** netbuf_first(struct netbuf *buf)
+ 245:./lwip-2.1.2/src/api/netbuf.c **** {
+ 591              		.loc 1 245 1 is_stmt 1 view -0
+ 592              		.cfi_startproc
+ 593              		@ args = 0, pretend = 0, frame = 0
+ 594              		@ frame_needed = 0, uses_anonymous_args = 0
+ 595              		@ link register save eliminated.
+ 246:./lwip-2.1.2/src/api/netbuf.c ****   LWIP_ERROR("netbuf_first: invalid buf", (buf != NULL), return;);
+ 596              		.loc 1 246 3 view .LVU169
+ 597              		.loc 1 246 3 view .LVU170
+ 598 0138 08B1     		cbz	r0, .L76
+ 599              		.loc 1 246 3 discriminator 2 view .LVU171
+ 600              		.loc 1 246 3 discriminator 2 view .LVU172
+ 247:./lwip-2.1.2/src/api/netbuf.c ****   buf->ptr = buf->p;
+ 601              		.loc 1 247 3 discriminator 2 view .LVU173
+ 602              		.loc 1 247 12 is_stmt 0 discriminator 2 view .LVU174
+ 603 013a 0368     		ldr	r3, [r0]
+ 604 013c 4360     		str	r3, [r0, #4]
+ 605              	.L76:
+ 248:./lwip-2.1.2/src/api/netbuf.c **** }
+ 606              		.loc 1 248 1 view .LVU175
+ 607 013e 7047     		bx	lr
+ 608              		.cfi_endproc
+ 609              	.LFE33:
+ 611              	.Letext0:
+ 612              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 613              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 614              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 615              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
+ 616              		.file 6 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 617              		.file 7 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 618              		.file 8 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 619              		.file 9 "./lwip-2.1.2/src/include/lwip/netbuf.h"
+ 620              		.file 10 "./lwip-2.1.2/src/include/lwip/memp.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 netbuf.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:25     .text:00000000 netbuf_new
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:68     .text:00000018 netbuf_delete
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:127    .text:0000003c netbuf_alloc
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:212    .text:0000006c netbuf_free
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:267    .text:00000084 netbuf_ref
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:371    .text:000000c0 netbuf_chain
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:454    .text:000000e8 netbuf_data
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:539    .text:0000011c netbuf_next
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccpSyMmZ.s:588    .text:00000138 netbuf_first
+
+UNDEFINED SYMBOLS
+memp_malloc
+pbuf_free
+memp_free
+pbuf_alloc
+pbuf_cat

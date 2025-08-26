@@ -1,0 +1,193 @@
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 2
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"if_api.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	lwip_if_indextoname
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	lwip_if_indextoname:
+  26              	.LVL0:
+  27              	.LFB169:
+  28              		.file 1 "./lwip-2.1.2/src/api/if_api.c"
+   1:./lwip-2.1.2/src/api/if_api.c **** /**
+   2:./lwip-2.1.2/src/api/if_api.c ****  * @file
+   3:./lwip-2.1.2/src/api/if_api.c ****  * Interface Identification APIs from:
+   4:./lwip-2.1.2/src/api/if_api.c ****  *              RFC 3493: Basic Socket Interface Extensions for IPv6
+   5:./lwip-2.1.2/src/api/if_api.c ****  *                  Section 4: Interface Identification
+   6:./lwip-2.1.2/src/api/if_api.c ****  *
+   7:./lwip-2.1.2/src/api/if_api.c ****  * @defgroup if_api Interface Identification API
+   8:./lwip-2.1.2/src/api/if_api.c ****  * @ingroup socket
+   9:./lwip-2.1.2/src/api/if_api.c ****  */
+  10:./lwip-2.1.2/src/api/if_api.c **** 
+  11:./lwip-2.1.2/src/api/if_api.c **** /*
+  12:./lwip-2.1.2/src/api/if_api.c ****  * Copyright (c) 2017 Joel Cunningham, Garmin International, Inc. <joel.cunningham@garmin.com>
+  13:./lwip-2.1.2/src/api/if_api.c ****  * All rights reserved.
+  14:./lwip-2.1.2/src/api/if_api.c ****  *
+  15:./lwip-2.1.2/src/api/if_api.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  16:./lwip-2.1.2/src/api/if_api.c ****  * are permitted provided that the following conditions are met:
+  17:./lwip-2.1.2/src/api/if_api.c ****  *
+  18:./lwip-2.1.2/src/api/if_api.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  19:./lwip-2.1.2/src/api/if_api.c ****  *    this list of conditions and the following disclaimer.
+  20:./lwip-2.1.2/src/api/if_api.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  21:./lwip-2.1.2/src/api/if_api.c ****  *    this list of conditions and the following disclaimer in the documentation
+  22:./lwip-2.1.2/src/api/if_api.c ****  *    and/or other materials provided with the distribution.
+  23:./lwip-2.1.2/src/api/if_api.c ****  * 3. The name of the author may not be used to endorse or promote products
+  24:./lwip-2.1.2/src/api/if_api.c ****  *    derived from this software without specific prior written permission.
+  25:./lwip-2.1.2/src/api/if_api.c ****  *
+  26:./lwip-2.1.2/src/api/if_api.c ****  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+  27:./lwip-2.1.2/src/api/if_api.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  28:./lwip-2.1.2/src/api/if_api.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  29:./lwip-2.1.2/src/api/if_api.c ****  * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  30:./lwip-2.1.2/src/api/if_api.c ****  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+  31:./lwip-2.1.2/src/api/if_api.c ****  * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  32:./lwip-2.1.2/src/api/if_api.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  33:./lwip-2.1.2/src/api/if_api.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  34:./lwip-2.1.2/src/api/if_api.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+  35:./lwip-2.1.2/src/api/if_api.c ****  * OF SUCH DAMAGE.
+  36:./lwip-2.1.2/src/api/if_api.c ****  *
+  37:./lwip-2.1.2/src/api/if_api.c ****  * This file is part of the lwIP TCP/IP stack.
+  38:./lwip-2.1.2/src/api/if_api.c ****  *
+  39:./lwip-2.1.2/src/api/if_api.c ****  * Author: Joel Cunningham <joel.cunningham@me.com>
+  40:./lwip-2.1.2/src/api/if_api.c ****  *
+  41:./lwip-2.1.2/src/api/if_api.c ****  */
+  42:./lwip-2.1.2/src/api/if_api.c **** #include "lwip/opt.h"
+  43:./lwip-2.1.2/src/api/if_api.c **** 
+  44:./lwip-2.1.2/src/api/if_api.c **** #if LWIP_SOCKET
+  45:./lwip-2.1.2/src/api/if_api.c **** 
+  46:./lwip-2.1.2/src/api/if_api.c **** #include "lwip/errno.h"
+  47:./lwip-2.1.2/src/api/if_api.c **** #include "lwip/if_api.h"
+  48:./lwip-2.1.2/src/api/if_api.c **** #include "lwip/netifapi.h"
+  49:./lwip-2.1.2/src/api/if_api.c **** #include "lwip/priv/sockets_priv.h"
+  50:./lwip-2.1.2/src/api/if_api.c **** 
+  51:./lwip-2.1.2/src/api/if_api.c **** /**
+  52:./lwip-2.1.2/src/api/if_api.c ****  * @ingroup if_api
+  53:./lwip-2.1.2/src/api/if_api.c ****  * Maps an interface index to its corresponding name.
+  54:./lwip-2.1.2/src/api/if_api.c ****  * @param ifindex interface index
+  55:./lwip-2.1.2/src/api/if_api.c ****  * @param ifname shall point to a buffer of at least {IF_NAMESIZE} bytes
+  56:./lwip-2.1.2/src/api/if_api.c ****  * @return If ifindex is an interface index, then the function shall return the
+  57:./lwip-2.1.2/src/api/if_api.c ****  * value supplied in ifname, which points to a buffer now containing the interface name.
+  58:./lwip-2.1.2/src/api/if_api.c ****  * Otherwise, the function shall return a NULL pointer.
+  59:./lwip-2.1.2/src/api/if_api.c ****  */
+  60:./lwip-2.1.2/src/api/if_api.c **** char *
+  61:./lwip-2.1.2/src/api/if_api.c **** lwip_if_indextoname(unsigned int ifindex, char *ifname)
+  62:./lwip-2.1.2/src/api/if_api.c **** {
+  29              		.loc 1 62 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  63:./lwip-2.1.2/src/api/if_api.c **** #if LWIP_NETIF_API
+  64:./lwip-2.1.2/src/api/if_api.c ****   if (ifindex <= 0xff) {
+  65:./lwip-2.1.2/src/api/if_api.c ****     err_t err = netifapi_netif_index_to_name((u8_t)ifindex, ifname);
+  66:./lwip-2.1.2/src/api/if_api.c ****     if (!err && ifname[0] != '\0') {
+  67:./lwip-2.1.2/src/api/if_api.c ****       return ifname;
+  68:./lwip-2.1.2/src/api/if_api.c ****     }
+  69:./lwip-2.1.2/src/api/if_api.c ****   }
+  70:./lwip-2.1.2/src/api/if_api.c **** #else /* LWIP_NETIF_API */
+  71:./lwip-2.1.2/src/api/if_api.c ****   LWIP_UNUSED_ARG(ifindex);
+  34              		.loc 1 71 3 view .LVU1
+  72:./lwip-2.1.2/src/api/if_api.c ****   LWIP_UNUSED_ARG(ifname);
+  35              		.loc 1 72 3 view .LVU2
+  73:./lwip-2.1.2/src/api/if_api.c **** #endif /* LWIP_NETIF_API */
+  74:./lwip-2.1.2/src/api/if_api.c ****   set_errno(ENXIO);
+  36              		.loc 1 74 3 view .LVU3
+  37              		.loc 1 74 3 view .LVU4
+  38              		.loc 1 74 3 view .LVU5
+  39 0000 024B     		ldr	r3, .L3
+  40 0002 0622     		movs	r2, #6
+  75:./lwip-2.1.2/src/api/if_api.c ****   return NULL;
+  76:./lwip-2.1.2/src/api/if_api.c **** }
+  41              		.loc 1 76 1 is_stmt 0 view .LVU6
+  42 0004 0020     		movs	r0, #0
+  43              	.LVL1:
+  74:./lwip-2.1.2/src/api/if_api.c ****   return NULL;
+  44              		.loc 1 74 3 view .LVU7
+  45 0006 1A60     		str	r2, [r3]
+  74:./lwip-2.1.2/src/api/if_api.c ****   return NULL;
+  46              		.loc 1 74 3 is_stmt 1 view .LVU8
+  75:./lwip-2.1.2/src/api/if_api.c ****   return NULL;
+  47              		.loc 1 75 3 view .LVU9
+  48              		.loc 1 76 1 is_stmt 0 view .LVU10
+  49 0008 7047     		bx	lr
+  50              	.L4:
+  51 000a 00BF     		.align	2
+  52              	.L3:
+  53 000c 00000000 		.word	errno
+  54              		.cfi_endproc
+  55              	.LFE169:
+  57              		.align	1
+  58              		.p2align 2,,3
+  59              		.global	lwip_if_nametoindex
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu fpv5-d16
+  65              	lwip_if_nametoindex:
+  66              	.LVL2:
+  67              	.LFB170:
+  77:./lwip-2.1.2/src/api/if_api.c **** 
+  78:./lwip-2.1.2/src/api/if_api.c **** /**
+  79:./lwip-2.1.2/src/api/if_api.c ****  * @ingroup if_api
+  80:./lwip-2.1.2/src/api/if_api.c ****  * Returs the interface index corresponding to name ifname.
+  81:./lwip-2.1.2/src/api/if_api.c ****  * @param ifname Interface name
+  82:./lwip-2.1.2/src/api/if_api.c ****  * @return The corresponding index if ifname is the name of an interface;
+  83:./lwip-2.1.2/src/api/if_api.c ****  * otherwise, zero.
+  84:./lwip-2.1.2/src/api/if_api.c ****  */
+  85:./lwip-2.1.2/src/api/if_api.c **** unsigned int
+  86:./lwip-2.1.2/src/api/if_api.c **** lwip_if_nametoindex(const char *ifname)
+  87:./lwip-2.1.2/src/api/if_api.c **** {
+  68              		.loc 1 87 1 is_stmt 1 view -0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 0, uses_anonymous_args = 0
+  72              		@ link register save eliminated.
+  88:./lwip-2.1.2/src/api/if_api.c **** #if LWIP_NETIF_API
+  89:./lwip-2.1.2/src/api/if_api.c ****   err_t err;
+  90:./lwip-2.1.2/src/api/if_api.c ****   u8_t idx;
+  91:./lwip-2.1.2/src/api/if_api.c **** 
+  92:./lwip-2.1.2/src/api/if_api.c ****   err = netifapi_netif_name_to_index(ifname, &idx);
+  93:./lwip-2.1.2/src/api/if_api.c ****   if (!err) {
+  94:./lwip-2.1.2/src/api/if_api.c ****     return idx;
+  95:./lwip-2.1.2/src/api/if_api.c ****   }
+  96:./lwip-2.1.2/src/api/if_api.c **** #else /* LWIP_NETIF_API */
+  97:./lwip-2.1.2/src/api/if_api.c ****   LWIP_UNUSED_ARG(ifname);
+  73              		.loc 1 97 3 view .LVU12
+  98:./lwip-2.1.2/src/api/if_api.c **** #endif /* LWIP_NETIF_API */
+  99:./lwip-2.1.2/src/api/if_api.c ****   return 0; /* invalid index */
+  74              		.loc 1 99 3 view .LVU13
+ 100:./lwip-2.1.2/src/api/if_api.c **** }
+  75              		.loc 1 100 1 is_stmt 0 view .LVU14
+  76 0010 0020     		movs	r0, #0
+  77              	.LVL3:
+  78              		.loc 1 100 1 view .LVU15
+  79 0012 7047     		bx	lr
+  80              		.cfi_endproc
+  81              	.LFE170:
+  83              	.Letext0:
+  84              		.file 2 "./lwip-2.1.2/src/include/lwip/errno.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 if_api.c
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccz24cVj.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccz24cVj.s:25     .text:00000000 lwip_if_indextoname
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccz24cVj.s:53     .text:0000000c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccz24cVj.s:57     .text:00000010 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccz24cVj.s:65     .text:00000010 lwip_if_nametoindex
+
+UNDEFINED SYMBOLS
+errno

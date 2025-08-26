@@ -69,7 +69,15 @@ obj/udp_total.o: src/udp_total.c inc/main.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\string.h \
  inc/udp_total.h inc/cmsis_os2.h inc/reset.h inc/ARMCM7_DP.h \
  inc/core_cm7.h inc/cmsis_version.h inc/cmsis_compiler.h inc/cmsis_gcc.h \
- inc/mpu_armv7.h inc/system_stm32f7xx.h
+ inc/mpu_armv7.h inc/system_stm32f7xx.h inc/stm32f7xx_hal_iwdg.h \
+ inc/stm32f7xx_hal_def.h inc/ARMCM7_DP.h inc/stm32f7xx.h \
+ inc/stm32f765xx.h inc/Legacy/stm32_hal_legacy.h \
+ lwip-2.1.2/src/include/lwip/etharp.h \
+ lwip-2.1.2/src/include/lwip/prot/ethernet.h \
+ lwip-2.1.2/src/include/lwip/prot/ieee.h \
+ lwip-2.1.2/src/include/lwip/prot/etharp.h \
+ lwip-2.1.2/src/include/lwip/sockets.h lwip-2.1.2/src/include/lwip/inet.h \
+ lwip-2.1.2/src/include/lwip/errno.h
 inc/main.h:
 lwip-2.1.2/src/include/lwip/pbuf.h:
 lwip-2.1.2/src/include/lwip/opt.h:
@@ -162,3 +170,16 @@ inc/cmsis_compiler.h:
 inc/cmsis_gcc.h:
 inc/mpu_armv7.h:
 inc/system_stm32f7xx.h:
+inc/stm32f7xx_hal_iwdg.h:
+inc/stm32f7xx_hal_def.h:
+inc/ARMCM7_DP.h:
+inc/stm32f7xx.h:
+inc/stm32f765xx.h:
+inc/Legacy/stm32_hal_legacy.h:
+lwip-2.1.2/src/include/lwip/etharp.h:
+lwip-2.1.2/src/include/lwip/prot/ethernet.h:
+lwip-2.1.2/src/include/lwip/prot/ieee.h:
+lwip-2.1.2/src/include/lwip/prot/etharp.h:
+lwip-2.1.2/src/include/lwip/sockets.h:
+lwip-2.1.2/src/include/lwip/inet.h:
+lwip-2.1.2/src/include/lwip/errno.h:

@@ -52,8 +52,6 @@ CSRC += $(SRC_FOLDER)/sys_arch.c
 CSRC += $(SRC_FOLDER)/ethernetif.c
 CSRC += $(SRC_FOLDER)/udp_total.c
 CSRC += $(SRC_FOLDER)/startDebug.c
-CSRC += $(SRC_FOLDER)/task01.c
-CSRC += $(SRC_FOLDER)/task02.c
 CSRC += $(SRC_FOLDER)/task03.c
 CSRC += $(SRC_FOLDER)/task04.c
 CSRC += $(SRC_FOLDER)/reset.c
@@ -70,6 +68,14 @@ CSRC += ./lwip-2.1.2/src/core/ipv4/ip4_addr.c
 CSRC += ./lwip-2.1.2/src/core/ipv4/ip4_frag.c
 
 CSRC += ./lwip-2.1.2/src/api/tcpip.c
+CSRC += ./lwip-2.1.2/src/api/sockets.c
+CSRC += ./lwip-2.1.2/src/api/netifapi.c
+CSRC += ./lwip-2.1.2/src/api/netdb.c
+CSRC += ./lwip-2.1.2/src/api/netbuf.c
+CSRC += ./lwip-2.1.2/src/api/if_api.c
+CSRC += ./lwip-2.1.2/src/api/err.c
+CSRC += ./lwip-2.1.2/src/api/api_msg.c
+CSRC += ./lwip-2.1.2/src/api/api_lib.c
 
 CSRC += ./lwip-2.1.2/src/core/init.c
 CSRC += ./lwip-2.1.2/src/core/mem.c
@@ -93,6 +99,8 @@ CSRC += $(SRC_FOLDER)/stm32f7xx_hal_iwdg.c
 
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal.c
 CSRC += $(SRC_FOLDER)/stm32f7xx_hal_cortex.c
+
+
 
 
 # List C++ source files here.

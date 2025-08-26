@@ -64,27 +64,12 @@ void task03_thread(void *argument)
   {
     HAL_IWDG_Refresh(&hiwdg);
 
-    // CANTxMsg_t  msg;
-	// 	msg.bufftype = CAN_BUFFER_TX_MSG;
-	// 	msg.dlc      = CAN_LEN8_DLC;
-	// 	msg.msgtype  = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
-	// 	msg.id       = 0x123;
-	// 	msg.data8[0] = 0xAA;
-    // 	msg.data8[1] = 0xBB;
-    // 	msg.data8[2] = 0xCC;
-    // 	msg.data8[3] = 0xDD;
-    // 	msg.data8[4] = 0x11;
-    // 	msg.data8[5] = 0x22;
-    // 	msg.data8[6] = 0x33;
-    // 	msg.data8[7] = 0x44;
+	  CANTxMsg_t txMsg;
 
-	// 	CAN_Write ( CAN_BUS3, &msg);
-	CANTxMsg_t txMsg;
-
-	txMsg.bufftype = CAN_BUFFER_TX_MSG;
+	  txMsg.bufftype = CAN_BUFFER_TX_MSG;
     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
-    txMsg.msgtype  = CAN_MSGTYPE_STANDARD;     // 표준 CAN 메시지 타입
-    txMsg.id       = 0x123;                     // 테스트용 ID
+    txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD 메시지 타입
+    txMsg.id       = 0x12345678;                     // 테스트용 ID
 
     // 테스트 데이터 설정 (예: 8바이트)
     txMsg.data8[0] = 0xAA;
@@ -98,8 +83,6 @@ void task03_thread(void *argument)
 
     // 2. CAN_BUS1에 메시지 송신
     CAN_Write(CAN_BUS1, &txMsg);
-    DEBUG("transmit test\n");
-    
 
 		osDelay ( DLY_MS(1000));
   }
@@ -109,6 +92,7 @@ void task03_thread(void *argument)
 void task03_init(void *argument)
 {
     (void)argument;
+    DEBUG("TASK03 START\n");
 
     Task03Handle = osThreadNew(task03_thread, NULL, &Task03_attributes);
 

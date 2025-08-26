@@ -6,79 +6,25 @@
    6              		.eabi_attribute 24, 1
    7              		.eabi_attribute 25, 1
    8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 30, 2
   10              		.eabi_attribute 34, 1
   11              		.eabi_attribute 18, 4
   12              		.file	"task03.c"
   13              		.text
   14              	.Ltext0:
   15              		.cfi_sections	.debug_frame
-  16              		.bss
-  17              	LED_toggleCAN1:
-  18 0000 00       		.space	1
-  20              	LED_toggleCAN2:
-  21 0001 00       		.space	1
-  23              	LED_toggleCAN3:
-  24 0002 00       		.space	1
-  26              	LED_toggleCAN4:
-  27 0003 00       		.space	1
-  29              	LED_toggleCAN5:
-  30 0004 00       		.space	1
-  32              	LED_toggleCAN6:
-  33 0005 00       		.space	1
-  35              		.global	Task03Handle
-  36 0006 0000     		.align	2
-  39              	Task03Handle:
-  40 0008 00000000 		.space	4
-  41              		.global	Task03_attributes
-  42              		.section	.rodata
-  43              		.align	2
-  44              	.LC0:
-  45 0000 5461736B 		.ascii	"Task03\000"
-  45      303300
-  46 0007 00       		.align	2
-  49              	Task03_attributes:
-  50 0008 00000000 		.word	.LC0
-  51 000c 00000000 		.space	16
-  51      00000000 
-  51      00000000 
-  51      00000000 
-  52 001c 00140000 		.word	5120
-  53 0020 09000000 		.word	9
-  54 0024 00000000 		.space	8
-  54      00000000 
-  55              		.align	2
-  56              	.LC1:
-  57 002c 2E2F7372 		.ascii	"./src/task03.c\000"
-  57      632F7461 
-  57      736B3033 
-  57      2E6300
-  58 003b 00       		.align	2
-  59              	.LC2:
-  60 003c 25732F25 		.ascii	"%s/%s(%d) \000"
-  60      73282564 
-  60      292000
-  61 0047 00       		.align	2
-  62              	.LC3:
-  63 0048 7472616E 		.ascii	"transmit test\012\000"
-  63      736D6974 
-  63      20746573 
-  63      740A00
-  64 0057 00       		.align	2
-  65              	.LC4:
-  66 0058 25732573 		.ascii	"%s%s\000"
-  66      00
-  67              		.text
-  68              		.align	1
-  69              		.global	task03_thread
-  70              		.arch armv7e-m
-  71              		.syntax unified
-  72              		.thumb
-  73              		.thumb_func
-  74              		.fpu fpv5-d16
-  76              	task03_thread:
-  77              	.LFB147:
-  78              		.file 1 "./src/task03.c"
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	task03_thread
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	task03_thread:
+  26              	.LVL0:
+  27              	.LFB147:
+  28              		.file 1 "./src/task03.c"
    1:./src/task03.c **** #include "cmsis_os2.h"
    2:./src/task03.c **** #include "main.h"
    3:./src/task03.c **** #include "startDebug.h"
@@ -127,321 +73,396 @@
   46:./src/task03.c **** 
   47:./src/task03.c **** void task03_thread(void *argument)
   48:./src/task03.c **** {
-  79              		.loc 1 48 1
-  80              		.cfi_startproc
-  81              		@ args = 0, pretend = 0, frame = 1120
-  82              		@ frame_needed = 1, uses_anonymous_args = 0
-  83 0000 80B5     		push	{r7, lr}
-  84              	.LCFI0:
-  85              		.cfi_def_cfa_offset 8
-  86              		.cfi_offset 7, -8
-  87              		.cfi_offset 14, -4
-  88 0002 ADF58D6D 		sub	sp, sp, #1128
-  89              	.LCFI1:
-  90              		.cfi_def_cfa_offset 1136
-  91 0006 02AF     		add	r7, sp, #8
-  92              	.LCFI2:
-  93              		.cfi_def_cfa 7, 1128
-  94 0008 07F58C63 		add	r3, r7, #1120
-  95 000c A3F25C43 		subw	r3, r3, #1116
-  96 0010 1860     		str	r0, [r3]
+  29              		.loc 1 48 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 88
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
   49:./src/task03.c ****   (void)argument;
+  34              		.loc 1 49 3 view .LVU1
   50:./src/task03.c **** 
   51:./src/task03.c ****   // init CAN
   52:./src/task03.c **** 	CAN_UserInit();
-  97              		.loc 1 52 2
-  98 0012 FFF7FEFF 		bl	CAN_UserInit
+  35              		.loc 1 52 2 view .LVU2
+  48:./src/task03.c ****   (void)argument;
+  36              		.loc 1 48 1 is_stmt 0 view .LVU3
+  37 0000 00B5     		push	{lr}
+  38              	.LCFI0:
+  39              		.cfi_def_cfa_offset 4
+  40              		.cfi_offset 14, -4
+  41 0002 97B0     		sub	sp, sp, #92
+  42              	.LCFI1:
+  43              		.cfi_def_cfa_offset 96
+  44              	.LBB2:
   53:./src/task03.c **** 
   54:./src/task03.c ****   // set green LEDs for CANs
   55:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
-  99              		.loc 1 55 2
- 100 0016 0221     		movs	r1, #2
- 101 0018 0120     		movs	r0, #1
- 102 001a FFF7FEFF 		bl	HW_SetLED
   56:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
- 103              		.loc 1 56 2
- 104 001e 0221     		movs	r1, #2
- 105 0020 0220     		movs	r0, #2
- 106 0022 FFF7FEFF 		bl	HW_SetLED
   57:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
- 107              		.loc 1 57 2
- 108 0026 0221     		movs	r1, #2
- 109 0028 0320     		movs	r0, #3
- 110 002a FFF7FEFF 		bl	HW_SetLED
   58:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
- 111              		.loc 1 58 2
- 112 002e 0221     		movs	r1, #2
- 113 0030 0420     		movs	r0, #4
- 114 0032 FFF7FEFF 		bl	HW_SetLED
   59:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
- 115              		.loc 1 59 2
- 116 0036 0221     		movs	r1, #2
- 117 0038 0520     		movs	r0, #5
- 118 003a FFF7FEFF 		bl	HW_SetLED
   60:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
- 119              		.loc 1 60 2
- 120 003e 0221     		movs	r1, #2
- 121 0040 0620     		movs	r0, #6
- 122 0042 FFF7FEFF 		bl	HW_SetLED
- 123              	.L2:
- 124              	.LBB2:
   61:./src/task03.c **** 
   62:./src/task03.c ****   //main_greeting();
   63:./src/task03.c ****   for(;;)
   64:./src/task03.c ****   {
   65:./src/task03.c ****     HAL_IWDG_Refresh(&hiwdg);
- 125              		.loc 1 65 5 discriminator 1
- 126 0046 3948     		ldr	r0, .L3
- 127 0048 FFF7FEFF 		bl	HAL_IWDG_Refresh
   66:./src/task03.c **** 
-  67:./src/task03.c ****     // CANTxMsg_t  msg;
-  68:./src/task03.c **** 	// 	msg.bufftype = CAN_BUFFER_TX_MSG;
-  69:./src/task03.c **** 	// 	msg.dlc      = CAN_LEN8_DLC;
-  70:./src/task03.c **** 	// 	msg.msgtype  = CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;
-  71:./src/task03.c **** 	// 	msg.id       = 0x123;
-  72:./src/task03.c **** 	// 	msg.data8[0] = 0xAA;
-  73:./src/task03.c ****     // 	msg.data8[1] = 0xBB;
-  74:./src/task03.c ****     // 	msg.data8[2] = 0xCC;
-  75:./src/task03.c ****     // 	msg.data8[3] = 0xDD;
-  76:./src/task03.c ****     // 	msg.data8[4] = 0x11;
-  77:./src/task03.c ****     // 	msg.data8[5] = 0x22;
-  78:./src/task03.c ****     // 	msg.data8[6] = 0x33;
-  79:./src/task03.c ****     // 	msg.data8[7] = 0x44;
-  80:./src/task03.c **** 
-  81:./src/task03.c **** 	// 	CAN_Write ( CAN_BUS3, &msg);
-  82:./src/task03.c **** 	CANTxMsg_t txMsg;
+  67:./src/task03.c **** 	  CANTxMsg_t txMsg;
+  68:./src/task03.c **** 
+  69:./src/task03.c **** 	  txMsg.bufftype = CAN_BUFFER_TX_MSG;
+  70:./src/task03.c ****     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
+  71:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD
+  72:./src/task03.c ****     txMsg.id       = 0x12345678;                     // 테스트용 ID
+  45              		.loc 1 72 20 view .LVU4
+  46 0004 1C4E     		ldr	r6, .L5
+  47              	.LBE2:
+  52:./src/task03.c **** 
+  48              		.loc 1 52 2 view .LVU5
+  49 0006 FFF7FEFF 		bl	CAN_UserInit
+  50              	.LVL1:
+  55:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+  51              		.loc 1 55 2 is_stmt 1 view .LVU6
+  52 000a 0221     		movs	r1, #2
+  53 000c 0120     		movs	r0, #1
+  54              	.LBB3:
+  73:./src/task03.c **** 
+  74:./src/task03.c ****     // 테스트 데이터 설정 (예: 8바이트)
+  75:./src/task03.c ****     txMsg.data8[0] = 0xAA;
+  55              		.loc 1 75 20 is_stmt 0 view .LVU7
+  56 000e 1B4D     		ldr	r5, .L5+4
+  57              	.LBE3:
+  55:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+  58              		.loc 1 55 2 view .LVU8
+  59 0010 FFF7FEFF 		bl	HW_SetLED
+  60              	.LVL2:
+  56:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+  61              		.loc 1 56 2 is_stmt 1 view .LVU9
+  62 0014 0221     		movs	r1, #2
+  63              	.LBB4:
+  76:./src/task03.c ****     txMsg.data8[1] = 0xBB;
+  77:./src/task03.c ****     txMsg.data8[2] = 0xCC;
+  78:./src/task03.c ****     txMsg.data8[3] = 0xDD;
+  79:./src/task03.c ****     txMsg.data8[4] = 0x11;
+  64              		.loc 1 79 20 is_stmt 0 view .LVU10
+  65 0016 1A4C     		ldr	r4, .L5+8
+  66              	.LBE4:
+  56:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+  67              		.loc 1 56 2 view .LVU11
+  68 0018 0846     		mov	r0, r1
+  69 001a FFF7FEFF 		bl	HW_SetLED
+  70              	.LVL3:
+  57:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
+  71              		.loc 1 57 2 is_stmt 1 view .LVU12
+  72 001e 0221     		movs	r1, #2
+  73 0020 0320     		movs	r0, #3
+  74 0022 FFF7FEFF 		bl	HW_SetLED
+  75              	.LVL4:
+  58:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
+  76              		.loc 1 58 2 view .LVU13
+  77 0026 0221     		movs	r1, #2
+  78 0028 0420     		movs	r0, #4
+  79 002a FFF7FEFF 		bl	HW_SetLED
+  80              	.LVL5:
+  59:./src/task03.c **** 	HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
+  81              		.loc 1 59 2 view .LVU14
+  82 002e 0221     		movs	r1, #2
+  83 0030 0520     		movs	r0, #5
+  84 0032 FFF7FEFF 		bl	HW_SetLED
+  85              	.LVL6:
+  60:./src/task03.c **** 
+  86              		.loc 1 60 2 view .LVU15
+  87 0036 0221     		movs	r1, #2
+  88 0038 0620     		movs	r0, #6
+  89 003a FFF7FEFF 		bl	HW_SetLED
+  90              	.LVL7:
+  91              	.L2:
+  63:./src/task03.c ****   {
+  92              		.loc 1 63 3 discriminator 1 view .LVU16
+  93              	.LBB5:
+  65:./src/task03.c **** 
+  94              		.loc 1 65 5 discriminator 1 view .LVU17
+  95 003e 1148     		ldr	r0, .L5+12
+  96 0040 FFF7FEFF 		bl	HAL_IWDG_Refresh
+  97              	.LVL8:
+  67:./src/task03.c **** 
+  98              		.loc 1 67 4 discriminator 1 view .LVU18
+  69:./src/task03.c ****     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
+  99              		.loc 1 69 4 discriminator 1 view .LVU19
+  70:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD
+ 100              		.loc 1 70 20 is_stmt 0 discriminator 1 view .LVU20
+ 101 0044 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+ 102 0048 0820     		movs	r0, #8
+  69:./src/task03.c ****     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
+ 103              		.loc 1 69 19 discriminator 1 view .LVU21
+ 104 004a 4FF4805C 		mov	ip, #4096
+  71:./src/task03.c ****     txMsg.id       = 0x12345678;                     // 테스트용 ID
+ 105              		.loc 1 71 20 discriminator 1 view .LVU22
+ 106 004e 3222     		movs	r2, #50
+  80:./src/task03.c ****     txMsg.data8[5] = 0x22;
+  81:./src/task03.c ****     txMsg.data8[6] = 0x33;
+  82:./src/task03.c ****     txMsg.data8[7] = 0x44;
   83:./src/task03.c **** 
-  84:./src/task03.c **** 	txMsg.bufftype = CAN_BUFFER_TX_MSG;
- 128              		.loc 1 84 17 discriminator 1
- 129 004c 07F58C63 		add	r3, r7, #1120
- 130 0050 A3F25443 		subw	r3, r3, #1108
- 131 0054 4FF48052 		mov	r2, #4096
- 132 0058 5A80     		strh	r2, [r3, #2]	@ movhi
-  85:./src/task03.c ****     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
- 133              		.loc 1 85 20 discriminator 1
- 134 005a 07F58C63 		add	r3, r7, #1120
- 135 005e A3F25442 		subw	r2, r3, #1108
- 136 0062 137B     		ldrb	r3, [r2, #12]
- 137 0064 0821     		movs	r1, #8
- 138 0066 61F30713 		bfi	r3, r1, #4, #4
- 139 006a 1373     		strb	r3, [r2, #12]
-  86:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_STANDARD;     // 표준 CAN 메시지 타입
- 140              		.loc 1 86 20 discriminator 1
- 141 006c 07F58C63 		add	r3, r7, #1120
- 142 0070 A3F25443 		subw	r3, r3, #1108
- 143 0074 0022     		movs	r2, #0
- 144 0076 DA81     		strh	r2, [r3, #14]	@ movhi
-  87:./src/task03.c ****     txMsg.id       = 0x123;                     // 테스트용 ID
- 145              		.loc 1 87 20 discriminator 1
- 146 0078 07F58C63 		add	r3, r7, #1120
- 147 007c A3F25443 		subw	r3, r3, #1108
- 148 0080 40F22312 		movw	r2, #291
- 149 0084 1A61     		str	r2, [r3, #16]
-  88:./src/task03.c **** 
-  89:./src/task03.c ****     // 테스트 데이터 설정 (예: 8바이트)
-  90:./src/task03.c ****     txMsg.data8[0] = 0xAA;
- 150              		.loc 1 90 20 discriminator 1
- 151 0086 07F58C63 		add	r3, r7, #1120
- 152 008a A3F25443 		subw	r3, r3, #1108
- 153 008e AA22     		movs	r2, #170
- 154 0090 1A75     		strb	r2, [r3, #20]
-  91:./src/task03.c ****     txMsg.data8[1] = 0xBB;
- 155              		.loc 1 91 20 discriminator 1
- 156 0092 07F58C63 		add	r3, r7, #1120
- 157 0096 A3F25443 		subw	r3, r3, #1108
- 158 009a BB22     		movs	r2, #187
- 159 009c 5A75     		strb	r2, [r3, #21]
-  92:./src/task03.c ****     txMsg.data8[2] = 0xCC;
- 160              		.loc 1 92 20 discriminator 1
- 161 009e 07F58C63 		add	r3, r7, #1120
- 162 00a2 A3F25443 		subw	r3, r3, #1108
- 163 00a6 CC22     		movs	r2, #204
- 164 00a8 9A75     		strb	r2, [r3, #22]
-  93:./src/task03.c ****     txMsg.data8[3] = 0xDD;
- 165              		.loc 1 93 20 discriminator 1
- 166 00aa 07F58C63 		add	r3, r7, #1120
- 167 00ae A3F25443 		subw	r3, r3, #1108
- 168 00b2 DD22     		movs	r2, #221
- 169 00b4 DA75     		strb	r2, [r3, #23]
-  94:./src/task03.c ****     txMsg.data8[4] = 0x11;
- 170              		.loc 1 94 20 discriminator 1
- 171 00b6 07F58C63 		add	r3, r7, #1120
- 172 00ba A3F25443 		subw	r3, r3, #1108
- 173 00be 1122     		movs	r2, #17
- 174 00c0 1A76     		strb	r2, [r3, #24]
-  95:./src/task03.c ****     txMsg.data8[5] = 0x22;
- 175              		.loc 1 95 20 discriminator 1
- 176 00c2 07F58C63 		add	r3, r7, #1120
- 177 00c6 A3F25443 		subw	r3, r3, #1108
- 178 00ca 2222     		movs	r2, #34
- 179 00cc 5A76     		strb	r2, [r3, #25]
-  96:./src/task03.c ****     txMsg.data8[6] = 0x33;
- 180              		.loc 1 96 20 discriminator 1
- 181 00ce 07F58C63 		add	r3, r7, #1120
- 182 00d2 A3F25443 		subw	r3, r3, #1108
- 183 00d6 3322     		movs	r2, #51
- 184 00d8 9A76     		strb	r2, [r3, #26]
-  97:./src/task03.c ****     txMsg.data8[7] = 0x44;
- 185              		.loc 1 97 20 discriminator 1
- 186 00da 07F58C63 		add	r3, r7, #1120
- 187 00de A3F25443 		subw	r3, r3, #1108
- 188 00e2 4422     		movs	r2, #68
- 189 00e4 DA76     		strb	r2, [r3, #27]
+  84:./src/task03.c ****     // 2. CAN_BUS1에 메시지 송신
+  85:./src/task03.c ****     CAN_Write(CAN_BUS1, &txMsg);
+ 107              		.loc 1 85 5 discriminator 1 view .LVU23
+ 108 0050 01A9     		add	r1, sp, #4
+  70:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD
+ 109              		.loc 1 70 20 discriminator 1 view .LVU24
+ 110 0052 60F30713 		bfi	r3, r0, #4, #4
+ 111              		.loc 1 85 5 discriminator 1 view .LVU25
+ 112 0056 0020     		movs	r0, #0
+  69:./src/task03.c ****     txMsg.dlc      = CAN_LEN8_DLC;             // 8 bytes data length
+ 113              		.loc 1 69 19 discriminator 1 view .LVU26
+ 114 0058 ADF806C0 		strh	ip, [sp, #6]	@ movhi
+  70:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD
+ 115              		.loc 1 70 5 is_stmt 1 discriminator 1 view .LVU27
+  71:./src/task03.c ****     txMsg.id       = 0x12345678;                     // 테스트용 ID
+ 116              		.loc 1 71 20 is_stmt 0 discriminator 1 view .LVU28
+ 117 005c ADF81220 		strh	r2, [sp, #18]	@ movhi
+  70:./src/task03.c ****     txMsg.msgtype  = CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF | CAN_MSGTYPE_BRS;     // 표준 CAN FD
+ 118              		.loc 1 70 20 discriminator 1 view .LVU29
+ 119 0060 8DF81030 		strb	r3, [sp, #16]
+  71:./src/task03.c ****     txMsg.id       = 0x12345678;                     // 테스트용 ID
+ 120              		.loc 1 71 5 is_stmt 1 discriminator 1 view .LVU30
+  72:./src/task03.c **** 
+ 121              		.loc 1 72 5 discriminator 1 view .LVU31
+  75:./src/task03.c ****     txMsg.data8[1] = 0xBB;
+ 122              		.loc 1 75 5 discriminator 1 view .LVU32
+  76:./src/task03.c ****     txMsg.data8[2] = 0xCC;
+ 123              		.loc 1 76 5 discriminator 1 view .LVU33
+  77:./src/task03.c ****     txMsg.data8[3] = 0xDD;
+ 124              		.loc 1 77 5 discriminator 1 view .LVU34
+  78:./src/task03.c ****     txMsg.data8[4] = 0x11;
+ 125              		.loc 1 78 5 discriminator 1 view .LVU35
+  79:./src/task03.c ****     txMsg.data8[5] = 0x22;
+ 126              		.loc 1 79 5 discriminator 1 view .LVU36
+  80:./src/task03.c ****     txMsg.data8[6] = 0x33;
+ 127              		.loc 1 80 5 discriminator 1 view .LVU37
+  81:./src/task03.c ****     txMsg.data8[7] = 0x44;
+ 128              		.loc 1 81 5 discriminator 1 view .LVU38
+  82:./src/task03.c **** 
+ 129              		.loc 1 82 5 discriminator 1 view .LVU39
+  79:./src/task03.c ****     txMsg.data8[5] = 0x22;
+ 130              		.loc 1 79 20 is_stmt 0 discriminator 1 view .LVU40
+ 131 0064 0794     		str	r4, [sp, #28]
+ 132              		.loc 1 85 5 is_stmt 1 discriminator 1 view .LVU41
+  75:./src/task03.c ****     txMsg.data8[1] = 0xBB;
+ 133              		.loc 1 75 20 is_stmt 0 discriminator 1 view .LVU42
+ 134 0066 CDE90565 		strd	r6, r5, [sp, #20]
+ 135              		.loc 1 85 5 discriminator 1 view .LVU43
+ 136 006a FFF7FEFF 		bl	CAN_Write
+ 137              	.LVL9:
+  86:./src/task03.c **** 
+  87:./src/task03.c **** 		osDelay ( DLY_MS(1000));
+ 138              		.loc 1 87 3 is_stmt 1 discriminator 1 view .LVU44
+ 139 006e 41F28830 		movw	r0, #5000
+ 140 0072 FFF7FEFF 		bl	osDelay
+ 141              	.LVL10:
+ 142              	.LBE5:
+  63:./src/task03.c ****   {
+ 143              		.loc 1 63 8 discriminator 1 view .LVU45
+ 144 0076 E2E7     		b	.L2
+ 145              	.L6:
+ 146              		.align	2
+ 147              	.L5:
+ 148 0078 78563412 		.word	305419896
+ 149 007c AABBCCDD 		.word	-573785174
+ 150 0080 11223344 		.word	1144201745
+ 151 0084 00000000 		.word	hiwdg
+ 152              		.cfi_endproc
+ 153              	.LFE147:
+ 155              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 156              		.align	2
+ 157              	.LC0:
+ 158 0000 2E2F7372 		.ascii	"./src/task03.c\000"
+ 158      632F7461 
+ 158      736B3033 
+ 158      2E6300
+ 159 000f 00       		.align	2
+ 160              	.LC1:
+ 161 0010 25732F25 		.ascii	"%s/%s(%d) \000"
+ 161      73282564 
+ 161      292000
+ 162 001b 00       		.align	2
+ 163              	.LC2:
+ 164 001c 5441534B 		.ascii	"TASK03 START\012\000"
+ 164      30332053 
+ 164      54415254 
+ 164      0A00
+ 165 002a 0000     		.align	2
+ 166              	.LC3:
+ 167 002c 25732573 		.ascii	"%s%s\000"
+ 167      00
+ 168              		.text
+ 169              		.align	1
+ 170              		.p2align 2,,3
+ 171              		.global	task03_init
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 175              		.fpu fpv5-d16
+ 177              	task03_init:
+ 178              	.LVL11:
+ 179              	.LFB148:
+  88:./src/task03.c ****   }
+  89:./src/task03.c **** }
+  90:./src/task03.c **** 
+  91:./src/task03.c **** 
+  92:./src/task03.c **** void task03_init(void *argument)
+  93:./src/task03.c **** {
+ 180              		.loc 1 93 1 view -0
+ 181              		.cfi_startproc
+ 182              		@ args = 0, pretend = 0, frame = 1024
+ 183              		@ frame_needed = 0, uses_anonymous_args = 0
+  94:./src/task03.c ****     (void)argument;
+ 184              		.loc 1 94 5 view .LVU47
+  95:./src/task03.c ****     DEBUG("TASK03 START\n");
+ 185              		.loc 1 95 5 view .LVU48
+ 186              	.LBB6:
+ 187              		.loc 1 95 5 view .LVU49
+ 188              		.loc 1 95 5 view .LVU50
+ 189              		.loc 1 95 5 view .LVU51
+ 190              	.LBE6:
+  93:./src/task03.c ****     (void)argument;
+ 191              		.loc 1 93 1 is_stmt 0 view .LVU52
+ 192 0088 10B5     		push	{r4, lr}
+ 193              	.LCFI2:
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 4, -8
+ 196              		.cfi_offset 14, -4
+ 197              	.LBB7:
+ 198              		.loc 1 95 5 view .LVU53
+ 199 008a 5F21     		movs	r1, #95
+ 200              	.LBE7:
+  93:./src/task03.c ****     (void)argument;
+ 201              		.loc 1 93 1 view .LVU54
+ 202 008c ADF5816D 		sub	sp, sp, #1032
+ 203              	.LCFI3:
+ 204              		.cfi_def_cfa_offset 1040
+ 205              	.LBB8:
+ 206              		.loc 1 95 5 view .LVU55
+ 207 0090 0F4C     		ldr	r4, .L9
+ 208 0092 0091     		str	r1, [sp]
+ 209 0094 02A8     		add	r0, sp, #8
+ 210              	.LVL12:
+ 211              		.loc 1 95 5 view .LVU56
+ 212 0096 2346     		mov	r3, r4
+ 213 0098 0E4A     		ldr	r2, .L9+4
+ 214 009a 0F49     		ldr	r1, .L9+8
+ 215 009c FFF7FEFF 		bl	sprintf
+ 216              	.LVL13:
+ 217              		.loc 1 95 5 is_stmt 1 view .LVU57
+ 218 00a0 0E4B     		ldr	r3, .L9+12
+ 219 00a2 0DF5027C 		add	ip, sp, #520
+ 220 00a6 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 221 00a8 ACE80700 		stmia	ip!, {r0, r1, r2}
+ 222 00ac 82AA     		add	r2, sp, #520
+ 223 00ae ACF80030 		strh	r3, [ip]	@ movhi
+ 224              		.loc 1 95 5 view .LVU58
+ 225 00b2 02A9     		add	r1, sp, #8
+ 226 00b4 0A48     		ldr	r0, .L9+16
+ 227 00b6 FFF7FEFF 		bl	printf
+ 228              	.LVL14:
+ 229              	.LBE8:
+ 230              		.loc 1 95 5 view .LVU59
+  96:./src/task03.c **** 
+  97:./src/task03.c ****     Task03Handle = osThreadNew(task03_thread, NULL, &Task03_attributes);
+ 231              		.loc 1 97 5 view .LVU60
+ 232              		.loc 1 97 20 is_stmt 0 view .LVU61
+ 233 00ba 04F10C02 		add	r2, r4, #12
+ 234 00be 0021     		movs	r1, #0
+ 235 00c0 0848     		ldr	r0, .L9+20
+ 236 00c2 FFF7FEFF 		bl	osThreadNew
+ 237              	.LVL15:
+ 238              		.loc 1 97 18 view .LVU62
+ 239 00c6 084B     		ldr	r3, .L9+24
+ 240 00c8 1860     		str	r0, [r3]
   98:./src/task03.c **** 
-  99:./src/task03.c ****     // 2. CAN_BUS1에 메시지 송신
- 100:./src/task03.c ****     CAN_Write(CAN_BUS1, &txMsg);
- 190              		.loc 1 100 5 discriminator 1
- 191 00e6 07F10C03 		add	r3, r7, #12
- 192 00ea 1946     		mov	r1, r3
- 193 00ec 0020     		movs	r0, #0
- 194 00ee FFF7FEFF 		bl	CAN_Write
- 195              	.LBB3:
- 101:./src/task03.c ****     DEBUG("transmit test\n");
- 196              		.loc 1 101 5 discriminator 1
- 197 00f2 0F4A     		ldr	r2, .L3+4
- 198 00f4 07F16000 		add	r0, r7, #96
- 199 00f8 6523     		movs	r3, #101
- 200 00fa 0093     		str	r3, [sp]
- 201 00fc 0D4B     		ldr	r3, .L3+8
- 202 00fe 0E49     		ldr	r1, .L3+12
- 203 0100 FFF7FEFF 		bl	sprintf
- 204 0104 07F51873 		add	r3, r7, #608
- 205 0108 0C49     		ldr	r1, .L3+16
- 206 010a 1846     		mov	r0, r3
- 207 010c FFF7FEFF 		bl	sprintf
- 208 0110 07F51872 		add	r2, r7, #608
- 209 0114 07F16003 		add	r3, r7, #96
- 210 0118 1946     		mov	r1, r3
- 211 011a 0948     		ldr	r0, .L3+20
- 212 011c FFF7FEFF 		bl	printf
- 213              	.LBE3:
- 102:./src/task03.c ****     
- 103:./src/task03.c **** 
- 104:./src/task03.c **** 		osDelay ( DLY_MS(1000));
- 214              		.loc 1 104 3 discriminator 1
- 215 0120 41F28830 		movw	r0, #5000
- 216 0124 FFF7FEFF 		bl	osDelay
- 217              	.LBE2:
-  64:./src/task03.c ****     HAL_IWDG_Refresh(&hiwdg);
- 218              		.loc 1 64 3 discriminator 1
- 219 0128 8DE7     		b	.L2
- 220              	.L4:
- 221 012a 00BF     		.align	2
- 222              	.L3:
- 223 012c 00000000 		.word	hiwdg
- 224 0130 32000000 		.word	.LC1+6
- 225 0134 60000000 		.word	__FUNCTION__.0
- 226 0138 3C000000 		.word	.LC2
- 227 013c 48000000 		.word	.LC3
- 228 0140 58000000 		.word	.LC4
- 229              		.cfi_endproc
- 230              	.LFE147:
- 232              		.align	1
- 233              		.global	task03_init
- 234              		.syntax unified
- 235              		.thumb
- 236              		.thumb_func
- 237              		.fpu fpv5-d16
- 239              	task03_init:
- 240              	.LFB148:
- 105:./src/task03.c ****   }
- 106:./src/task03.c **** }
- 107:./src/task03.c **** 
- 108:./src/task03.c **** 
- 109:./src/task03.c **** void task03_init(void *argument)
- 110:./src/task03.c **** {
- 241              		.loc 1 110 1
- 242              		.cfi_startproc
- 243              		@ args = 0, pretend = 0, frame = 8
- 244              		@ frame_needed = 1, uses_anonymous_args = 0
- 245 0144 80B5     		push	{r7, lr}
- 246              	.LCFI3:
- 247              		.cfi_def_cfa_offset 8
- 248              		.cfi_offset 7, -8
- 249              		.cfi_offset 14, -4
- 250 0146 82B0     		sub	sp, sp, #8
- 251              	.LCFI4:
- 252              		.cfi_def_cfa_offset 16
- 253 0148 00AF     		add	r7, sp, #0
- 254              	.LCFI5:
- 255              		.cfi_def_cfa_register 7
- 256 014a 7860     		str	r0, [r7, #4]
- 111:./src/task03.c ****     (void)argument;
- 112:./src/task03.c **** 
- 113:./src/task03.c ****     Task03Handle = osThreadNew(task03_thread, NULL, &Task03_attributes);
- 257              		.loc 1 113 20
- 258 014c 054A     		ldr	r2, .L6
- 259 014e 0021     		movs	r1, #0
- 260 0150 0548     		ldr	r0, .L6+4
- 261 0152 FFF7FEFF 		bl	osThreadNew
- 262 0156 0346     		mov	r3, r0
- 263              		.loc 1 113 18
- 264 0158 044A     		ldr	r2, .L6+8
- 265 015a 1360     		str	r3, [r2]
- 114:./src/task03.c **** 
- 115:./src/task03.c **** }...
- 266              		.loc 1 115 1
- 267 015c 00BF     		nop
- 268 015e 0837     		adds	r7, r7, #8
- 269              	.LCFI6:
- 270              		.cfi_def_cfa_offset 8
- 271 0160 BD46     		mov	sp, r7
- 272              	.LCFI7:
- 273              		.cfi_def_cfa_register 13
- 274              		@ sp needed
- 275 0162 80BD     		pop	{r7, pc}
- 276              	.L7:
- 277              		.align	2
- 278              	.L6:
- 279 0164 00000000 		.word	Task03_attributes
- 280 0168 00000000 		.word	task03_thread
- 281 016c 00000000 		.word	Task03Handle
- 282              		.cfi_endproc
- 283              	.LFE148:
- 285              		.section	.rodata
- 286 005d 000000   		.align	2
- 289              	__FUNCTION__.0:
- 290 0060 7461736B 		.ascii	"task03_thread\000"
- 290      30335F74 
- 290      68726561 
- 290      6400
- 291              		.text
- 292              	.Letext0:
- 293              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 294              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 295              		.file 4 "./inc/cmsis_os2.h"
- 296              		.file 5 "./inc/can.h"
- 297              		.file 6 "./inc/stm32f765xx.h"
- 298              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
- 299              		.file 8 "./inc/task03.h"
- 300              		.file 9 "<built-in>"
+  99:./src/task03.c **** }...
+ 241              		.loc 1 99 1 view .LVU63
+ 242 00ca 0DF5816D 		add	sp, sp, #1032
+ 243              	.LCFI4:
+ 244              		.cfi_def_cfa_offset 8
+ 245              		@ sp needed
+ 246 00ce 10BD     		pop	{r4, pc}
+ 247              	.L10:
+ 248              		.align	2
+ 249              	.L9:
+ 250 00d0 00000000 		.word	.LANCHOR0
+ 251 00d4 06000000 		.word	.LC0+6
+ 252 00d8 10000000 		.word	.LC1
+ 253 00dc 1C000000 		.word	.LC2
+ 254 00e0 2C000000 		.word	.LC3
+ 255 00e4 00000000 		.word	task03_thread
+ 256 00e8 00000000 		.word	.LANCHOR1
+ 257              		.cfi_endproc
+ 258              	.LFE148:
+ 260              		.global	Task03_attributes
+ 261              		.section	.rodata.str1.4
+ 262 0031 000000   		.align	2
+ 263              	.LC4:
+ 264 0034 5461736B 		.ascii	"Task03\000"
+ 264      303300
+ 265              		.global	Task03Handle
+ 266              		.section	.rodata
+ 267              		.align	2
+ 268              		.set	.LANCHOR0,. + 0
+ 271              	__FUNCTION__.0:
+ 272 0000 7461736B 		.ascii	"task03_init\000"
+ 272      30335F69 
+ 272      6E697400 
+ 275              	Task03_attributes:
+ 276 000c 34000000 		.word	.LC4
+ 277 0010 00000000 		.space	16
+ 277      00000000 
+ 277      00000000 
+ 277      00000000 
+ 278 0020 00140000 		.word	5120
+ 279 0024 09000000 		.word	9
+ 280 0028 00000000 		.space	8
+ 280      00000000 
+ 281              		.bss
+ 282              		.align	2
+ 283              		.set	.LANCHOR1,. + 0
+ 286              	Task03Handle:
+ 287 0000 00000000 		.space	4
+ 288              		.text
+ 289              	.Letext0:
+ 290              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 291              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 292              		.file 4 "./inc/cmsis_os2.h"
+ 293              		.file 5 "./inc/can.h"
+ 294              		.file 6 "./inc/stm32f765xx.h"
+ 295              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
+ 296              		.file 8 "./inc/task03.h"
+ 297              		.file 9 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 298              		.file 10 "./inc/can_user.h"
+ 299              		.file 11 "./inc/hardware.h"
+ 300              		.file 12 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 task03.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:17     .bss:00000000 LED_toggleCAN1
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:18     .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:20     .bss:00000001 LED_toggleCAN2
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:23     .bss:00000002 LED_toggleCAN3
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:26     .bss:00000003 LED_toggleCAN4
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:29     .bss:00000004 LED_toggleCAN5
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:32     .bss:00000005 LED_toggleCAN6
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:39     .bss:00000008 Task03Handle
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:49     .rodata:00000008 Task03_attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:43     .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:68     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:76     .text:00000000 task03_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:223    .text:0000012c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:289    .rodata:00000060 __FUNCTION__.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:232    .text:00000144 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:239    .text:00000144 task03_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccWPlq4y.s:279    .text:00000164 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:25     .text:00000000 task03_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:148    .text:00000078 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:156    .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:157    .rodata.str1.4:00000000 .LC0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:169    .text:00000088 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:177    .text:00000088 task03_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:250    .text:000000d0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:275    .rodata:0000000c Task03_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:286    .bss:00000000 Task03Handle
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:267    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:271    .rodata:00000000 __FUNCTION__.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccQZeDJe.s:282    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 CAN_UserInit
 HW_SetLED
 HAL_IWDG_Refresh
 CAN_Write
-sprintf
-printf
 osDelay
 hiwdg
+sprintf
+printf
 osThreadNew

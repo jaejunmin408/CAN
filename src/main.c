@@ -16,8 +16,6 @@
 #include "lwip/apps/httpd.h"
 #include "startDebug.h"
 #include "udp_total.h"
-#include "task01.h"
-#include "task02.h"
 #include "task03.h"
 #include "task04.h"
 
@@ -29,7 +27,6 @@ const char Ident[] __attribute__ ((used)) = { "PCAN-Router_Pro_FD"};
 static osTimerId_t  thread_milli_timer_id;
 
 IWDG_HandleTypeDef hiwdg;
-
 
 //! @brief      a timer based on a high prio thread
 static void thread_milli_timer ( void *argument)
@@ -43,20 +40,17 @@ static void  thread_main ( void  *argument)
 {
 	// start the timer (RTOS based high prio thread)
 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));	
-
+	
 	HW_ENA_ETH_PHY;
   	osDelay ( DLY_MS(75));	// for 100Base-TX
 
 	startDebug(NULL);
-	HAL_IWDG_Refresh(&hiwdg);
-
-	//task01_init(NULL);
-  	//task02_init(NULL);
+	printf("START FW\n");
+	
+	UDP_task(NULL);
 	task03_init(NULL);
 	task04_init(NULL);
-  	UDP_task(NULL);
-	HAL_IWDG_Refresh(&hiwdg);
-
+	
 	while (1)
 	{
 		osThreadSuspend(osThreadGetId());

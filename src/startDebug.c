@@ -27,9 +27,10 @@ void startDebug(void *argument)
 {
     LWIP_init(NULL);
     udp_total_connect();
-    udp_client_send("[FW]  START FW\n");    //시간 문제 해결하기
-    osDelay(1500);
     debugQueue = osMessageQueueNew(QUEUE_SIZE, ITEM_SIZE, NULL);
+
+    osDelay(DLY_MS(1000));
+    HAL_IWDG_Refresh(&hiwdg);
 }
 
 
@@ -43,11 +44,7 @@ int _write(int file, char *ptr, int len)
 {
     (void)file;
   
-  if (strstr(ptr, "[CHECK]" ) != NULL)
-  {
-     
-  }
-  else if(strstr(ptr, "[FW]" ) != NULL)
+  if(strstr(ptr, "[FW]" ) != NULL)
   {
     char queue_buf[(sizeof(char) * 512)] = {0};
     strncpy(queue_buf, ptr, len);

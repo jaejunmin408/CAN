@@ -83,7 +83,7 @@ obj/main.o: src/main.c \
  lwip-2.1.2/src/include/lwip/apps/httpd.h \
  lwip-2.1.2/src/include/lwip/apps/httpd_opts.h \
  lwip-2.1.2/src/include/lwip/prot/iana.h inc/startDebug.h inc/udp_total.h \
- inc/task01.h inc/task02.h inc/task03.h inc/task04.h
+ inc/task03.h inc/task04.h
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\lib\gcc\arm-none-eabi\10.2.1\include\stdint.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdint.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\machine\_default_types.h:
@@ -207,7 +207,5 @@ lwip-2.1.2/src/include/lwip/apps/httpd_opts.h:
 lwip-2.1.2/src/include/lwip/prot/iana.h:
 inc/startDebug.h:
 inc/udp_total.h:
-inc/task01.h:
-inc/task02.h:
 inc/task03.h:
 inc/task04.h:

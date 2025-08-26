@@ -326,12 +326,12 @@
  193 0078 FFF7FEFF 		bl	CAN_Initialize
  194              	.LVL16:
  122:./src/can_user.c **** 	
- 123:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 124:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS1, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 123:./src/can_user.c **** 	// receive all extended CAN-FD
+ 124:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS1, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  195              		.loc 1 124 2 is_stmt 1 view .LVU45
  196 007c 0022     		movs	r2, #0
- 197 007e 40F2FF73 		movw	r3, #2047
- 198 0082 1146     		mov	r1, r2
+ 197 007e 6FF06043 		mvn	r3, #-536870912
+ 198 0082 1221     		movs	r1, #18
  199 0084 1046     		mov	r0, r2
  200 0086 FFF7FEFF 		bl	CAN_FilterAdd
  201              	.LVL17:
@@ -346,13 +346,13 @@
  205 0090 FFF7FEFF 		bl	CAN_Initialize
  206              	.LVL18:
  130:./src/can_user.c **** 	
- 131:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 132:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS2, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 131:./src/can_user.c **** 	// receive all extended CAN-FD
+ 132:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS2, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  207              		.loc 1 132 2 view .LVU47
- 208 0094 0022     		movs	r2, #0
- 209 0096 40F2FF73 		movw	r3, #2047
- 210 009a 0120     		movs	r0, #1
- 211 009c 1146     		mov	r1, r2
+ 208 0094 6FF06043 		mvn	r3, #-536870912
+ 209 0098 0022     		movs	r2, #0
+ 210 009a 1221     		movs	r1, #18
+ 211 009c 0120     		movs	r0, #1
  212 009e FFF7FEFF 		bl	CAN_FilterAdd
  213              	.LVL19:
  133:./src/can_user.c **** 	
@@ -366,13 +366,13 @@
  217 00a8 FFF7FEFF 		bl	CAN_Initialize
  218              	.LVL20:
  138:./src/can_user.c **** 	
- 139:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 140:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS3, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 139:./src/can_user.c **** 	// receive all extended CAN-FD
+ 140:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS3, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  219              		.loc 1 140 2 view .LVU49
- 220 00ac 0022     		movs	r2, #0
- 221 00ae 40F2FF73 		movw	r3, #2047
- 222 00b2 0220     		movs	r0, #2
- 223 00b4 1146     		mov	r1, r2
+ 220 00ac 6FF06043 		mvn	r3, #-536870912
+ 221 00b0 0022     		movs	r2, #0
+ 222 00b2 1221     		movs	r1, #18
+ 223 00b4 0220     		movs	r0, #2
  224 00b6 FFF7FEFF 		bl	CAN_FilterAdd
  225              	.LVL21:
  141:./src/can_user.c **** 	
@@ -386,13 +386,13 @@
  229 00c0 FFF7FEFF 		bl	CAN_Initialize
  230              	.LVL22:
  146:./src/can_user.c **** 	
- 147:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 148:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 147:./src/can_user.c **** 	// receive all extended CAN-FD
+ 148:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  231              		.loc 1 148 2 view .LVU51
- 232 00c4 0022     		movs	r2, #0
- 233 00c6 40F2FF73 		movw	r3, #2047
- 234 00ca 0320     		movs	r0, #3
- 235 00cc 1146     		mov	r1, r2
+ 232 00c4 6FF06043 		mvn	r3, #-536870912
+ 233 00c8 0022     		movs	r2, #0
+ 234 00ca 1221     		movs	r1, #18
+ 235 00cc 0320     		movs	r0, #3
  236 00ce FFF7FEFF 		bl	CAN_FilterAdd
  237              	.LVL23:
  149:./src/can_user.c **** 	
@@ -406,13 +406,13 @@
  241 00d8 FFF7FEFF 		bl	CAN_Initialize
  242              	.LVL24:
  154:./src/can_user.c **** 	
- 155:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 156:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS5, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 155:./src/can_user.c **** 	// receive all extended CAN-FD
+ 156:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS5, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  243              		.loc 1 156 2 view .LVU53
- 244 00dc 0022     		movs	r2, #0
- 245 00de 40F2FF73 		movw	r3, #2047
- 246 00e2 0420     		movs	r0, #4
- 247 00e4 1146     		mov	r1, r2
+ 244 00dc 6FF06043 		mvn	r3, #-536870912
+ 245 00e0 0022     		movs	r2, #0
+ 246 00e2 1221     		movs	r1, #18
+ 247 00e4 0420     		movs	r0, #4
  248 00e6 FFF7FEFF 		bl	CAN_FilterAdd
  249              	.LVL25:
  157:./src/can_user.c **** 	
@@ -426,13 +426,13 @@
  253 00f0 FFF7FEFF 		bl	CAN_Initialize
  254              	.LVL26:
  162:./src/can_user.c **** 	
- 163:./src/can_user.c **** 	// receive all 11 bit standard CAN-IDs
- 164:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS6, CAN_MSGTYPE_STANDARD, 0x000, 0x7FF);
+ 163:./src/can_user.c **** 	// receive all extended CAN-FD
+ 164:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS6, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
  255              		.loc 1 164 2 view .LVU55
- 256 00f4 0022     		movs	r2, #0
- 257 00f6 40F2FF73 		movw	r3, #2047
- 258 00fa 0520     		movs	r0, #5
- 259 00fc 1146     		mov	r1, r2
+ 256 00f4 6FF06043 		mvn	r3, #-536870912
+ 257 00f8 0022     		movs	r2, #0
+ 258 00fa 1221     		movs	r1, #18
+ 259 00fc 0520     		movs	r0, #5
  165:./src/can_user.c **** }
  260              		.loc 1 165 1 is_stmt 0 view .LVU56
  261 00fe BDE81040 		pop	{r4, lr}
@@ -631,18 +631,18 @@
  458              		.file 5 "./inc/hardware.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 can_user.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:25     .text:00000000 CAN_UserRead
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:101    .text:00000044 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:105    .text:00000048 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:113    .text:00000048 CAN_UserInvokeBootloader
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:163    .text:00000068 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:168    .text:00000070 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:176    .text:00000070 CAN_UserInit
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:272    .text:00000108 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:277    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:281    .rodata:00000000 Timing_CANx
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccy3WvGj.s:368    .rodata:00000078 TimingForBootloader.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:25     .text:00000000 CAN_UserRead
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:101    .text:00000044 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:105    .text:00000048 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:113    .text:00000048 CAN_UserInvokeBootloader
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:163    .text:00000068 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:168    .text:00000070 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:176    .text:00000070 CAN_UserInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:272    .text:00000108 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:277    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:281    .rodata:00000000 Timing_CANx
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccye6PkB.s:368    .rodata:00000078 TimingForBootloader.0
 
 UNDEFINED SYMBOLS
 CAN_Read

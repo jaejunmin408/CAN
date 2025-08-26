@@ -10,6 +10,11 @@
 #include "cmsis_os2.h"
 #include "reset.h"
 #include "ARMCM7_DP.h"
+#include <stm32f7xx_hal_iwdg.h>
+#include "lwip/etharp.h"
+
+#include <lwip/sockets.h>
+
 
 /* Private typedef -----------------------------------------------------------*/
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
@@ -20,6 +25,8 @@
 
 /* Private pv -----------------------------------------------------------*/
 extern osMessageQueueId_t debugQueue;
+extern IWDG_HandleTypeDef hiwdg;
+extern struct netif gnetif;
 
 u8_t   data[100];
 struct udp_pcb *upcb;
@@ -33,7 +40,7 @@ osThreadId_t UDPHandle;                       //[user custom] RTOS memory settin
 const osThreadAttr_t UDP_attributes = {
   .name = "udp_send", 
   .stack_size = 2048, 
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityBelowNormal,
 };
 
 
@@ -94,25 +101,32 @@ void udp_echoclient_send(void)
 {
   struct pbuf *p;
   char receiveValue[512];
-
-
-  osMessageQueueGet(debugQueue, &receiveValue, NULL, osWaitForever);
-
-  sprintf((char*)data, "%s", receiveValue); 
+  osStatus_t status;
   
-  /* allocate pbuf from pool*/
-  p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
-  
-  if (p != NULL)
-  {
-    /* copy data to pbuf */
-    pbuf_take(p, (char*)data, strlen((char*)data));
+  status = osMessageQueueGet(debugQueue, &receiveValue, NULL, 0);
+
+
+  if( status == osOK){
+    sprintf((char*)data, "%s", receiveValue); 
     
-    /* send udp data */
-    udp_send(upcb, p); 
+    /* allocate pbuf from pool*/
+    p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
     
-    /* free pbuf */
-    pbuf_free(p);
+    if (p != NULL)
+    {
+      /* copy data to pbuf */
+      pbuf_take(p, (char*)data, strlen((char*)data));
+      
+      /* send udp data */
+      udp_send(upcb, p); 
+      
+      /* free pbuf */
+      pbuf_free(p);
+    }
+  }
+
+  else if( status == osErrorResource){
+    
   }
 }
 
@@ -123,6 +137,7 @@ void udp_client_send(const char *msg)
         printf("[CHECK] UDP PCB not initialized\n");
         return;
     }
+
 
     struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, strlen(msg), PBUF_POOL);
     if (!p) {
@@ -146,9 +161,14 @@ void UDP_thread(void *argument)
   for(;;)
   {
     udp_echoclient_send();
-    osDelay(1);                      //[user custom] : osDelay setting , now we send UDP message in 1ms
+    HAL_IWDG_Refresh(&hiwdg);
+    osDelay(DLY_MS(20));                      //[user custom] : osDelay setting , now we send UDP message in 1ms
   }
 }
+
+
+
+
 
 void UDP_task(void *argument)
 {
@@ -157,6 +177,26 @@ void UDP_task(void *argument)
     UDPHandle = osThreadNew(UDP_thread, NULL, &UDP_attributes);
     if(UDPHandle == NULL)
     {
-      printf("[CHECK] task creation failed!, not enough total heap memory\n");
+      
     }
 }
+
+// int sock;
+// struct sockaddr_in serv_adr;
+
+// void udp_star() {
+//     sock = socket(PF_INET, SOCK_DGRAM, 0);
+//     memset(&serv_adr, 0, sizeof(serv_adr));
+//     serv_adr.sin_family = AF_INET;
+//     serv_adr.sin_addr.s_addr = inet_addr("192.168.20.69");
+//     serv_adr.sin_port = htons(7010);
+// }
+
+// void udp_test(const char *msg) {
+//     sendto(sock, msg, strlen(msg)+1, 0, (struct sockaddr*)&serv_adr, sizeof(serv_adr));
+// }
+
+// void udp_clos() {
+//     close(sock);
+// }
+// 쓸데없이 추가한 .c파일 makefile에서 제거해주기

@@ -74,62 +74,115 @@
   40 0000 FEE7     		b	.L2
   41              		.cfi_endproc
   42              	.LFE104:
-  44              		.align	1
-  45 0002 00BF     		.p2align 2,,3
-  46              		.weak	osRtxErrorNotify
-  47              		.syntax unified
-  48              		.thumb
-  49              		.thumb_func
-  50              		.fpu fpv5-d16
-  52              	osRtxErrorNotify:
-  53              	.LFB105:
+  44              		.section	.rodata.str1.4,"aMS",%progbits,1
+  45              		.align	2
+  46              	.LC0:
+  47 0000 5B46575D 		.ascii	"[FW] stack ovf : %s\000"
+  47      20737461 
+  47      636B206F 
+  47      7666203A 
+  47      20257300 
+  48              		.text
+  49              		.align	1
+  50 0002 00BF     		.p2align 2,,3
+  51              		.weak	osRtxErrorNotify
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  55              		.fpu fpv5-d16
+  57              	osRtxErrorNotify:
+  58              	.LVL1:
+  59              	.LFB105:
   36:./src/RTX_Config.c **** }
   37:./src/RTX_Config.c ****  
   38:./src/RTX_Config.c **** // OS Error Callback function
   39:./src/RTX_Config.c **** __WEAK uint32_t osRtxErrorNotify (uint32_t code, void *object_id) {
-  54              		.loc 1 39 67 view -0
-  55              		.cfi_startproc
-  56              		@ args = 0, pretend = 0, frame = 0
-  57              		@ frame_needed = 0, uses_anonymous_args = 0
-  58              		@ link register save eliminated.
-  59              	.LVL1:
-  60              	.L5:
-  40:./src/RTX_Config.c ****   (void)object_id;
-  41:./src/RTX_Config.c **** 
-  42:./src/RTX_Config.c ****   switch (code) {
-  43:./src/RTX_Config.c ****     case osRtxErrorStackUnderflow:
-  44:./src/RTX_Config.c ****       // Stack overflow detected for thread (thread_id=object_id)
-  45:./src/RTX_Config.c ****       break;
-  46:./src/RTX_Config.c ****     case osRtxErrorISRQueueOverflow:
-  47:./src/RTX_Config.c ****       // ISR Queue overflow detected when inserting object (object_id)
-  48:./src/RTX_Config.c ****       break;
-  49:./src/RTX_Config.c ****     case osRtxErrorTimerQueueOverflow:
-  50:./src/RTX_Config.c ****       // User Timer Callback Queue overflow detected for timer (timer_id=object_id)
-  51:./src/RTX_Config.c ****       break;
-  52:./src/RTX_Config.c ****     case osRtxErrorClibSpace:
-  53:./src/RTX_Config.c ****       // Standard C/C++ library libspace not available: increase OS_THREAD_LIBSPACE_NUM
-  54:./src/RTX_Config.c ****       break;
-  55:./src/RTX_Config.c ****     case osRtxErrorClibMutex:
-  56:./src/RTX_Config.c ****       // Standard C/C++ library mutex initialization failed
-  57:./src/RTX_Config.c ****       break;
-  58:./src/RTX_Config.c ****     default:
-  59:./src/RTX_Config.c ****       // Reserved
-  60:./src/RTX_Config.c ****       break;
-  61:./src/RTX_Config.c ****   }
-  62:./src/RTX_Config.c ****   for (;;) {}
-  61              		.loc 1 62 3 discriminator 1 view .LVU6
-  62              		.loc 1 62 13 discriminator 1 view .LVU7
-  63              		.loc 1 62 9 discriminator 1 view .LVU8
-  64 0004 FEE7     		b	.L5
-  65              		.cfi_endproc
-  66              	.LFE105:
-  68              	.Letext0:
-  69              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
-  70              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+  60              		.loc 1 39 67 view -0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  40:./src/RTX_Config.c ****   switch (code) {
+  64              		.loc 1 40 3 view .LVU6
+  65 0004 0128     		cmp	r0, #1
+  66 0006 00D0     		beq	.L12
+  67              	.L9:
+  41:./src/RTX_Config.c ****     case osRtxErrorStackUnderflow:
+  42:./src/RTX_Config.c ****       // Stack overflow detected for thread (thread_id=object_id)
+  43:./src/RTX_Config.c ****       printf("[FW] stack ovf : %s", object_id);
+  44:./src/RTX_Config.c ****       break;
+  45:./src/RTX_Config.c ****     case osRtxErrorISRQueueOverflow:
+  46:./src/RTX_Config.c ****       // ISR Queue overflow detected when inserting object (object_id)
+  47:./src/RTX_Config.c ****       break;
+  48:./src/RTX_Config.c ****     case osRtxErrorTimerQueueOverflow:
+  49:./src/RTX_Config.c ****       // User Timer Callback Queue overflow detected for timer (timer_id=object_id)
+  50:./src/RTX_Config.c ****       break;
+  51:./src/RTX_Config.c ****     case osRtxErrorClibSpace:
+  52:./src/RTX_Config.c ****       // Standard C/C++ library libspace not available: increase OS_THREAD_LIBSPACE_NUM
+  53:./src/RTX_Config.c ****       break;
+  54:./src/RTX_Config.c ****     case osRtxErrorClibMutex:
+  55:./src/RTX_Config.c ****       // Standard C/C++ library mutex initialization failed
+  56:./src/RTX_Config.c ****       break;
+  57:./src/RTX_Config.c ****     default:
+  58:./src/RTX_Config.c ****       // Reserved
+  59:./src/RTX_Config.c ****       break;
+  60:./src/RTX_Config.c ****   }
+  61:./src/RTX_Config.c ****   for (;;) {}
+  68              		.loc 1 61 3 view .LVU7
+  69              		.loc 1 61 13 view .LVU8
+  70              		.loc 1 61 9 view .LVU9
+  71              		.loc 1 61 3 view .LVU10
+  72              		.loc 1 61 13 view .LVU11
+  73              		.loc 1 61 9 view .LVU12
+  74 0008 FEE7     		b	.L9
+  75              	.L12:
+  76              	.LBB2:
+  43:./src/RTX_Config.c ****       break;
+  77              		.loc 1 43 7 view .LVU13
+  78 000a 0248     		ldr	r0, .L13
+  79              	.LVL2:
+  43:./src/RTX_Config.c ****       break;
+  80              		.loc 1 43 7 is_stmt 0 view .LVU14
+  81              	.LBE2:
+  39:./src/RTX_Config.c ****   switch (code) {
+  82              		.loc 1 39 67 view .LVU15
+  83 000c 08B5     		push	{r3, lr}
+  84              	.LCFI0:
+  85              		.cfi_def_cfa_offset 8
+  86              		.cfi_offset 3, -8
+  87              		.cfi_offset 14, -4
+  88              	.LBB3:
+  43:./src/RTX_Config.c ****       break;
+  89              		.loc 1 43 7 view .LVU16
+  90 000e FFF7FEFF 		bl	printf
+  91              	.LVL3:
+  44:./src/RTX_Config.c ****     case osRtxErrorISRQueueOverflow:
+  92              		.loc 1 44 7 is_stmt 1 view .LVU17
+  93              	.L6:
+  94              	.LBE3:
+  95              		.loc 1 61 3 discriminator 1 view .LVU18
+  96              		.loc 1 61 13 discriminator 1 view .LVU19
+  97              		.loc 1 61 9 discriminator 1 view .LVU20
+  98              		.loc 1 61 3 discriminator 1 view .LVU21
+  99              		.loc 1 61 13 discriminator 1 view .LVU22
+ 100              		.loc 1 61 9 discriminator 1 view .LVU23
+ 101 0012 FEE7     		b	.L6
+ 102              	.L14:
+ 103              		.align	2
+ 104              	.L13:
+ 105 0014 00000000 		.word	.LC0
+ 106              		.cfi_endproc
+ 107              	.LFE105:
+ 109              	.Letext0:
+ 110              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 111              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 112              		.file 4 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 RTX_Config.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxbWPlq.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxbWPlq.s:25     .text:00000000 osRtxIdleThread
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxbWPlq.s:52     .text:00000004 osRtxErrorNotify
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1Pcp5k.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1Pcp5k.s:25     .text:00000000 osRtxIdleThread
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1Pcp5k.s:45     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1Pcp5k.s:57     .text:00000004 osRtxErrorNotify
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc1Pcp5k.s:105    .text:00000014 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+printf
