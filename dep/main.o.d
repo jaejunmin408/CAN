@@ -32,7 +32,7 @@ obj/main.o: src/main.c \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
  inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h \
  inc/stm32f7xx_hal_mmc.h inc/stm32f765xx.h inc/can.h inc/can_user.h \
- inc/hardware.h inc/cmsis_os2.h inc/main.h \
+ inc/can.h inc/hardware.h inc/cmsis_os2.h inc/main.h \
  lwip-2.1.2/src/include/lwip/tcpip.h lwip-2.1.2/src/include/lwip/opt.h \
  inc/lwipopts.h inc/main.h lwip-2.1.2/src/include/lwip/debug.h \
  lwip-2.1.2/src/include/lwip/arch.h inc/arch/cc.h inc/cpu.h \
@@ -136,6 +136,7 @@ inc/stm32f7xx_hal_mmc.h:
 inc/stm32f765xx.h:
 inc/can.h:
 inc/can_user.h:
+inc/can.h:
 inc/hardware.h:
 inc/cmsis_os2.h:
 inc/main.h:

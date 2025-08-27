@@ -14,10 +14,13 @@
 #include "lwip/etharp.h"
 
 #include <lwip/sockets.h>
+#include <can.h>
+#include <can_user.h>
 
 
 /* Private typedef -----------------------------------------------------------*/
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
+#define UDP_CAN_PORT       5010
 #define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
 #define UDP_SYSTEM_PORT    7010
 
@@ -25,6 +28,7 @@
 
 /* Private pv -----------------------------------------------------------*/
 extern osMessageQueueId_t debugQueue;
+extern osMessageQueueId_t canmessageQueue;
 extern IWDG_HandleTypeDef hiwdg;
 extern struct netif gnetif;
 
@@ -32,6 +36,7 @@ u8_t   data[100];
 struct udp_pcb *upcb;
 struct udp_pcb *upcb_sys;
 struct udp_pcb *udp_server_pcb;
+struct udp_pcb *udp_can_pcb;
 
 const char *JUMP_BOOT_STR = "SOFT RESET SSSAAA";
 const char *JUMP_FW_STR = "RESET SSSAAA";
@@ -88,6 +93,10 @@ void udp_total_connect(void)
   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
 
+  udp_can_pcb = udp_new();
+  IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+  err= udp_connect(udp_can_pcb, &DestIPaddr, UDP_CAN_PORT);
+
   udp_server_pcb = udp_new();
   if (!udp_server_pcb)
   {
@@ -95,6 +104,57 @@ void udp_total_connect(void)
   }
   udp_bind(udp_server_pcb, IP_ADDR_ANY, UDP_SERVER_PORT); // 수신 포트
   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
+}
+
+void udp_can_send(void)
+{
+  struct pbuf *p;
+  osStatus_t status;
+  CANRxMsgDMA_t recvMsg;   // 큐에서 꺼낼 CAN 메시지
+  char dataBuf[256];
+  int len = 0;
+  
+  status = osMessageQueueGet(canmessageQueue, &recvMsg, NULL, 0);
+
+  uint32_t can_id = recvMsg.id;
+  uint8_t dlc = recvMsg.dlc;
+  uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
+
+  if( status == osOK){
+    // 1) TIME,CANID,
+    len = snprintf(dataBuf, sizeof(dataBuf),
+                   "%llu,%08X,",
+                   (unsigned long long)can_time,
+                   can_id);
+
+    // 2) DATA (FD: 최대 64바이트)
+    for (int i = 0; i < dlc; i++) {
+        len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+    }
+
+    // 3) 줄바꿈
+    len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "\n");
+
+
+    /* allocate pbuf from pool*/
+    p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
+    
+    if (p != NULL)
+    {
+      /* copy data to pbuf */
+      pbuf_take(p, dataBuf, len);
+      
+      /* send udp data */
+      udp_send(udp_can_pcb, p); 
+      
+      /* free pbuf */
+      pbuf_free(p);
+    }
+  }
+
+  else if( status == osErrorResource){
+    
+  }
 }
 
 void udp_echoclient_send(void)
@@ -161,6 +221,7 @@ void UDP_thread(void *argument)
   for(;;)
   {
     udp_echoclient_send();
+    udp_can_send();
     HAL_IWDG_Refresh(&hiwdg);
     osDelay(DLY_MS(20));                      //[user custom] : osDelay setting , now we send UDP message in 1ms
   }

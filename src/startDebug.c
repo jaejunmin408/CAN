@@ -11,11 +11,15 @@
 #include "cmsis_os2.h"
 #include "lwip/tcpip.h"
 #include "stm32f765xx.h"
+#include <can_user.h>
 
 
 #define INTERFACE_THREAD_STACK_SIZE ( 1024 )
 
 osMessageQueueId_t debugQueue;      //for Debug Queue
+osMessageQueueId_t canmessageQueue;
+
+
 osThreadAttr_t attributes;
 extern IWDG_HandleTypeDef hiwdg;
 
@@ -28,6 +32,7 @@ void startDebug(void *argument)
     LWIP_init(NULL);
     udp_total_connect();
     debugQueue = osMessageQueueNew(QUEUE_SIZE, ITEM_SIZE, NULL);
+    canmessageQueue = osMessageQueueNew(10, sizeof(CANRxMsgDMA_t), NULL);
 
     osDelay(DLY_MS(1000));
     HAL_IWDG_Refresh(&hiwdg);

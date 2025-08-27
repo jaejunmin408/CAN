@@ -77,7 +77,7 @@ obj/udp_total.o: src/udp_total.c inc/main.h \
  lwip-2.1.2/src/include/lwip/prot/ieee.h \
  lwip-2.1.2/src/include/lwip/prot/etharp.h \
  lwip-2.1.2/src/include/lwip/sockets.h lwip-2.1.2/src/include/lwip/inet.h \
- lwip-2.1.2/src/include/lwip/errno.h
+ lwip-2.1.2/src/include/lwip/errno.h inc/can.h inc/can_user.h inc/can.h
 inc/main.h:
 lwip-2.1.2/src/include/lwip/pbuf.h:
 lwip-2.1.2/src/include/lwip/opt.h:
@@ -183,3 +183,6 @@ lwip-2.1.2/src/include/lwip/prot/etharp.h:
 lwip-2.1.2/src/include/lwip/sockets.h:
 lwip-2.1.2/src/include/lwip/inet.h:
 lwip-2.1.2/src/include/lwip/errno.h:
+inc/can.h:
+inc/can_user.h:
+inc/can.h:

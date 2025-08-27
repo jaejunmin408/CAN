@@ -7,11 +7,12 @@ obj/task04.o: src/task04.c inc/cmsis_os2.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\_intsup.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\sys\_stdint.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\lib\gcc\arm-none-eabi\10.2.1\include\stddef.h \
- inc/main.h inc/startDebug.h inc/can.h inc/can_user.h inc/hardware.h \
- inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_def.h inc/ARMCM7_DP.h \
- inc/core_cm7.h inc/cmsis_version.h inc/cmsis_compiler.h inc/cmsis_gcc.h \
- inc/mpu_armv7.h inc/system_stm32f7xx.h inc/stm32f7xx.h inc/stm32f765xx.h \
- inc/Legacy/stm32_hal_legacy.h inc/udp_total.h inc/task04.h \
+ inc/main.h inc/startDebug.h inc/can.h inc/can_user.h inc/can.h \
+ inc/hardware.h inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_def.h \
+ inc/ARMCM7_DP.h inc/core_cm7.h inc/cmsis_version.h inc/cmsis_compiler.h \
+ inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_stm32f7xx.h inc/stm32f7xx.h \
+ inc/stm32f765xx.h inc/Legacy/stm32_hal_legacy.h inc/udp_total.h \
+ inc/task04.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdio.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\_ansi.h \
  c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\newlib.h \
@@ -49,6 +50,7 @@ inc/main.h:
 inc/startDebug.h:
 inc/can.h:
 inc/can_user.h:
+inc/can.h:
 inc/hardware.h:
 inc/stm32f7xx_hal_iwdg.h:
 inc/stm32f7xx_hal_def.h:

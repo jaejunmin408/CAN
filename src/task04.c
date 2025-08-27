@@ -11,6 +11,7 @@
 
 
 extern osMessageQueueId_t debugQueue;
+extern osMessageQueueId_t canmessageQueue;
 extern IWDG_HandleTypeDef hiwdg;
 
 
@@ -106,17 +107,22 @@ void task04_thread(void *argument)
 						HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
 					}
 
-					DEBUG("CAN3 \n");
-					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
-				
-				
-					snprintf(buf, sizeof(buf), "");
+					osMessageQueuePut(canmessageQueue, &RxMsg, 0, 0);
 
-					for (int i = 0; i < RxMsg.dlc; i++)
-					{
-						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
-					}
-					DEBUG("%s\n", buf);
+
+
+					 
+					// DEBUG("CAN3 \n");
+					// DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+				
+				
+					// snprintf(buf, sizeof(buf), "");
+
+					// for (int i = 0; i < RxMsg.dlc; i++)
+					// {
+					// 	snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+					// }
+					// DEBUG("%s\n", buf);
 
 				break;
 

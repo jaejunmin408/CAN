@@ -1,3 +1,4 @@
+#include "can.h"
 
 #ifndef  _CAN_USER_H_
 #define  _CAN_USER_H_

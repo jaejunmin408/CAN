@@ -81,7 +81,7 @@ obj/startDebug.o: src/startDebug.c inc/startDebug.h \
  inc/stm32f7xx_hal_cortex.h inc/stm32f7xx_hal_eth.h \
  inc/stm32f7xx_hal_flash.h inc/stm32f7xx_hal_flash_ex.h \
  inc/stm32f7xx_hal_iwdg.h inc/stm32f7xx_hal_sd.h inc/stm32f7xx_ll_sdmmc.h \
- inc/stm32f7xx_hal_mmc.h inc/stm32f765xx.h
+ inc/stm32f7xx_hal_mmc.h inc/stm32f765xx.h inc/can_user.h inc/can.h
 inc/startDebug.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\stdio.h:
 c\:\users\jaejunmin\downloads\peak-devpack\compiler\10\ 2020-q4-major\arm-none-eabi\include\_ansi.h:
@@ -201,3 +201,5 @@ inc/stm32f7xx_hal_sd.h:
 inc/stm32f7xx_ll_sdmmc.h:
 inc/stm32f7xx_hal_mmc.h:
 inc/stm32f765xx.h:
+inc/can_user.h:
+inc/can.h:

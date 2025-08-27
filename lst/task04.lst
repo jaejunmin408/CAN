@@ -53,40 +53,36 @@
   40      200A00
   41 0057 00       		.align	2
   42              	.LC8:
-  43 0058 43414E33 		.ascii	"CAN3 \012\000"
+  43 0058 43414E34 		.ascii	"CAN4 \012\000"
   43      200A00
   44 005f 00       		.align	2
   45              	.LC9:
-  46 0060 43414E34 		.ascii	"CAN4 \012\000"
+  46 0060 43414E35 		.ascii	"CAN5 \012\000"
   46      200A00
   47 0067 00       		.align	2
   48              	.LC10:
-  49 0068 43414E35 		.ascii	"CAN5 \012\000"
+  49 0068 43414E36 		.ascii	"CAN6 \012\000"
   49      200A00
   50 006f 00       		.align	2
   51              	.LC11:
-  52 0070 43414E36 		.ascii	"CAN6 \012\000"
-  52      200A00
-  53 0077 00       		.align	2
-  54              	.LC12:
-  55 0078 554E4B4E 		.ascii	"UNKNOWN CAN: hBus=%d, ID=0x%03X\012\000"
-  55      4F574E20 
-  55      43414E3A 
-  55      20684275 
-  55      733D2564 
-  56              		.text
-  57              		.align	1
-  58              		.p2align 2,,3
-  59              		.global	task04_thread
-  60              		.arch armv7e-m
-  61              		.syntax unified
-  62              		.thumb
-  63              		.thumb_func
-  64              		.fpu fpv5-d16
-  66              	task04_thread:
-  67              	.LVL0:
-  68              	.LFB147:
-  69              		.file 1 "./src/task04.c"
+  52 0070 554E4B4E 		.ascii	"UNKNOWN CAN: hBus=%d, ID=0x%03X\012\000"
+  52      4F574E20 
+  52      43414E3A 
+  52      20684275 
+  52      733D2564 
+  53              		.text
+  54              		.align	1
+  55              		.p2align 2,,3
+  56              		.global	task04_thread
+  57              		.arch armv7e-m
+  58              		.syntax unified
+  59              		.thumb
+  60              		.thumb_func
+  61              		.fpu fpv5-d16
+  63              	task04_thread:
+  64              	.LVL0:
+  65              	.LFB147:
+  66              		.file 1 "./src/task04.c"
    1:./src/task04.c **** #include "cmsis_os2.h"
    2:./src/task04.c **** #include "main.h"
    3:./src/task04.c **** #include "startDebug.h"
@@ -100,1771 +96,1626 @@
   11:./src/task04.c **** 
   12:./src/task04.c **** 
   13:./src/task04.c **** extern osMessageQueueId_t debugQueue;
-  14:./src/task04.c **** extern IWDG_HandleTypeDef hiwdg;
-  15:./src/task04.c **** 
+  14:./src/task04.c **** extern osMessageQueueId_t canmessageQueue;
+  15:./src/task04.c **** extern IWDG_HandleTypeDef hiwdg;
   16:./src/task04.c **** 
-  17:./src/task04.c **** osThreadId_t Task04Handle;
-  18:./src/task04.c **** const osThreadAttr_t Task04_attributes = {
-  19:./src/task04.c ****   .name = "Task04",
-  20:./src/task04.c ****   .stack_size = 1024 * 5,
-  21:./src/task04.c ****   .priority = (osPriority_t) osPriorityLow1,
-  22:./src/task04.c **** };
-  23:./src/task04.c **** 
+  17:./src/task04.c **** 
+  18:./src/task04.c **** osThreadId_t Task04Handle;
+  19:./src/task04.c **** const osThreadAttr_t Task04_attributes = {
+  20:./src/task04.c ****   .name = "Task04",
+  21:./src/task04.c ****   .stack_size = 1024 * 5,
+  22:./src/task04.c ****   .priority = (osPriority_t) osPriorityLow1,
+  23:./src/task04.c **** };
   24:./src/task04.c **** 
-  25:./src/task04.c **** void task04_thread(void *argument)
-  26:./src/task04.c **** {
-  70              		.loc 1 26 1 view -0
-  71              		.cfi_startproc
-  72              		@ args = 0, pretend = 0, frame = 1152
-  73              		@ frame_needed = 0, uses_anonymous_args = 0
-  74              		.loc 1 26 1 is_stmt 0 view .LVU1
-  75 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
-  76              	.LCFI0:
-  77              		.cfi_def_cfa_offset 36
-  78              		.cfi_offset 4, -36
-  79              		.cfi_offset 5, -32
-  80              		.cfi_offset 6, -28
-  81              		.cfi_offset 7, -24
-  82              		.cfi_offset 8, -20
-  83              		.cfi_offset 9, -16
-  84              		.cfi_offset 10, -12
-  85              		.cfi_offset 11, -8
-  86              		.cfi_offset 14, -4
-  87 0004 8F4C     		ldr	r4, .L64
-  88 0006 ADF28C4D 		subw	sp, sp, #1164
-  89              	.LCFI1:
-  90              		.cfi_def_cfa_offset 1200
-  91 000a 8F4F     		ldr	r7, .L64+4
-  92 000c DFF85C92 		ldr	r9, .L64+40
-  93              	.LBB2:
-  27:./src/task04.c ****   (void)argument;
-  28:./src/task04.c **** 
-  29:./src/task04.c ****   for(;;)
-  30:./src/task04.c ****   {
-  31:./src/task04.c ****     HAL_IWDG_Refresh(&hiwdg);
-  94              		.loc 1 31 5 view .LVU2
-  95 0010 DFF85C82 		ldr	r8, .L64+44
-  96              	.LBB3:
-  97              	.LBB4:
-  32:./src/task04.c **** 
-  33:./src/task04.c ****     static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
-  34:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
-  35:./src/task04.c **** 		{
-  36:./src/task04.c **** 			switch ( RxMsg.hBus)
-  37:./src/task04.c **** 			{
-  38:./src/task04.c **** 				char buf[128]; 
-  39:./src/task04.c **** 				case CAN_BUS1:
-  40:./src/task04.c **** 					
-  41:./src/task04.c **** 					LED_toggleCAN1 ^= 1;
-  42:./src/task04.c **** 
-  43:./src/task04.c **** 					if ( LED_toggleCAN1)
-  44:./src/task04.c **** 					{
-  45:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_ORANGE);
-  46:./src/task04.c **** 					}
-  47:./src/task04.c **** 					
-  48:./src/task04.c **** 					else
-  49:./src/task04.c **** 					{
-  50:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
-  51:./src/task04.c **** 					}
-  52:./src/task04.c **** 
-  53:./src/task04.c **** 					DEBUG("CAN1 \n");
-  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
-  55:./src/task04.c **** 				
-  56:./src/task04.c **** 					
-  57:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
-  58:./src/task04.c **** 
-  59:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
-  60:./src/task04.c **** 					{
-  61:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
-  62:./src/task04.c **** 					}
-  63:./src/task04.c **** 					DEBUG("%s\n", buf);
-  64:./src/task04.c **** 
-  65:./src/task04.c **** 				break;
-  66:./src/task04.c **** 
-  67:./src/task04.c **** 				case CAN_BUS2:
-  68:./src/task04.c **** 					
-  69:./src/task04.c **** 					LED_toggleCAN2 ^= 1;
-  70:./src/task04.c **** 
-  71:./src/task04.c **** 					if ( LED_toggleCAN2)
-  72:./src/task04.c **** 					{
-  73:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
-  74:./src/task04.c **** 					}
-  75:./src/task04.c **** 					
-  76:./src/task04.c **** 					else
-  77:./src/task04.c **** 					{
-  78:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
-  79:./src/task04.c **** 					}
-  80:./src/task04.c **** 
-  81:./src/task04.c **** 					DEBUG("CAN2 \n");
-  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
-  83:./src/task04.c **** 				
+  25:./src/task04.c **** 
+  26:./src/task04.c **** void task04_thread(void *argument)
+  27:./src/task04.c **** {
+  67              		.loc 1 27 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 1152
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		.loc 1 27 1 is_stmt 0 view .LVU1
+  72 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  73              	.LCFI0:
+  74              		.cfi_def_cfa_offset 36
+  75              		.cfi_offset 4, -36
+  76              		.cfi_offset 5, -32
+  77              		.cfi_offset 6, -28
+  78              		.cfi_offset 7, -24
+  79              		.cfi_offset 8, -20
+  80              		.cfi_offset 9, -16
+  81              		.cfi_offset 10, -12
+  82              		.cfi_offset 11, -8
+  83              		.cfi_offset 14, -4
+  84 0004 9A4C     		ldr	r4, .L58
+  85 0006 ADF28C4D 		subw	sp, sp, #1164
+  86              	.LCFI1:
+  87              		.cfi_def_cfa_offset 1200
+  88 000a 9A4F     		ldr	r7, .L58+4
+  89 000c DFF88C92 		ldr	r9, .L58+44
+  90              	.LBB2:
+  28:./src/task04.c ****   (void)argument;
+  29:./src/task04.c **** 
+  30:./src/task04.c ****   for(;;)
+  31:./src/task04.c ****   {
+  32:./src/task04.c ****     HAL_IWDG_Refresh(&hiwdg);
+  91              		.loc 1 32 5 view .LVU2
+  92 0010 DFF88C82 		ldr	r8, .L58+48
+  93              	.LBB3:
+  94              	.LBB4:
+  33:./src/task04.c **** 
+  34:./src/task04.c ****     static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
+  35:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+  36:./src/task04.c **** 		{
+  37:./src/task04.c **** 			switch ( RxMsg.hBus)
+  38:./src/task04.c **** 			{
+  39:./src/task04.c **** 				char buf[128]; 
+  40:./src/task04.c **** 				case CAN_BUS1:
+  41:./src/task04.c **** 					
+  42:./src/task04.c **** 					LED_toggleCAN1 ^= 1;
+  43:./src/task04.c **** 
+  44:./src/task04.c **** 					if ( LED_toggleCAN1)
+  45:./src/task04.c **** 					{
+  46:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_ORANGE);
+  47:./src/task04.c **** 					}
+  48:./src/task04.c **** 					
+  49:./src/task04.c **** 					else
+  50:./src/task04.c **** 					{
+  51:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN1, HW_LED_GREEN);
+  52:./src/task04.c **** 					}
+  53:./src/task04.c **** 
+  54:./src/task04.c **** 					DEBUG("CAN1 \n");
+  55:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+  56:./src/task04.c **** 				
+  57:./src/task04.c **** 					
+  58:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
+  59:./src/task04.c **** 
+  60:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+  61:./src/task04.c **** 					{
+  62:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+  63:./src/task04.c **** 					}
+  64:./src/task04.c **** 					DEBUG("%s\n", buf);
+  65:./src/task04.c **** 
+  66:./src/task04.c **** 				break;
+  67:./src/task04.c **** 
+  68:./src/task04.c **** 				case CAN_BUS2:
+  69:./src/task04.c **** 					
+  70:./src/task04.c **** 					LED_toggleCAN2 ^= 1;
+  71:./src/task04.c **** 
+  72:./src/task04.c **** 					if ( LED_toggleCAN2)
+  73:./src/task04.c **** 					{
+  74:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_ORANGE);
+  75:./src/task04.c **** 					}
+  76:./src/task04.c **** 					
+  77:./src/task04.c **** 					else
+  78:./src/task04.c **** 					{
+  79:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
+  80:./src/task04.c **** 					}
+  81:./src/task04.c **** 
+  82:./src/task04.c **** 					DEBUG("CAN2 \n");
+  83:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
   84:./src/task04.c **** 				
-  85:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
-  86:./src/task04.c **** 
-  87:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
-  88:./src/task04.c **** 					{
-  89:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
-  90:./src/task04.c **** 					}
-  91:./src/task04.c **** 					DEBUG("%s\n", buf);
-  92:./src/task04.c **** 
-  93:./src/task04.c **** 				break;
-  94:./src/task04.c **** 
-  95:./src/task04.c **** 				case CAN_BUS3:
-  96:./src/task04.c **** 					
-  97:./src/task04.c **** 					LED_toggleCAN3 ^= 1;
-  98:./src/task04.c **** 
-  99:./src/task04.c **** 					if ( LED_toggleCAN3)
- 100:./src/task04.c **** 					{
- 101:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
- 102:./src/task04.c **** 					}
- 103:./src/task04.c **** 					
- 104:./src/task04.c **** 					else
- 105:./src/task04.c **** 					{
- 106:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
- 107:./src/task04.c **** 					}
- 108:./src/task04.c **** 
- 109:./src/task04.c **** 					DEBUG("CAN3 \n");
- 110:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 111:./src/task04.c **** 				
- 112:./src/task04.c **** 				
- 113:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
- 114:./src/task04.c **** 
- 115:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
- 116:./src/task04.c **** 					{
- 117:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
- 118:./src/task04.c **** 					}
- 119:./src/task04.c **** 					DEBUG("%s\n", buf);
- 120:./src/task04.c **** 
- 121:./src/task04.c **** 				break;
- 122:./src/task04.c **** 
+  85:./src/task04.c **** 				
+  86:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
+  87:./src/task04.c **** 
+  88:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+  89:./src/task04.c **** 					{
+  90:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+  91:./src/task04.c **** 					}
+  92:./src/task04.c **** 					DEBUG("%s\n", buf);
+  93:./src/task04.c **** 
+  94:./src/task04.c **** 				break;
+  95:./src/task04.c **** 
+  96:./src/task04.c **** 				case CAN_BUS3:
+  97:./src/task04.c **** 					
+  98:./src/task04.c **** 					LED_toggleCAN3 ^= 1;
+  99:./src/task04.c **** 
+ 100:./src/task04.c **** 					if ( LED_toggleCAN3)
+ 101:./src/task04.c **** 					{
+ 102:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_ORANGE);
+ 103:./src/task04.c **** 					}
+ 104:./src/task04.c **** 					
+ 105:./src/task04.c **** 					else
+ 106:./src/task04.c **** 					{
+ 107:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN3, HW_LED_GREEN);
+ 108:./src/task04.c **** 					}
+ 109:./src/task04.c **** 
+ 110:./src/task04.c **** 					osMessageQueuePut(canmessageQueue, &RxMsg, 0, 0);
+ 111:./src/task04.c **** 
+ 112:./src/task04.c **** 					// DEBUG("CAN3 \n");
+ 113:./src/task04.c **** 					// DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 114:./src/task04.c **** 				
+ 115:./src/task04.c **** 				
+ 116:./src/task04.c **** 					// snprintf(buf, sizeof(buf), "");
+ 117:./src/task04.c **** 
+ 118:./src/task04.c **** 					// for (int i = 0; i < RxMsg.dlc; i++)
+ 119:./src/task04.c **** 					// {
+ 120:./src/task04.c **** 					// 	snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+ 121:./src/task04.c **** 					// }
+ 122:./src/task04.c **** 					// DEBUG("%s\n", buf);
  123:./src/task04.c **** 
- 124:./src/task04.c **** 				case CAN_BUS4:
- 125:./src/task04.c **** 					
- 126:./src/task04.c **** 					LED_toggleCAN4 ^= 1;
- 127:./src/task04.c **** 
- 128:./src/task04.c **** 					if ( LED_toggleCAN4)
- 129:./src/task04.c **** 					{
- 130:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
- 131:./src/task04.c **** 					}
- 132:./src/task04.c **** 					
- 133:./src/task04.c **** 					else
- 134:./src/task04.c **** 					{
- 135:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
- 136:./src/task04.c **** 					}
- 137:./src/task04.c **** 
- 138:./src/task04.c **** 					DEBUG("CAN4 \n");
- 139:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 140:./src/task04.c **** 				
- 141:./src/task04.c **** 		
- 142:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
- 143:./src/task04.c **** 
- 144:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
- 145:./src/task04.c **** 					{
- 146:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
- 147:./src/task04.c **** 					}
- 148:./src/task04.c **** 					DEBUG("%s\n", buf);
- 149:./src/task04.c **** 
- 150:./src/task04.c **** 				break;
- 151:./src/task04.c **** 
+ 124:./src/task04.c **** 				break;
+ 125:./src/task04.c **** 
+ 126:./src/task04.c **** 
+ 127:./src/task04.c **** 				case CAN_BUS4:
+ 128:./src/task04.c **** 					
+ 129:./src/task04.c **** 					LED_toggleCAN4 ^= 1;
+ 130:./src/task04.c **** 
+ 131:./src/task04.c **** 					if ( LED_toggleCAN4)
+ 132:./src/task04.c **** 					{
+ 133:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
+ 134:./src/task04.c **** 					}
+ 135:./src/task04.c **** 					
+ 136:./src/task04.c **** 					else
+ 137:./src/task04.c **** 					{
+ 138:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
+ 139:./src/task04.c **** 					}
+ 140:./src/task04.c **** 
+ 141:./src/task04.c **** 					DEBUG("CAN4 \n");
+ 142:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 143:./src/task04.c **** 				
+ 144:./src/task04.c **** 		
+ 145:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
+ 146:./src/task04.c **** 
+ 147:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+ 148:./src/task04.c **** 					{
+ 149:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+ 150:./src/task04.c **** 					}
+ 151:./src/task04.c **** 					DEBUG("%s\n", buf);
  152:./src/task04.c **** 
- 153:./src/task04.c **** 				case CAN_BUS5:
- 154:./src/task04.c **** 					
- 155:./src/task04.c **** 					LED_toggleCAN5 ^= 1;
- 156:./src/task04.c **** 
- 157:./src/task04.c **** 					if ( LED_toggleCAN5)
- 158:./src/task04.c **** 					{
- 159:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
- 160:./src/task04.c **** 					}
- 161:./src/task04.c **** 					
- 162:./src/task04.c **** 					else
- 163:./src/task04.c **** 					{
- 164:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
- 165:./src/task04.c **** 					}
- 166:./src/task04.c **** 
- 167:./src/task04.c **** 					DEBUG("CAN5 \n");
- 168:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 169:./src/task04.c **** 				
- 170:./src/task04.c **** 				 
- 171:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
- 172:./src/task04.c **** 
- 173:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
- 174:./src/task04.c **** 					{
- 175:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
- 176:./src/task04.c **** 					}
- 177:./src/task04.c **** 					DEBUG("%s\n", buf);
- 178:./src/task04.c **** 
- 179:./src/task04.c **** 				break;
- 180:./src/task04.c **** 
+ 153:./src/task04.c **** 				break;
+ 154:./src/task04.c **** 
+ 155:./src/task04.c **** 
+ 156:./src/task04.c **** 				case CAN_BUS5:
+ 157:./src/task04.c **** 					
+ 158:./src/task04.c **** 					LED_toggleCAN5 ^= 1;
+ 159:./src/task04.c **** 
+ 160:./src/task04.c **** 					if ( LED_toggleCAN5)
+ 161:./src/task04.c **** 					{
+ 162:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_ORANGE);
+ 163:./src/task04.c **** 					}
+ 164:./src/task04.c **** 					
+ 165:./src/task04.c **** 					else
+ 166:./src/task04.c **** 					{
+ 167:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
+ 168:./src/task04.c **** 					}
+ 169:./src/task04.c **** 
+ 170:./src/task04.c **** 					DEBUG("CAN5 \n");
+ 171:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 172:./src/task04.c **** 				
+ 173:./src/task04.c **** 				 
+ 174:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
+ 175:./src/task04.c **** 
+ 176:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+ 177:./src/task04.c **** 					{
+ 178:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+ 179:./src/task04.c **** 					}
+ 180:./src/task04.c **** 					DEBUG("%s\n", buf);
  181:./src/task04.c **** 
- 182:./src/task04.c **** 				case CAN_BUS6:
- 183:./src/task04.c **** 					
- 184:./src/task04.c **** 					LED_toggleCAN6 ^= 1;
- 185:./src/task04.c **** 
- 186:./src/task04.c **** 					if ( LED_toggleCAN6)
- 187:./src/task04.c **** 					{
- 188:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
- 189:./src/task04.c **** 					}
- 190:./src/task04.c **** 					
- 191:./src/task04.c **** 					else
- 192:./src/task04.c **** 					{
- 193:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
- 194:./src/task04.c **** 					}
- 195:./src/task04.c **** 
- 196:./src/task04.c **** 					DEBUG("CAN6 \n");
- 197:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 198:./src/task04.c **** 				
- 199:./src/task04.c **** 			
- 200:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
- 201:./src/task04.c **** 
- 202:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
- 203:./src/task04.c **** 					{
- 204:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
- 205:./src/task04.c **** 					}
- 206:./src/task04.c **** 					DEBUG("%s\n", buf);
- 207:./src/task04.c **** 
- 208:./src/task04.c **** 				break;
- 209:./src/task04.c **** 
- 210:./src/task04.c **** 				default:
- 211:./src/task04.c **** 					DEBUG("UNKNOWN CAN: hBus=%d, ID=0x%03X\n", RxMsg.hBus, RxMsg.id);
-  98              		.loc 1 211 6 view .LVU3
-  99 0014 8D4E     		ldr	r6, .L64+8
- 100              	.LVL1:
- 101              	.L36:
- 102              		.loc 1 211 6 view .LVU4
- 103              	.LBE4:
- 104              	.LBE3:
- 105              	.LBE2:
-  27:./src/task04.c ****   (void)argument;
- 106              		.loc 1 27 3 is_stmt 1 view .LVU5
-  29:./src/task04.c ****   {
- 107              		.loc 1 29 3 view .LVU6
- 108              	.LBB51:
-  31:./src/task04.c **** 
- 109              		.loc 1 31 5 view .LVU7
- 110 0016 4046     		mov	r0, r8
- 111 0018 FFF7FEFF 		bl	HAL_IWDG_Refresh
- 112              	.LVL2:
-  33:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
- 113              		.loc 1 33 5 view .LVU8
-  34:./src/task04.c **** 		{
- 114              		.loc 1 34 7 view .LVU9
-  34:./src/task04.c **** 		{
- 115              		.loc 1 34 12 is_stmt 0 view .LVU10
- 116 001c 2146     		mov	r1, r4
- 117 001e FF20     		movs	r0, #255
- 118 0020 FFF7FEFF 		bl	CAN_UserRead
- 119              	.LVL3:
-  34:./src/task04.c **** 		{
- 120              		.loc 1 34 10 view .LVU11
- 121 0024 0028     		cmp	r0, #0
- 122 0026 40F03682 		bne	.L2
-  36:./src/task04.c **** 			{
- 123              		.loc 1 36 4 is_stmt 1 view .LVU12
-  36:./src/task04.c **** 			{
- 124              		.loc 1 36 18 is_stmt 0 view .LVU13
- 125 002a E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 126 002c 1B09     		lsrs	r3, r3, #4
- 127 002e 052B     		cmp	r3, #5
- 128 0030 00F24382 		bhi	.L3
- 129 0034 DFE813F0 		tbh	[pc, r3, lsl #1]
- 130              	.L5:
- 131 0038 7701     		.2byte	(.L10-.L5)/2
- 132 003a CB01     		.2byte	(.L9-.L5)/2
- 133 003c 2201     		.2byte	(.L8-.L5)/2
- 134 003e B000     		.2byte	(.L7-.L5)/2
- 135 0040 5B00     		.2byte	(.L6-.L5)/2
- 136 0042 0600     		.2byte	(.L4-.L5)/2
- 137              		.p2align 1
- 138              	.L4:
- 139              	.LBB49:
+ 182:./src/task04.c **** 				break;
+ 183:./src/task04.c **** 
  184:./src/task04.c **** 
- 140              		.loc 1 184 6 is_stmt 1 view .LVU14
- 184:./src/task04.c **** 
- 141              		.loc 1 184 21 is_stmt 0 view .LVU15
- 142 0044 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
- 193:./src/task04.c **** 					}
- 143              		.loc 1 193 7 view .LVU16
- 144 0046 0620     		movs	r0, #6
- 186:./src/task04.c **** 					{
- 145              		.loc 1 186 9 view .LVU17
- 146 0048 012B     		cmp	r3, #1
- 184:./src/task04.c **** 
- 147              		.loc 1 184 21 view .LVU18
- 148 004a 83F00102 		eor	r2, r3, #1
- 188:./src/task04.c **** 					}
- 149              		.loc 1 188 7 view .LVU19
- 150 004e 14BF     		ite	ne
- 151 0050 0321     		movne	r1, #3
- 193:./src/task04.c **** 					}
- 152              		.loc 1 193 7 view .LVU20
- 153 0052 0221     		moveq	r1, #2
- 184:./src/task04.c **** 
- 154              		.loc 1 184 21 view .LVU21
- 155 0054 7A71     		strb	r2, [r7, #5]
- 186:./src/task04.c **** 					{
- 156              		.loc 1 186 6 is_stmt 1 view .LVU22
- 188:./src/task04.c **** 					}
- 157              		.loc 1 188 7 view .LVU23
- 193:./src/task04.c **** 					}
- 158              		.loc 1 193 7 view .LVU24
- 159 0056 FFF7FEFF 		bl	HW_SetLED
- 160              	.LVL4:
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 161              		.loc 1 196 6 view .LVU25
- 162              	.LBB5:
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 163              		.loc 1 196 6 view .LVU26
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 164              		.loc 1 196 6 view .LVU27
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 165              		.loc 1 196 6 view .LVU28
- 166 005a C423     		movs	r3, #196
- 167 005c 7C4A     		ldr	r2, .L64+12
- 168 005e 7D49     		ldr	r1, .L64+16
- 169 0060 22A8     		add	r0, sp, #136
- 170 0062 0093     		str	r3, [sp]
- 171 0064 3346     		mov	r3, r6
- 172 0066 FFF7FEFF 		bl	sprintf
- 173              	.LVL5:
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 174              		.loc 1 196 6 view .LVU29
- 175 006a 7B4B     		ldr	r3, .L64+20
- 176 006c A2AA     		add	r2, sp, #648
- 177 006e 93E80300 		ldm	r3, {r0, r1}
- 178 0072 ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 179 0076 090C     		lsrs	r1, r1, #16
- 180 0078 A290     		str	r0, [sp, #648]
- 181 007a 8DF88E12 		strb	r1, [sp, #654]
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 182              		.loc 1 196 6 view .LVU30
- 183 007e 22A9     		add	r1, sp, #136
- 184 0080 7648     		ldr	r0, .L64+24
- 185 0082 FFF7FEFF 		bl	printf
- 186              	.LVL6:
- 187              	.LBE5:
- 196:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 188              		.loc 1 196 6 view .LVU31
- 197:./src/task04.c **** 				
- 189              		.loc 1 197 6 view .LVU32
- 190              	.LBB6:
- 197:./src/task04.c **** 				
- 191              		.loc 1 197 6 view .LVU33
- 197:./src/task04.c **** 				
- 192              		.loc 1 197 6 view .LVU34
- 197:./src/task04.c **** 				
- 193              		.loc 1 197 6 view .LVU35
- 194 0086 C523     		movs	r3, #197
- 195 0088 714A     		ldr	r2, .L64+12
- 196 008a 22A8     		add	r0, sp, #136
- 197 008c 7149     		ldr	r1, .L64+16
- 198 008e 0093     		str	r3, [sp]
- 199 0090 3346     		mov	r3, r6
- 200 0092 FFF7FEFF 		bl	sprintf
- 201              	.LVL7:
- 197:./src/task04.c **** 				
- 202              		.loc 1 197 6 view .LVU36
- 203 0096 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 204 0098 A269     		ldr	r2, [r4, #24]
- 205 009a A2A8     		add	r0, sp, #648
- 206 009c 1B09     		lsrs	r3, r3, #4
- 207 009e 7049     		ldr	r1, .L64+28
- 208 00a0 FFF7FEFF 		bl	sprintf
- 209              	.LVL8:
- 197:./src/task04.c **** 				
- 210              		.loc 1 197 6 view .LVU37
- 211 00a4 A2AA     		add	r2, sp, #648
- 212 00a6 22A9     		add	r1, sp, #136
- 213 00a8 6C48     		ldr	r0, .L64+24
- 214 00aa FFF7FEFF 		bl	printf
- 215              	.LVL9:
- 216              	.LBE6:
- 197:./src/task04.c **** 				
- 217              		.loc 1 197 6 view .LVU38
- 200:./src/task04.c **** 
- 218              		.loc 1 200 6 view .LVU39
- 219 00ae 0023     		movs	r3, #0
- 220 00b0 8DF80830 		strb	r3, [sp, #8]
- 202:./src/task04.c **** 					{
- 221              		.loc 1 202 6 view .LVU40
- 222              	.LBB7:
- 202:./src/task04.c **** 					{
- 223              		.loc 1 202 11 view .LVU41
- 224              	.LVL10:
- 202:./src/task04.c **** 					{
- 225              		.loc 1 202 22 view .LVU42
- 202:./src/task04.c **** 					{
- 226              		.loc 1 202 31 is_stmt 0 view .LVU43
- 227 00b4 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 202:./src/task04.c **** 					{
- 228              		.loc 1 202 6 view .LVU44
- 229 00b6 1B09     		lsrs	r3, r3, #4
- 230 00b8 17D0     		beq	.L34
- 231 00ba DFF8B8A1 		ldr	r10, .L64+48
- 232              	.LBB8:
- 204:./src/task04.c **** 					}
- 233              		.loc 1 204 7 view .LVU45
- 234 00be DFF8B8B1 		ldr	fp, .L64+52
- 235              	.LVL11:
- 236              	.L35:
- 204:./src/task04.c **** 					}
- 237              		.loc 1 204 7 is_stmt 1 discriminator 3 view .LVU46
- 238 00c2 5546     		mov	r5, r10
- 204:./src/task04.c **** 					}
- 239              		.loc 1 204 22 is_stmt 0 discriminator 3 view .LVU47
- 240 00c4 02A8     		add	r0, sp, #8
- 241 00c6 FFF7FEFF 		bl	strlen
- 242              	.LVL12:
- 204:./src/task04.c **** 					}
- 243              		.loc 1 204 7 discriminator 3 view .LVU48
- 244 00ca 0DF1080C 		add	ip, sp, #8
- 245              	.LBE8:
- 202:./src/task04.c **** 					{
- 246              		.loc 1 202 6 discriminator 3 view .LVU49
- 247 00ce 1A3D     		subs	r5, r5, #26
- 248              	.LBB9:
- 204:./src/task04.c **** 					}
- 249              		.loc 1 204 7 discriminator 3 view .LVU50
- 250 00d0 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 251              	.LVL13:
- 204:./src/task04.c **** 					}
- 252              		.loc 1 204 7 discriminator 3 view .LVU51
- 253 00d4 C0F18001 		rsb	r1, r0, #128
- 254 00d8 5A46     		mov	r2, fp
- 255 00da 6044     		add	r0, r0, ip
- 256              	.LBE9:
- 202:./src/task04.c **** 					{
- 257              		.loc 1 202 6 discriminator 3 view .LVU52
- 258 00dc 2D1B     		subs	r5, r5, r4
- 259              	.LBB10:
- 204:./src/task04.c **** 					}
- 260              		.loc 1 204 7 discriminator 3 view .LVU53
- 261 00de FFF7FEFF 		bl	snprintf
- 262              	.LVL14:
- 263              	.LBE10:
- 202:./src/task04.c **** 					{
- 264              		.loc 1 202 37 is_stmt 1 discriminator 3 view .LVU54
- 202:./src/task04.c **** 					{
- 265              		.loc 1 202 22 discriminator 3 view .LVU55
- 202:./src/task04.c **** 					{
- 266              		.loc 1 202 31 is_stmt 0 discriminator 3 view .LVU56
- 267 00e2 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 202:./src/task04.c **** 					{
- 268              		.loc 1 202 6 discriminator 3 view .LVU57
- 269 00e4 B5EB131F 		cmp	r5, r3, lsr #4
- 270 00e8 EBDB     		blt	.L35
- 271              	.LVL15:
- 272              	.L34:
- 202:./src/task04.c **** 					{
- 273              		.loc 1 202 6 discriminator 3 view .LVU58
- 274              	.LBE7:
- 206:./src/task04.c **** 
- 275              		.loc 1 206 6 is_stmt 1 view .LVU59
- 276              	.LBB11:
- 206:./src/task04.c **** 
- 277              		.loc 1 206 6 view .LVU60
- 206:./src/task04.c **** 
- 278              		.loc 1 206 6 view .LVU61
- 206:./src/task04.c **** 
- 279              		.loc 1 206 6 view .LVU62
- 280 00ea CE23     		movs	r3, #206
- 281 00ec C2E1     		b	.L62
- 282              	.L6:
- 283              	.LBE11:
- 155:./src/task04.c **** 
- 284              		.loc 1 155 6 view .LVU63
- 155:./src/task04.c **** 
- 285              		.loc 1 155 21 is_stmt 0 view .LVU64
- 286 00ee 3B79     		ldrb	r3, [r7, #4]	@ zero_extendqisi2
- 164:./src/task04.c **** 					}
- 287              		.loc 1 164 7 view .LVU65
- 288 00f0 0520     		movs	r0, #5
- 157:./src/task04.c **** 					{
- 289              		.loc 1 157 9 view .LVU66
- 290 00f2 012B     		cmp	r3, #1
- 155:./src/task04.c **** 
- 291              		.loc 1 155 21 view .LVU67
- 292 00f4 83F00102 		eor	r2, r3, #1
- 159:./src/task04.c **** 					}
- 293              		.loc 1 159 7 view .LVU68
- 294 00f8 14BF     		ite	ne
- 295 00fa 0321     		movne	r1, #3
- 164:./src/task04.c **** 					}
- 296              		.loc 1 164 7 view .LVU69
- 297 00fc 0221     		moveq	r1, #2
- 155:./src/task04.c **** 
- 298              		.loc 1 155 21 view .LVU70
- 299 00fe 3A71     		strb	r2, [r7, #4]
- 157:./src/task04.c **** 					{
- 300              		.loc 1 157 6 is_stmt 1 view .LVU71
- 159:./src/task04.c **** 					}
- 301              		.loc 1 159 7 view .LVU72
- 164:./src/task04.c **** 					}
- 302              		.loc 1 164 7 view .LVU73
- 303 0100 FFF7FEFF 		bl	HW_SetLED
- 304              	.LVL16:
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 305              		.loc 1 167 6 view .LVU74
- 306              	.LBB12:
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 307              		.loc 1 167 6 view .LVU75
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 308              		.loc 1 167 6 view .LVU76
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 309              		.loc 1 167 6 view .LVU77
- 310 0104 A723     		movs	r3, #167
- 311 0106 524A     		ldr	r2, .L64+12
- 312 0108 5249     		ldr	r1, .L64+16
- 313 010a 22A8     		add	r0, sp, #136
- 314 010c 0093     		str	r3, [sp]
- 315 010e 3346     		mov	r3, r6
- 316 0110 FFF7FEFF 		bl	sprintf
- 317              	.LVL17:
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 318              		.loc 1 167 6 view .LVU78
- 319 0114 534B     		ldr	r3, .L64+32
- 320 0116 A2AA     		add	r2, sp, #648
- 321 0118 93E80300 		ldm	r3, {r0, r1}
- 322 011c ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 323 0120 090C     		lsrs	r1, r1, #16
- 324 0122 A290     		str	r0, [sp, #648]
- 325 0124 8DF88E12 		strb	r1, [sp, #654]
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 326              		.loc 1 167 6 view .LVU79
- 327 0128 22A9     		add	r1, sp, #136
- 328 012a 4C48     		ldr	r0, .L64+24
- 329 012c FFF7FEFF 		bl	printf
- 330              	.LVL18:
- 331              	.LBE12:
- 167:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 332              		.loc 1 167 6 view .LVU80
- 168:./src/task04.c **** 				
- 333              		.loc 1 168 6 view .LVU81
- 334              	.LBB13:
- 168:./src/task04.c **** 				
- 335              		.loc 1 168 6 view .LVU82
- 168:./src/task04.c **** 				
- 336              		.loc 1 168 6 view .LVU83
- 168:./src/task04.c **** 				
- 337              		.loc 1 168 6 view .LVU84
- 338 0130 A823     		movs	r3, #168
- 339 0132 474A     		ldr	r2, .L64+12
- 340 0134 22A8     		add	r0, sp, #136
- 341 0136 4749     		ldr	r1, .L64+16
- 342 0138 0093     		str	r3, [sp]
- 343 013a 3346     		mov	r3, r6
- 344 013c FFF7FEFF 		bl	sprintf
- 345              	.LVL19:
- 168:./src/task04.c **** 				
- 346              		.loc 1 168 6 view .LVU85
- 347 0140 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 348 0142 A269     		ldr	r2, [r4, #24]
- 349 0144 A2A8     		add	r0, sp, #648
- 350 0146 1B09     		lsrs	r3, r3, #4
- 351 0148 4549     		ldr	r1, .L64+28
- 352 014a FFF7FEFF 		bl	sprintf
- 353              	.LVL20:
- 168:./src/task04.c **** 				
- 354              		.loc 1 168 6 view .LVU86
- 355 014e A2AA     		add	r2, sp, #648
- 356 0150 22A9     		add	r1, sp, #136
- 357 0152 4248     		ldr	r0, .L64+24
- 358 0154 FFF7FEFF 		bl	printf
- 359              	.LVL21:
- 360              	.LBE13:
- 168:./src/task04.c **** 				
- 361              		.loc 1 168 6 view .LVU87
- 171:./src/task04.c **** 
- 362              		.loc 1 171 6 view .LVU88
- 363 0158 0023     		movs	r3, #0
- 364 015a 8DF80830 		strb	r3, [sp, #8]
- 173:./src/task04.c **** 					{
- 365              		.loc 1 173 6 view .LVU89
- 366              	.LBB14:
- 173:./src/task04.c **** 					{
- 367              		.loc 1 173 11 view .LVU90
- 368              	.LVL22:
- 173:./src/task04.c **** 					{
- 369              		.loc 1 173 22 view .LVU91
- 173:./src/task04.c **** 					{
- 370              		.loc 1 173 31 is_stmt 0 view .LVU92
- 371 015e 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 173:./src/task04.c **** 					{
- 372              		.loc 1 173 6 view .LVU93
- 373 0160 1B09     		lsrs	r3, r3, #4
- 374 0162 17D0     		beq	.L30
- 375 0164 DFF80CA1 		ldr	r10, .L64+48
- 376              	.LBB15:
- 175:./src/task04.c **** 					}
- 377              		.loc 1 175 7 view .LVU94
- 378 0168 DFF80CB1 		ldr	fp, .L64+52
- 379              	.LVL23:
- 380              	.L31:
- 175:./src/task04.c **** 					}
- 381              		.loc 1 175 7 is_stmt 1 discriminator 3 view .LVU95
- 382 016c 5546     		mov	r5, r10
- 175:./src/task04.c **** 					}
- 383              		.loc 1 175 22 is_stmt 0 discriminator 3 view .LVU96
- 384 016e 02A8     		add	r0, sp, #8
- 385 0170 FFF7FEFF 		bl	strlen
- 386              	.LVL24:
- 175:./src/task04.c **** 					}
- 387              		.loc 1 175 7 discriminator 3 view .LVU97
- 388 0174 0DF1080C 		add	ip, sp, #8
- 389              	.LBE15:
- 173:./src/task04.c **** 					{
- 390              		.loc 1 173 6 discriminator 3 view .LVU98
- 391 0178 1A3D     		subs	r5, r5, #26
- 392              	.LBB16:
- 175:./src/task04.c **** 					}
- 393              		.loc 1 175 7 discriminator 3 view .LVU99
- 394 017a 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 395              	.LVL25:
- 175:./src/task04.c **** 					}
- 396              		.loc 1 175 7 discriminator 3 view .LVU100
- 397 017e C0F18001 		rsb	r1, r0, #128
- 398 0182 5A46     		mov	r2, fp
- 399 0184 6044     		add	r0, r0, ip
- 400              	.LBE16:
- 173:./src/task04.c **** 					{
- 401              		.loc 1 173 6 discriminator 3 view .LVU101
- 402 0186 2D1B     		subs	r5, r5, r4
- 403              	.LBB17:
- 175:./src/task04.c **** 					}
- 404              		.loc 1 175 7 discriminator 3 view .LVU102
- 405 0188 FFF7FEFF 		bl	snprintf
- 406              	.LVL26:
- 407              	.LBE17:
- 173:./src/task04.c **** 					{
- 408              		.loc 1 173 37 is_stmt 1 discriminator 3 view .LVU103
- 173:./src/task04.c **** 					{
- 409              		.loc 1 173 22 discriminator 3 view .LVU104
- 173:./src/task04.c **** 					{
- 410              		.loc 1 173 31 is_stmt 0 discriminator 3 view .LVU105
- 411 018c 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 173:./src/task04.c **** 					{
- 412              		.loc 1 173 6 discriminator 3 view .LVU106
- 413 018e B5EB131F 		cmp	r5, r3, lsr #4
- 414 0192 EBDB     		blt	.L31
- 415              	.LVL27:
- 416              	.L30:
- 173:./src/task04.c **** 					{
- 417              		.loc 1 173 6 discriminator 3 view .LVU107
- 418              	.LBE14:
- 177:./src/task04.c **** 
- 419              		.loc 1 177 6 is_stmt 1 view .LVU108
- 420              	.LBB18:
- 177:./src/task04.c **** 
- 421              		.loc 1 177 6 view .LVU109
- 177:./src/task04.c **** 
- 422              		.loc 1 177 6 view .LVU110
- 177:./src/task04.c **** 
- 423              		.loc 1 177 6 view .LVU111
- 424 0194 B123     		movs	r3, #177
- 425 0196 6DE1     		b	.L62
- 426              	.L7:
- 427              	.LBE18:
- 126:./src/task04.c **** 
- 428              		.loc 1 126 6 view .LVU112
- 126:./src/task04.c **** 
- 429              		.loc 1 126 21 is_stmt 0 view .LVU113
- 430 0198 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
- 135:./src/task04.c **** 					}
- 431              		.loc 1 135 7 view .LVU114
- 432 019a 0420     		movs	r0, #4
- 128:./src/task04.c **** 					{
- 433              		.loc 1 128 9 view .LVU115
- 434 019c 012B     		cmp	r3, #1
- 126:./src/task04.c **** 
- 435              		.loc 1 126 21 view .LVU116
- 436 019e 83F00102 		eor	r2, r3, #1
- 130:./src/task04.c **** 					}
- 437              		.loc 1 130 7 view .LVU117
- 438 01a2 14BF     		ite	ne
- 439 01a4 0321     		movne	r1, #3
- 135:./src/task04.c **** 					}
- 440              		.loc 1 135 7 view .LVU118
- 441 01a6 0221     		moveq	r1, #2
- 126:./src/task04.c **** 
- 442              		.loc 1 126 21 view .LVU119
- 443 01a8 FA70     		strb	r2, [r7, #3]
- 128:./src/task04.c **** 					{
- 444              		.loc 1 128 6 is_stmt 1 view .LVU120
- 130:./src/task04.c **** 					}
- 445              		.loc 1 130 7 view .LVU121
- 135:./src/task04.c **** 					}
- 446              		.loc 1 135 7 view .LVU122
- 447 01aa FFF7FEFF 		bl	HW_SetLED
- 448              	.LVL28:
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 449              		.loc 1 138 6 view .LVU123
- 450              	.LBB19:
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 451              		.loc 1 138 6 view .LVU124
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 452              		.loc 1 138 6 view .LVU125
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 453              		.loc 1 138 6 view .LVU126
- 454 01ae 8A23     		movs	r3, #138
- 455 01b0 274A     		ldr	r2, .L64+12
- 456 01b2 2849     		ldr	r1, .L64+16
- 457 01b4 22A8     		add	r0, sp, #136
- 458 01b6 0093     		str	r3, [sp]
- 459 01b8 3346     		mov	r3, r6
- 460 01ba FFF7FEFF 		bl	sprintf
- 461              	.LVL29:
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 462              		.loc 1 138 6 view .LVU127
- 463 01be 2A4B     		ldr	r3, .L64+36
- 464 01c0 A2AA     		add	r2, sp, #648
- 465 01c2 93E80300 		ldm	r3, {r0, r1}
- 466 01c6 ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 467 01ca 090C     		lsrs	r1, r1, #16
- 468 01cc A290     		str	r0, [sp, #648]
- 469 01ce 8DF88E12 		strb	r1, [sp, #654]
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 470              		.loc 1 138 6 view .LVU128
- 471 01d2 22A9     		add	r1, sp, #136
- 472 01d4 2148     		ldr	r0, .L64+24
- 473 01d6 FFF7FEFF 		bl	printf
- 474              	.LVL30:
- 475              	.LBE19:
- 138:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 476              		.loc 1 138 6 view .LVU129
- 139:./src/task04.c **** 				
- 477              		.loc 1 139 6 view .LVU130
- 478              	.LBB20:
- 139:./src/task04.c **** 				
- 479              		.loc 1 139 6 view .LVU131
- 139:./src/task04.c **** 				
- 480              		.loc 1 139 6 view .LVU132
- 139:./src/task04.c **** 				
- 481              		.loc 1 139 6 view .LVU133
- 482 01da 8B23     		movs	r3, #139
- 483 01dc 1C4A     		ldr	r2, .L64+12
- 484 01de 22A8     		add	r0, sp, #136
- 485 01e0 1C49     		ldr	r1, .L64+16
- 486 01e2 0093     		str	r3, [sp]
- 487 01e4 3346     		mov	r3, r6
- 488 01e6 FFF7FEFF 		bl	sprintf
- 489              	.LVL31:
- 139:./src/task04.c **** 				
- 490              		.loc 1 139 6 view .LVU134
- 491 01ea 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 492 01ec A269     		ldr	r2, [r4, #24]
- 493 01ee A2A8     		add	r0, sp, #648
- 494 01f0 1B09     		lsrs	r3, r3, #4
- 495 01f2 1B49     		ldr	r1, .L64+28
- 496 01f4 FFF7FEFF 		bl	sprintf
- 497              	.LVL32:
- 139:./src/task04.c **** 				
- 498              		.loc 1 139 6 view .LVU135
- 499 01f8 A2AA     		add	r2, sp, #648
- 500 01fa 22A9     		add	r1, sp, #136
- 501 01fc 1748     		ldr	r0, .L64+24
- 502 01fe FFF7FEFF 		bl	printf
- 503              	.LVL33:
- 504              	.LBE20:
- 139:./src/task04.c **** 				
- 505              		.loc 1 139 6 view .LVU136
- 142:./src/task04.c **** 
- 506              		.loc 1 142 6 view .LVU137
- 507 0202 0023     		movs	r3, #0
- 508 0204 8DF80830 		strb	r3, [sp, #8]
- 144:./src/task04.c **** 					{
- 509              		.loc 1 144 6 view .LVU138
- 510              	.LBB21:
- 144:./src/task04.c **** 					{
- 511              		.loc 1 144 11 view .LVU139
- 512              	.LVL34:
- 144:./src/task04.c **** 					{
- 513              		.loc 1 144 22 view .LVU140
- 144:./src/task04.c **** 					{
- 514              		.loc 1 144 31 is_stmt 0 view .LVU141
- 515 0208 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 144:./src/task04.c **** 					{
- 516              		.loc 1 144 6 view .LVU142
- 517 020a 1B09     		lsrs	r3, r3, #4
- 518 020c 17D0     		beq	.L26
- 519 020e DFF864A0 		ldr	r10, .L64+48
- 520              	.LBB22:
- 146:./src/task04.c **** 					}
- 521              		.loc 1 146 7 view .LVU143
- 522 0212 DFF864B0 		ldr	fp, .L64+52
- 523              	.LVL35:
- 524              	.L27:
- 146:./src/task04.c **** 					}
- 525              		.loc 1 146 7 is_stmt 1 discriminator 3 view .LVU144
- 526 0216 5546     		mov	r5, r10
- 146:./src/task04.c **** 					}
- 527              		.loc 1 146 22 is_stmt 0 discriminator 3 view .LVU145
- 528 0218 02A8     		add	r0, sp, #8
- 529 021a FFF7FEFF 		bl	strlen
- 530              	.LVL36:
- 146:./src/task04.c **** 					}
- 531              		.loc 1 146 7 discriminator 3 view .LVU146
- 532 021e 0DF1080C 		add	ip, sp, #8
- 533              	.LBE22:
- 144:./src/task04.c **** 					{
- 534              		.loc 1 144 6 discriminator 3 view .LVU147
- 535 0222 1A3D     		subs	r5, r5, #26
- 536              	.LBB23:
- 146:./src/task04.c **** 					}
- 537              		.loc 1 146 7 discriminator 3 view .LVU148
- 538 0224 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 539              	.LVL37:
- 146:./src/task04.c **** 					}
- 540              		.loc 1 146 7 discriminator 3 view .LVU149
- 541 0228 C0F18001 		rsb	r1, r0, #128
- 542 022c 5A46     		mov	r2, fp
- 543 022e 6044     		add	r0, r0, ip
- 544              	.LBE23:
- 144:./src/task04.c **** 					{
- 545              		.loc 1 144 6 discriminator 3 view .LVU150
- 546 0230 2D1B     		subs	r5, r5, r4
- 547              	.LBB24:
- 146:./src/task04.c **** 					}
- 548              		.loc 1 146 7 discriminator 3 view .LVU151
- 549 0232 FFF7FEFF 		bl	snprintf
- 550              	.LVL38:
- 551              	.LBE24:
- 144:./src/task04.c **** 					{
- 552              		.loc 1 144 37 is_stmt 1 discriminator 3 view .LVU152
- 144:./src/task04.c **** 					{
- 553              		.loc 1 144 22 discriminator 3 view .LVU153
- 144:./src/task04.c **** 					{
- 554              		.loc 1 144 31 is_stmt 0 discriminator 3 view .LVU154
- 555 0236 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 144:./src/task04.c **** 					{
- 556              		.loc 1 144 6 discriminator 3 view .LVU155
- 557 0238 B5EB131F 		cmp	r5, r3, lsr #4
- 558 023c EBDB     		blt	.L27
- 559              	.LVL39:
- 560              	.L26:
- 144:./src/task04.c **** 					{
- 561              		.loc 1 144 6 discriminator 3 view .LVU156
- 562              	.LBE21:
- 148:./src/task04.c **** 
- 563              		.loc 1 148 6 is_stmt 1 view .LVU157
- 564              	.LBB25:
- 148:./src/task04.c **** 
- 565              		.loc 1 148 6 view .LVU158
- 148:./src/task04.c **** 
- 566              		.loc 1 148 6 view .LVU159
- 148:./src/task04.c **** 
- 567              		.loc 1 148 6 view .LVU160
- 568 023e 9423     		movs	r3, #148
- 569 0240 18E1     		b	.L62
- 570              	.L65:
- 571 0242 00BF     		.align	2
- 572              	.L64:
- 573 0244 00000000 		.word	.LANCHOR0
- 574 0248 00000000 		.word	.LANCHOR1
- 575 024c 00000000 		.word	.LANCHOR2
- 576 0250 06000000 		.word	.LC0+6
- 577 0254 10000000 		.word	.LC1
- 578 0258 70000000 		.word	.LC11
- 579 025c 24000000 		.word	.LC3
- 580 0260 2C000000 		.word	.LC4
- 581 0264 68000000 		.word	.LC10
- 582 0268 60000000 		.word	.LC9
- 583 026c 1C000000 		.word	.LC2
- 584 0270 00000000 		.word	hiwdg
- 585 0274 1B000000 		.word	.LANCHOR0+27
- 586 0278 44000000 		.word	.LC5
- 587              	.L8:
- 588              	.LBE25:
-  97:./src/task04.c **** 
- 589              		.loc 1 97 6 view .LVU161
-  97:./src/task04.c **** 
- 590              		.loc 1 97 21 is_stmt 0 view .LVU162
- 591 027c BB78     		ldrb	r3, [r7, #2]	@ zero_extendqisi2
- 592 027e 83F00102 		eor	r2, r3, #1
-  99:./src/task04.c **** 					{
- 593              		.loc 1 99 9 view .LVU163
- 594 0282 012B     		cmp	r3, #1
-  97:./src/task04.c **** 
- 595              		.loc 1 97 21 view .LVU164
- 596 0284 BA70     		strb	r2, [r7, #2]
-  99:./src/task04.c **** 					{
- 597              		.loc 1 99 6 is_stmt 1 view .LVU165
-  99:./src/task04.c **** 					{
- 598              		.loc 1 99 9 is_stmt 0 view .LVU166
- 599 0286 00F01381 		beq	.L20
- 101:./src/task04.c **** 					}
- 600              		.loc 1 101 7 is_stmt 1 view .LVU167
- 601 028a 0321     		movs	r1, #3
- 602 028c 0846     		mov	r0, r1
- 603 028e FFF7FEFF 		bl	HW_SetLED
- 604              	.LVL40:
- 605              	.L21:
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 606              		.loc 1 109 6 view .LVU168
- 607              	.LBB26:
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 608              		.loc 1 109 6 view .LVU169
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 609              		.loc 1 109 6 view .LVU170
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 610              		.loc 1 109 6 view .LVU171
- 611 0292 6D23     		movs	r3, #109
- 612 0294 934A     		ldr	r2, .L66
- 613 0296 9449     		ldr	r1, .L66+4
- 614 0298 22A8     		add	r0, sp, #136
- 615 029a 0093     		str	r3, [sp]
- 616 029c 3346     		mov	r3, r6
- 617 029e FFF7FEFF 		bl	sprintf
- 618              	.LVL41:
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 619              		.loc 1 109 6 view .LVU172
- 620 02a2 924B     		ldr	r3, .L66+8
- 621 02a4 A2AA     		add	r2, sp, #648
- 622 02a6 93E80300 		ldm	r3, {r0, r1}
- 623 02aa ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 624 02ae 090C     		lsrs	r1, r1, #16
- 625 02b0 A290     		str	r0, [sp, #648]
- 626 02b2 8DF88E12 		strb	r1, [sp, #654]
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 627              		.loc 1 109 6 view .LVU173
- 628 02b6 22A9     		add	r1, sp, #136
- 629 02b8 8D48     		ldr	r0, .L66+12
- 630 02ba FFF7FEFF 		bl	printf
- 631              	.LVL42:
- 632              	.LBE26:
- 109:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 633              		.loc 1 109 6 view .LVU174
- 110:./src/task04.c **** 				
- 634              		.loc 1 110 6 view .LVU175
- 635              	.LBB27:
- 110:./src/task04.c **** 				
- 636              		.loc 1 110 6 view .LVU176
- 110:./src/task04.c **** 				
- 637              		.loc 1 110 6 view .LVU177
- 110:./src/task04.c **** 				
- 638              		.loc 1 110 6 view .LVU178
- 639 02be 6E23     		movs	r3, #110
- 640 02c0 884A     		ldr	r2, .L66
- 641 02c2 22A8     		add	r0, sp, #136
- 642 02c4 8849     		ldr	r1, .L66+4
- 643 02c6 0093     		str	r3, [sp]
- 644 02c8 3346     		mov	r3, r6
- 645 02ca FFF7FEFF 		bl	sprintf
- 646              	.LVL43:
- 110:./src/task04.c **** 				
- 647              		.loc 1 110 6 view .LVU179
- 648 02ce 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 649 02d0 A269     		ldr	r2, [r4, #24]
- 650 02d2 A2A8     		add	r0, sp, #648
- 651 02d4 1B09     		lsrs	r3, r3, #4
- 652 02d6 8749     		ldr	r1, .L66+16
- 653 02d8 FFF7FEFF 		bl	sprintf
- 654              	.LVL44:
- 110:./src/task04.c **** 				
- 655              		.loc 1 110 6 view .LVU180
- 656 02dc A2AA     		add	r2, sp, #648
- 657 02de 22A9     		add	r1, sp, #136
- 658 02e0 8348     		ldr	r0, .L66+12
- 659 02e2 FFF7FEFF 		bl	printf
- 660              	.LVL45:
- 661              	.LBE27:
- 110:./src/task04.c **** 				
- 662              		.loc 1 110 6 view .LVU181
- 113:./src/task04.c **** 
- 663              		.loc 1 113 6 view .LVU182
- 664 02e6 0023     		movs	r3, #0
- 665 02e8 8DF80830 		strb	r3, [sp, #8]
- 115:./src/task04.c **** 					{
- 666              		.loc 1 115 6 view .LVU183
- 667              	.LBB28:
- 115:./src/task04.c **** 					{
- 668              		.loc 1 115 11 view .LVU184
- 669              	.LVL46:
- 115:./src/task04.c **** 					{
- 670              		.loc 1 115 22 view .LVU185
- 115:./src/task04.c **** 					{
- 671              		.loc 1 115 31 is_stmt 0 view .LVU186
- 672 02ec 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 115:./src/task04.c **** 					{
- 673              		.loc 1 115 6 view .LVU187
- 674 02ee 1B09     		lsrs	r3, r3, #4
- 675 02f0 17D0     		beq	.L22
- 676 02f2 DFF810A2 		ldr	r10, .L66+32
- 677              	.LBB29:
- 117:./src/task04.c **** 					}
- 678              		.loc 1 117 7 view .LVU188
- 679 02f6 DFF810B2 		ldr	fp, .L66+36
- 680              	.LVL47:
- 681              	.L23:
- 117:./src/task04.c **** 					}
- 682              		.loc 1 117 7 is_stmt 1 discriminator 3 view .LVU189
- 683 02fa 5546     		mov	r5, r10
- 117:./src/task04.c **** 					}
- 684              		.loc 1 117 22 is_stmt 0 discriminator 3 view .LVU190
- 685 02fc 02A8     		add	r0, sp, #8
- 686 02fe FFF7FEFF 		bl	strlen
- 687              	.LVL48:
- 117:./src/task04.c **** 					}
- 688              		.loc 1 117 7 discriminator 3 view .LVU191
- 689 0302 0DF1080C 		add	ip, sp, #8
- 690              	.LBE29:
- 115:./src/task04.c **** 					{
- 691              		.loc 1 115 6 discriminator 3 view .LVU192
- 692 0306 1A3D     		subs	r5, r5, #26
- 693              	.LBB30:
- 117:./src/task04.c **** 					}
- 694              		.loc 1 117 7 discriminator 3 view .LVU193
- 695 0308 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 696              	.LVL49:
- 117:./src/task04.c **** 					}
- 697              		.loc 1 117 7 discriminator 3 view .LVU194
- 698 030c C0F18001 		rsb	r1, r0, #128
- 699 0310 5A46     		mov	r2, fp
- 700 0312 6044     		add	r0, r0, ip
- 701              	.LBE30:
- 115:./src/task04.c **** 					{
- 702              		.loc 1 115 6 discriminator 3 view .LVU195
- 703 0314 2D1B     		subs	r5, r5, r4
- 704              	.LBB31:
- 117:./src/task04.c **** 					}
- 705              		.loc 1 117 7 discriminator 3 view .LVU196
- 706 0316 FFF7FEFF 		bl	snprintf
- 707              	.LVL50:
- 708              	.LBE31:
- 115:./src/task04.c **** 					{
- 709              		.loc 1 115 37 is_stmt 1 discriminator 3 view .LVU197
- 115:./src/task04.c **** 					{
- 710              		.loc 1 115 22 discriminator 3 view .LVU198
- 115:./src/task04.c **** 					{
- 711              		.loc 1 115 31 is_stmt 0 discriminator 3 view .LVU199
- 712 031a 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 115:./src/task04.c **** 					{
- 713              		.loc 1 115 6 discriminator 3 view .LVU200
- 714 031c B5EB131F 		cmp	r5, r3, lsr #4
- 715 0320 EBDB     		blt	.L23
- 716              	.LVL51:
- 717              	.L22:
- 115:./src/task04.c **** 					{
- 718              		.loc 1 115 6 discriminator 3 view .LVU201
- 719              	.LBE28:
- 119:./src/task04.c **** 
- 720              		.loc 1 119 6 is_stmt 1 view .LVU202
- 721              	.LBB32:
- 119:./src/task04.c **** 
- 722              		.loc 1 119 6 view .LVU203
- 119:./src/task04.c **** 
- 723              		.loc 1 119 6 view .LVU204
- 119:./src/task04.c **** 
- 724              		.loc 1 119 6 view .LVU205
- 725 0322 7723     		movs	r3, #119
- 726 0324 A6E0     		b	.L62
- 727              	.L10:
- 728              	.LBE32:
-  38:./src/task04.c **** 				case CAN_BUS1:
- 729              		.loc 1 38 5 view .LVU206
-  41:./src/task04.c **** 
- 730              		.loc 1 41 6 view .LVU207
-  41:./src/task04.c **** 
- 731              		.loc 1 41 21 is_stmt 0 view .LVU208
- 732 0326 3878     		ldrb	r0, [r7]	@ zero_extendqisi2
- 733 0328 80F00103 		eor	r3, r0, #1
-  43:./src/task04.c **** 					{
- 734              		.loc 1 43 9 view .LVU209
- 735 032c 0128     		cmp	r0, #1
-  41:./src/task04.c **** 
- 736              		.loc 1 41 21 view .LVU210
- 737 032e 3B70     		strb	r3, [r7]
-  43:./src/task04.c **** 					{
- 738              		.loc 1 43 6 is_stmt 1 view .LVU211
-  43:./src/task04.c **** 					{
- 739              		.loc 1 43 9 is_stmt 0 view .LVU212
- 740 0330 00F0B580 		beq	.L11
-  45:./src/task04.c **** 					}
- 741              		.loc 1 45 7 is_stmt 1 view .LVU213
- 742 0334 0321     		movs	r1, #3
- 743 0336 0120     		movs	r0, #1
- 744 0338 FFF7FEFF 		bl	HW_SetLED
- 745              	.LVL52:
- 746              	.L12:
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 747              		.loc 1 53 6 view .LVU214
- 748              	.LBB33:
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 749              		.loc 1 53 6 view .LVU215
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 750              		.loc 1 53 6 view .LVU216
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 751              		.loc 1 53 6 view .LVU217
- 752 033c 3523     		movs	r3, #53
- 753 033e 694A     		ldr	r2, .L66
- 754 0340 6949     		ldr	r1, .L66+4
- 755 0342 22A8     		add	r0, sp, #136
- 756 0344 0093     		str	r3, [sp]
- 757 0346 3346     		mov	r3, r6
- 758 0348 FFF7FEFF 		bl	sprintf
- 759              	.LVL53:
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 760              		.loc 1 53 6 view .LVU218
- 761 034c A2AA     		add	r2, sp, #648
- 762 034e 99E80300 		ldm	r9, {r0, r1}
- 763 0352 ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 764 0356 090C     		lsrs	r1, r1, #16
- 765 0358 A290     		str	r0, [sp, #648]
- 766 035a 8DF88E12 		strb	r1, [sp, #654]
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 767              		.loc 1 53 6 view .LVU219
- 768 035e 22A9     		add	r1, sp, #136
- 769 0360 6348     		ldr	r0, .L66+12
- 770 0362 FFF7FEFF 		bl	printf
- 771              	.LVL54:
- 772              	.LBE33:
-  53:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 773              		.loc 1 53 6 view .LVU220
-  54:./src/task04.c **** 				
- 774              		.loc 1 54 6 view .LVU221
- 775              	.LBB34:
-  54:./src/task04.c **** 				
- 776              		.loc 1 54 6 view .LVU222
-  54:./src/task04.c **** 				
- 777              		.loc 1 54 6 view .LVU223
-  54:./src/task04.c **** 				
- 778              		.loc 1 54 6 view .LVU224
- 779 0366 3623     		movs	r3, #54
- 780 0368 5E4A     		ldr	r2, .L66
- 781 036a 22A8     		add	r0, sp, #136
- 782 036c 5E49     		ldr	r1, .L66+4
- 783 036e 0093     		str	r3, [sp]
- 784 0370 3346     		mov	r3, r6
- 785 0372 FFF7FEFF 		bl	sprintf
- 786              	.LVL55:
-  54:./src/task04.c **** 				
- 787              		.loc 1 54 6 view .LVU225
- 788 0376 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 789 0378 A269     		ldr	r2, [r4, #24]
- 790 037a A2A8     		add	r0, sp, #648
- 791 037c 1B09     		lsrs	r3, r3, #4
- 792 037e 5D49     		ldr	r1, .L66+16
- 793 0380 FFF7FEFF 		bl	sprintf
- 794              	.LVL56:
-  54:./src/task04.c **** 				
- 795              		.loc 1 54 6 view .LVU226
- 796 0384 A2AA     		add	r2, sp, #648
- 797 0386 22A9     		add	r1, sp, #136
- 798 0388 5948     		ldr	r0, .L66+12
- 799 038a FFF7FEFF 		bl	printf
- 800              	.LVL57:
- 801              	.LBE34:
-  54:./src/task04.c **** 				
- 802              		.loc 1 54 6 view .LVU227
-  57:./src/task04.c **** 
- 803              		.loc 1 57 6 view .LVU228
- 804 038e 0023     		movs	r3, #0
- 805 0390 8DF80830 		strb	r3, [sp, #8]
-  59:./src/task04.c **** 					{
- 806              		.loc 1 59 6 view .LVU229
- 807              	.LBB35:
-  59:./src/task04.c **** 					{
- 808              		.loc 1 59 11 view .LVU230
- 809              	.LVL58:
-  59:./src/task04.c **** 					{
- 810              		.loc 1 59 22 view .LVU231
-  59:./src/task04.c **** 					{
- 811              		.loc 1 59 31 is_stmt 0 view .LVU232
- 812 0394 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
-  59:./src/task04.c **** 					{
- 813              		.loc 1 59 6 view .LVU233
- 814 0396 1B09     		lsrs	r3, r3, #4
- 815 0398 17D0     		beq	.L13
- 816 039a DFF868A1 		ldr	r10, .L66+32
- 817              	.LBB36:
-  61:./src/task04.c **** 					}
- 818              		.loc 1 61 7 view .LVU234
- 819 039e DFF868B1 		ldr	fp, .L66+36
- 820              	.LVL59:
- 821              	.L14:
-  61:./src/task04.c **** 					}
- 822              		.loc 1 61 7 is_stmt 1 discriminator 3 view .LVU235
- 823 03a2 5546     		mov	r5, r10
-  61:./src/task04.c **** 					}
- 824              		.loc 1 61 22 is_stmt 0 discriminator 3 view .LVU236
- 825 03a4 02A8     		add	r0, sp, #8
- 826 03a6 FFF7FEFF 		bl	strlen
- 827              	.LVL60:
-  61:./src/task04.c **** 					}
- 828              		.loc 1 61 7 discriminator 3 view .LVU237
- 829 03aa 0DF1080C 		add	ip, sp, #8
- 830              	.LBE36:
-  59:./src/task04.c **** 					{
- 831              		.loc 1 59 6 discriminator 3 view .LVU238
- 832 03ae 1A3D     		subs	r5, r5, #26
- 833              	.LBB37:
-  61:./src/task04.c **** 					}
- 834              		.loc 1 61 7 discriminator 3 view .LVU239
- 835 03b0 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 836              	.LVL61:
-  61:./src/task04.c **** 					}
- 837              		.loc 1 61 7 discriminator 3 view .LVU240
- 838 03b4 C0F18001 		rsb	r1, r0, #128
- 839 03b8 5A46     		mov	r2, fp
- 840 03ba 6044     		add	r0, r0, ip
- 841              	.LBE37:
-  59:./src/task04.c **** 					{
- 842              		.loc 1 59 6 discriminator 3 view .LVU241
- 843 03bc 2D1B     		subs	r5, r5, r4
- 844              	.LBB38:
-  61:./src/task04.c **** 					}
- 845              		.loc 1 61 7 discriminator 3 view .LVU242
- 846 03be FFF7FEFF 		bl	snprintf
- 847              	.LVL62:
- 848              	.LBE38:
-  59:./src/task04.c **** 					{
- 849              		.loc 1 59 37 is_stmt 1 discriminator 3 view .LVU243
-  59:./src/task04.c **** 					{
- 850              		.loc 1 59 22 discriminator 3 view .LVU244
-  59:./src/task04.c **** 					{
- 851              		.loc 1 59 31 is_stmt 0 discriminator 3 view .LVU245
- 852 03c2 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
-  59:./src/task04.c **** 					{
- 853              		.loc 1 59 6 discriminator 3 view .LVU246
- 854 03c4 B5EB131F 		cmp	r5, r3, lsr #4
- 855 03c8 EBDB     		blt	.L14
- 856              	.LVL63:
- 857              	.L13:
-  59:./src/task04.c **** 					{
- 858              		.loc 1 59 6 discriminator 3 view .LVU247
- 859              	.LBE35:
-  63:./src/task04.c **** 
- 860              		.loc 1 63 6 is_stmt 1 view .LVU248
- 861              	.LBB39:
-  63:./src/task04.c **** 
- 862              		.loc 1 63 6 view .LVU249
-  63:./src/task04.c **** 
- 863              		.loc 1 63 6 view .LVU250
-  63:./src/task04.c **** 
- 864              		.loc 1 63 6 view .LVU251
- 865 03ca 3F23     		movs	r3, #63
- 866 03cc 52E0     		b	.L62
- 867              	.L9:
- 868              	.LBE39:
-  69:./src/task04.c **** 
- 869              		.loc 1 69 6 view .LVU252
-  69:./src/task04.c **** 
- 870              		.loc 1 69 21 is_stmt 0 view .LVU253
- 871 03ce 7B78     		ldrb	r3, [r7, #1]	@ zero_extendqisi2
- 872 03d0 83F00102 		eor	r2, r3, #1
-  71:./src/task04.c **** 					{
- 873              		.loc 1 71 9 view .LVU254
- 874 03d4 012B     		cmp	r3, #1
-  69:./src/task04.c **** 
- 875              		.loc 1 69 21 view .LVU255
- 876 03d6 7A70     		strb	r2, [r7, #1]
-  71:./src/task04.c **** 					{
- 877              		.loc 1 71 6 is_stmt 1 view .LVU256
-  71:./src/task04.c **** 					{
- 878              		.loc 1 71 9 is_stmt 0 view .LVU257
- 879 03d8 65D0     		beq	.L16
-  73:./src/task04.c **** 					}
- 880              		.loc 1 73 7 is_stmt 1 view .LVU258
- 881 03da 0321     		movs	r1, #3
- 882 03dc 0220     		movs	r0, #2
- 883 03de FFF7FEFF 		bl	HW_SetLED
- 884              	.LVL64:
- 885              	.L17:
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 886              		.loc 1 81 6 view .LVU259
- 887              	.LBB40:
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 888              		.loc 1 81 6 view .LVU260
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 889              		.loc 1 81 6 view .LVU261
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 890              		.loc 1 81 6 view .LVU262
- 891 03e2 5123     		movs	r3, #81
- 892 03e4 3F4A     		ldr	r2, .L66
- 893 03e6 4049     		ldr	r1, .L66+4
- 894 03e8 22A8     		add	r0, sp, #136
- 895 03ea 0093     		str	r3, [sp]
- 896 03ec 3346     		mov	r3, r6
- 897 03ee FFF7FEFF 		bl	sprintf
- 898              	.LVL65:
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 899              		.loc 1 81 6 view .LVU263
- 900 03f2 414B     		ldr	r3, .L66+20
- 901 03f4 A2AA     		add	r2, sp, #648
- 902 03f6 93E80300 		ldm	r3, {r0, r1}
- 903 03fa ADF88C12 		strh	r1, [sp, #652]	@ movhi
- 904 03fe 090C     		lsrs	r1, r1, #16
- 905 0400 A290     		str	r0, [sp, #648]
- 906 0402 8DF88E12 		strb	r1, [sp, #654]
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 907              		.loc 1 81 6 view .LVU264
- 908 0406 22A9     		add	r1, sp, #136
- 909 0408 3948     		ldr	r0, .L66+12
- 910 040a FFF7FEFF 		bl	printf
- 911              	.LVL66:
- 912              	.LBE40:
-  81:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
- 913              		.loc 1 81 6 view .LVU265
-  82:./src/task04.c **** 				
- 914              		.loc 1 82 6 view .LVU266
- 915              	.LBB41:
-  82:./src/task04.c **** 				
- 916              		.loc 1 82 6 view .LVU267
-  82:./src/task04.c **** 				
- 917              		.loc 1 82 6 view .LVU268
-  82:./src/task04.c **** 				
- 918              		.loc 1 82 6 view .LVU269
- 919 040e 5223     		movs	r3, #82
- 920 0410 344A     		ldr	r2, .L66
- 921 0412 22A8     		add	r0, sp, #136
- 922 0414 3449     		ldr	r1, .L66+4
- 923 0416 0093     		str	r3, [sp]
- 924 0418 3346     		mov	r3, r6
- 925 041a FFF7FEFF 		bl	sprintf
- 926              	.LVL67:
-  82:./src/task04.c **** 				
- 927              		.loc 1 82 6 view .LVU270
- 928 041e 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
- 929 0420 A269     		ldr	r2, [r4, #24]
- 930 0422 A2A8     		add	r0, sp, #648
- 931 0424 1B09     		lsrs	r3, r3, #4
- 932 0426 3349     		ldr	r1, .L66+16
- 933 0428 FFF7FEFF 		bl	sprintf
- 934              	.LVL68:
-  82:./src/task04.c **** 				
- 935              		.loc 1 82 6 view .LVU271
- 936 042c A2AA     		add	r2, sp, #648
- 937 042e 22A9     		add	r1, sp, #136
- 938 0430 2F48     		ldr	r0, .L66+12
- 939 0432 FFF7FEFF 		bl	printf
- 940              	.LVL69:
- 941              	.LBE41:
-  82:./src/task04.c **** 				
- 942              		.loc 1 82 6 view .LVU272
-  85:./src/task04.c **** 
- 943              		.loc 1 85 6 view .LVU273
- 944 0436 0023     		movs	r3, #0
- 945 0438 8DF80830 		strb	r3, [sp, #8]
-  87:./src/task04.c **** 					{
- 946              		.loc 1 87 6 view .LVU274
- 947              	.LBB42:
-  87:./src/task04.c **** 					{
- 948              		.loc 1 87 11 view .LVU275
- 949              	.LVL70:
-  87:./src/task04.c **** 					{
- 950              		.loc 1 87 22 view .LVU276
-  87:./src/task04.c **** 					{
- 951              		.loc 1 87 31 is_stmt 0 view .LVU277
- 952 043c 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
-  87:./src/task04.c **** 					{
- 953              		.loc 1 87 6 view .LVU278
- 954 043e 1B09     		lsrs	r3, r3, #4
- 955 0440 17D0     		beq	.L18
- 956 0442 DFF8C0A0 		ldr	r10, .L66+32
- 957              	.LBB43:
-  89:./src/task04.c **** 					}
- 958              		.loc 1 89 7 view .LVU279
- 959 0446 DFF8C0B0 		ldr	fp, .L66+36
- 960              	.LVL71:
- 961              	.L19:
-  89:./src/task04.c **** 					}
- 962              		.loc 1 89 7 is_stmt 1 discriminator 3 view .LVU280
- 963 044a 5546     		mov	r5, r10
-  89:./src/task04.c **** 					}
- 964              		.loc 1 89 22 is_stmt 0 discriminator 3 view .LVU281
- 965 044c 02A8     		add	r0, sp, #8
- 966 044e FFF7FEFF 		bl	strlen
- 967              	.LVL72:
-  89:./src/task04.c **** 					}
- 968              		.loc 1 89 7 discriminator 3 view .LVU282
- 969 0452 0DF1080C 		add	ip, sp, #8
- 970              	.LBE43:
-  87:./src/task04.c **** 					{
- 971              		.loc 1 87 6 discriminator 3 view .LVU283
- 972 0456 1A3D     		subs	r5, r5, #26
- 973              	.LBB44:
-  89:./src/task04.c **** 					}
- 974              		.loc 1 89 7 discriminator 3 view .LVU284
- 975 0458 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
- 976              	.LVL73:
-  89:./src/task04.c **** 					}
- 977              		.loc 1 89 7 discriminator 3 view .LVU285
- 978 045c C0F18001 		rsb	r1, r0, #128
- 979 0460 5A46     		mov	r2, fp
- 980 0462 6044     		add	r0, r0, ip
- 981              	.LBE44:
-  87:./src/task04.c **** 					{
- 982              		.loc 1 87 6 discriminator 3 view .LVU286
- 983 0464 2D1B     		subs	r5, r5, r4
- 984              	.LBB45:
-  89:./src/task04.c **** 					}
- 985              		.loc 1 89 7 discriminator 3 view .LVU287
- 986 0466 FFF7FEFF 		bl	snprintf
- 987              	.LVL74:
- 988              	.LBE45:
-  87:./src/task04.c **** 					{
- 989              		.loc 1 87 37 is_stmt 1 discriminator 3 view .LVU288
-  87:./src/task04.c **** 					{
- 990              		.loc 1 87 22 discriminator 3 view .LVU289
-  87:./src/task04.c **** 					{
- 991              		.loc 1 87 31 is_stmt 0 discriminator 3 view .LVU290
- 992 046a 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
-  87:./src/task04.c **** 					{
- 993              		.loc 1 87 6 discriminator 3 view .LVU291
- 994 046c B5EB131F 		cmp	r5, r3, lsr #4
- 995 0470 EBDB     		blt	.L19
- 996              	.LVL75:
- 997              	.L18:
-  87:./src/task04.c **** 					{
- 998              		.loc 1 87 6 discriminator 3 view .LVU292
- 999              	.LBE42:
-  91:./src/task04.c **** 
- 1000              		.loc 1 91 6 is_stmt 1 view .LVU293
- 1001              	.LBB46:
-  91:./src/task04.c **** 
- 1002              		.loc 1 91 6 view .LVU294
-  91:./src/task04.c **** 
- 1003              		.loc 1 91 6 view .LVU295
-  91:./src/task04.c **** 
- 1004              		.loc 1 91 6 view .LVU296
- 1005 0472 5B23     		movs	r3, #91
- 1006              	.L62:
- 1007              	.LBE46:
- 1008              	.LBB47:
- 206:./src/task04.c **** 
- 1009              		.loc 1 206 6 is_stmt 0 view .LVU297
- 1010 0474 1C49     		ldr	r1, .L66+4
- 1011 0476 22A8     		add	r0, sp, #136
- 1012 0478 1A4A     		ldr	r2, .L66
- 1013 047a 0093     		str	r3, [sp]
- 1014 047c 3346     		mov	r3, r6
- 1015 047e FFF7FEFF 		bl	sprintf
- 1016              	.LVL76:
- 206:./src/task04.c **** 
- 1017              		.loc 1 206 6 is_stmt 1 view .LVU298
- 1018 0482 02AA     		add	r2, sp, #8
- 1019 0484 1D49     		ldr	r1, .L66+24
- 1020 0486 A2A8     		add	r0, sp, #648
- 1021 0488 FFF7FEFF 		bl	sprintf
- 1022              	.LVL77:
- 206:./src/task04.c **** 
- 1023              		.loc 1 206 6 view .LVU299
- 1024 048c A2AA     		add	r2, sp, #648
- 1025 048e 22A9     		add	r1, sp, #136
- 1026 0490 1748     		ldr	r0, .L66+12
- 1027 0492 FFF7FEFF 		bl	printf
- 1028              	.LVL78:
- 1029              	.LBE47:
- 206:./src/task04.c **** 
- 1030              		.loc 1 206 6 view .LVU300
- 208:./src/task04.c **** 
- 1031              		.loc 1 208 5 view .LVU301
- 1032              	.L2:
- 1033              	.LBE49:
- 212:./src/task04.c **** 				break;
- 213:./src/task04.c **** 
- 214:./src/task04.c **** 			}
- 215:./src/task04.c **** 		}
- 216:./src/task04.c **** 		// uint32_t now = HAL_GetTick();
- 217:./src/task04.c **** 		// if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
- 218:./src/task04.c **** 		osDelay (DLY_MS(1));	
- 1034              		.loc 1 218 3 view .LVU302
- 1035 0496 0520     		movs	r0, #5
- 1036 0498 FFF7FEFF 		bl	osDelay
- 1037              	.LVL79:
- 1038              	.LBE51:
-  29:./src/task04.c ****   {
- 1039              		.loc 1 29 8 view .LVU303
-  30:./src/task04.c ****     HAL_IWDG_Refresh(&hiwdg);
- 1040              		.loc 1 30 3 is_stmt 0 view .LVU304
- 1041 049c BBE5     		b	.L36
- 1042              	.L11:
- 1043              	.LBB52:
- 1044              	.LBB50:
-  50:./src/task04.c **** 					}
- 1045              		.loc 1 50 7 is_stmt 1 view .LVU305
- 1046 049e 0221     		movs	r1, #2
- 1047 04a0 FFF7FEFF 		bl	HW_SetLED
- 1048              	.LVL80:
- 1049 04a4 4AE7     		b	.L12
- 1050              	.L16:
-  78:./src/task04.c **** 					}
- 1051              		.loc 1 78 7 view .LVU306
- 1052 04a6 0221     		movs	r1, #2
- 1053 04a8 0846     		mov	r0, r1
- 1054 04aa FFF7FEFF 		bl	HW_SetLED
- 1055              	.LVL81:
- 1056 04ae 98E7     		b	.L17
- 1057              	.L20:
- 106:./src/task04.c **** 					}
- 1058              		.loc 1 106 7 view .LVU307
- 1059 04b0 0221     		movs	r1, #2
- 1060 04b2 0320     		movs	r0, #3
- 1061 04b4 FFF7FEFF 		bl	HW_SetLED
- 1062              	.LVL82:
- 1063 04b8 EBE6     		b	.L21
- 1064              	.L3:
+ 185:./src/task04.c **** 				case CAN_BUS6:
+ 186:./src/task04.c **** 					
+ 187:./src/task04.c **** 					LED_toggleCAN6 ^= 1;
+ 188:./src/task04.c **** 
+ 189:./src/task04.c **** 					if ( LED_toggleCAN6)
+ 190:./src/task04.c **** 					{
+ 191:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_ORANGE);
+ 192:./src/task04.c **** 					}
+ 193:./src/task04.c **** 					
+ 194:./src/task04.c **** 					else
+ 195:./src/task04.c **** 					{
+ 196:./src/task04.c **** 						HW_SetLED ( HW_LED_CAN6, HW_LED_GREEN);
+ 197:./src/task04.c **** 					}
+ 198:./src/task04.c **** 
+ 199:./src/task04.c **** 					DEBUG("CAN6 \n");
+ 200:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 201:./src/task04.c **** 				
+ 202:./src/task04.c **** 			
+ 203:./src/task04.c **** 					snprintf(buf, sizeof(buf), "");
+ 204:./src/task04.c **** 
+ 205:./src/task04.c **** 					for (int i = 0; i < RxMsg.dlc; i++)
+ 206:./src/task04.c **** 					{
+ 207:./src/task04.c **** 						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+ 208:./src/task04.c **** 					}
+ 209:./src/task04.c **** 					DEBUG("%s\n", buf);
+ 210:./src/task04.c **** 
  211:./src/task04.c **** 				break;
- 1065              		.loc 1 211 6 discriminator 7 view .LVU308
- 1066              	.LBB48:
- 211:./src/task04.c **** 				break;
- 1067              		.loc 1 211 6 discriminator 7 view .LVU309
- 211:./src/task04.c **** 				break;
- 1068              		.loc 1 211 6 discriminator 7 view .LVU310
- 211:./src/task04.c **** 				break;
- 1069              		.loc 1 211 6 discriminator 7 view .LVU311
- 1070 04ba D323     		movs	r3, #211
- 1071 04bc 094A     		ldr	r2, .L66
- 1072 04be 0A49     		ldr	r1, .L66+4
- 1073 04c0 22A8     		add	r0, sp, #136
- 1074 04c2 0093     		str	r3, [sp]
- 1075 04c4 3346     		mov	r3, r6
- 1076 04c6 FFF7FEFF 		bl	sprintf
- 1077              	.LVL83:
- 211:./src/task04.c **** 				break;
- 1078              		.loc 1 211 6 discriminator 7 view .LVU312
- 1079 04ca E278     		ldrb	r2, [r4, #3]	@ zero_extendqisi2
- 1080 04cc A369     		ldr	r3, [r4, #24]
- 1081 04ce A2A8     		add	r0, sp, #648
- 1082 04d0 1209     		lsrs	r2, r2, #4
- 1083 04d2 0B49     		ldr	r1, .L66+28
- 1084 04d4 FFF7FEFF 		bl	sprintf
- 1085              	.LVL84:
- 211:./src/task04.c **** 				break;
- 1086              		.loc 1 211 6 discriminator 7 view .LVU313
- 1087 04d8 A2AA     		add	r2, sp, #648
- 1088 04da 22A9     		add	r1, sp, #136
- 1089 04dc 0448     		ldr	r0, .L66+12
- 1090 04de FFF7FEFF 		bl	printf
- 1091              	.LVL85:
- 1092              	.LBE48:
- 211:./src/task04.c **** 				break;
- 1093              		.loc 1 211 6 discriminator 7 view .LVU314
  212:./src/task04.c **** 
- 1094              		.loc 1 212 5 discriminator 7 view .LVU315
- 1095 04e2 D8E7     		b	.L2
- 1096              	.L67:
- 1097              		.align	2
- 1098              	.L66:
- 1099 04e4 06000000 		.word	.LC0+6
- 1100 04e8 10000000 		.word	.LC1
- 1101 04ec 58000000 		.word	.LC8
- 1102 04f0 24000000 		.word	.LC3
- 1103 04f4 2C000000 		.word	.LC4
- 1104 04f8 50000000 		.word	.LC7
- 1105 04fc 4C000000 		.word	.LC6
- 1106 0500 78000000 		.word	.LC12
- 1107 0504 1B000000 		.word	.LANCHOR0+27
- 1108 0508 44000000 		.word	.LC5
- 1109              	.LBE50:
- 1110              	.LBE52:
- 1111              		.cfi_endproc
- 1112              	.LFE147:
- 1114              		.section	.rodata.str1.4
- 1115 0099 000000   		.align	2
- 1116              	.LC13:
- 1117 009c 5441534B 		.ascii	"TASK4 START\012\000"
- 1117      34205354 
- 1117      4152540A 
- 1117      00
- 1118              		.text
- 1119              		.align	1
- 1120              		.p2align 2,,3
- 1121              		.global	task04_init
- 1122              		.syntax unified
- 1123              		.thumb
- 1124              		.thumb_func
- 1125              		.fpu fpv5-d16
- 1127              	task04_init:
- 1128              	.LVL86:
- 1129              	.LFB148:
- 219:./src/task04.c ****   }
- 220:./src/task04.c **** }
- 221:./src/task04.c **** 
- 222:./src/task04.c **** void task04_init(void *argument)
- 223:./src/task04.c **** {
- 1130              		.loc 1 223 1 view -0
- 1131              		.cfi_startproc
- 1132              		@ args = 0, pretend = 0, frame = 1024
- 1133              		@ frame_needed = 0, uses_anonymous_args = 0
- 224:./src/task04.c ****     (void)argument;
- 1134              		.loc 1 224 5 view .LVU317
- 225:./src/task04.c **** 	DEBUG("TASK4 START\n");
- 1135              		.loc 1 225 2 view .LVU318
- 1136              	.LBB53:
- 1137              		.loc 1 225 2 view .LVU319
- 1138              		.loc 1 225 2 view .LVU320
- 1139              		.loc 1 225 2 view .LVU321
- 1140              	.LBE53:
- 223:./src/task04.c ****     (void)argument;
- 1141              		.loc 1 223 1 is_stmt 0 view .LVU322
- 1142 050c 10B5     		push	{r4, lr}
- 1143              	.LCFI2:
- 1144              		.cfi_def_cfa_offset 8
- 1145              		.cfi_offset 4, -8
- 1146              		.cfi_offset 14, -4
- 1147              	.LBB54:
- 1148              		.loc 1 225 2 view .LVU323
- 1149 050e E121     		movs	r1, #225
- 1150              	.LBE54:
- 223:./src/task04.c ****     (void)argument;
- 1151              		.loc 1 223 1 view .LVU324
- 1152 0510 ADF5816D 		sub	sp, sp, #1032
- 1153              	.LCFI3:
- 1154              		.cfi_def_cfa_offset 1040
- 1155              	.LBB55:
- 1156              		.loc 1 225 2 view .LVU325
- 1157 0514 104C     		ldr	r4, .L70
- 1158 0516 0091     		str	r1, [sp]
- 1159 0518 02A8     		add	r0, sp, #8
- 1160              	.LVL87:
- 1161              		.loc 1 225 2 view .LVU326
- 1162 051a 04F11003 		add	r3, r4, #16
- 1163 051e 0F4A     		ldr	r2, .L70+4
- 1164 0520 0F49     		ldr	r1, .L70+8
- 1165 0522 FFF7FEFF 		bl	sprintf
- 1166              	.LVL88:
- 1167              		.loc 1 225 2 is_stmt 1 view .LVU327
- 1168 0526 0F4B     		ldr	r3, .L70+12
- 1169 0528 0DF5027C 		add	ip, sp, #520
- 1170 052c 0FCB     		ldm	r3, {r0, r1, r2, r3}
- 1171 052e ACE80700 		stmia	ip!, {r0, r1, r2}
- 1172 0532 82AA     		add	r2, sp, #520
- 1173 0534 8CF80030 		strb	r3, [ip]
- 1174              		.loc 1 225 2 view .LVU328
- 1175 0538 02A9     		add	r1, sp, #8
- 1176 053a 0B48     		ldr	r0, .L70+16
- 1177 053c FFF7FEFF 		bl	printf
- 1178              	.LVL89:
- 1179              	.LBE55:
- 1180              		.loc 1 225 2 view .LVU329
- 226:./src/task04.c **** 
- 227:./src/task04.c ****     Task04Handle = osThreadNew(task04_thread, NULL, &Task04_attributes);
- 1181              		.loc 1 227 5 view .LVU330
- 1182              		.loc 1 227 20 is_stmt 0 view .LVU331
- 1183 0540 04F11C02 		add	r2, r4, #28
- 1184 0544 0021     		movs	r1, #0
- 1185 0546 0948     		ldr	r0, .L70+20
- 1186 0548 FFF7FEFF 		bl	osThreadNew
- 1187              	.LVL90:
- 1188              		.loc 1 227 18 view .LVU332
- 1189 054c 084B     		ldr	r3, .L70+24
- 1190 054e 9860     		str	r0, [r3, #8]
- 228:./src/task04.c **** 
- 229:./src/task04.c **** }...
- 1191              		.loc 1 229 1 view .LVU333
- 1192 0550 0DF5816D 		add	sp, sp, #1032
- 1193              	.LCFI4:
- 1194              		.cfi_def_cfa_offset 8
- 1195              		@ sp needed
- 1196 0554 10BD     		pop	{r4, pc}
- 1197              	.L71:
- 1198 0556 00BF     		.align	2
- 1199              	.L70:
- 1200 0558 00000000 		.word	.LANCHOR2
- 1201 055c 06000000 		.word	.LC0+6
- 1202 0560 10000000 		.word	.LC1
- 1203 0564 9C000000 		.word	.LC13
- 1204 0568 24000000 		.word	.LC3
- 1205 056c 00000000 		.word	task04_thread
- 1206 0570 00000000 		.word	.LANCHOR1
- 1207              		.cfi_endproc
- 1208              	.LFE148:
- 1210              		.global	Task04_attributes
- 1211              		.section	.rodata.str1.4
- 1212 00a9 000000   		.align	2
- 1213              	.LC14:
- 1214 00ac 5461736B 		.ascii	"Task04\000"
- 1214      303400
- 1215              		.global	Task04Handle
- 1216              		.section	.rodata
- 1217              		.align	2
- 1218              		.set	.LANCHOR2,. + 0
- 1221              	__FUNCTION__.1:
- 1222 0000 7461736B 		.ascii	"task04_thread\000"
- 1222      30345F74 
- 1222      68726561 
- 1222      6400
- 1223 000e 0000     		.space	2
- 1226              	__FUNCTION__.0:
- 1227 0010 7461736B 		.ascii	"task04_init\000"
- 1227      30345F69 
- 1227      6E697400 
- 1230              	Task04_attributes:
- 1231 001c AC000000 		.word	.LC14
- 1232 0020 00000000 		.space	16
- 1232      00000000 
- 1232      00000000 
- 1232      00000000 
- 1233 0030 00140000 		.word	5120
- 1234 0034 09000000 		.word	9
- 1235 0038 00000000 		.space	8
- 1235      00000000 
- 1236              		.bss
- 1237              		.align	2
- 1238              		.set	.LANCHOR1,. + 0
- 1241              	LED_toggleCAN1:
- 1242 0000 00       		.space	1
- 1245              	LED_toggleCAN2:
- 1246 0001 00       		.space	1
- 1249              	LED_toggleCAN3:
- 1250 0002 00       		.space	1
- 1253              	LED_toggleCAN4:
- 1254 0003 00       		.space	1
- 1257              	LED_toggleCAN5:
- 1258 0004 00       		.space	1
- 1261              	LED_toggleCAN6:
- 1262 0005 00       		.space	1
- 1263 0006 0000     		.space	2
- 1266              	Task04Handle:
- 1267 0008 00000000 		.space	4
- 1268              		.section	.bss.dtcm,"aw",%nobits
- 1269              		.align	2
- 1270              		.set	.LANCHOR0,. + 0
- 1273              	RxMsg.2:
- 1274 0000 00000000 		.space	96
- 1274      00000000 
- 1274      00000000 
- 1274      00000000 
- 1274      00000000 
- 1275              		.text
- 1276              	.Letext0:
- 1277              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1278              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1279              		.file 4 "./inc/cmsis_os2.h"
- 1280              		.file 5 "./inc/can_user.h"
- 1281              		.file 6 "./inc/stm32f765xx.h"
- 1282              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
- 1283              		.file 8 "./inc/task04.h"
- 1284              		.file 9 "<built-in>"
- 1285              		.file 10 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 1286              		.file 11 "./inc/hardware.h"
+ 213:./src/task04.c **** 				default:
+ 214:./src/task04.c **** 					DEBUG("UNKNOWN CAN: hBus=%d, ID=0x%03X\n", RxMsg.hBus, RxMsg.id);
+  95              		.loc 1 214 6 view .LVU3
+  96 0014 984E     		ldr	r6, .L58+8
+  97              	.LVL1:
+  98              	.L34:
+  99              		.loc 1 214 6 view .LVU4
+ 100              	.LBE4:
+ 101              	.LBE3:
+ 102              	.LBE2:
+  28:./src/task04.c ****   (void)argument;
+ 103              		.loc 1 28 3 is_stmt 1 view .LVU5
+  30:./src/task04.c ****   {
+ 104              		.loc 1 30 3 view .LVU6
+ 105              	.LBB44:
+  32:./src/task04.c **** 
+ 106              		.loc 1 32 5 view .LVU7
+ 107 0016 4046     		mov	r0, r8
+ 108 0018 FFF7FEFF 		bl	HAL_IWDG_Refresh
+ 109              	.LVL2:
+  34:./src/task04.c ****     		if ( CAN_UserRead ( CAN_BUSX, &RxMsg) == CAN_ERR_OK)
+ 110              		.loc 1 34 5 view .LVU8
+  35:./src/task04.c **** 		{
+ 111              		.loc 1 35 7 view .LVU9
+  35:./src/task04.c **** 		{
+ 112              		.loc 1 35 12 is_stmt 0 view .LVU10
+ 113 001c 2146     		mov	r1, r4
+ 114 001e FF20     		movs	r0, #255
+ 115 0020 FFF7FEFF 		bl	CAN_UserRead
+ 116              	.LVL3:
+  35:./src/task04.c **** 		{
+ 117              		.loc 1 35 10 view .LVU11
+ 118 0024 0028     		cmp	r0, #0
+ 119 0026 40F01E81 		bne	.L2
+  37:./src/task04.c **** 			{
+ 120              		.loc 1 37 4 is_stmt 1 view .LVU12
+  37:./src/task04.c **** 			{
+ 121              		.loc 1 37 18 is_stmt 0 view .LVU13
+ 122 002a E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 123 002c 1B09     		lsrs	r3, r3, #4
+ 124 002e 052B     		cmp	r3, #5
+ 125 0030 00F20382 		bhi	.L3
+ 126 0034 DFE813F0 		tbh	[pc, r3, lsl #1]
+ 127              	.L5:
+ 128 0038 3A01     		.2byte	(.L10-.L5)/2
+ 129 003a 8E01     		.2byte	(.L9-.L5)/2
+ 130 003c 0501     		.2byte	(.L8-.L5)/2
+ 131 003e B000     		.2byte	(.L7-.L5)/2
+ 132 0040 5B00     		.2byte	(.L6-.L5)/2
+ 133 0042 0600     		.2byte	(.L4-.L5)/2
+ 134              		.p2align 1
+ 135              	.L4:
+ 136              	.LBB42:
+ 187:./src/task04.c **** 
+ 137              		.loc 1 187 6 is_stmt 1 view .LVU14
+ 187:./src/task04.c **** 
+ 138              		.loc 1 187 21 is_stmt 0 view .LVU15
+ 139 0044 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 196:./src/task04.c **** 					}
+ 140              		.loc 1 196 7 view .LVU16
+ 141 0046 0620     		movs	r0, #6
+ 189:./src/task04.c **** 					{
+ 142              		.loc 1 189 9 view .LVU17
+ 143 0048 012B     		cmp	r3, #1
+ 187:./src/task04.c **** 
+ 144              		.loc 1 187 21 view .LVU18
+ 145 004a 83F00102 		eor	r2, r3, #1
+ 191:./src/task04.c **** 					}
+ 146              		.loc 1 191 7 view .LVU19
+ 147 004e 14BF     		ite	ne
+ 148 0050 0321     		movne	r1, #3
+ 196:./src/task04.c **** 					}
+ 149              		.loc 1 196 7 view .LVU20
+ 150 0052 0221     		moveq	r1, #2
+ 187:./src/task04.c **** 
+ 151              		.loc 1 187 21 view .LVU21
+ 152 0054 7A71     		strb	r2, [r7, #5]
+ 189:./src/task04.c **** 					{
+ 153              		.loc 1 189 6 is_stmt 1 view .LVU22
+ 191:./src/task04.c **** 					}
+ 154              		.loc 1 191 7 view .LVU23
+ 196:./src/task04.c **** 					}
+ 155              		.loc 1 196 7 view .LVU24
+ 156 0056 FFF7FEFF 		bl	HW_SetLED
+ 157              	.LVL4:
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 158              		.loc 1 199 6 view .LVU25
+ 159              	.LBB5:
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 160              		.loc 1 199 6 view .LVU26
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 161              		.loc 1 199 6 view .LVU27
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 162              		.loc 1 199 6 view .LVU28
+ 163 005a C723     		movs	r3, #199
+ 164 005c 874A     		ldr	r2, .L58+12
+ 165 005e 8849     		ldr	r1, .L58+16
+ 166 0060 22A8     		add	r0, sp, #136
+ 167 0062 0093     		str	r3, [sp]
+ 168 0064 3346     		mov	r3, r6
+ 169 0066 FFF7FEFF 		bl	sprintf
+ 170              	.LVL5:
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 171              		.loc 1 199 6 view .LVU29
+ 172 006a 864B     		ldr	r3, .L58+20
+ 173 006c A2AA     		add	r2, sp, #648
+ 174 006e 93E80300 		ldm	r3, {r0, r1}
+ 175 0072 ADF88C12 		strh	r1, [sp, #652]	@ movhi
+ 176 0076 090C     		lsrs	r1, r1, #16
+ 177 0078 A290     		str	r0, [sp, #648]
+ 178 007a 8DF88E12 		strb	r1, [sp, #654]
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 179              		.loc 1 199 6 view .LVU30
+ 180 007e 22A9     		add	r1, sp, #136
+ 181 0080 8148     		ldr	r0, .L58+24
+ 182 0082 FFF7FEFF 		bl	printf
+ 183              	.LVL6:
+ 184              	.LBE5:
+ 199:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 185              		.loc 1 199 6 view .LVU31
+ 200:./src/task04.c **** 				
+ 186              		.loc 1 200 6 view .LVU32
+ 187              	.LBB6:
+ 200:./src/task04.c **** 				
+ 188              		.loc 1 200 6 view .LVU33
+ 200:./src/task04.c **** 				
+ 189              		.loc 1 200 6 view .LVU34
+ 200:./src/task04.c **** 				
+ 190              		.loc 1 200 6 view .LVU35
+ 191 0086 C823     		movs	r3, #200
+ 192 0088 7C4A     		ldr	r2, .L58+12
+ 193 008a 22A8     		add	r0, sp, #136
+ 194 008c 7C49     		ldr	r1, .L58+16
+ 195 008e 0093     		str	r3, [sp]
+ 196 0090 3346     		mov	r3, r6
+ 197 0092 FFF7FEFF 		bl	sprintf
+ 198              	.LVL7:
+ 200:./src/task04.c **** 				
+ 199              		.loc 1 200 6 view .LVU36
+ 200 0096 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 201 0098 A269     		ldr	r2, [r4, #24]
+ 202 009a A2A8     		add	r0, sp, #648
+ 203 009c 1B09     		lsrs	r3, r3, #4
+ 204 009e 7B49     		ldr	r1, .L58+28
+ 205 00a0 FFF7FEFF 		bl	sprintf
+ 206              	.LVL8:
+ 200:./src/task04.c **** 				
+ 207              		.loc 1 200 6 view .LVU37
+ 208 00a4 A2AA     		add	r2, sp, #648
+ 209 00a6 22A9     		add	r1, sp, #136
+ 210 00a8 7748     		ldr	r0, .L58+24
+ 211 00aa FFF7FEFF 		bl	printf
+ 212              	.LVL9:
+ 213              	.LBE6:
+ 200:./src/task04.c **** 				
+ 214              		.loc 1 200 6 view .LVU38
+ 203:./src/task04.c **** 
+ 215              		.loc 1 203 6 view .LVU39
+ 216 00ae 0023     		movs	r3, #0
+ 217 00b0 8DF80830 		strb	r3, [sp, #8]
+ 205:./src/task04.c **** 					{
+ 218              		.loc 1 205 6 view .LVU40
+ 219              	.LBB7:
+ 205:./src/task04.c **** 					{
+ 220              		.loc 1 205 11 view .LVU41
+ 221              	.LVL10:
+ 205:./src/task04.c **** 					{
+ 222              		.loc 1 205 22 view .LVU42
+ 205:./src/task04.c **** 					{
+ 223              		.loc 1 205 31 is_stmt 0 view .LVU43
+ 224 00b4 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 205:./src/task04.c **** 					{
+ 225              		.loc 1 205 6 view .LVU44
+ 226 00b6 1B09     		lsrs	r3, r3, #4
+ 227 00b8 17D0     		beq	.L32
+ 228 00ba DFF8E8A1 		ldr	r10, .L58+52
+ 229              	.LBB8:
+ 207:./src/task04.c **** 					}
+ 230              		.loc 1 207 7 view .LVU45
+ 231 00be DFF8E8B1 		ldr	fp, .L58+56
+ 232              	.LVL11:
+ 233              	.L33:
+ 207:./src/task04.c **** 					}
+ 234              		.loc 1 207 7 is_stmt 1 discriminator 3 view .LVU46
+ 235 00c2 5546     		mov	r5, r10
+ 207:./src/task04.c **** 					}
+ 236              		.loc 1 207 22 is_stmt 0 discriminator 3 view .LVU47
+ 237 00c4 02A8     		add	r0, sp, #8
+ 238 00c6 FFF7FEFF 		bl	strlen
+ 239              	.LVL12:
+ 207:./src/task04.c **** 					}
+ 240              		.loc 1 207 7 discriminator 3 view .LVU48
+ 241 00ca 0DF1080C 		add	ip, sp, #8
+ 242              	.LBE8:
+ 205:./src/task04.c **** 					{
+ 243              		.loc 1 205 6 discriminator 3 view .LVU49
+ 244 00ce 1A3D     		subs	r5, r5, #26
+ 245              	.LBB9:
+ 207:./src/task04.c **** 					}
+ 246              		.loc 1 207 7 discriminator 3 view .LVU50
+ 247 00d0 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
+ 248              	.LVL13:
+ 207:./src/task04.c **** 					}
+ 249              		.loc 1 207 7 discriminator 3 view .LVU51
+ 250 00d4 C0F18001 		rsb	r1, r0, #128
+ 251 00d8 5A46     		mov	r2, fp
+ 252 00da 6044     		add	r0, r0, ip
+ 253              	.LBE9:
+ 205:./src/task04.c **** 					{
+ 254              		.loc 1 205 6 discriminator 3 view .LVU52
+ 255 00dc 2D1B     		subs	r5, r5, r4
+ 256              	.LBB10:
+ 207:./src/task04.c **** 					}
+ 257              		.loc 1 207 7 discriminator 3 view .LVU53
+ 258 00de FFF7FEFF 		bl	snprintf
+ 259              	.LVL14:
+ 260              	.LBE10:
+ 205:./src/task04.c **** 					{
+ 261              		.loc 1 205 37 is_stmt 1 discriminator 3 view .LVU54
+ 205:./src/task04.c **** 					{
+ 262              		.loc 1 205 22 discriminator 3 view .LVU55
+ 205:./src/task04.c **** 					{
+ 263              		.loc 1 205 31 is_stmt 0 discriminator 3 view .LVU56
+ 264 00e2 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 205:./src/task04.c **** 					{
+ 265              		.loc 1 205 6 discriminator 3 view .LVU57
+ 266 00e4 B5EB131F 		cmp	r5, r3, lsr #4
+ 267 00e8 EBDB     		blt	.L33
+ 268              	.LVL15:
+ 269              	.L32:
+ 205:./src/task04.c **** 					{
+ 270              		.loc 1 205 6 discriminator 3 view .LVU58
+ 271              	.LBE7:
+ 209:./src/task04.c **** 
+ 272              		.loc 1 209 6 is_stmt 1 view .LVU59
+ 273              	.LBB11:
+ 209:./src/task04.c **** 
+ 274              		.loc 1 209 6 view .LVU60
+ 209:./src/task04.c **** 
+ 275              		.loc 1 209 6 view .LVU61
+ 209:./src/task04.c **** 
+ 276              		.loc 1 209 6 view .LVU62
+ 277 00ea D123     		movs	r3, #209
+ 278 00ec 85E1     		b	.L56
+ 279              	.L6:
+ 280              	.LBE11:
+ 158:./src/task04.c **** 
+ 281              		.loc 1 158 6 view .LVU63
+ 158:./src/task04.c **** 
+ 282              		.loc 1 158 21 is_stmt 0 view .LVU64
+ 283 00ee 3B79     		ldrb	r3, [r7, #4]	@ zero_extendqisi2
+ 167:./src/task04.c **** 					}
+ 284              		.loc 1 167 7 view .LVU65
+ 285 00f0 0520     		movs	r0, #5
+ 160:./src/task04.c **** 					{
+ 286              		.loc 1 160 9 view .LVU66
+ 287 00f2 012B     		cmp	r3, #1
+ 158:./src/task04.c **** 
+ 288              		.loc 1 158 21 view .LVU67
+ 289 00f4 83F00102 		eor	r2, r3, #1
+ 162:./src/task04.c **** 					}
+ 290              		.loc 1 162 7 view .LVU68
+ 291 00f8 14BF     		ite	ne
+ 292 00fa 0321     		movne	r1, #3
+ 167:./src/task04.c **** 					}
+ 293              		.loc 1 167 7 view .LVU69
+ 294 00fc 0221     		moveq	r1, #2
+ 158:./src/task04.c **** 
+ 295              		.loc 1 158 21 view .LVU70
+ 296 00fe 3A71     		strb	r2, [r7, #4]
+ 160:./src/task04.c **** 					{
+ 297              		.loc 1 160 6 is_stmt 1 view .LVU71
+ 162:./src/task04.c **** 					}
+ 298              		.loc 1 162 7 view .LVU72
+ 167:./src/task04.c **** 					}
+ 299              		.loc 1 167 7 view .LVU73
+ 300 0100 FFF7FEFF 		bl	HW_SetLED
+ 301              	.LVL16:
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 302              		.loc 1 170 6 view .LVU74
+ 303              	.LBB12:
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 304              		.loc 1 170 6 view .LVU75
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 305              		.loc 1 170 6 view .LVU76
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 306              		.loc 1 170 6 view .LVU77
+ 307 0104 AA23     		movs	r3, #170
+ 308 0106 5D4A     		ldr	r2, .L58+12
+ 309 0108 5D49     		ldr	r1, .L58+16
+ 310 010a 22A8     		add	r0, sp, #136
+ 311 010c 0093     		str	r3, [sp]
+ 312 010e 3346     		mov	r3, r6
+ 313 0110 FFF7FEFF 		bl	sprintf
+ 314              	.LVL17:
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 315              		.loc 1 170 6 view .LVU78
+ 316 0114 5E4B     		ldr	r3, .L58+32
+ 317 0116 A2AA     		add	r2, sp, #648
+ 318 0118 93E80300 		ldm	r3, {r0, r1}
+ 319 011c ADF88C12 		strh	r1, [sp, #652]	@ movhi
+ 320 0120 090C     		lsrs	r1, r1, #16
+ 321 0122 A290     		str	r0, [sp, #648]
+ 322 0124 8DF88E12 		strb	r1, [sp, #654]
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 323              		.loc 1 170 6 view .LVU79
+ 324 0128 22A9     		add	r1, sp, #136
+ 325 012a 5748     		ldr	r0, .L58+24
+ 326 012c FFF7FEFF 		bl	printf
+ 327              	.LVL18:
+ 328              	.LBE12:
+ 170:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 329              		.loc 1 170 6 view .LVU80
+ 171:./src/task04.c **** 				
+ 330              		.loc 1 171 6 view .LVU81
+ 331              	.LBB13:
+ 171:./src/task04.c **** 				
+ 332              		.loc 1 171 6 view .LVU82
+ 171:./src/task04.c **** 				
+ 333              		.loc 1 171 6 view .LVU83
+ 171:./src/task04.c **** 				
+ 334              		.loc 1 171 6 view .LVU84
+ 335 0130 AB23     		movs	r3, #171
+ 336 0132 524A     		ldr	r2, .L58+12
+ 337 0134 22A8     		add	r0, sp, #136
+ 338 0136 5249     		ldr	r1, .L58+16
+ 339 0138 0093     		str	r3, [sp]
+ 340 013a 3346     		mov	r3, r6
+ 341 013c FFF7FEFF 		bl	sprintf
+ 342              	.LVL19:
+ 171:./src/task04.c **** 				
+ 343              		.loc 1 171 6 view .LVU85
+ 344 0140 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 345 0142 A269     		ldr	r2, [r4, #24]
+ 346 0144 A2A8     		add	r0, sp, #648
+ 347 0146 1B09     		lsrs	r3, r3, #4
+ 348 0148 5049     		ldr	r1, .L58+28
+ 349 014a FFF7FEFF 		bl	sprintf
+ 350              	.LVL20:
+ 171:./src/task04.c **** 				
+ 351              		.loc 1 171 6 view .LVU86
+ 352 014e A2AA     		add	r2, sp, #648
+ 353 0150 22A9     		add	r1, sp, #136
+ 354 0152 4D48     		ldr	r0, .L58+24
+ 355 0154 FFF7FEFF 		bl	printf
+ 356              	.LVL21:
+ 357              	.LBE13:
+ 171:./src/task04.c **** 				
+ 358              		.loc 1 171 6 view .LVU87
+ 174:./src/task04.c **** 
+ 359              		.loc 1 174 6 view .LVU88
+ 360 0158 0023     		movs	r3, #0
+ 361 015a 8DF80830 		strb	r3, [sp, #8]
+ 176:./src/task04.c **** 					{
+ 362              		.loc 1 176 6 view .LVU89
+ 363              	.LBB14:
+ 176:./src/task04.c **** 					{
+ 364              		.loc 1 176 11 view .LVU90
+ 365              	.LVL22:
+ 176:./src/task04.c **** 					{
+ 366              		.loc 1 176 22 view .LVU91
+ 176:./src/task04.c **** 					{
+ 367              		.loc 1 176 31 is_stmt 0 view .LVU92
+ 368 015e 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 176:./src/task04.c **** 					{
+ 369              		.loc 1 176 6 view .LVU93
+ 370 0160 1B09     		lsrs	r3, r3, #4
+ 371 0162 17D0     		beq	.L28
+ 372 0164 DFF83CA1 		ldr	r10, .L58+52
+ 373              	.LBB15:
+ 178:./src/task04.c **** 					}
+ 374              		.loc 1 178 7 view .LVU94
+ 375 0168 DFF83CB1 		ldr	fp, .L58+56
+ 376              	.LVL23:
+ 377              	.L29:
+ 178:./src/task04.c **** 					}
+ 378              		.loc 1 178 7 is_stmt 1 discriminator 3 view .LVU95
+ 379 016c 5546     		mov	r5, r10
+ 178:./src/task04.c **** 					}
+ 380              		.loc 1 178 22 is_stmt 0 discriminator 3 view .LVU96
+ 381 016e 02A8     		add	r0, sp, #8
+ 382 0170 FFF7FEFF 		bl	strlen
+ 383              	.LVL24:
+ 178:./src/task04.c **** 					}
+ 384              		.loc 1 178 7 discriminator 3 view .LVU97
+ 385 0174 0DF1080C 		add	ip, sp, #8
+ 386              	.LBE15:
+ 176:./src/task04.c **** 					{
+ 387              		.loc 1 176 6 discriminator 3 view .LVU98
+ 388 0178 1A3D     		subs	r5, r5, #26
+ 389              	.LBB16:
+ 178:./src/task04.c **** 					}
+ 390              		.loc 1 178 7 discriminator 3 view .LVU99
+ 391 017a 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
+ 392              	.LVL25:
+ 178:./src/task04.c **** 					}
+ 393              		.loc 1 178 7 discriminator 3 view .LVU100
+ 394 017e C0F18001 		rsb	r1, r0, #128
+ 395 0182 5A46     		mov	r2, fp
+ 396 0184 6044     		add	r0, r0, ip
+ 397              	.LBE16:
+ 176:./src/task04.c **** 					{
+ 398              		.loc 1 176 6 discriminator 3 view .LVU101
+ 399 0186 2D1B     		subs	r5, r5, r4
+ 400              	.LBB17:
+ 178:./src/task04.c **** 					}
+ 401              		.loc 1 178 7 discriminator 3 view .LVU102
+ 402 0188 FFF7FEFF 		bl	snprintf
+ 403              	.LVL26:
+ 404              	.LBE17:
+ 176:./src/task04.c **** 					{
+ 405              		.loc 1 176 37 is_stmt 1 discriminator 3 view .LVU103
+ 176:./src/task04.c **** 					{
+ 406              		.loc 1 176 22 discriminator 3 view .LVU104
+ 176:./src/task04.c **** 					{
+ 407              		.loc 1 176 31 is_stmt 0 discriminator 3 view .LVU105
+ 408 018c 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 176:./src/task04.c **** 					{
+ 409              		.loc 1 176 6 discriminator 3 view .LVU106
+ 410 018e B5EB131F 		cmp	r5, r3, lsr #4
+ 411 0192 EBDB     		blt	.L29
+ 412              	.LVL27:
+ 413              	.L28:
+ 176:./src/task04.c **** 					{
+ 414              		.loc 1 176 6 discriminator 3 view .LVU107
+ 415              	.LBE14:
+ 180:./src/task04.c **** 
+ 416              		.loc 1 180 6 is_stmt 1 view .LVU108
+ 417              	.LBB18:
+ 180:./src/task04.c **** 
+ 418              		.loc 1 180 6 view .LVU109
+ 180:./src/task04.c **** 
+ 419              		.loc 1 180 6 view .LVU110
+ 180:./src/task04.c **** 
+ 420              		.loc 1 180 6 view .LVU111
+ 421 0194 B423     		movs	r3, #180
+ 422 0196 30E1     		b	.L56
+ 423              	.L7:
+ 424              	.LBE18:
+ 129:./src/task04.c **** 
+ 425              		.loc 1 129 6 view .LVU112
+ 129:./src/task04.c **** 
+ 426              		.loc 1 129 21 is_stmt 0 view .LVU113
+ 427 0198 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 138:./src/task04.c **** 					}
+ 428              		.loc 1 138 7 view .LVU114
+ 429 019a 0420     		movs	r0, #4
+ 131:./src/task04.c **** 					{
+ 430              		.loc 1 131 9 view .LVU115
+ 431 019c 012B     		cmp	r3, #1
+ 129:./src/task04.c **** 
+ 432              		.loc 1 129 21 view .LVU116
+ 433 019e 83F00102 		eor	r2, r3, #1
+ 133:./src/task04.c **** 					}
+ 434              		.loc 1 133 7 view .LVU117
+ 435 01a2 14BF     		ite	ne
+ 436 01a4 0321     		movne	r1, #3
+ 138:./src/task04.c **** 					}
+ 437              		.loc 1 138 7 view .LVU118
+ 438 01a6 0221     		moveq	r1, #2
+ 129:./src/task04.c **** 
+ 439              		.loc 1 129 21 view .LVU119
+ 440 01a8 FA70     		strb	r2, [r7, #3]
+ 131:./src/task04.c **** 					{
+ 441              		.loc 1 131 6 is_stmt 1 view .LVU120
+ 133:./src/task04.c **** 					}
+ 442              		.loc 1 133 7 view .LVU121
+ 138:./src/task04.c **** 					}
+ 443              		.loc 1 138 7 view .LVU122
+ 444 01aa FFF7FEFF 		bl	HW_SetLED
+ 445              	.LVL28:
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 446              		.loc 1 141 6 view .LVU123
+ 447              	.LBB19:
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 448              		.loc 1 141 6 view .LVU124
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 449              		.loc 1 141 6 view .LVU125
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 450              		.loc 1 141 6 view .LVU126
+ 451 01ae 8D23     		movs	r3, #141
+ 452 01b0 324A     		ldr	r2, .L58+12
+ 453 01b2 3349     		ldr	r1, .L58+16
+ 454 01b4 22A8     		add	r0, sp, #136
+ 455 01b6 0093     		str	r3, [sp]
+ 456 01b8 3346     		mov	r3, r6
+ 457 01ba FFF7FEFF 		bl	sprintf
+ 458              	.LVL29:
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 459              		.loc 1 141 6 view .LVU127
+ 460 01be 354B     		ldr	r3, .L58+36
+ 461 01c0 A2AA     		add	r2, sp, #648
+ 462 01c2 93E80300 		ldm	r3, {r0, r1}
+ 463 01c6 ADF88C12 		strh	r1, [sp, #652]	@ movhi
+ 464 01ca 090C     		lsrs	r1, r1, #16
+ 465 01cc A290     		str	r0, [sp, #648]
+ 466 01ce 8DF88E12 		strb	r1, [sp, #654]
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 467              		.loc 1 141 6 view .LVU128
+ 468 01d2 22A9     		add	r1, sp, #136
+ 469 01d4 2C48     		ldr	r0, .L58+24
+ 470 01d6 FFF7FEFF 		bl	printf
+ 471              	.LVL30:
+ 472              	.LBE19:
+ 141:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 473              		.loc 1 141 6 view .LVU129
+ 142:./src/task04.c **** 				
+ 474              		.loc 1 142 6 view .LVU130
+ 475              	.LBB20:
+ 142:./src/task04.c **** 				
+ 476              		.loc 1 142 6 view .LVU131
+ 142:./src/task04.c **** 				
+ 477              		.loc 1 142 6 view .LVU132
+ 142:./src/task04.c **** 				
+ 478              		.loc 1 142 6 view .LVU133
+ 479 01da 8E23     		movs	r3, #142
+ 480 01dc 274A     		ldr	r2, .L58+12
+ 481 01de 22A8     		add	r0, sp, #136
+ 482 01e0 2749     		ldr	r1, .L58+16
+ 483 01e2 0093     		str	r3, [sp]
+ 484 01e4 3346     		mov	r3, r6
+ 485 01e6 FFF7FEFF 		bl	sprintf
+ 486              	.LVL31:
+ 142:./src/task04.c **** 				
+ 487              		.loc 1 142 6 view .LVU134
+ 488 01ea 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 489 01ec A269     		ldr	r2, [r4, #24]
+ 490 01ee A2A8     		add	r0, sp, #648
+ 491 01f0 1B09     		lsrs	r3, r3, #4
+ 492 01f2 2649     		ldr	r1, .L58+28
+ 493 01f4 FFF7FEFF 		bl	sprintf
+ 494              	.LVL32:
+ 142:./src/task04.c **** 				
+ 495              		.loc 1 142 6 view .LVU135
+ 496 01f8 A2AA     		add	r2, sp, #648
+ 497 01fa 22A9     		add	r1, sp, #136
+ 498 01fc 2248     		ldr	r0, .L58+24
+ 499 01fe FFF7FEFF 		bl	printf
+ 500              	.LVL33:
+ 501              	.LBE20:
+ 142:./src/task04.c **** 				
+ 502              		.loc 1 142 6 view .LVU136
+ 145:./src/task04.c **** 
+ 503              		.loc 1 145 6 view .LVU137
+ 504 0202 0023     		movs	r3, #0
+ 505 0204 8DF80830 		strb	r3, [sp, #8]
+ 147:./src/task04.c **** 					{
+ 506              		.loc 1 147 6 view .LVU138
+ 507              	.LBB21:
+ 147:./src/task04.c **** 					{
+ 508              		.loc 1 147 11 view .LVU139
+ 509              	.LVL34:
+ 147:./src/task04.c **** 					{
+ 510              		.loc 1 147 22 view .LVU140
+ 147:./src/task04.c **** 					{
+ 511              		.loc 1 147 31 is_stmt 0 view .LVU141
+ 512 0208 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 147:./src/task04.c **** 					{
+ 513              		.loc 1 147 6 view .LVU142
+ 514 020a 1B09     		lsrs	r3, r3, #4
+ 515 020c 17D0     		beq	.L24
+ 516 020e DFF894A0 		ldr	r10, .L58+52
+ 517              	.LBB22:
+ 149:./src/task04.c **** 					}
+ 518              		.loc 1 149 7 view .LVU143
+ 519 0212 DFF894B0 		ldr	fp, .L58+56
+ 520              	.LVL35:
+ 521              	.L25:
+ 149:./src/task04.c **** 					}
+ 522              		.loc 1 149 7 is_stmt 1 discriminator 3 view .LVU144
+ 523 0216 5546     		mov	r5, r10
+ 149:./src/task04.c **** 					}
+ 524              		.loc 1 149 22 is_stmt 0 discriminator 3 view .LVU145
+ 525 0218 02A8     		add	r0, sp, #8
+ 526 021a FFF7FEFF 		bl	strlen
+ 527              	.LVL36:
+ 149:./src/task04.c **** 					}
+ 528              		.loc 1 149 7 discriminator 3 view .LVU146
+ 529 021e 0DF1080C 		add	ip, sp, #8
+ 530              	.LBE22:
+ 147:./src/task04.c **** 					{
+ 531              		.loc 1 147 6 discriminator 3 view .LVU147
+ 532 0222 1A3D     		subs	r5, r5, #26
+ 533              	.LBB23:
+ 149:./src/task04.c **** 					}
+ 534              		.loc 1 149 7 discriminator 3 view .LVU148
+ 535 0224 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
+ 536              	.LVL37:
+ 149:./src/task04.c **** 					}
+ 537              		.loc 1 149 7 discriminator 3 view .LVU149
+ 538 0228 C0F18001 		rsb	r1, r0, #128
+ 539 022c 5A46     		mov	r2, fp
+ 540 022e 6044     		add	r0, r0, ip
+ 541              	.LBE23:
+ 147:./src/task04.c **** 					{
+ 542              		.loc 1 147 6 discriminator 3 view .LVU150
+ 543 0230 2D1B     		subs	r5, r5, r4
+ 544              	.LBB24:
+ 149:./src/task04.c **** 					}
+ 545              		.loc 1 149 7 discriminator 3 view .LVU151
+ 546 0232 FFF7FEFF 		bl	snprintf
+ 547              	.LVL38:
+ 548              	.LBE24:
+ 147:./src/task04.c **** 					{
+ 549              		.loc 1 147 37 is_stmt 1 discriminator 3 view .LVU152
+ 147:./src/task04.c **** 					{
+ 550              		.loc 1 147 22 discriminator 3 view .LVU153
+ 147:./src/task04.c **** 					{
+ 551              		.loc 1 147 31 is_stmt 0 discriminator 3 view .LVU154
+ 552 0236 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 147:./src/task04.c **** 					{
+ 553              		.loc 1 147 6 discriminator 3 view .LVU155
+ 554 0238 B5EB131F 		cmp	r5, r3, lsr #4
+ 555 023c EBDB     		blt	.L25
+ 556              	.LVL39:
+ 557              	.L24:
+ 147:./src/task04.c **** 					{
+ 558              		.loc 1 147 6 discriminator 3 view .LVU156
+ 559              	.LBE21:
+ 151:./src/task04.c **** 
+ 560              		.loc 1 151 6 is_stmt 1 view .LVU157
+ 561              	.LBB25:
+ 151:./src/task04.c **** 
+ 562              		.loc 1 151 6 view .LVU158
+ 151:./src/task04.c **** 
+ 563              		.loc 1 151 6 view .LVU159
+ 151:./src/task04.c **** 
+ 564              		.loc 1 151 6 view .LVU160
+ 565 023e 9723     		movs	r3, #151
+ 566 0240 DBE0     		b	.L56
+ 567              	.L8:
+ 568              	.LBE25:
+  98:./src/task04.c **** 
+ 569              		.loc 1 98 6 view .LVU161
+  98:./src/task04.c **** 
+ 570              		.loc 1 98 21 is_stmt 0 view .LVU162
+ 571 0242 BB78     		ldrb	r3, [r7, #2]	@ zero_extendqisi2
+ 572 0244 83F00102 		eor	r2, r3, #1
+ 100:./src/task04.c **** 					{
+ 573              		.loc 1 100 9 view .LVU163
+ 574 0248 012B     		cmp	r3, #1
+  98:./src/task04.c **** 
+ 575              		.loc 1 98 21 view .LVU164
+ 576 024a BA70     		strb	r2, [r7, #2]
+ 100:./src/task04.c **** 					{
+ 577              		.loc 1 100 6 is_stmt 1 view .LVU165
+ 100:./src/task04.c **** 					{
+ 578              		.loc 1 100 9 is_stmt 0 view .LVU166
+ 579 024c 00F0F080 		beq	.L20
+ 102:./src/task04.c **** 					}
+ 580              		.loc 1 102 7 is_stmt 1 view .LVU167
+ 581 0250 0321     		movs	r1, #3
+ 582 0252 0846     		mov	r0, r1
+ 583 0254 FFF7FEFF 		bl	HW_SetLED
+ 584              	.LVL40:
+ 585              	.L21:
+ 110:./src/task04.c **** 
+ 586              		.loc 1 110 6 view .LVU168
+ 587 0258 0F4A     		ldr	r2, .L58+40
+ 588 025a 0023     		movs	r3, #0
+ 589 025c 2146     		mov	r1, r4
+ 590 025e 1068     		ldr	r0, [r2]
+ 591 0260 1A46     		mov	r2, r3
+ 592 0262 FFF7FEFF 		bl	osMessageQueuePut
+ 593              	.LVL41:
+ 124:./src/task04.c **** 
+ 594              		.loc 1 124 5 view .LVU169
+ 595              	.L2:
+ 596              	.LBE42:
+ 215:./src/task04.c **** 				break;
+ 216:./src/task04.c **** 
+ 217:./src/task04.c **** 			}
+ 218:./src/task04.c **** 		}
+ 219:./src/task04.c **** 		// uint32_t now = HAL_GetTick();
+ 220:./src/task04.c **** 		// if (now - lastGreetingTick_CAN2 > 2000) HW_SetLED(HW_LED_CAN2, HW_LED_GREEN);
+ 221:./src/task04.c **** 		osDelay (DLY_MS(1));	
+ 597              		.loc 1 221 3 view .LVU170
+ 598 0266 0520     		movs	r0, #5
+ 599 0268 FFF7FEFF 		bl	osDelay
+ 600              	.LVL42:
+ 601              	.LBE44:
+  30:./src/task04.c ****   {
+ 602              		.loc 1 30 8 view .LVU171
+  31:./src/task04.c ****     HAL_IWDG_Refresh(&hiwdg);
+ 603              		.loc 1 31 3 is_stmt 0 view .LVU172
+ 604 026c D3E6     		b	.L34
+ 605              	.L59:
+ 606 026e 00BF     		.align	2
+ 607              	.L58:
+ 608 0270 00000000 		.word	.LANCHOR0
+ 609 0274 00000000 		.word	.LANCHOR1
+ 610 0278 00000000 		.word	.LANCHOR2
+ 611 027c 06000000 		.word	.LC0+6
+ 612 0280 10000000 		.word	.LC1
+ 613 0284 68000000 		.word	.LC10
+ 614 0288 24000000 		.word	.LC3
+ 615 028c 2C000000 		.word	.LC4
+ 616 0290 60000000 		.word	.LC9
+ 617 0294 58000000 		.word	.LC8
+ 618 0298 00000000 		.word	canmessageQueue
+ 619 029c 1C000000 		.word	.LC2
+ 620 02a0 00000000 		.word	hiwdg
+ 621 02a4 1B000000 		.word	.LANCHOR0+27
+ 622 02a8 44000000 		.word	.LC5
+ 623              	.L10:
+ 624              	.LBB45:
+ 625              	.LBB43:
+  39:./src/task04.c **** 				case CAN_BUS1:
+ 626              		.loc 1 39 5 is_stmt 1 view .LVU173
+  42:./src/task04.c **** 
+ 627              		.loc 1 42 6 view .LVU174
+  42:./src/task04.c **** 
+ 628              		.loc 1 42 21 is_stmt 0 view .LVU175
+ 629 02ac 3878     		ldrb	r0, [r7]	@ zero_extendqisi2
+ 630 02ae 80F00103 		eor	r3, r0, #1
+  44:./src/task04.c **** 					{
+ 631              		.loc 1 44 9 view .LVU176
+ 632 02b2 0128     		cmp	r0, #1
+  42:./src/task04.c **** 
+ 633              		.loc 1 42 21 view .LVU177
+ 634 02b4 3B70     		strb	r3, [r7]
+  44:./src/task04.c **** 					{
+ 635              		.loc 1 44 6 is_stmt 1 view .LVU178
+  44:./src/task04.c **** 					{
+ 636              		.loc 1 44 9 is_stmt 0 view .LVU179
+ 637 02b6 00F0B280 		beq	.L11
+  46:./src/task04.c **** 					}
+ 638              		.loc 1 46 7 is_stmt 1 view .LVU180
+ 639 02ba 0321     		movs	r1, #3
+ 640 02bc 0120     		movs	r0, #1
+ 641 02be FFF7FEFF 		bl	HW_SetLED
+ 642              	.LVL43:
+ 643              	.L12:
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 644              		.loc 1 54 6 view .LVU181
+ 645              	.LBB26:
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 646              		.loc 1 54 6 view .LVU182
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 647              		.loc 1 54 6 view .LVU183
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 648              		.loc 1 54 6 view .LVU184
+ 649 02c2 3623     		movs	r3, #54
+ 650 02c4 674A     		ldr	r2, .L60
+ 651 02c6 6849     		ldr	r1, .L60+4
+ 652 02c8 22A8     		add	r0, sp, #136
+ 653 02ca 0093     		str	r3, [sp]
+ 654 02cc 3346     		mov	r3, r6
+ 655 02ce FFF7FEFF 		bl	sprintf
+ 656              	.LVL44:
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 657              		.loc 1 54 6 view .LVU185
+ 658 02d2 A2AA     		add	r2, sp, #648
+ 659 02d4 99E80300 		ldm	r9, {r0, r1}
+ 660 02d8 ADF88C12 		strh	r1, [sp, #652]	@ movhi
+ 661 02dc 090C     		lsrs	r1, r1, #16
+ 662 02de A290     		str	r0, [sp, #648]
+ 663 02e0 8DF88E12 		strb	r1, [sp, #654]
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 664              		.loc 1 54 6 view .LVU186
+ 665 02e4 22A9     		add	r1, sp, #136
+ 666 02e6 6148     		ldr	r0, .L60+8
+ 667 02e8 FFF7FEFF 		bl	printf
+ 668              	.LVL45:
+ 669              	.LBE26:
+  54:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 670              		.loc 1 54 6 view .LVU187
+  55:./src/task04.c **** 				
+ 671              		.loc 1 55 6 view .LVU188
+ 672              	.LBB27:
+  55:./src/task04.c **** 				
+ 673              		.loc 1 55 6 view .LVU189
+  55:./src/task04.c **** 				
+ 674              		.loc 1 55 6 view .LVU190
+  55:./src/task04.c **** 				
+ 675              		.loc 1 55 6 view .LVU191
+ 676 02ec 3723     		movs	r3, #55
+ 677 02ee 5D4A     		ldr	r2, .L60
+ 678 02f0 22A8     		add	r0, sp, #136
+ 679 02f2 5D49     		ldr	r1, .L60+4
+ 680 02f4 0093     		str	r3, [sp]
+ 681 02f6 3346     		mov	r3, r6
+ 682 02f8 FFF7FEFF 		bl	sprintf
+ 683              	.LVL46:
+  55:./src/task04.c **** 				
+ 684              		.loc 1 55 6 view .LVU192
+ 685 02fc 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 686 02fe A269     		ldr	r2, [r4, #24]
+ 687 0300 A2A8     		add	r0, sp, #648
+ 688 0302 1B09     		lsrs	r3, r3, #4
+ 689 0304 5A49     		ldr	r1, .L60+12
+ 690 0306 FFF7FEFF 		bl	sprintf
+ 691              	.LVL47:
+  55:./src/task04.c **** 				
+ 692              		.loc 1 55 6 view .LVU193
+ 693 030a A2AA     		add	r2, sp, #648
+ 694 030c 22A9     		add	r1, sp, #136
+ 695 030e 5748     		ldr	r0, .L60+8
+ 696 0310 FFF7FEFF 		bl	printf
+ 697              	.LVL48:
+ 698              	.LBE27:
+  55:./src/task04.c **** 				
+ 699              		.loc 1 55 6 view .LVU194
+  58:./src/task04.c **** 
+ 700              		.loc 1 58 6 view .LVU195
+ 701 0314 0023     		movs	r3, #0
+ 702 0316 8DF80830 		strb	r3, [sp, #8]
+  60:./src/task04.c **** 					{
+ 703              		.loc 1 60 6 view .LVU196
+ 704              	.LBB28:
+  60:./src/task04.c **** 					{
+ 705              		.loc 1 60 11 view .LVU197
+ 706              	.LVL49:
+  60:./src/task04.c **** 					{
+ 707              		.loc 1 60 22 view .LVU198
+  60:./src/task04.c **** 					{
+ 708              		.loc 1 60 31 is_stmt 0 view .LVU199
+ 709 031a 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+  60:./src/task04.c **** 					{
+ 710              		.loc 1 60 6 view .LVU200
+ 711 031c 1B09     		lsrs	r3, r3, #4
+ 712 031e 17D0     		beq	.L13
+ 713 0320 DFF85CA1 		ldr	r10, .L60+28
+ 714              	.LBB29:
+  62:./src/task04.c **** 					}
+ 715              		.loc 1 62 7 view .LVU201
+ 716 0324 DFF85CB1 		ldr	fp, .L60+32
+ 717              	.LVL50:
+ 718              	.L14:
+  62:./src/task04.c **** 					}
+ 719              		.loc 1 62 7 is_stmt 1 discriminator 3 view .LVU202
+ 720 0328 5546     		mov	r5, r10
+  62:./src/task04.c **** 					}
+ 721              		.loc 1 62 22 is_stmt 0 discriminator 3 view .LVU203
+ 722 032a 02A8     		add	r0, sp, #8
+ 723 032c FFF7FEFF 		bl	strlen
+ 724              	.LVL51:
+  62:./src/task04.c **** 					}
+ 725              		.loc 1 62 7 discriminator 3 view .LVU204
+ 726 0330 0DF1080C 		add	ip, sp, #8
+ 727              	.LBE29:
+  60:./src/task04.c **** 					{
+ 728              		.loc 1 60 6 discriminator 3 view .LVU205
+ 729 0334 1A3D     		subs	r5, r5, #26
+ 730              	.LBB30:
+  62:./src/task04.c **** 					}
+ 731              		.loc 1 62 7 discriminator 3 view .LVU206
+ 732 0336 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
+ 733              	.LVL52:
+  62:./src/task04.c **** 					}
+ 734              		.loc 1 62 7 discriminator 3 view .LVU207
+ 735 033a C0F18001 		rsb	r1, r0, #128
+ 736 033e 5A46     		mov	r2, fp
+ 737 0340 6044     		add	r0, r0, ip
+ 738              	.LBE30:
+  60:./src/task04.c **** 					{
+ 739              		.loc 1 60 6 discriminator 3 view .LVU208
+ 740 0342 2D1B     		subs	r5, r5, r4
+ 741              	.LBB31:
+  62:./src/task04.c **** 					}
+ 742              		.loc 1 62 7 discriminator 3 view .LVU209
+ 743 0344 FFF7FEFF 		bl	snprintf
+ 744              	.LVL53:
+ 745              	.LBE31:
+  60:./src/task04.c **** 					{
+ 746              		.loc 1 60 37 is_stmt 1 discriminator 3 view .LVU210
+  60:./src/task04.c **** 					{
+ 747              		.loc 1 60 22 discriminator 3 view .LVU211
+  60:./src/task04.c **** 					{
+ 748              		.loc 1 60 31 is_stmt 0 discriminator 3 view .LVU212
+ 749 0348 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+  60:./src/task04.c **** 					{
+ 750              		.loc 1 60 6 discriminator 3 view .LVU213
+ 751 034a B5EB131F 		cmp	r5, r3, lsr #4
+ 752 034e EBDB     		blt	.L14
+ 753              	.LVL54:
+ 754              	.L13:
+  60:./src/task04.c **** 					{
+ 755              		.loc 1 60 6 discriminator 3 view .LVU214
+ 756              	.LBE28:
+  64:./src/task04.c **** 
+ 757              		.loc 1 64 6 is_stmt 1 view .LVU215
+ 758              	.LBB32:
+  64:./src/task04.c **** 
+ 759              		.loc 1 64 6 view .LVU216
+  64:./src/task04.c **** 
+ 760              		.loc 1 64 6 view .LVU217
+  64:./src/task04.c **** 
+ 761              		.loc 1 64 6 view .LVU218
+ 762 0350 4023     		movs	r3, #64
+ 763 0352 52E0     		b	.L56
+ 764              	.L9:
+ 765              	.LBE32:
+  70:./src/task04.c **** 
+ 766              		.loc 1 70 6 view .LVU219
+  70:./src/task04.c **** 
+ 767              		.loc 1 70 21 is_stmt 0 view .LVU220
+ 768 0354 7B78     		ldrb	r3, [r7, #1]	@ zero_extendqisi2
+ 769 0356 83F00102 		eor	r2, r3, #1
+  72:./src/task04.c **** 					{
+ 770              		.loc 1 72 9 view .LVU221
+ 771 035a 012B     		cmp	r3, #1
+  70:./src/task04.c **** 
+ 772              		.loc 1 70 21 view .LVU222
+ 773 035c 7A70     		strb	r2, [r7, #1]
+  72:./src/task04.c **** 					{
+ 774              		.loc 1 72 6 is_stmt 1 view .LVU223
+  72:./src/task04.c **** 					{
+ 775              		.loc 1 72 9 is_stmt 0 view .LVU224
+ 776 035e 62D0     		beq	.L16
+  74:./src/task04.c **** 					}
+ 777              		.loc 1 74 7 is_stmt 1 view .LVU225
+ 778 0360 0321     		movs	r1, #3
+ 779 0362 0220     		movs	r0, #2
+ 780 0364 FFF7FEFF 		bl	HW_SetLED
+ 781              	.LVL55:
+ 782              	.L17:
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 783              		.loc 1 82 6 view .LVU226
+ 784              	.LBB33:
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 785              		.loc 1 82 6 view .LVU227
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 786              		.loc 1 82 6 view .LVU228
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 787              		.loc 1 82 6 view .LVU229
+ 788 0368 5223     		movs	r3, #82
+ 789 036a 3E4A     		ldr	r2, .L60
+ 790 036c 3E49     		ldr	r1, .L60+4
+ 791 036e 22A8     		add	r0, sp, #136
+ 792 0370 0093     		str	r3, [sp]
+ 793 0372 3346     		mov	r3, r6
+ 794 0374 FFF7FEFF 		bl	sprintf
+ 795              	.LVL56:
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 796              		.loc 1 82 6 view .LVU230
+ 797 0378 3E4B     		ldr	r3, .L60+16
+ 798 037a A2AA     		add	r2, sp, #648
+ 799 037c 93E80300 		ldm	r3, {r0, r1}
+ 800 0380 ADF88C12 		strh	r1, [sp, #652]	@ movhi
+ 801 0384 090C     		lsrs	r1, r1, #16
+ 802 0386 A290     		str	r0, [sp, #648]
+ 803 0388 8DF88E12 		strb	r1, [sp, #654]
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 804              		.loc 1 82 6 view .LVU231
+ 805 038c 22A9     		add	r1, sp, #136
+ 806 038e 3748     		ldr	r0, .L60+8
+ 807 0390 FFF7FEFF 		bl	printf
+ 808              	.LVL57:
+ 809              	.LBE33:
+  82:./src/task04.c **** 					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+ 810              		.loc 1 82 6 view .LVU232
+  83:./src/task04.c **** 				
+ 811              		.loc 1 83 6 view .LVU233
+ 812              	.LBB34:
+  83:./src/task04.c **** 				
+ 813              		.loc 1 83 6 view .LVU234
+  83:./src/task04.c **** 				
+ 814              		.loc 1 83 6 view .LVU235
+  83:./src/task04.c **** 				
+ 815              		.loc 1 83 6 view .LVU236
+ 816 0394 5323     		movs	r3, #83
+ 817 0396 334A     		ldr	r2, .L60
+ 818 0398 22A8     		add	r0, sp, #136
+ 819 039a 3349     		ldr	r1, .L60+4
+ 820 039c 0093     		str	r3, [sp]
+ 821 039e 3346     		mov	r3, r6
+ 822 03a0 FFF7FEFF 		bl	sprintf
+ 823              	.LVL58:
+  83:./src/task04.c **** 				
+ 824              		.loc 1 83 6 view .LVU237
+ 825 03a4 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 826 03a6 A269     		ldr	r2, [r4, #24]
+ 827 03a8 A2A8     		add	r0, sp, #648
+ 828 03aa 1B09     		lsrs	r3, r3, #4
+ 829 03ac 3049     		ldr	r1, .L60+12
+ 830 03ae FFF7FEFF 		bl	sprintf
+ 831              	.LVL59:
+  83:./src/task04.c **** 				
+ 832              		.loc 1 83 6 view .LVU238
+ 833 03b2 A2AA     		add	r2, sp, #648
+ 834 03b4 22A9     		add	r1, sp, #136
+ 835 03b6 2D48     		ldr	r0, .L60+8
+ 836 03b8 FFF7FEFF 		bl	printf
+ 837              	.LVL60:
+ 838              	.LBE34:
+  83:./src/task04.c **** 				
+ 839              		.loc 1 83 6 view .LVU239
+  86:./src/task04.c **** 
+ 840              		.loc 1 86 6 view .LVU240
+ 841 03bc 0023     		movs	r3, #0
+ 842 03be 8DF80830 		strb	r3, [sp, #8]
+  88:./src/task04.c **** 					{
+ 843              		.loc 1 88 6 view .LVU241
+ 844              	.LBB35:
+  88:./src/task04.c **** 					{
+ 845              		.loc 1 88 11 view .LVU242
+ 846              	.LVL61:
+  88:./src/task04.c **** 					{
+ 847              		.loc 1 88 22 view .LVU243
+  88:./src/task04.c **** 					{
+ 848              		.loc 1 88 31 is_stmt 0 view .LVU244
+ 849 03c2 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+  88:./src/task04.c **** 					{
+ 850              		.loc 1 88 6 view .LVU245
+ 851 03c4 1B09     		lsrs	r3, r3, #4
+ 852 03c6 17D0     		beq	.L18
+ 853 03c8 DFF8B4A0 		ldr	r10, .L60+28
+ 854              	.LBB36:
+  90:./src/task04.c **** 					}
+ 855              		.loc 1 90 7 view .LVU246
+ 856 03cc DFF8B4B0 		ldr	fp, .L60+32
+ 857              	.LVL62:
+ 858              	.L19:
+  90:./src/task04.c **** 					}
+ 859              		.loc 1 90 7 is_stmt 1 discriminator 3 view .LVU247
+ 860 03d0 5546     		mov	r5, r10
+  90:./src/task04.c **** 					}
+ 861              		.loc 1 90 22 is_stmt 0 discriminator 3 view .LVU248
+ 862 03d2 02A8     		add	r0, sp, #8
+ 863 03d4 FFF7FEFF 		bl	strlen
+ 864              	.LVL63:
+  90:./src/task04.c **** 					}
+ 865              		.loc 1 90 7 discriminator 3 view .LVU249
+ 866 03d8 0DF1080C 		add	ip, sp, #8
+ 867              	.LBE36:
+  88:./src/task04.c **** 					{
+ 868              		.loc 1 88 6 discriminator 3 view .LVU250
+ 869 03dc 1A3D     		subs	r5, r5, #26
+ 870              	.LBB37:
+  90:./src/task04.c **** 					}
+ 871              		.loc 1 90 7 discriminator 3 view .LVU251
+ 872 03de 1AF8013F 		ldrb	r3, [r10, #1]!	@ zero_extendqisi2
+ 873              	.LVL64:
+  90:./src/task04.c **** 					}
+ 874              		.loc 1 90 7 discriminator 3 view .LVU252
+ 875 03e2 C0F18001 		rsb	r1, r0, #128
+ 876 03e6 5A46     		mov	r2, fp
+ 877 03e8 6044     		add	r0, r0, ip
+ 878              	.LBE37:
+  88:./src/task04.c **** 					{
+ 879              		.loc 1 88 6 discriminator 3 view .LVU253
+ 880 03ea 2D1B     		subs	r5, r5, r4
+ 881              	.LBB38:
+  90:./src/task04.c **** 					}
+ 882              		.loc 1 90 7 discriminator 3 view .LVU254
+ 883 03ec FFF7FEFF 		bl	snprintf
+ 884              	.LVL65:
+ 885              	.LBE38:
+  88:./src/task04.c **** 					{
+ 886              		.loc 1 88 37 is_stmt 1 discriminator 3 view .LVU255
+  88:./src/task04.c **** 					{
+ 887              		.loc 1 88 22 discriminator 3 view .LVU256
+  88:./src/task04.c **** 					{
+ 888              		.loc 1 88 31 is_stmt 0 discriminator 3 view .LVU257
+ 889 03f0 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+  88:./src/task04.c **** 					{
+ 890              		.loc 1 88 6 discriminator 3 view .LVU258
+ 891 03f2 B5EB131F 		cmp	r5, r3, lsr #4
+ 892 03f6 EBDB     		blt	.L19
+ 893              	.LVL66:
+ 894              	.L18:
+  88:./src/task04.c **** 					{
+ 895              		.loc 1 88 6 discriminator 3 view .LVU259
+ 896              	.LBE35:
+  92:./src/task04.c **** 
+ 897              		.loc 1 92 6 is_stmt 1 view .LVU260
+ 898              	.LBB39:
+  92:./src/task04.c **** 
+ 899              		.loc 1 92 6 view .LVU261
+  92:./src/task04.c **** 
+ 900              		.loc 1 92 6 view .LVU262
+  92:./src/task04.c **** 
+ 901              		.loc 1 92 6 view .LVU263
+ 902 03f8 5C23     		movs	r3, #92
+ 903              	.L56:
+ 904              	.LBE39:
+ 905              	.LBB40:
+ 209:./src/task04.c **** 
+ 906              		.loc 1 209 6 is_stmt 0 view .LVU264
+ 907 03fa 0093     		str	r3, [sp]
+ 908 03fc 22A8     		add	r0, sp, #136
+ 909 03fe 3346     		mov	r3, r6
+ 910 0400 1949     		ldr	r1, .L60+4
+ 911 0402 184A     		ldr	r2, .L60
+ 912 0404 FFF7FEFF 		bl	sprintf
+ 913              	.LVL67:
+ 209:./src/task04.c **** 
+ 914              		.loc 1 209 6 is_stmt 1 view .LVU265
+ 915 0408 02AA     		add	r2, sp, #8
+ 916 040a A2A8     		add	r0, sp, #648
+ 917 040c 1A49     		ldr	r1, .L60+20
+ 918 040e FFF7FEFF 		bl	sprintf
+ 919              	.LVL68:
+ 209:./src/task04.c **** 
+ 920              		.loc 1 209 6 view .LVU266
+ 921 0412 A2AA     		add	r2, sp, #648
+ 922 0414 22A9     		add	r1, sp, #136
+ 923 0416 1548     		ldr	r0, .L60+8
+ 924 0418 FFF7FEFF 		bl	printf
+ 925              	.LVL69:
+ 926              	.LBE40:
+ 209:./src/task04.c **** 
+ 927              		.loc 1 209 6 view .LVU267
+ 211:./src/task04.c **** 
+ 928              		.loc 1 211 5 view .LVU268
+ 929 041c 23E7     		b	.L2
+ 930              	.L11:
+  51:./src/task04.c **** 					}
+ 931              		.loc 1 51 7 view .LVU269
+ 932 041e 0221     		movs	r1, #2
+ 933 0420 FFF7FEFF 		bl	HW_SetLED
+ 934              	.LVL70:
+ 935 0424 4DE7     		b	.L12
+ 936              	.L16:
+  79:./src/task04.c **** 					}
+ 937              		.loc 1 79 7 view .LVU270
+ 938 0426 0221     		movs	r1, #2
+ 939 0428 0846     		mov	r0, r1
+ 940 042a FFF7FEFF 		bl	HW_SetLED
+ 941              	.LVL71:
+ 942 042e 9BE7     		b	.L17
+ 943              	.L20:
+ 107:./src/task04.c **** 					}
+ 944              		.loc 1 107 7 view .LVU271
+ 945 0430 0221     		movs	r1, #2
+ 946 0432 0320     		movs	r0, #3
+ 947 0434 FFF7FEFF 		bl	HW_SetLED
+ 948              	.LVL72:
+ 949 0438 0EE7     		b	.L21
+ 950              	.L3:
+ 214:./src/task04.c **** 				break;
+ 951              		.loc 1 214 6 discriminator 6 view .LVU272
+ 952              	.LBB41:
+ 214:./src/task04.c **** 				break;
+ 953              		.loc 1 214 6 discriminator 6 view .LVU273
+ 214:./src/task04.c **** 				break;
+ 954              		.loc 1 214 6 discriminator 6 view .LVU274
+ 214:./src/task04.c **** 				break;
+ 955              		.loc 1 214 6 discriminator 6 view .LVU275
+ 956 043a D623     		movs	r3, #214
+ 957 043c 094A     		ldr	r2, .L60
+ 958 043e 0A49     		ldr	r1, .L60+4
+ 959 0440 22A8     		add	r0, sp, #136
+ 960 0442 0093     		str	r3, [sp]
+ 961 0444 3346     		mov	r3, r6
+ 962 0446 FFF7FEFF 		bl	sprintf
+ 963              	.LVL73:
+ 214:./src/task04.c **** 				break;
+ 964              		.loc 1 214 6 discriminator 6 view .LVU276
+ 965 044a E278     		ldrb	r2, [r4, #3]	@ zero_extendqisi2
+ 966 044c A369     		ldr	r3, [r4, #24]
+ 967 044e A2A8     		add	r0, sp, #648
+ 968 0450 1209     		lsrs	r2, r2, #4
+ 969 0452 0A49     		ldr	r1, .L60+24
+ 970 0454 FFF7FEFF 		bl	sprintf
+ 971              	.LVL74:
+ 214:./src/task04.c **** 				break;
+ 972              		.loc 1 214 6 discriminator 6 view .LVU277
+ 973 0458 A2AA     		add	r2, sp, #648
+ 974 045a 22A9     		add	r1, sp, #136
+ 975 045c 0348     		ldr	r0, .L60+8
+ 976 045e FFF7FEFF 		bl	printf
+ 977              	.LVL75:
+ 978              	.LBE41:
+ 214:./src/task04.c **** 				break;
+ 979              		.loc 1 214 6 discriminator 6 view .LVU278
+ 215:./src/task04.c **** 
+ 980              		.loc 1 215 5 discriminator 6 view .LVU279
+ 981 0462 00E7     		b	.L2
+ 982              	.L61:
+ 983              		.align	2
+ 984              	.L60:
+ 985 0464 06000000 		.word	.LC0+6
+ 986 0468 10000000 		.word	.LC1
+ 987 046c 24000000 		.word	.LC3
+ 988 0470 2C000000 		.word	.LC4
+ 989 0474 50000000 		.word	.LC7
+ 990 0478 4C000000 		.word	.LC6
+ 991 047c 70000000 		.word	.LC11
+ 992 0480 1B000000 		.word	.LANCHOR0+27
+ 993 0484 44000000 		.word	.LC5
+ 994              	.LBE43:
+ 995              	.LBE45:
+ 996              		.cfi_endproc
+ 997              	.LFE147:
+ 999              		.section	.rodata.str1.4
+ 1000 0091 000000   		.align	2
+ 1001              	.LC12:
+ 1002 0094 5441534B 		.ascii	"TASK4 START\012\000"
+ 1002      34205354 
+ 1002      4152540A 
+ 1002      00
+ 1003              		.text
+ 1004              		.align	1
+ 1005              		.p2align 2,,3
+ 1006              		.global	task04_init
+ 1007              		.syntax unified
+ 1008              		.thumb
+ 1009              		.thumb_func
+ 1010              		.fpu fpv5-d16
+ 1012              	task04_init:
+ 1013              	.LVL76:
+ 1014              	.LFB148:
+ 222:./src/task04.c ****   }
+ 223:./src/task04.c **** }
+ 224:./src/task04.c **** 
+ 225:./src/task04.c **** void task04_init(void *argument)
+ 226:./src/task04.c **** {
+ 1015              		.loc 1 226 1 view -0
+ 1016              		.cfi_startproc
+ 1017              		@ args = 0, pretend = 0, frame = 1024
+ 1018              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227:./src/task04.c ****     (void)argument;
+ 1019              		.loc 1 227 5 view .LVU281
+ 228:./src/task04.c **** 	DEBUG("TASK4 START\n");
+ 1020              		.loc 1 228 2 view .LVU282
+ 1021              	.LBB46:
+ 1022              		.loc 1 228 2 view .LVU283
+ 1023              		.loc 1 228 2 view .LVU284
+ 1024              		.loc 1 228 2 view .LVU285
+ 1025              	.LBE46:
+ 226:./src/task04.c ****     (void)argument;
+ 1026              		.loc 1 226 1 is_stmt 0 view .LVU286
+ 1027 0488 10B5     		push	{r4, lr}
+ 1028              	.LCFI2:
+ 1029              		.cfi_def_cfa_offset 8
+ 1030              		.cfi_offset 4, -8
+ 1031              		.cfi_offset 14, -4
+ 1032              	.LBB47:
+ 1033              		.loc 1 228 2 view .LVU287
+ 1034 048a E421     		movs	r1, #228
+ 1035              	.LBE47:
+ 226:./src/task04.c ****     (void)argument;
+ 1036              		.loc 1 226 1 view .LVU288
+ 1037 048c ADF5816D 		sub	sp, sp, #1032
+ 1038              	.LCFI3:
+ 1039              		.cfi_def_cfa_offset 1040
+ 1040              	.LBB48:
+ 1041              		.loc 1 228 2 view .LVU289
+ 1042 0490 104C     		ldr	r4, .L64
+ 1043 0492 0091     		str	r1, [sp]
+ 1044 0494 02A8     		add	r0, sp, #8
+ 1045              	.LVL77:
+ 1046              		.loc 1 228 2 view .LVU290
+ 1047 0496 04F11003 		add	r3, r4, #16
+ 1048 049a 0F4A     		ldr	r2, .L64+4
+ 1049 049c 0F49     		ldr	r1, .L64+8
+ 1050 049e FFF7FEFF 		bl	sprintf
+ 1051              	.LVL78:
+ 1052              		.loc 1 228 2 is_stmt 1 view .LVU291
+ 1053 04a2 0F4B     		ldr	r3, .L64+12
+ 1054 04a4 0DF5027C 		add	ip, sp, #520
+ 1055 04a8 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 1056 04aa ACE80700 		stmia	ip!, {r0, r1, r2}
+ 1057 04ae 82AA     		add	r2, sp, #520
+ 1058 04b0 8CF80030 		strb	r3, [ip]
+ 1059              		.loc 1 228 2 view .LVU292
+ 1060 04b4 02A9     		add	r1, sp, #8
+ 1061 04b6 0B48     		ldr	r0, .L64+16
+ 1062 04b8 FFF7FEFF 		bl	printf
+ 1063              	.LVL79:
+ 1064              	.LBE48:
+ 1065              		.loc 1 228 2 view .LVU293
+ 229:./src/task04.c **** 
+ 230:./src/task04.c ****     Task04Handle = osThreadNew(task04_thread, NULL, &Task04_attributes);
+ 1066              		.loc 1 230 5 view .LVU294
+ 1067              		.loc 1 230 20 is_stmt 0 view .LVU295
+ 1068 04bc 04F11C02 		add	r2, r4, #28
+ 1069 04c0 0021     		movs	r1, #0
+ 1070 04c2 0948     		ldr	r0, .L64+20
+ 1071 04c4 FFF7FEFF 		bl	osThreadNew
+ 1072              	.LVL80:
+ 1073              		.loc 1 230 18 view .LVU296
+ 1074 04c8 084B     		ldr	r3, .L64+24
+ 1075 04ca 9860     		str	r0, [r3, #8]
+ 231:./src/task04.c **** 
+ 232:./src/task04.c **** }...
+ 1076              		.loc 1 232 1 view .LVU297
+ 1077 04cc 0DF5816D 		add	sp, sp, #1032
+ 1078              	.LCFI4:
+ 1079              		.cfi_def_cfa_offset 8
+ 1080              		@ sp needed
+ 1081 04d0 10BD     		pop	{r4, pc}
+ 1082              	.L65:
+ 1083 04d2 00BF     		.align	2
+ 1084              	.L64:
+ 1085 04d4 00000000 		.word	.LANCHOR2
+ 1086 04d8 06000000 		.word	.LC0+6
+ 1087 04dc 10000000 		.word	.LC1
+ 1088 04e0 94000000 		.word	.LC12
+ 1089 04e4 24000000 		.word	.LC3
+ 1090 04e8 00000000 		.word	task04_thread
+ 1091 04ec 00000000 		.word	.LANCHOR1
+ 1092              		.cfi_endproc
+ 1093              	.LFE148:
+ 1095              		.global	Task04_attributes
+ 1096              		.section	.rodata.str1.4
+ 1097 00a1 000000   		.align	2
+ 1098              	.LC13:
+ 1099 00a4 5461736B 		.ascii	"Task04\000"
+ 1099      303400
+ 1100              		.global	Task04Handle
+ 1101              		.section	.rodata
+ 1102              		.align	2
+ 1103              		.set	.LANCHOR2,. + 0
+ 1106              	__FUNCTION__.1:
+ 1107 0000 7461736B 		.ascii	"task04_thread\000"
+ 1107      30345F74 
+ 1107      68726561 
+ 1107      6400
+ 1108 000e 0000     		.space	2
+ 1111              	__FUNCTION__.0:
+ 1112 0010 7461736B 		.ascii	"task04_init\000"
+ 1112      30345F69 
+ 1112      6E697400 
+ 1115              	Task04_attributes:
+ 1116 001c A4000000 		.word	.LC13
+ 1117 0020 00000000 		.space	16
+ 1117      00000000 
+ 1117      00000000 
+ 1117      00000000 
+ 1118 0030 00140000 		.word	5120
+ 1119 0034 09000000 		.word	9
+ 1120 0038 00000000 		.space	8
+ 1120      00000000 
+ 1121              		.bss
+ 1122              		.align	2
+ 1123              		.set	.LANCHOR1,. + 0
+ 1126              	LED_toggleCAN1:
+ 1127 0000 00       		.space	1
+ 1130              	LED_toggleCAN2:
+ 1131 0001 00       		.space	1
+ 1134              	LED_toggleCAN3:
+ 1135 0002 00       		.space	1
+ 1138              	LED_toggleCAN4:
+ 1139 0003 00       		.space	1
+ 1142              	LED_toggleCAN5:
+ 1143 0004 00       		.space	1
+ 1146              	LED_toggleCAN6:
+ 1147 0005 00       		.space	1
+ 1148 0006 0000     		.space	2
+ 1151              	Task04Handle:
+ 1152 0008 00000000 		.space	4
+ 1153              		.section	.bss.dtcm,"aw",%nobits
+ 1154              		.align	2
+ 1155              		.set	.LANCHOR0,. + 0
+ 1158              	RxMsg.2:
+ 1159 0000 00000000 		.space	96
+ 1159      00000000 
+ 1159      00000000 
+ 1159      00000000 
+ 1159      00000000 
+ 1160              		.text
+ 1161              	.Letext0:
+ 1162              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1163              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 1164              		.file 4 "./inc/cmsis_os2.h"
+ 1165              		.file 5 "./inc/can_user.h"
+ 1166              		.file 6 "./inc/stm32f765xx.h"
+ 1167              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
+ 1168              		.file 8 "./inc/task04.h"
+ 1169              		.file 9 "<built-in>"
+ 1170              		.file 10 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
+ 1171              		.file 11 "./inc/hardware.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 task04.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:17     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:18     .rodata.str1.4:00000000 .LC0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:57     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:66     .text:00000000 task04_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:131    .text:00000038 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:137    .text:00000044 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:573    .text:00000244 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:591    .text:0000027c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1099   .text:000004e4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1119   .text:0000050c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1127   .text:0000050c task04_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1200   .text:00000558 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1230   .rodata:0000001c Task04_attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1266   .bss:00000008 Task04Handle
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1217   .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1221   .rodata:00000000 __FUNCTION__.1
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1226   .rodata:00000010 __FUNCTION__.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1237   .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1241   .bss:00000000 LED_toggleCAN1
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1245   .bss:00000001 LED_toggleCAN2
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1249   .bss:00000002 LED_toggleCAN3
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1253   .bss:00000003 LED_toggleCAN4
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1257   .bss:00000004 LED_toggleCAN5
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1261   .bss:00000005 LED_toggleCAN6
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1269   .bss.dtcm:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccKLnkap.s:1273   .bss.dtcm:00000000 RxMsg.2
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:17     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:18     .rodata.str1.4:00000000 .LC0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:54     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:63     .text:00000000 task04_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:128    .text:00000038 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:134    .text:00000044 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:608    .text:00000270 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:629    .text:000002ac $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:985    .text:00000464 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1004   .text:00000488 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1012   .text:00000488 task04_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1085   .text:000004d4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1115   .rodata:0000001c Task04_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1151   .bss:00000008 Task04Handle
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1102   .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1106   .rodata:00000000 __FUNCTION__.1
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1111   .rodata:00000010 __FUNCTION__.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1122   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1126   .bss:00000000 LED_toggleCAN1
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1130   .bss:00000001 LED_toggleCAN2
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1134   .bss:00000002 LED_toggleCAN3
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1138   .bss:00000003 LED_toggleCAN4
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1142   .bss:00000004 LED_toggleCAN5
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1146   .bss:00000005 LED_toggleCAN6
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1154   .bss.dtcm:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccuOAZcO.s:1158   .bss.dtcm:00000000 RxMsg.2
 
 UNDEFINED SYMBOLS
 HAL_IWDG_Refresh
@@ -1874,6 +1725,8 @@ sprintf
 printf
 strlen
 snprintf
-hiwdg
+osMessageQueuePut
 osDelay
+canmessageQueue
+hiwdg
 osThreadNew

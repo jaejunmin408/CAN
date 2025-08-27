@@ -26,6 +26,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void udp_total_connect(void);
+void udp_can_send(void);
 void udp_echoclient_send(void);
 void udp_client_send(const char *msg);
 void UDP_thread(void *argument);
