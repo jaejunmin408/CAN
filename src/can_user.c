@@ -12,7 +12,7 @@ static const CANTiming_t  Timing_CANx[6] = {
 _40M_500K_80____4M_80_ISO,	  // CAN1
 _40M_500K_80____4M_80_ISO,	  // CAN2
 _40M_500K_80____4M_80_ISO,	  // CAN3
-_40M_500K_80____4M_80_ISO,	  // CAN4
+_40M_250K_80____2M_80_ISO,	  // CAN4
 _40M_500K_80____4M_80_ISO,	  // CAN5
 _40M_500K_80____4M_80_ISO	  // CAN6
 };
@@ -145,7 +145,7 @@ void  CAN_UserInit ( void)
 	CAN_Initialize ( CAN_BUS4, &Timing_CANx[CAN_BUS4]);
 	
 	// receive all extended CAN-FD
-	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
+	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_STANDARD | CAN_MSGTYPE_FDF, 0x000, 0x7FF);
 	
 	
 	

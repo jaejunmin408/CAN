@@ -39,7 +39,7 @@
   12:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN1
   13:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN2
   14:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN3
-  15:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN4
+  15:./src/can_user.c **** _40M_250K_80____2M_80_ISO,	  // CAN4
   16:./src/can_user.c **** _40M_500K_80____4M_80_ISO,	  // CAN5
   17:./src/can_user.c **** _40M_500K_80____4M_80_ISO	  // CAN6
   18:./src/can_user.c **** };
@@ -387,11 +387,11 @@
  230              	.LVL22:
  146:./src/can_user.c **** 	
  147:./src/can_user.c **** 	// receive all extended CAN-FD
- 148:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_EXTENDED | CAN_MSGTYPE_FDF, 0x00000000, 0x1FFFFFFF);
+ 148:./src/can_user.c **** 	CAN_FilterAdd ( CAN_BUS4, CAN_MSGTYPE_STANDARD | CAN_MSGTYPE_FDF, 0x000, 0x7FF);
  231              		.loc 1 148 2 view .LVU51
- 232 00c4 6FF06043 		mvn	r3, #-536870912
+ 232 00c4 40F2FF73 		movw	r3, #2047
  233 00c8 0022     		movs	r2, #0
- 234 00ca 1221     		movs	r1, #18
+ 234 00ca 1021     		movs	r1, #16
  235 00cc 0320     		movs	r0, #3
  236 00ce FFF7FEFF 		bl	CAN_FilterAdd
  237              	.LVL23:
@@ -497,7 +497,7 @@
  322 003a 02       		.byte	2
  323 003b 00       		.space	1
  324 003c 005A6202 		.word	40000000
- 325 0040 0100     		.short	1
+ 325 0040 0200     		.short	2
  326 0042 3F00     		.short	63
  327 0044 10       		.byte	16
  328 0045 10       		.byte	16
@@ -505,7 +505,7 @@
  330 0047 00       		.byte	0
  331 0048 01       		.byte	1
  332 0049 00       		.space	1
- 333 004a 0100     		.short	1
+ 333 004a 0200     		.short	2
  334 004c 07       		.byte	7
  335 004d 02       		.byte	2
  336 004e 02       		.byte	2
@@ -631,18 +631,18 @@
  458              		.file 5 "./inc/hardware.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 can_user.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:25     .text:00000000 CAN_UserRead
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:101    .text:00000044 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:105    .text:00000048 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:113    .text:00000048 CAN_UserInvokeBootloader
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:163    .text:00000068 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:168    .text:00000070 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:176    .text:00000070 CAN_UserInit
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:272    .text:00000108 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:277    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:281    .rodata:00000000 Timing_CANx
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdC3Oph.s:368    .rodata:00000078 TimingForBootloader.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:25     .text:00000000 CAN_UserRead
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:101    .text:00000044 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:105    .text:00000048 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:113    .text:00000048 CAN_UserInvokeBootloader
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:163    .text:00000068 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:168    .text:00000070 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:176    .text:00000070 CAN_UserInit
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:272    .text:00000108 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:277    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:281    .rodata:00000000 Timing_CANx
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc80qo1T.s:368    .rodata:00000078 TimingForBootloader.0
 
 UNDEFINED SYMBOLS
 CAN_Read

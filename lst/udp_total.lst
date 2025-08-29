@@ -3258,47 +3258,45 @@
   22:./src/udp_total.c **** #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
   23:./src/udp_total.c **** #define UDP_CAN_PORT       5010
   24:./src/udp_total.c **** #define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
-  25:./src/udp_total.c **** #define UDP_SYSTEM_PORT    7010
+  25:./src/udp_total.c **** 
   26:./src/udp_total.c **** 
   27:./src/udp_total.c **** 
-  28:./src/udp_total.c **** 
-  29:./src/udp_total.c **** /* Private pv -----------------------------------------------------------*/
-  30:./src/udp_total.c **** extern osMessageQueueId_t debugQueue;
-  31:./src/udp_total.c **** extern osMessageQueueId_t canmessageQueue;
-  32:./src/udp_total.c **** extern IWDG_HandleTypeDef hiwdg;
-  33:./src/udp_total.c **** extern struct netif gnetif;
-  34:./src/udp_total.c **** 
-  35:./src/udp_total.c **** u8_t   data[100];
-  36:./src/udp_total.c **** struct udp_pcb *upcb;
-  37:./src/udp_total.c **** struct udp_pcb *upcb_sys;
-  38:./src/udp_total.c **** struct udp_pcb *udp_server_pcb;
-  39:./src/udp_total.c **** struct udp_pcb *udp_can_pcb;
-  40:./src/udp_total.c **** 
-  41:./src/udp_total.c **** const char *JUMP_BOOT_STR = "SOFT RESET SSSAAA";
-  42:./src/udp_total.c **** const char *JUMP_FW_STR = "RESET SSSAAA";
-  43:./src/udp_total.c **** 
-  44:./src/udp_total.c **** osThreadId_t UDPHandle;                       //[user custom] RTOS memory setting + osPriority
-  45:./src/udp_total.c **** const osThreadAttr_t UDP_attributes = {
-  46:./src/udp_total.c ****   .name = "udp_send", 
-  47:./src/udp_total.c ****   .stack_size = 2048, 
-  48:./src/udp_total.c ****   .priority = (osPriority_t) osPriorityBelowNormal,
-  49:./src/udp_total.c **** };
-  50:./src/udp_total.c **** 
-  51:./src/udp_total.c **** 
-  52:./src/udp_total.c **** /* Private functions ---------------------------------------------------------*/
-  53:./src/udp_total.c **** void udp_receive_callback(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, u1
-  54:./src/udp_total.c **** {
- 114              		.loc 3 54 1 view -0
+  28:./src/udp_total.c **** /* Private pv -----------------------------------------------------------*/
+  29:./src/udp_total.c **** extern osMessageQueueId_t debugQueue;
+  30:./src/udp_total.c **** extern osMessageQueueId_t canmessageQueue;
+  31:./src/udp_total.c **** extern IWDG_HandleTypeDef hiwdg;
+  32:./src/udp_total.c **** extern struct netif gnetif;
+  33:./src/udp_total.c **** 
+  34:./src/udp_total.c **** u8_t   data[100];
+  35:./src/udp_total.c **** struct udp_pcb *udp_client_pcb;
+  36:./src/udp_total.c **** struct udp_pcb *udp_server_pcb;
+  37:./src/udp_total.c **** struct udp_pcb *udp_can_pcb;
+  38:./src/udp_total.c **** 
+  39:./src/udp_total.c **** const char *JUMP_BOOT_STR = "SOFT RESET SSSAAA";
+  40:./src/udp_total.c **** const char *JUMP_FW_STR = "RESET SSSAAA";
+  41:./src/udp_total.c **** 
+  42:./src/udp_total.c **** osThreadId_t UDPHandle;                       //[user custom] RTOS memory setting + osPriority
+  43:./src/udp_total.c **** const osThreadAttr_t UDP_attributes = {
+  44:./src/udp_total.c ****   .name = "udp_send", 
+  45:./src/udp_total.c ****   .stack_size = 2048, 
+  46:./src/udp_total.c ****   .priority = (osPriority_t) osPriorityBelowNormal,
+  47:./src/udp_total.c **** };
+  48:./src/udp_total.c **** 
+  49:./src/udp_total.c **** 
+  50:./src/udp_total.c **** /* Private functions ---------------------------------------------------------*/
+  51:./src/udp_total.c **** void udp_receive_callback(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, u1
+  52:./src/udp_total.c **** {
+ 114              		.loc 3 52 1 view -0
  115              		.cfi_startproc
  116              		@ args = 4, pretend = 0, frame = 16
  117              		@ frame_needed = 0, uses_anonymous_args = 0
-  55:./src/udp_total.c ****   
-  56:./src/udp_total.c ****   if (p != NULL)
- 118              		.loc 3 56 3 view .LVU18
- 119              		.loc 3 56 6 is_stmt 0 view .LVU19
+  53:./src/udp_total.c ****   
+  54:./src/udp_total.c ****   if (p != NULL)
+ 118              		.loc 3 54 3 view .LVU18
+ 119              		.loc 3 54 6 is_stmt 0 view .LVU19
  120 0024 0AB3     		cbz	r2, .L6
-  54:./src/udp_total.c ****   
- 121              		.loc 3 54 1 view .LVU20
+  52:./src/udp_total.c ****   
+ 121              		.loc 3 52 1 view .LVU20
  122 0026 F0B5     		push	{r4, r5, r6, r7, lr}
  123              	.LCFI0:
  124              		.cfi_def_cfa_offset 20
@@ -3310,105 +3308,105 @@
  130              	.LBB14:
  131              	.LBB15:
  132              	.LBB16:
-  57:./src/udp_total.c ****   {
-  58:./src/udp_total.c ****     
-  59:./src/udp_total.c ****      char buffer[12] = {0};                   //딱 부트로더 부르는 명령어의 크기로�
-  60:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
- 133              		.loc 3 60 34 view .LVU21
+  55:./src/udp_total.c ****   {
+  56:./src/udp_total.c ****     
+  57:./src/udp_total.c ****      char buffer[12] = {0};                   //딱 부트로더 부르는 명령어의 크기로�
+  58:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
+ 133              		.loc 3 58 34 view .LVU21
  134 0028 5589     		ldrh	r5, [r2, #10]
  135              	.LBE16:
  136              	.LBE15:
  137              	.LBE14:
-  54:./src/udp_total.c ****   
- 138              		.loc 3 54 1 view .LVU22
+  52:./src/udp_total.c ****   
+ 138              		.loc 3 52 1 view .LVU22
  139 002a 85B0     		sub	sp, sp, #20
  140              	.LCFI1:
  141              		.cfi_def_cfa_offset 40
  142              	.LVL1:
  143              	.LBB21:
  144              	.LBI14:
-  53:./src/udp_total.c **** {
- 145              		.loc 3 53 6 is_stmt 1 view .LVU23
+  51:./src/udp_total.c **** {
+ 145              		.loc 3 51 6 is_stmt 1 view .LVU23
  146              	.LBB19:
  147              	.LBB17:
-  59:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
- 148              		.loc 3 59 6 view .LVU24
+  57:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
+ 148              		.loc 3 57 6 view .LVU24
  149 002c 1446     		mov	r4, r2
-  59:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
- 150              		.loc 3 59 11 is_stmt 0 view .LVU25
+  57:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
+ 150              		.loc 3 57 11 is_stmt 0 view .LVU25
  151 002e 0026     		movs	r6, #0
- 152              		.loc 3 60 6 view .LVU26
+ 152              		.loc 3 58 6 view .LVU26
  153 0030 2A46     		mov	r2, r5
  154              	.LVL2:
- 155              		.loc 3 60 6 view .LVU27
+ 155              		.loc 3 58 6 view .LVU27
  156 0032 01A8     		add	r0, sp, #4
  157              	.LVL3:
- 158              		.loc 3 60 6 view .LVU28
+ 158              		.loc 3 58 6 view .LVU28
  159 0034 6168     		ldr	r1, [r4, #4]
  160              	.LVL4:
-  59:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
- 161              		.loc 3 59 11 view .LVU29
+  57:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
+ 161              		.loc 3 57 11 view .LVU29
  162 0036 0396     		str	r6, [sp, #12]
- 163              		.loc 3 60 6 is_stmt 1 view .LVU30
-  61:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
-  62:./src/udp_total.c ****      if(strcmp(buffer,JUMP_BOOT_STR) == 0)
- 164              		.loc 3 62 9 is_stmt 0 view .LVU31
+ 163              		.loc 3 58 6 is_stmt 1 view .LVU30
+  59:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
+  60:./src/udp_total.c ****      if(strcmp(buffer,JUMP_BOOT_STR) == 0)
+ 164              		.loc 3 60 9 is_stmt 0 view .LVU31
  165 0038 174F     		ldr	r7, .L15
-  59:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
- 166              		.loc 3 59 11 view .LVU32
+  57:./src/udp_total.c ****      memcpy(buffer, p->payload, p->len);
+ 166              		.loc 3 57 11 view .LVU32
  167 003a CDE90166 		strd	r6, r6, [sp, #4]
-  60:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
- 168              		.loc 3 60 6 view .LVU33
+  58:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
+ 168              		.loc 3 58 6 view .LVU33
  169 003e FFF7FEFF 		bl	memcpy
  170              	.LVL5:
-  61:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
- 171              		.loc 3 61 6 is_stmt 1 view .LVU34
-  61:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
- 172              		.loc 3 61 21 is_stmt 0 view .LVU35
+  59:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
+ 171              		.loc 3 59 6 is_stmt 1 view .LVU34
+  59:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
+ 172              		.loc 3 59 21 is_stmt 0 view .LVU35
  173 0042 04AB     		add	r3, sp, #16
- 174              		.loc 3 62 9 view .LVU36
+ 174              		.loc 3 60 9 view .LVU36
  175 0044 3968     		ldr	r1, [r7]
  176 0046 01A8     		add	r0, sp, #4
-  61:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
- 177              		.loc 3 61 21 view .LVU37
+  59:./src/udp_total.c ****      buffer[p->len] = '\0'; // null terminate
+ 177              		.loc 3 59 21 view .LVU37
  178 0048 1D44     		add	r5, r5, r3
  179 004a 05F80C6C 		strb	r6, [r5, #-12]
- 180              		.loc 3 62 6 is_stmt 1 view .LVU38
- 181              		.loc 3 62 9 is_stmt 0 view .LVU39
+ 180              		.loc 3 60 6 is_stmt 1 view .LVU38
+ 181              		.loc 3 60 9 is_stmt 0 view .LVU39
  182 004e FFF7FEFF 		bl	strcmp
  183              	.LVL6:
- 184              		.loc 3 62 8 view .LVU40
+ 184              		.loc 3 60 8 view .LVU40
  185 0052 B0B1     		cbz	r0, .L13
-  63:./src/udp_total.c ****      {
-  64:./src/udp_total.c ****       printf("[FW]  JUMP BOOT(soft RESET)\n");
-  65:./src/udp_total.c ****       osDelay(1000);
-  66:./src/udp_total.c ****       write_boot_flag_soft_reset();
-  67:./src/udp_total.c ****       NVIC_SystemReset();
-  68:./src/udp_total.c ****      }
-  69:./src/udp_total.c ****      else if(strcmp(buffer,JUMP_FW_STR ) == 0)
- 186              		.loc 3 69 11 is_stmt 1 view .LVU41
- 187              		.loc 3 69 14 is_stmt 0 view .LVU42
+  61:./src/udp_total.c ****      {
+  62:./src/udp_total.c ****       printf("[FW]  JUMP BOOT(soft RESET)\n");
+  63:./src/udp_total.c ****       osDelay(1000);
+  64:./src/udp_total.c ****       write_boot_flag_soft_reset();
+  65:./src/udp_total.c ****       NVIC_SystemReset();
+  66:./src/udp_total.c ****      }
+  67:./src/udp_total.c ****      else if(strcmp(buffer,JUMP_FW_STR ) == 0)
+ 186              		.loc 3 67 11 is_stmt 1 view .LVU41
+ 187              		.loc 3 67 14 is_stmt 0 view .LVU42
  188 0054 7968     		ldr	r1, [r7, #4]
  189 0056 01A8     		add	r0, sp, #4
  190 0058 FFF7FEFF 		bl	strcmp
  191              	.LVL7:
- 192              		.loc 3 69 13 view .LVU43
+ 192              		.loc 3 67 13 view .LVU43
  193 005c 30B1     		cbz	r0, .L14
-  70:./src/udp_total.c ****      {
-  71:./src/udp_total.c ****     	 printf("[FW]  JUMP FW(RESET)\n");
-  72:./src/udp_total.c ****        osDelay(1000);
-  73:./src/udp_total.c ****        clear_boot_flag();
-  74:./src/udp_total.c ****     	 NVIC_SystemReset();
-  75:./src/udp_total.c ****      }
-  76:./src/udp_total.c ****      pbuf_free(p);
- 194              		.loc 3 76 6 is_stmt 1 view .LVU44
+  68:./src/udp_total.c ****      {
+  69:./src/udp_total.c ****     	 printf("[FW]  JUMP FW(RESET)\n");
+  70:./src/udp_total.c ****        osDelay(1000);
+  71:./src/udp_total.c ****        clear_boot_flag();
+  72:./src/udp_total.c ****     	 NVIC_SystemReset();
+  73:./src/udp_total.c ****      }
+  74:./src/udp_total.c ****      pbuf_free(p);
+ 194              		.loc 3 74 6 is_stmt 1 view .LVU44
  195 005e 2046     		mov	r0, r4
  196              	.LBE17:
  197              	.LBE19:
  198              	.LBE21:
-  77:./src/udp_total.c ****   }
-  78:./src/udp_total.c **** }
- 199              		.loc 3 78 1 is_stmt 0 view .LVU45
+  75:./src/udp_total.c ****   }
+  76:./src/udp_total.c **** }
+ 199              		.loc 3 76 1 is_stmt 0 view .LVU45
  200 0060 05B0     		add	sp, sp, #20
  201              	.LCFI2:
  202              		.cfi_def_cfa_offset 20
@@ -3425,13 +3423,13 @@
  213              	.LBB22:
  214              	.LBB20:
  215              	.LBB18:
-  76:./src/udp_total.c ****   }
- 216              		.loc 3 76 6 view .LVU46
+  74:./src/udp_total.c ****   }
+ 216              		.loc 3 74 6 view .LVU46
  217 0066 FFF7FEBF 		b	pbuf_free
  218              	.LVL9:
  219              	.L6:
-  76:./src/udp_total.c ****   }
- 220              		.loc 3 76 6 view .LVU47
+  74:./src/udp_total.c ****   }
+ 220              		.loc 3 74 6 view .LVU47
  221 006a 7047     		bx	lr
  222              	.LVL10:
  223              	.L14:
@@ -3442,41 +3440,41 @@
  228              		.cfi_offset 6, -12
  229              		.cfi_offset 7, -8
  230              		.cfi_offset 14, -4
-  71:./src/udp_total.c ****        osDelay(1000);
- 231              		.loc 3 71 7 is_stmt 1 view .LVU48
+  69:./src/udp_total.c ****        osDelay(1000);
+ 231              		.loc 3 69 7 is_stmt 1 view .LVU48
  232 006c 0B48     		ldr	r0, .L15+4
  233 006e FFF7FEFF 		bl	puts
  234              	.LVL11:
-  72:./src/udp_total.c ****        clear_boot_flag();
- 235              		.loc 3 72 8 view .LVU49
+  70:./src/udp_total.c ****        clear_boot_flag();
+ 235              		.loc 3 70 8 view .LVU49
  236 0072 4FF47A70 		mov	r0, #1000
  237 0076 FFF7FEFF 		bl	osDelay
  238              	.LVL12:
-  73:./src/udp_total.c ****     	 NVIC_SystemReset();
- 239              		.loc 3 73 8 view .LVU50
+  71:./src/udp_total.c ****     	 NVIC_SystemReset();
+ 239              		.loc 3 71 8 view .LVU50
  240 007a FFF7FEFF 		bl	clear_boot_flag
  241              	.LVL13:
-  74:./src/udp_total.c ****      }
- 242              		.loc 3 74 7 view .LVU51
+  72:./src/udp_total.c ****      }
+ 242              		.loc 3 72 7 view .LVU51
  243 007e FFF7BFFF 		bl	__NVIC_SystemReset
  244              	.LVL14:
  245              	.L13:
-  64:./src/udp_total.c ****       osDelay(1000);
- 246              		.loc 3 64 7 view .LVU52
+  62:./src/udp_total.c ****       osDelay(1000);
+ 246              		.loc 3 62 7 view .LVU52
  247 0082 0748     		ldr	r0, .L15+8
  248 0084 FFF7FEFF 		bl	puts
  249              	.LVL15:
-  65:./src/udp_total.c ****       write_boot_flag_soft_reset();
- 250              		.loc 3 65 7 view .LVU53
+  63:./src/udp_total.c ****       write_boot_flag_soft_reset();
+ 250              		.loc 3 63 7 view .LVU53
  251 0088 4FF47A70 		mov	r0, #1000
  252 008c FFF7FEFF 		bl	osDelay
  253              	.LVL16:
-  66:./src/udp_total.c ****       NVIC_SystemReset();
- 254              		.loc 3 66 7 view .LVU54
+  64:./src/udp_total.c ****       NVIC_SystemReset();
+ 254              		.loc 3 64 7 view .LVU54
  255 0090 FFF7FEFF 		bl	write_boot_flag_soft_reset
  256              	.LVL17:
-  67:./src/udp_total.c ****      }
- 257              		.loc 3 67 7 view .LVU55
+  65:./src/udp_total.c ****      }
+ 257              		.loc 3 65 7 view .LVU55
  258 0094 FFF7B4FF 		bl	__NVIC_SystemReset
  259              	.LVL18:
  260              	.L16:
@@ -3493,1154 +3491,860 @@
  272              		.section	.rodata.str1.4
  273 0031 000000   		.align	2
  274              	.LC2:
- 275 0034 256C6C75 		.ascii	"%llu,%08X,\000"
- 275      2C253038 
- 275      582C00
- 276 003f 00       		.align	2
- 277              	.LC3:
- 278 0040 25303258 		.ascii	"%02X\000"
- 278      00
- 279 0045 000000   		.align	2
- 280              	.LC4:
- 281 0048 0A00     		.ascii	"\012\000"
- 282              		.text
- 283              		.align	1
- 284              		.p2align 2,,3
- 285              		.global	udp_can_send
- 286              		.syntax unified
- 287              		.thumb
- 288              		.thumb_func
- 289              		.fpu fpv5-d16
- 291              	udp_can_send:
- 292              	.LFB171:
+ 275 0034 5B46575D 		.ascii	"[FW] Can not create pcb1 \000"
+ 275      2043616E 
+ 275      206E6F74 
+ 275      20637265 
+ 275      61746520 
+ 276              		.text
+ 277              		.align	1
+ 278              		.p2align 2,,3
+ 279              		.global	udp_total_connect
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu fpv5-d16
+ 285              	udp_total_connect:
+ 286              	.LFB170:
+  77:./src/udp_total.c **** 
+  78:./src/udp_total.c **** 
   79:./src/udp_total.c **** 
-  80:./src/udp_total.c **** 
-  81:./src/udp_total.c **** 
-  82:./src/udp_total.c **** void udp_total_connect(void)
-  83:./src/udp_total.c **** {
-  84:./src/udp_total.c ****   ip_addr_t DestIPaddr;
-  85:./src/udp_total.c ****   err_t err;
-  86:./src/udp_total.c ****   
-  87:./src/udp_total.c ****   /* Create a new UDP control block  */
-  88:./src/udp_total.c ****   upcb = udp_new();
-  89:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
-  90:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
-  91:./src/udp_total.c **** 
-  92:./src/udp_total.c ****   upcb_sys = udp_new();
-  93:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
-  94:./src/udp_total.c ****   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
-  95:./src/udp_total.c **** 
-  96:./src/udp_total.c ****   udp_can_pcb = udp_new();
-  97:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
-  98:./src/udp_total.c ****   err= udp_connect(udp_can_pcb, &DestIPaddr, UDP_CAN_PORT);
-  99:./src/udp_total.c **** 
- 100:./src/udp_total.c ****   udp_server_pcb = udp_new();
- 101:./src/udp_total.c ****   if (!udp_server_pcb)
- 102:./src/udp_total.c ****   {
- 103:./src/udp_total.c ****     udp_client_send("Can not create pcb1 \n");
- 104:./src/udp_total.c ****   }
- 105:./src/udp_total.c ****   udp_bind(udp_server_pcb, IP_ADDR_ANY, UDP_SERVER_PORT); // 수신 포트
- 106:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
- 107:./src/udp_total.c **** }
- 108:./src/udp_total.c **** 
- 109:./src/udp_total.c **** void udp_can_send(void)
- 110:./src/udp_total.c **** {
- 293              		.loc 3 110 1 view -0
- 294              		.cfi_startproc
- 295              		@ args = 0, pretend = 0, frame = 352
- 296              		@ frame_needed = 0, uses_anonymous_args = 0
- 111:./src/udp_total.c ****   struct pbuf *p;
- 297              		.loc 3 111 3 view .LVU57
- 112:./src/udp_total.c ****   osStatus_t status;
- 298              		.loc 3 112 3 view .LVU58
- 113:./src/udp_total.c ****   CANRxMsgDMA_t recvMsg;   // 큐에서 꺼낼 CAN 메시지
- 299              		.loc 3 113 3 view .LVU59
- 114:./src/udp_total.c ****   char dataBuf[256];
- 300              		.loc 3 114 3 view .LVU60
- 115:./src/udp_total.c ****   int len = 0;
- 301              		.loc 3 115 3 view .LVU61
- 302              	.LVL19:
- 116:./src/udp_total.c ****   
- 117:./src/udp_total.c ****   status = osMessageQueueGet(canmessageQueue, &recvMsg, NULL, 0);
- 303              		.loc 3 117 3 view .LVU62
- 110:./src/udp_total.c ****   struct pbuf *p;
- 304              		.loc 3 110 1 is_stmt 0 view .LVU63
- 305 00a4 F0B5     		push	{r4, r5, r6, r7, lr}
- 306              	.LCFI5:
- 307              		.cfi_def_cfa_offset 20
- 308              		.cfi_offset 4, -20
- 309              		.cfi_offset 5, -16
- 310              		.cfi_offset 6, -12
- 311              		.cfi_offset 7, -8
- 312              		.cfi_offset 14, -4
- 313              		.loc 3 117 12 view .LVU64
- 314 00a6 0023     		movs	r3, #0
- 110:./src/udp_total.c ****   struct pbuf *p;
- 315              		.loc 3 110 1 view .LVU65
- 316 00a8 DDB0     		sub	sp, sp, #372
- 317              	.LCFI6:
- 318              		.cfi_def_cfa_offset 392
- 319              		.loc 3 117 12 view .LVU66
- 320 00aa 2648     		ldr	r0, .L32
- 321 00ac 1A46     		mov	r2, r3
- 322 00ae 04A9     		add	r1, sp, #16
- 323 00b0 0068     		ldr	r0, [r0]
- 324 00b2 FFF7FEFF 		bl	osMessageQueueGet
- 325              	.LVL20:
- 118:./src/udp_total.c **** 
- 119:./src/udp_total.c ****   uint32_t can_id = recvMsg.id;
- 326              		.loc 3 119 3 is_stmt 1 view .LVU67
- 120:./src/udp_total.c ****   uint8_t dlc = recvMsg.dlc;
- 327              		.loc 3 120 3 view .LVU68
- 121:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
- 328              		.loc 3 121 3 view .LVU69
- 122:./src/udp_total.c **** 
- 123:./src/udp_total.c ****   if( status == osOK){
- 329              		.loc 3 123 3 view .LVU70
- 330              		.loc 3 123 5 is_stmt 0 view .LVU71
- 331 00b6 08B1     		cbz	r0, .L31
- 332              	.LVL21:
- 333              	.L17:
- 124:./src/udp_total.c ****     // 1) TIME,CANID,
- 125:./src/udp_total.c ****     len = snprintf(dataBuf, sizeof(dataBuf),
- 126:./src/udp_total.c ****                    "%llu,%08X,",
- 127:./src/udp_total.c ****                    (unsigned long long)can_time,
- 128:./src/udp_total.c ****                    can_id);
- 129:./src/udp_total.c **** 
- 130:./src/udp_total.c ****     // 2) DATA (FD: 최대 64바이트)
- 131:./src/udp_total.c ****     for (int i = 0; i < dlc; i++) {
- 132:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 133:./src/udp_total.c ****     }
- 134:./src/udp_total.c **** 
- 135:./src/udp_total.c ****     // 3) 줄바꿈
- 136:./src/udp_total.c ****     len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "\n");
- 137:./src/udp_total.c **** 
- 138:./src/udp_total.c **** 
- 139:./src/udp_total.c ****     /* allocate pbuf from pool*/
- 140:./src/udp_total.c ****     p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
- 141:./src/udp_total.c ****     
- 142:./src/udp_total.c ****     if (p != NULL)
- 143:./src/udp_total.c ****     {
- 144:./src/udp_total.c ****       /* copy data to pbuf */
- 145:./src/udp_total.c ****       pbuf_take(p, dataBuf, len);
- 146:./src/udp_total.c ****       
- 147:./src/udp_total.c ****       /* send udp data */
- 148:./src/udp_total.c ****       udp_send(udp_can_pcb, p); 
- 149:./src/udp_total.c ****       
- 150:./src/udp_total.c ****       /* free pbuf */
- 151:./src/udp_total.c ****       pbuf_free(p);
- 152:./src/udp_total.c ****     }
- 153:./src/udp_total.c ****   }
- 154:./src/udp_total.c **** 
- 155:./src/udp_total.c ****   else if( status == osErrorResource){
- 156:./src/udp_total.c ****     
- 157:./src/udp_total.c ****   }
- 158:./src/udp_total.c **** }
- 334              		.loc 3 158 1 view .LVU72
- 335 00b8 5DB0     		add	sp, sp, #372
- 336              	.LCFI7:
- 337              		.cfi_remember_state
- 338              		.cfi_def_cfa_offset 20
- 339              		@ sp needed
- 340 00ba F0BD     		pop	{r4, r5, r6, r7, pc}
- 341              	.LVL22:
- 342              	.L31:
- 343              	.LCFI8:
- 344              		.cfi_restore_state
- 120:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
- 345              		.loc 3 120 24 view .LVU73
- 346 00bc 9DF82460 		ldrb	r6, [sp, #36]	@ zero_extendqisi2
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 347              		.loc 3 125 11 view .LVU74
- 348 00c0 1CA8     		add	r0, sp, #112
- 349              	.LVL23:
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 350              		.loc 3 125 11 view .LVU75
- 351 00c2 0A99     		ldr	r1, [sp, #40]
- 120:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
- 352              		.loc 3 120 24 view .LVU76
- 353 00c4 3609     		lsrs	r6, r6, #4
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 354              		.loc 3 125 5 is_stmt 1 view .LVU77
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 355              		.loc 3 125 11 is_stmt 0 view .LVU78
- 356 00c6 0291     		str	r1, [sp, #8]
- 357 00c8 4FF48071 		mov	r1, #256
- 121:./src/udp_total.c **** 
- 358              		.loc 3 121 12 view .LVU79
- 359 00cc DDE90523 		ldrd	r2, r3, [sp, #20]
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 360              		.loc 3 125 11 view .LVU80
- 361 00d0 0092     		str	r2, [sp]
- 362 00d2 0193     		str	r3, [sp, #4]
- 363 00d4 1C4A     		ldr	r2, .L32+4
- 364 00d6 FFF7FEFF 		bl	snprintf
- 365              	.LVL24:
- 125:./src/udp_total.c ****                    "%llu,%08X,",
- 366              		.loc 3 125 11 view .LVU81
- 367 00da 0446     		mov	r4, r0
- 368              	.LVL25:
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 369              		.loc 3 131 5 is_stmt 1 view .LVU82
- 370              	.LBB23:
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 371              		.loc 3 131 10 view .LVU83
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 372              		.loc 3 131 21 view .LVU84
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 373              		.loc 3 131 5 is_stmt 0 view .LVU85
- 374 00dc 7EB1     		cbz	r6, .L20
- 375 00de 0DF12B05 		add	r5, sp, #43
- 132:./src/udp_total.c ****     }
- 376              		.loc 3 132 16 view .LVU86
- 377 00e2 1A4F     		ldr	r7, .L32+8
- 378 00e4 2E44     		add	r6, r6, r5
- 379              	.LVL26:
- 380              	.L21:
- 132:./src/udp_total.c ****     }
- 381              		.loc 3 132 9 is_stmt 1 discriminator 3 view .LVU87
- 132:./src/udp_total.c ****     }
- 382              		.loc 3 132 16 is_stmt 0 discriminator 3 view .LVU88
- 383 00e6 1CAB     		add	r3, sp, #112
- 384 00e8 C4F58071 		rsb	r1, r4, #256
- 385 00ec 3A46     		mov	r2, r7
- 386 00ee 1819     		adds	r0, r3, r4
- 387 00f0 15F8013F 		ldrb	r3, [r5, #1]!	@ zero_extendqisi2
- 388              	.LVL27:
- 132:./src/udp_total.c ****     }
- 389              		.loc 3 132 16 discriminator 3 view .LVU89
- 390 00f4 FFF7FEFF 		bl	snprintf
- 391              	.LVL28:
- 132:./src/udp_total.c ****     }
- 392              		.loc 3 132 13 discriminator 3 view .LVU90
- 393 00f8 0444     		add	r4, r4, r0
- 394              	.LVL29:
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 395              		.loc 3 131 30 is_stmt 1 discriminator 3 view .LVU91
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 396              		.loc 3 131 21 discriminator 3 view .LVU92
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 397              		.loc 3 131 5 is_stmt 0 discriminator 3 view .LVU93
- 398 00fa B542     		cmp	r5, r6
- 399 00fc F3D1     		bne	.L21
- 400              	.LVL30:
- 401              	.L20:
- 131:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
- 402              		.loc 3 131 5 discriminator 3 view .LVU94
- 403              	.LBE23:
- 136:./src/udp_total.c **** 
- 404              		.loc 3 136 5 is_stmt 1 view .LVU95
- 136:./src/udp_total.c **** 
- 405              		.loc 3 136 12 is_stmt 0 view .LVU96
- 406 00fe 1CAB     		add	r3, sp, #112
- 140:./src/udp_total.c ****     
- 407              		.loc 3 140 35 view .LVU97
- 408 0100 134F     		ldr	r7, .L32+12
- 136:./src/udp_total.c **** 
- 409              		.loc 3 136 12 view .LVU98
- 410 0102 144A     		ldr	r2, .L32+16
- 411 0104 C4F58071 		rsb	r1, r4, #256
- 412 0108 1819     		adds	r0, r3, r4
- 413 010a FFF7FEFF 		bl	snprintf
- 414              	.LVL31:
- 415 010e 0646     		mov	r6, r0
- 416              	.LVL32:
- 140:./src/udp_total.c ****     
- 417              		.loc 3 140 5 is_stmt 1 view .LVU99
- 140:./src/udp_total.c ****     
- 418              		.loc 3 140 35 is_stmt 0 view .LVU100
- 419 0110 3846     		mov	r0, r7
- 420              	.LVL33:
- 140:./src/udp_total.c ****     
- 421              		.loc 3 140 35 view .LVU101
- 422 0112 FFF7FEFF 		bl	strlen
- 423              	.LVL34:
- 140:./src/udp_total.c ****     
- 424              		.loc 3 140 9 view .LVU102
- 425 0116 4FF4C172 		mov	r2, #386
- 426 011a 81B2     		uxth	r1, r0
- 427 011c 3620     		movs	r0, #54
- 428 011e FFF7FEFF 		bl	pbuf_alloc
- 429              	.LVL35:
- 142:./src/udp_total.c ****     {
- 430              		.loc 3 142 5 is_stmt 1 view .LVU103
- 142:./src/udp_total.c ****     {
- 431              		.loc 3 142 8 is_stmt 0 view .LVU104
- 432 0122 0546     		mov	r5, r0
- 433 0124 0028     		cmp	r0, #0
- 434 0126 C7D0     		beq	.L17
- 145:./src/udp_total.c ****       
- 435              		.loc 3 145 7 is_stmt 1 view .LVU105
- 136:./src/udp_total.c **** 
- 436              		.loc 3 136 9 is_stmt 0 view .LVU106
- 437 0128 3219     		adds	r2, r6, r4
- 438              	.LVL36:
- 145:./src/udp_total.c ****       
- 439              		.loc 3 145 7 view .LVU107
- 440 012a 1CA9     		add	r1, sp, #112
- 441 012c 92B2     		uxth	r2, r2
- 442              	.LVL37:
- 145:./src/udp_total.c ****       
- 443              		.loc 3 145 7 view .LVU108
- 444 012e FFF7FEFF 		bl	pbuf_take
- 445              	.LVL38:
- 148:./src/udp_total.c ****       
- 446              		.loc 3 148 7 is_stmt 1 view .LVU109
- 447 0132 2946     		mov	r1, r5
- 448 0134 786E     		ldr	r0, [r7, #100]
- 449 0136 FFF7FEFF 		bl	udp_send
- 450              	.LVL39:
- 151:./src/udp_total.c ****     }
- 451              		.loc 3 151 7 view .LVU110
- 452 013a 2846     		mov	r0, r5
- 453 013c FFF7FEFF 		bl	pbuf_free
- 454              	.LVL40:
- 157:./src/udp_total.c **** }
- 455              		.loc 3 157 3 view .LVU111
- 456              		.loc 3 158 1 is_stmt 0 view .LVU112
- 457 0140 5DB0     		add	sp, sp, #372
- 458              	.LCFI9:
- 459              		.cfi_def_cfa_offset 20
- 460              		@ sp needed
- 461 0142 F0BD     		pop	{r4, r5, r6, r7, pc}
- 462              	.LVL41:
- 463              	.L33:
- 464              		.loc 3 158 1 view .LVU113
- 465              		.align	2
- 466              	.L32:
- 467 0144 00000000 		.word	canmessageQueue
- 468 0148 34000000 		.word	.LC2
- 469 014c 40000000 		.word	.LC3
- 470 0150 00000000 		.word	.LANCHOR1
- 471 0154 48000000 		.word	.LC4
- 472              		.cfi_endproc
- 473              	.LFE171:
- 475              		.align	1
- 476              		.p2align 2,,3
- 477              		.global	udp_echoclient_send
- 478              		.syntax unified
- 479              		.thumb
- 480              		.thumb_func
- 481              		.fpu fpv5-d16
- 483              	udp_echoclient_send:
- 484              	.LFB172:
- 159:./src/udp_total.c **** 
- 160:./src/udp_total.c **** void udp_echoclient_send(void)
- 161:./src/udp_total.c **** {
- 485              		.loc 3 161 1 is_stmt 1 view -0
- 486              		.cfi_startproc
- 487              		@ args = 0, pretend = 0, frame = 512
- 488              		@ frame_needed = 0, uses_anonymous_args = 0
- 162:./src/udp_total.c ****   struct pbuf *p;
- 489              		.loc 3 162 3 view .LVU115
- 163:./src/udp_total.c ****   char receiveValue[512];
- 490              		.loc 3 163 3 view .LVU116
- 164:./src/udp_total.c ****   osStatus_t status;
- 491              		.loc 3 164 3 view .LVU117
- 165:./src/udp_total.c ****   
- 166:./src/udp_total.c ****   status = osMessageQueueGet(debugQueue, &receiveValue, NULL, 0);
- 492              		.loc 3 166 3 view .LVU118
- 161:./src/udp_total.c ****   struct pbuf *p;
- 493              		.loc 3 161 1 is_stmt 0 view .LVU119
- 494 0158 30B5     		push	{r4, r5, lr}
- 495              	.LCFI10:
- 496              		.cfi_def_cfa_offset 12
- 497              		.cfi_offset 4, -12
- 498              		.cfi_offset 5, -8
- 499              		.cfi_offset 14, -4
- 500              		.loc 3 166 12 view .LVU120
- 501 015a 0023     		movs	r3, #0
- 161:./src/udp_total.c ****   struct pbuf *p;
- 502              		.loc 3 161 1 view .LVU121
- 503 015c ADF5017D 		sub	sp, sp, #516
- 504              	.LCFI11:
- 505              		.cfi_def_cfa_offset 528
- 506              		.loc 3 166 12 view .LVU122
- 507 0160 1748     		ldr	r0, .L43
- 508 0162 1A46     		mov	r2, r3
- 509 0164 6946     		mov	r1, sp
- 510 0166 0068     		ldr	r0, [r0]
- 511 0168 FFF7FEFF 		bl	osMessageQueueGet
- 512              	.LVL42:
- 167:./src/udp_total.c **** 
- 168:./src/udp_total.c **** 
- 169:./src/udp_total.c ****   if( status == osOK){
- 513              		.loc 3 169 3 is_stmt 1 view .LVU123
- 514              		.loc 3 169 5 is_stmt 0 view .LVU124
- 515 016c 10B1     		cbz	r0, .L42
- 516              	.LVL43:
- 517              	.L34:
- 170:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
- 171:./src/udp_total.c ****     
- 172:./src/udp_total.c ****     /* allocate pbuf from pool*/
- 173:./src/udp_total.c ****     p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
- 174:./src/udp_total.c ****     
- 175:./src/udp_total.c ****     if (p != NULL)
- 176:./src/udp_total.c ****     {
- 177:./src/udp_total.c ****       /* copy data to pbuf */
- 178:./src/udp_total.c ****       pbuf_take(p, (char*)data, strlen((char*)data));
- 179:./src/udp_total.c ****       
- 180:./src/udp_total.c ****       /* send udp data */
- 181:./src/udp_total.c ****       udp_send(upcb, p); 
- 182:./src/udp_total.c ****       
- 183:./src/udp_total.c ****       /* free pbuf */
- 184:./src/udp_total.c ****       pbuf_free(p);
- 185:./src/udp_total.c ****     }
- 186:./src/udp_total.c ****   }
- 187:./src/udp_total.c **** 
- 188:./src/udp_total.c ****   else if( status == osErrorResource){
- 189:./src/udp_total.c ****     
- 190:./src/udp_total.c ****   }
- 191:./src/udp_total.c **** }
- 518              		.loc 3 191 1 view .LVU125
- 519 016e 0DF5017D 		add	sp, sp, #516
- 520              	.LCFI12:
- 521              		.cfi_remember_state
- 522              		.cfi_def_cfa_offset 12
- 523              		@ sp needed
- 524 0172 30BD     		pop	{r4, r5, pc}
- 525              	.LVL44:
- 526              	.L42:
- 527              	.LCFI13:
- 528              		.cfi_restore_state
- 170:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
- 529              		.loc 3 170 5 is_stmt 1 view .LVU126
- 530 0174 134D     		ldr	r5, .L43+4
- 531 0176 6946     		mov	r1, sp
- 532 0178 2846     		mov	r0, r5
- 533              	.LVL45:
- 170:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
- 534              		.loc 3 170 5 is_stmt 0 view .LVU127
- 535 017a FFF7FEFF 		bl	strcpy
- 536              	.LVL46:
- 173:./src/udp_total.c ****     
- 537              		.loc 3 173 5 is_stmt 1 view .LVU128
- 173:./src/udp_total.c ****     
- 538              		.loc 3 173 35 is_stmt 0 view .LVU129
- 539 017e 2846     		mov	r0, r5
- 540 0180 FFF7FEFF 		bl	strlen
- 541              	.LVL47:
- 542 0184 0146     		mov	r1, r0
- 173:./src/udp_total.c ****     
- 543              		.loc 3 173 9 view .LVU130
- 544 0186 4FF4C172 		mov	r2, #386
- 545 018a 3620     		movs	r0, #54
- 546 018c 89B2     		uxth	r1, r1
- 547 018e FFF7FEFF 		bl	pbuf_alloc
- 548              	.LVL48:
- 175:./src/udp_total.c ****     {
- 549              		.loc 3 175 5 is_stmt 1 view .LVU131
- 175:./src/udp_total.c ****     {
- 550              		.loc 3 175 8 is_stmt 0 view .LVU132
- 551 0192 0446     		mov	r4, r0
- 552 0194 0028     		cmp	r0, #0
- 553 0196 EAD0     		beq	.L34
- 178:./src/udp_total.c ****       
- 554              		.loc 3 178 7 is_stmt 1 view .LVU133
- 178:./src/udp_total.c ****       
- 555              		.loc 3 178 33 is_stmt 0 view .LVU134
- 556 0198 2846     		mov	r0, r5
- 557              	.LVL49:
- 178:./src/udp_total.c ****       
- 558              		.loc 3 178 33 view .LVU135
- 559 019a FFF7FEFF 		bl	strlen
- 560              	.LVL50:
- 561 019e 0246     		mov	r2, r0
- 178:./src/udp_total.c ****       
- 562              		.loc 3 178 7 view .LVU136
- 563 01a0 2946     		mov	r1, r5
- 564 01a2 2046     		mov	r0, r4
- 565 01a4 92B2     		uxth	r2, r2
- 566 01a6 FFF7FEFF 		bl	pbuf_take
- 567              	.LVL51:
- 181:./src/udp_total.c ****       
- 568              		.loc 3 181 7 is_stmt 1 view .LVU137
- 569 01aa 2146     		mov	r1, r4
- 570 01ac A86E     		ldr	r0, [r5, #104]
- 571 01ae FFF7FEFF 		bl	udp_send
- 572              	.LVL52:
- 184:./src/udp_total.c ****     }
- 573              		.loc 3 184 7 view .LVU138
- 574 01b2 2046     		mov	r0, r4
- 575 01b4 FFF7FEFF 		bl	pbuf_free
- 576              	.LVL53:
- 190:./src/udp_total.c **** }
- 577              		.loc 3 190 3 view .LVU139
- 578              		.loc 3 191 1 is_stmt 0 view .LVU140
- 579 01b8 0DF5017D 		add	sp, sp, #516
- 580              	.LCFI14:
- 581              		.cfi_def_cfa_offset 12
- 582              		@ sp needed
- 583 01bc 30BD     		pop	{r4, r5, pc}
- 584              	.LVL54:
- 585              	.L44:
- 586              		.loc 3 191 1 view .LVU141
- 587 01be 00BF     		.align	2
- 588              	.L43:
- 589 01c0 00000000 		.word	debugQueue
- 590 01c4 00000000 		.word	.LANCHOR1
- 591              		.cfi_endproc
- 592              	.LFE172:
- 594              		.align	1
- 595              		.p2align 2,,3
- 596              		.global	UDP_thread
- 597              		.syntax unified
- 598              		.thumb
- 599              		.thumb_func
- 600              		.fpu fpv5-d16
- 602              	UDP_thread:
- 603              	.LVL55:
- 604              	.LFB174:
- 192:./src/udp_total.c **** 
- 193:./src/udp_total.c **** 
- 194:./src/udp_total.c **** void udp_client_send(const char *msg)
- 195:./src/udp_total.c **** {
- 196:./src/udp_total.c ****     if (!upcb_sys) {
- 197:./src/udp_total.c ****         printf("[CHECK] UDP PCB not initialized\n");
- 198:./src/udp_total.c ****         return;
- 199:./src/udp_total.c ****     }
- 200:./src/udp_total.c **** 
- 201:./src/udp_total.c **** 
- 202:./src/udp_total.c ****     struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, strlen(msg), PBUF_POOL);
- 203:./src/udp_total.c ****     if (!p) {
- 204:./src/udp_total.c ****         printf("[CHECK] pbuf_alloc failed\n");
- 205:./src/udp_total.c ****         return;
- 206:./src/udp_total.c ****     }
- 207:./src/udp_total.c **** 
- 208:./src/udp_total.c ****     pbuf_take(p, msg, strlen(msg));
- 209:./src/udp_total.c **** 
- 210:./src/udp_total.c ****     err_t err = udp_send(upcb_sys, p);
- 211:./src/udp_total.c ****     if (err != ERR_OK) {
- 212:./src/udp_total.c ****         printf("[CHECK] udp_send failed: %d\n", err);
- 213:./src/udp_total.c ****     }
- 214:./src/udp_total.c **** 
- 215:./src/udp_total.c ****     pbuf_free(p);
- 216:./src/udp_total.c **** }
- 217:./src/udp_total.c **** 
- 218:./src/udp_total.c **** void UDP_thread(void *argument)
- 219:./src/udp_total.c **** {
- 605              		.loc 3 219 1 is_stmt 1 view -0
- 606              		.cfi_startproc
- 607              		@ Volatile: function does not return.
- 608              		@ args = 0, pretend = 0, frame = 0
- 609              		@ frame_needed = 0, uses_anonymous_args = 0
- 220:./src/udp_total.c ****   (void)argument;
- 221:./src/udp_total.c ****   for(;;)
- 222:./src/udp_total.c ****   {
- 223:./src/udp_total.c ****     udp_echoclient_send();
- 224:./src/udp_total.c ****     udp_can_send();
- 225:./src/udp_total.c ****     HAL_IWDG_Refresh(&hiwdg);
- 610              		.loc 3 225 5 is_stmt 0 view .LVU143
- 611 01c8 064C     		ldr	r4, .L48
- 219:./src/udp_total.c ****   (void)argument;
- 612              		.loc 3 219 1 view .LVU144
- 613 01ca 08B5     		push	{r3, lr}
- 614              	.LCFI15:
- 615              		.cfi_def_cfa_offset 8
- 616              		.cfi_offset 3, -8
- 617              		.cfi_offset 14, -4
- 618              	.LVL56:
- 619              	.L46:
- 220:./src/udp_total.c ****   (void)argument;
- 620              		.loc 3 220 3 is_stmt 1 discriminator 1 view .LVU145
- 221:./src/udp_total.c ****   {
- 621              		.loc 3 221 3 discriminator 1 view .LVU146
- 223:./src/udp_total.c ****     udp_can_send();
- 622              		.loc 3 223 5 discriminator 1 view .LVU147
- 623 01cc FFF7FEFF 		bl	udp_echoclient_send
- 624              	.LVL57:
- 224:./src/udp_total.c ****     HAL_IWDG_Refresh(&hiwdg);
- 625              		.loc 3 224 5 discriminator 1 view .LVU148
- 626 01d0 FFF7FEFF 		bl	udp_can_send
- 627              	.LVL58:
- 628              		.loc 3 225 5 discriminator 1 view .LVU149
- 629 01d4 2046     		mov	r0, r4
- 630 01d6 FFF7FEFF 		bl	HAL_IWDG_Refresh
- 631              	.LVL59:
- 226:./src/udp_total.c ****     osDelay(DLY_MS(20));                      //[user custom] : osDelay setting , now we send UDP m
- 632              		.loc 3 226 5 discriminator 1 view .LVU150
- 633 01da 6420     		movs	r0, #100
- 634 01dc FFF7FEFF 		bl	osDelay
- 635              	.LVL60:
- 221:./src/udp_total.c ****   {
- 636              		.loc 3 221 8 discriminator 1 view .LVU151
- 637 01e0 F4E7     		b	.L46
- 638              	.L49:
- 639 01e2 00BF     		.align	2
- 640              	.L48:
- 641 01e4 00000000 		.word	hiwdg
- 642              		.cfi_endproc
- 643              	.LFE174:
- 645              		.section	.rodata.str1.4
- 646 004a 0000     		.align	2
- 647              	.LC5:
- 648 004c 5B434845 		.ascii	"[CHECK] UDP PCB not initialized\000"
- 648      434B5D20 
- 648      55445020 
- 648      50434220 
- 648      6E6F7420 
- 649              		.align	2
- 650              	.LC6:
- 651 006c 5B434845 		.ascii	"[CHECK] pbuf_alloc failed\000"
- 651      434B5D20 
- 651      70627566 
- 651      5F616C6C 
- 651      6F632066 
- 652 0086 0000     		.align	2
- 653              	.LC7:
- 654 0088 5B434845 		.ascii	"[CHECK] udp_send failed: %d\012\000"
- 654      434B5D20 
- 654      7564705F 
- 654      73656E64 
- 654      20666169 
- 655              		.text
- 656              		.align	1
- 657              		.p2align 2,,3
- 658              		.global	udp_client_send
- 659              		.syntax unified
- 660              		.thumb
- 661              		.thumb_func
- 662              		.fpu fpv5-d16
- 664              	udp_client_send:
- 665              	.LVL61:
- 666              	.LFB173:
- 195:./src/udp_total.c ****     if (!upcb_sys) {
- 667              		.loc 3 195 1 view -0
- 668              		.cfi_startproc
- 669              		@ args = 0, pretend = 0, frame = 0
- 670              		@ frame_needed = 0, uses_anonymous_args = 0
- 196:./src/udp_total.c ****         printf("[CHECK] UDP PCB not initialized\n");
- 671              		.loc 3 196 5 view .LVU153
- 195:./src/udp_total.c ****     if (!upcb_sys) {
- 672              		.loc 3 195 1 is_stmt 0 view .LVU154
- 673 01e8 70B5     		push	{r4, r5, r6, lr}
- 674              	.LCFI16:
- 675              		.cfi_def_cfa_offset 16
- 676              		.cfi_offset 4, -16
- 677              		.cfi_offset 5, -12
- 678              		.cfi_offset 6, -8
- 679              		.cfi_offset 14, -4
- 196:./src/udp_total.c ****         printf("[CHECK] UDP PCB not initialized\n");
- 680              		.loc 3 196 9 view .LVU155
- 681 01ea 1A4E     		ldr	r6, .L61
- 196:./src/udp_total.c ****         printf("[CHECK] UDP PCB not initialized\n");
- 682              		.loc 3 196 8 view .LVU156
- 683 01ec F36E     		ldr	r3, [r6, #108]
- 684 01ee 33B3     		cbz	r3, .L58
- 202:./src/udp_total.c ****     if (!p) {
- 685              		.loc 3 202 5 is_stmt 1 view .LVU157
- 686 01f0 0546     		mov	r5, r0
- 202:./src/udp_total.c ****     if (!p) {
- 687              		.loc 3 202 49 is_stmt 0 view .LVU158
- 688 01f2 FFF7FEFF 		bl	strlen
- 689              	.LVL62:
- 202:./src/udp_total.c ****     if (!p) {
- 690              		.loc 3 202 49 view .LVU159
- 691 01f6 0146     		mov	r1, r0
- 202:./src/udp_total.c ****     if (!p) {
- 692              		.loc 3 202 22 view .LVU160
- 693 01f8 4FF4C172 		mov	r2, #386
- 694 01fc 3620     		movs	r0, #54
- 695 01fe 89B2     		uxth	r1, r1
- 696 0200 FFF7FEFF 		bl	pbuf_alloc
- 697              	.LVL63:
- 203:./src/udp_total.c ****         printf("[CHECK] pbuf_alloc failed\n");
- 698              		.loc 3 203 5 is_stmt 1 view .LVU161
- 203:./src/udp_total.c ****         printf("[CHECK] pbuf_alloc failed\n");
- 699              		.loc 3 203 8 is_stmt 0 view .LVU162
- 700 0204 0446     		mov	r4, r0
- 701 0206 F8B1     		cbz	r0, .L59
- 208:./src/udp_total.c **** 
- 702              		.loc 3 208 5 is_stmt 1 view .LVU163
- 208:./src/udp_total.c **** 
- 703              		.loc 3 208 23 is_stmt 0 view .LVU164
- 704 0208 2846     		mov	r0, r5
- 705              	.LVL64:
- 208:./src/udp_total.c **** 
- 706              		.loc 3 208 23 view .LVU165
- 707 020a FFF7FEFF 		bl	strlen
- 708              	.LVL65:
- 208:./src/udp_total.c **** 
- 709              		.loc 3 208 5 view .LVU166
- 710 020e 2946     		mov	r1, r5
- 711 0210 82B2     		uxth	r2, r0
- 712 0212 2046     		mov	r0, r4
- 713 0214 FFF7FEFF 		bl	pbuf_take
- 714              	.LVL66:
- 210:./src/udp_total.c ****     if (err != ERR_OK) {
- 715              		.loc 3 210 5 is_stmt 1 view .LVU167
- 210:./src/udp_total.c ****     if (err != ERR_OK) {
- 716              		.loc 3 210 17 is_stmt 0 view .LVU168
- 717 0218 2146     		mov	r1, r4
- 718 021a F06E     		ldr	r0, [r6, #108]
- 719 021c FFF7FEFF 		bl	udp_send
- 720              	.LVL67:
- 211:./src/udp_total.c ****         printf("[CHECK] udp_send failed: %d\n", err);
- 721              		.loc 3 211 5 is_stmt 1 view .LVU169
- 211:./src/udp_total.c ****         printf("[CHECK] udp_send failed: %d\n", err);
- 722              		.loc 3 211 8 is_stmt 0 view .LVU170
- 723 0220 20B9     		cbnz	r0, .L60
- 215:./src/udp_total.c **** }
- 724              		.loc 3 215 5 is_stmt 1 view .LVU171
- 725 0222 2046     		mov	r0, r4
- 726              	.LVL68:
- 216:./src/udp_total.c **** 
- 727              		.loc 3 216 1 is_stmt 0 view .LVU172
- 728 0224 BDE87040 		pop	{r4, r5, r6, lr}
- 729              	.LCFI17:
- 730              		.cfi_remember_state
- 731              		.cfi_restore 14
- 732              		.cfi_restore 6
- 733              		.cfi_restore 5
- 734              		.cfi_restore 4
- 735              		.cfi_def_cfa_offset 0
- 736              	.LVL69:
- 215:./src/udp_total.c **** }
- 737              		.loc 3 215 5 view .LVU173
- 738 0228 FFF7FEBF 		b	pbuf_free
- 739              	.LVL70:
- 740              	.L60:
- 741              	.LCFI18:
- 742              		.cfi_restore_state
- 212:./src/udp_total.c ****     }
- 743              		.loc 3 212 9 is_stmt 1 view .LVU174
- 744 022c 0146     		mov	r1, r0
- 745 022e 0A48     		ldr	r0, .L61+4
- 746              	.LVL71:
- 212:./src/udp_total.c ****     }
- 747              		.loc 3 212 9 is_stmt 0 view .LVU175
- 748 0230 FFF7FEFF 		bl	printf
- 749              	.LVL72:
- 215:./src/udp_total.c **** }
- 750              		.loc 3 215 5 is_stmt 1 view .LVU176
- 751 0234 2046     		mov	r0, r4
- 216:./src/udp_total.c **** 
- 752              		.loc 3 216 1 is_stmt 0 view .LVU177
- 753 0236 BDE87040 		pop	{r4, r5, r6, lr}
- 754              	.LCFI19:
- 755              		.cfi_remember_state
- 756              		.cfi_restore 14
- 757              		.cfi_restore 6
- 758              		.cfi_restore 5
- 759              		.cfi_restore 4
- 760              		.cfi_def_cfa_offset 0
- 761              	.LVL73:
- 215:./src/udp_total.c **** }
- 762              		.loc 3 215 5 view .LVU178
- 763 023a FFF7FEBF 		b	pbuf_free
- 764              	.LVL74:
- 765              	.L58:
- 766              	.LCFI20:
- 767              		.cfi_restore_state
- 197:./src/udp_total.c ****         return;
- 768              		.loc 3 197 9 is_stmt 1 view .LVU179
- 769 023e 0748     		ldr	r0, .L61+8
- 770              	.LVL75:
- 216:./src/udp_total.c **** 
- 771              		.loc 3 216 1 is_stmt 0 view .LVU180
- 772 0240 BDE87040 		pop	{r4, r5, r6, lr}
- 773              	.LCFI21:
- 774              		.cfi_remember_state
- 775              		.cfi_restore 14
- 776              		.cfi_restore 6
- 777              		.cfi_restore 5
- 778              		.cfi_restore 4
- 779              		.cfi_def_cfa_offset 0
- 197:./src/udp_total.c ****         return;
- 780              		.loc 3 197 9 view .LVU181
- 781 0244 FFF7FEBF 		b	puts
- 782              	.LVL76:
- 783              	.L59:
- 784              	.LCFI22:
- 785              		.cfi_restore_state
- 204:./src/udp_total.c ****         return;
- 786              		.loc 3 204 9 is_stmt 1 view .LVU182
- 787 0248 0548     		ldr	r0, .L61+12
- 788              	.LVL77:
- 216:./src/udp_total.c **** 
- 789              		.loc 3 216 1 is_stmt 0 view .LVU183
- 790 024a BDE87040 		pop	{r4, r5, r6, lr}
- 791              	.LCFI23:
- 792              		.cfi_restore 14
- 793              		.cfi_restore 6
- 794              		.cfi_restore 5
- 795              		.cfi_restore 4
- 796              		.cfi_def_cfa_offset 0
- 797              	.LVL78:
- 204:./src/udp_total.c ****         return;
- 798              		.loc 3 204 9 view .LVU184
- 799 024e FFF7FEBF 		b	puts
- 800              	.LVL79:
- 801              	.L62:
- 802 0252 00BF     		.align	2
- 803              	.L61:
- 804 0254 00000000 		.word	.LANCHOR1
- 805 0258 88000000 		.word	.LC7
- 806 025c 4C000000 		.word	.LC5
- 807 0260 6C000000 		.word	.LC6
- 808              		.cfi_endproc
- 809              	.LFE173:
- 811              		.section	.rodata.str1.4
- 812 00a5 000000   		.align	2
- 813              	.LC8:
- 814 00a8 43616E20 		.ascii	"Can not create pcb1 \012\000"
- 814      6E6F7420 
- 814      63726561 
- 814      74652070 
- 814      63623120 
- 815              		.text
- 816              		.align	1
- 817              		.p2align 2,,3
- 818              		.global	udp_total_connect
- 819              		.syntax unified
- 820              		.thumb
- 821              		.thumb_func
- 822              		.fpu fpv5-d16
- 824              	udp_total_connect:
- 825              	.LFB170:
-  83:./src/udp_total.c ****   ip_addr_t DestIPaddr;
- 826              		.loc 3 83 1 is_stmt 1 view -0
- 827              		.cfi_startproc
- 828              		@ args = 0, pretend = 0, frame = 8
- 829              		@ frame_needed = 0, uses_anonymous_args = 0
-  84:./src/udp_total.c ****   err_t err;
- 830              		.loc 3 84 3 view .LVU186
-  85:./src/udp_total.c ****   
- 831              		.loc 3 85 3 view .LVU187
-  88:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 832              		.loc 3 88 3 view .LVU188
-  83:./src/udp_total.c ****   ip_addr_t DestIPaddr;
- 833              		.loc 3 83 1 is_stmt 0 view .LVU189
- 834 0264 30B5     		push	{r4, r5, lr}
- 835              	.LCFI24:
- 836              		.cfi_def_cfa_offset 12
- 837              		.cfi_offset 4, -12
- 838              		.cfi_offset 5, -8
- 839              		.cfi_offset 14, -4
- 840 0266 83B0     		sub	sp, sp, #12
- 841              	.LCFI25:
- 842              		.cfi_def_cfa_offset 24
-  88:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 843              		.loc 3 88 8 view .LVU190
- 844 0268 184C     		ldr	r4, .L67
-  89:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
- 845              		.loc 3 89 3 view .LVU191
- 846 026a 194D     		ldr	r5, .L67+4
-  88:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 847              		.loc 3 88 10 view .LVU192
- 848 026c FFF7FEFF 		bl	udp_new
- 849              	.LVL80:
-  90:./src/udp_total.c **** 
- 850              		.loc 3 90 8 view .LVU193
- 851 0270 41F27A72 		movw	r2, #6010
- 852 0274 01A9     		add	r1, sp, #4
-  88:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 853              		.loc 3 88 8 view .LVU194
- 854 0276 A066     		str	r0, [r4, #104]
-  89:./src/udp_total.c ****   err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
- 855              		.loc 3 89 3 is_stmt 1 view .LVU195
- 856 0278 0195     		str	r5, [sp, #4]
-  90:./src/udp_total.c **** 
- 857              		.loc 3 90 3 view .LVU196
-  90:./src/udp_total.c **** 
- 858              		.loc 3 90 8 is_stmt 0 view .LVU197
- 859 027a FFF7FEFF 		bl	udp_connect
- 860              	.LVL81:
-  92:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 861              		.loc 3 92 3 is_stmt 1 view .LVU198
-  92:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 862              		.loc 3 92 14 is_stmt 0 view .LVU199
- 863 027e FFF7FEFF 		bl	udp_new
- 864              	.LVL82:
-  94:./src/udp_total.c **** 
- 865              		.loc 3 94 8 view .LVU200
- 866 0282 41F66232 		movw	r2, #7010
- 867 0286 01A9     		add	r1, sp, #4
-  93:./src/udp_total.c ****   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
- 868              		.loc 3 93 3 view .LVU201
- 869 0288 0195     		str	r5, [sp, #4]
-  92:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 870              		.loc 3 92 12 view .LVU202
- 871 028a E066     		str	r0, [r4, #108]
-  93:./src/udp_total.c ****   err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
- 872              		.loc 3 93 3 is_stmt 1 view .LVU203
-  94:./src/udp_total.c **** 
- 873              		.loc 3 94 3 view .LVU204
-  94:./src/udp_total.c **** 
- 874              		.loc 3 94 8 is_stmt 0 view .LVU205
- 875 028c FFF7FEFF 		bl	udp_connect
- 876              	.LVL83:
-  96:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 877              		.loc 3 96 3 is_stmt 1 view .LVU206
-  96:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 878              		.loc 3 96 17 is_stmt 0 view .LVU207
- 879 0290 FFF7FEFF 		bl	udp_new
- 880              	.LVL84:
-  98:./src/udp_total.c **** 
- 881              		.loc 3 98 8 view .LVU208
- 882 0294 01A9     		add	r1, sp, #4
- 883 0296 41F29232 		movw	r2, #5010
-  97:./src/udp_total.c ****   err= udp_connect(udp_can_pcb, &DestIPaddr, UDP_CAN_PORT);
- 884              		.loc 3 97 3 view .LVU209
- 885 029a 0195     		str	r5, [sp, #4]
-  96:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
- 886              		.loc 3 96 15 view .LVU210
- 887 029c 6066     		str	r0, [r4, #100]
-  97:./src/udp_total.c ****   err= udp_connect(udp_can_pcb, &DestIPaddr, UDP_CAN_PORT);
- 888              		.loc 3 97 3 is_stmt 1 view .LVU211
-  98:./src/udp_total.c **** 
- 889              		.loc 3 98 3 view .LVU212
-  98:./src/udp_total.c **** 
- 890              		.loc 3 98 8 is_stmt 0 view .LVU213
- 891 029e FFF7FEFF 		bl	udp_connect
- 892              	.LVL85:
- 100:./src/udp_total.c ****   if (!udp_server_pcb)
- 893              		.loc 3 100 3 is_stmt 1 view .LVU214
- 100:./src/udp_total.c ****   if (!udp_server_pcb)
- 894              		.loc 3 100 20 is_stmt 0 view .LVU215
- 895 02a2 FFF7FEFF 		bl	udp_new
- 896              	.LVL86:
- 100:./src/udp_total.c ****   if (!udp_server_pcb)
- 897              		.loc 3 100 18 view .LVU216
- 898 02a6 2067     		str	r0, [r4, #112]
- 101:./src/udp_total.c ****   {
- 899              		.loc 3 101 3 is_stmt 1 view .LVU217
- 101:./src/udp_total.c ****   {
- 900              		.loc 3 101 6 is_stmt 0 view .LVU218
- 901 02a8 58B1     		cbz	r0, .L66
- 902              	.L64:
- 105:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
- 903              		.loc 3 105 3 is_stmt 1 view .LVU219
- 904 02aa 41F69072 		movw	r2, #8080
- 905 02ae 0949     		ldr	r1, .L67+8
- 906 02b0 FFF7FEFF 		bl	udp_bind
- 907              	.LVL87:
- 106:./src/udp_total.c **** }
- 908              		.loc 3 106 3 view .LVU220
- 909 02b4 0022     		movs	r2, #0
- 910 02b6 0849     		ldr	r1, .L67+12
- 911 02b8 206F     		ldr	r0, [r4, #112]
- 912 02ba FFF7FEFF 		bl	udp_recv
- 913              	.LVL88:
- 107:./src/udp_total.c **** 
- 914              		.loc 3 107 1 is_stmt 0 view .LVU221
- 915 02be 03B0     		add	sp, sp, #12
- 916              	.LCFI26:
- 917              		.cfi_remember_state
- 918              		.cfi_def_cfa_offset 12
- 919              		@ sp needed
- 920 02c0 30BD     		pop	{r4, r5, pc}
- 921              	.L66:
- 922              	.LCFI27:
- 923              		.cfi_restore_state
- 103:./src/udp_total.c ****   }
- 924              		.loc 3 103 5 is_stmt 1 view .LVU222
- 925 02c2 0648     		ldr	r0, .L67+16
- 926 02c4 FFF7FEFF 		bl	udp_client_send
- 927              	.LVL89:
- 105:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
- 928              		.loc 3 105 3 is_stmt 0 view .LVU223
- 929 02c8 206F     		ldr	r0, [r4, #112]
- 930 02ca EEE7     		b	.L64
- 931              	.L68:
- 932              		.align	2
- 933              	.L67:
- 934 02cc 00000000 		.word	.LANCHOR1
- 935 02d0 C0A81445 		.word	1158981824
- 936 02d4 00000000 		.word	ip_addr_any
- 937 02d8 00000000 		.word	udp_receive_callback
- 938 02dc A8000000 		.word	.LC8
- 939              		.cfi_endproc
- 940              	.LFE170:
- 942              		.align	1
- 943              		.p2align 2,,3
- 944              		.global	UDP_task
- 945              		.syntax unified
- 946              		.thumb
- 947              		.thumb_func
- 948              		.fpu fpv5-d16
- 950              	UDP_task:
- 951              	.LVL90:
- 952              	.LFB175:
- 227:./src/udp_total.c ****   }
- 228:./src/udp_total.c **** }
- 229:./src/udp_total.c **** 
- 230:./src/udp_total.c **** 
- 231:./src/udp_total.c **** 
- 232:./src/udp_total.c **** 
- 233:./src/udp_total.c **** 
- 234:./src/udp_total.c **** void UDP_task(void *argument)
- 235:./src/udp_total.c **** {
- 953              		.loc 3 235 1 is_stmt 1 view -0
- 954              		.cfi_startproc
- 955              		@ args = 0, pretend = 0, frame = 0
- 956              		@ frame_needed = 0, uses_anonymous_args = 0
- 236:./src/udp_total.c ****     (void)argument;
- 957              		.loc 3 236 5 view .LVU225
- 237:./src/udp_total.c **** 
- 238:./src/udp_total.c ****     UDPHandle = osThreadNew(UDP_thread, NULL, &UDP_attributes);
- 958              		.loc 3 238 5 view .LVU226
- 235:./src/udp_total.c ****     (void)argument;
- 959              		.loc 3 235 1 is_stmt 0 view .LVU227
- 960 02e0 08B5     		push	{r3, lr}
- 961              	.LCFI28:
- 962              		.cfi_def_cfa_offset 8
- 963              		.cfi_offset 3, -8
- 964              		.cfi_offset 14, -4
- 965              		.loc 3 238 17 view .LVU228
- 966 02e2 044A     		ldr	r2, .L71
- 967 02e4 0021     		movs	r1, #0
- 968 02e6 0448     		ldr	r0, .L71+4
- 969              	.LVL91:
- 970              		.loc 3 238 17 view .LVU229
- 971 02e8 FFF7FEFF 		bl	osThreadNew
- 972              	.LVL92:
- 973              		.loc 3 238 15 view .LVU230
- 974 02ec 034B     		ldr	r3, .L71+8
- 975 02ee 5867     		str	r0, [r3, #116]
- 239:./src/udp_total.c ****     if(UDPHandle == NULL)
- 976              		.loc 3 239 5 is_stmt 1 view .LVU231
- 240:./src/udp_total.c ****     {
- 241:./src/udp_total.c ****       
- 242:./src/udp_total.c ****     }
- 977              		.loc 3 242 5 view .LVU232
- 243:./src/udp_total.c **** }
- 978              		.loc 3 243 1 is_stmt 0 view .LVU233
- 979 02f0 08BD     		pop	{r3, pc}
- 980              	.L72:
- 981 02f2 00BF     		.align	2
- 982              	.L71:
- 983 02f4 00000000 		.word	.LANCHOR2
- 984 02f8 00000000 		.word	UDP_thread
- 985 02fc 00000000 		.word	.LANCHOR1
- 986              		.cfi_endproc
- 987              	.LFE175:
- 989              		.global	UDP_attributes
- 990              		.section	.rodata.str1.4
- 991 00be 0000     		.align	2
- 992              	.LC9:
- 993 00c0 7564705F 		.ascii	"udp_send\000"
- 993      73656E64 
- 993      00
- 994              		.global	UDPHandle
- 995              		.global	JUMP_FW_STR
- 996 00c9 000000   		.align	2
- 997              	.LC10:
- 998 00cc 52455345 		.ascii	"RESET SSSAAA\000"
- 998      54205353 
- 998      53414141 
- 998      00
- 999              		.global	JUMP_BOOT_STR
- 1000 00d9 000000   		.align	2
- 1001              	.LC11:
- 1002 00dc 534F4654 		.ascii	"SOFT RESET SSSAAA\000"
- 1002      20524553 
- 1002      45542053 
- 1002      53534141 
- 1002      4100
- 1003              		.global	udp_can_pcb
- 1004              		.global	udp_server_pcb
- 1005              		.global	upcb_sys
- 1006              		.global	upcb
- 1007              		.global	data
- 1008              		.section	.rodata
- 1009              		.align	2
- 1010              		.set	.LANCHOR2,. + 0
- 1013              	UDP_attributes:
- 1014 0000 C0000000 		.word	.LC9
- 1015 0004 00000000 		.space	16
- 1015      00000000 
- 1015      00000000 
- 1015      00000000 
- 1016 0014 00080000 		.word	2048
- 1017 0018 10000000 		.word	16
- 1018 001c 00000000 		.space	8
- 1018      00000000 
- 1019              		.data
- 1020              		.align	2
- 1021              		.set	.LANCHOR0,. + 0
- 1024              	JUMP_BOOT_STR:
- 1025 0000 DC000000 		.word	.LC11
- 1028              	JUMP_FW_STR:
- 1029 0004 CC000000 		.word	.LC10
- 1030              		.bss
- 1031              		.align	2
- 1032              		.set	.LANCHOR1,. + 0
- 1035              	data:
- 1036 0000 00000000 		.space	100
- 1036      00000000 
- 1036      00000000 
- 1036      00000000 
- 1036      00000000 
- 1039              	udp_can_pcb:
- 1040 0064 00000000 		.space	4
- 1043              	upcb:
- 1044 0068 00000000 		.space	4
- 1047              	upcb_sys:
- 1048 006c 00000000 		.space	4
- 1051              	udp_server_pcb:
- 1052 0070 00000000 		.space	4
- 1055              	UDPHandle:
- 1056 0074 00000000 		.space	4
- 1057              		.text
- 1058              	.Letext0:
- 1059              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1060              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1061              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
- 1062              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
- 1063              		.file 8 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 1064              		.file 9 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 1065              		.file 10 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 1066              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
- 1067              		.file 12 "./lwip-2.1.2/src/include/lwip/udp.h"
- 1068              		.file 13 "./inc/cmsis_os2.h"
- 1069              		.file 14 "./inc/stm32f765xx.h"
- 1070              		.file 15 "./inc/stm32f7xx_hal_iwdg.h"
- 1071              		.file 16 "./inc/can_user.h"
- 1072              		.file 17 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 1073              		.file 18 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 1074              		.file 19 "<built-in>"
- 1075              		.file 20 "./inc/reset.h"
- 1076              		.file 21 "./lwip-2.1.2/src/include/lwip/netif.h"
+  80:./src/udp_total.c **** void udp_total_connect(void)
+  81:./src/udp_total.c **** {
+ 287              		.loc 3 81 1 view -0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 8
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+  82:./src/udp_total.c ****   ip_addr_t DestIPaddr;
+ 291              		.loc 3 82 3 view .LVU57
+  83:./src/udp_total.c ****   err_t err;
+ 292              		.loc 3 83 3 view .LVU58
+  84:./src/udp_total.c ****   
+  85:./src/udp_total.c ****   /* Create a new UDP control block  */
+  86:./src/udp_total.c ****   udp_client_pcb = udp_new();
+ 293              		.loc 3 86 3 view .LVU59
+  81:./src/udp_total.c ****   ip_addr_t DestIPaddr;
+ 294              		.loc 3 81 1 is_stmt 0 view .LVU60
+ 295 00a4 30B5     		push	{r4, r5, lr}
+ 296              	.LCFI5:
+ 297              		.cfi_def_cfa_offset 12
+ 298              		.cfi_offset 4, -12
+ 299              		.cfi_offset 5, -8
+ 300              		.cfi_offset 14, -4
+ 301 00a6 83B0     		sub	sp, sp, #12
+ 302              	.LCFI6:
+ 303              		.cfi_def_cfa_offset 24
+ 304              		.loc 3 86 18 view .LVU61
+ 305 00a8 144C     		ldr	r4, .L21
+  87:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 306              		.loc 3 87 3 view .LVU62
+ 307 00aa 154D     		ldr	r5, .L21+4
+  86:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 308              		.loc 3 86 20 view .LVU63
+ 309 00ac FFF7FEFF 		bl	udp_new
+ 310              	.LVL19:
+  88:./src/udp_total.c ****   err= udp_connect(udp_client_pcb, &DestIPaddr, UDP_CLIENT_PORT);
+ 311              		.loc 3 88 8 view .LVU64
+ 312 00b0 41F27A72 		movw	r2, #6010
+ 313 00b4 01A9     		add	r1, sp, #4
+  86:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 314              		.loc 3 86 18 view .LVU65
+ 315 00b6 2060     		str	r0, [r4]
+  87:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 316              		.loc 3 87 3 is_stmt 1 view .LVU66
+ 317 00b8 0195     		str	r5, [sp, #4]
+ 318              		.loc 3 88 3 view .LVU67
+ 319              		.loc 3 88 8 is_stmt 0 view .LVU68
+ 320 00ba FFF7FEFF 		bl	udp_connect
+ 321              	.LVL20:
+  89:./src/udp_total.c **** 
+  90:./src/udp_total.c ****   udp_can_pcb = udp_new();
+ 322              		.loc 3 90 3 is_stmt 1 view .LVU69
+ 323              		.loc 3 90 17 is_stmt 0 view .LVU70
+ 324 00be FFF7FEFF 		bl	udp_new
+ 325              	.LVL21:
+  91:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+  92:./src/udp_total.c ****   err= udp_connect(udp_can_pcb, &DestIPaddr, UDP_CAN_PORT);
+ 326              		.loc 3 92 8 view .LVU71
+ 327 00c2 01A9     		add	r1, sp, #4
+ 328 00c4 41F29232 		movw	r2, #5010
+  91:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 329              		.loc 3 91 3 view .LVU72
+ 330 00c8 0195     		str	r5, [sp, #4]
+  90:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 331              		.loc 3 90 15 view .LVU73
+ 332 00ca 6060     		str	r0, [r4, #4]
+  91:./src/udp_total.c ****   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
+ 333              		.loc 3 91 3 is_stmt 1 view .LVU74
+ 334              		.loc 3 92 3 view .LVU75
+ 335              		.loc 3 92 8 is_stmt 0 view .LVU76
+ 336 00cc FFF7FEFF 		bl	udp_connect
+ 337              	.LVL22:
+  93:./src/udp_total.c **** 
+  94:./src/udp_total.c ****   udp_server_pcb = udp_new();
+ 338              		.loc 3 94 3 is_stmt 1 view .LVU77
+ 339              		.loc 3 94 20 is_stmt 0 view .LVU78
+ 340 00d0 FFF7FEFF 		bl	udp_new
+ 341              	.LVL23:
+ 342              		.loc 3 94 18 view .LVU79
+ 343 00d4 A060     		str	r0, [r4, #8]
+  95:./src/udp_total.c ****   if (!udp_server_pcb)
+ 344              		.loc 3 95 3 is_stmt 1 view .LVU80
+ 345              		.loc 3 95 6 is_stmt 0 view .LVU81
+ 346 00d6 58B1     		cbz	r0, .L20
+ 347              	.L18:
+  96:./src/udp_total.c ****   {
+  97:./src/udp_total.c ****     printf("[FW] Can not create pcb1 \n");
+  98:./src/udp_total.c ****   }
+  99:./src/udp_total.c ****   udp_bind(udp_server_pcb, IP_ADDR_ANY, UDP_SERVER_PORT); // 수신 포트
+ 348              		.loc 3 99 3 is_stmt 1 view .LVU82
+ 349 00d8 41F69072 		movw	r2, #8080
+ 350 00dc 0949     		ldr	r1, .L21+8
+ 351 00de FFF7FEFF 		bl	udp_bind
+ 352              	.LVL24:
+ 100:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
+ 353              		.loc 3 100 3 view .LVU83
+ 354 00e2 0022     		movs	r2, #0
+ 355 00e4 0849     		ldr	r1, .L21+12
+ 356 00e6 A068     		ldr	r0, [r4, #8]
+ 357 00e8 FFF7FEFF 		bl	udp_recv
+ 358              	.LVL25:
+ 101:./src/udp_total.c **** }
+ 359              		.loc 3 101 1 is_stmt 0 view .LVU84
+ 360 00ec 03B0     		add	sp, sp, #12
+ 361              	.LCFI7:
+ 362              		.cfi_remember_state
+ 363              		.cfi_def_cfa_offset 12
+ 364              		@ sp needed
+ 365 00ee 30BD     		pop	{r4, r5, pc}
+ 366              	.L20:
+ 367              	.LCFI8:
+ 368              		.cfi_restore_state
+  97:./src/udp_total.c ****   }
+ 369              		.loc 3 97 5 is_stmt 1 view .LVU85
+ 370 00f0 0648     		ldr	r0, .L21+16
+ 371 00f2 FFF7FEFF 		bl	puts
+ 372              	.LVL26:
+  99:./src/udp_total.c ****   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
+ 373              		.loc 3 99 3 is_stmt 0 view .LVU86
+ 374 00f6 A068     		ldr	r0, [r4, #8]
+ 375 00f8 EEE7     		b	.L18
+ 376              	.L22:
+ 377 00fa 00BF     		.align	2
+ 378              	.L21:
+ 379 00fc 00000000 		.word	.LANCHOR1
+ 380 0100 C0A81445 		.word	1158981824
+ 381 0104 00000000 		.word	ip_addr_any
+ 382 0108 00000000 		.word	udp_receive_callback
+ 383 010c 34000000 		.word	.LC2
+ 384              		.cfi_endproc
+ 385              	.LFE170:
+ 387              		.section	.rodata.str1.4
+ 388 004e 0000     		.align	2
+ 389              	.LC3:
+ 390 0050 256C6C75 		.ascii	"%llu,%08X,\000"
+ 390      2C253038 
+ 390      582C00
+ 391 005b 00       		.align	2
+ 392              	.LC4:
+ 393 005c 25303258 		.ascii	"%02X\000"
+ 393      00
+ 394 0061 000000   		.align	2
+ 395              	.LC5:
+ 396 0064 0A00     		.ascii	"\012\000"
+ 397              		.text
+ 398              		.align	1
+ 399              		.p2align 2,,3
+ 400              		.global	udp_can_send
+ 401              		.syntax unified
+ 402              		.thumb
+ 403              		.thumb_func
+ 404              		.fpu fpv5-d16
+ 406              	udp_can_send:
+ 407              	.LFB171:
+ 102:./src/udp_total.c **** 
+ 103:./src/udp_total.c **** void udp_can_send(void)
+ 104:./src/udp_total.c **** {
+ 408              		.loc 3 104 1 is_stmt 1 view -0
+ 409              		.cfi_startproc
+ 410              		@ args = 0, pretend = 0, frame = 352
+ 411              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:./src/udp_total.c ****   struct pbuf *p;
+ 412              		.loc 3 105 3 view .LVU88
+ 106:./src/udp_total.c ****   osStatus_t status;
+ 413              		.loc 3 106 3 view .LVU89
+ 107:./src/udp_total.c ****   CANRxMsgDMA_t recvMsg;   // 큐에서 꺼낼 CAN 메시지
+ 414              		.loc 3 107 3 view .LVU90
+ 108:./src/udp_total.c ****   char dataBuf[256];
+ 415              		.loc 3 108 3 view .LVU91
+ 109:./src/udp_total.c ****   int len = 0;
+ 416              		.loc 3 109 3 view .LVU92
+ 417              	.LVL27:
+ 110:./src/udp_total.c ****   
+ 111:./src/udp_total.c ****   status = osMessageQueueGet(canmessageQueue, &recvMsg, NULL, 0);
+ 418              		.loc 3 111 3 view .LVU93
+ 104:./src/udp_total.c ****   struct pbuf *p;
+ 419              		.loc 3 104 1 is_stmt 0 view .LVU94
+ 420 0110 F0B5     		push	{r4, r5, r6, r7, lr}
+ 421              	.LCFI9:
+ 422              		.cfi_def_cfa_offset 20
+ 423              		.cfi_offset 4, -20
+ 424              		.cfi_offset 5, -16
+ 425              		.cfi_offset 6, -12
+ 426              		.cfi_offset 7, -8
+ 427              		.cfi_offset 14, -4
+ 428              		.loc 3 111 12 view .LVU95
+ 429 0112 0023     		movs	r3, #0
+ 104:./src/udp_total.c ****   struct pbuf *p;
+ 430              		.loc 3 104 1 view .LVU96
+ 431 0114 DDB0     		sub	sp, sp, #372
+ 432              	.LCFI10:
+ 433              		.cfi_def_cfa_offset 392
+ 434              		.loc 3 111 12 view .LVU97
+ 435 0116 2748     		ldr	r0, .L38
+ 436 0118 1A46     		mov	r2, r3
+ 437 011a 04A9     		add	r1, sp, #16
+ 438 011c 0068     		ldr	r0, [r0]
+ 439 011e FFF7FEFF 		bl	osMessageQueueGet
+ 440              	.LVL28:
+ 112:./src/udp_total.c **** 
+ 113:./src/udp_total.c ****   uint32_t can_id = recvMsg.id;
+ 441              		.loc 3 113 3 is_stmt 1 view .LVU98
+ 114:./src/udp_total.c ****   uint8_t dlc = recvMsg.dlc;
+ 442              		.loc 3 114 3 view .LVU99
+ 115:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
+ 443              		.loc 3 115 3 view .LVU100
+ 116:./src/udp_total.c **** 
+ 117:./src/udp_total.c ****   if( status == osOK){
+ 444              		.loc 3 117 3 view .LVU101
+ 445              		.loc 3 117 5 is_stmt 0 view .LVU102
+ 446 0122 08B1     		cbz	r0, .L37
+ 447              	.LVL29:
+ 448              	.L23:
+ 118:./src/udp_total.c ****     // 1) TIME,CANID,
+ 119:./src/udp_total.c ****     len = snprintf(dataBuf, sizeof(dataBuf),
+ 120:./src/udp_total.c ****                    "%llu,%08X,",
+ 121:./src/udp_total.c ****                    (unsigned long long)can_time,
+ 122:./src/udp_total.c ****                    can_id);
+ 123:./src/udp_total.c **** 
+ 124:./src/udp_total.c ****     // 2) DATA (FD: 최대 64바이트)
+ 125:./src/udp_total.c ****     for (int i = 0; i < dlc; i++) {
+ 126:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 127:./src/udp_total.c ****     }
+ 128:./src/udp_total.c **** 
+ 129:./src/udp_total.c ****     // 3) 줄바꿈
+ 130:./src/udp_total.c ****     len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "\n");
+ 131:./src/udp_total.c **** 
+ 132:./src/udp_total.c **** 
+ 133:./src/udp_total.c ****     /* allocate pbuf from pool*/
+ 134:./src/udp_total.c ****     p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
+ 135:./src/udp_total.c ****     
+ 136:./src/udp_total.c ****     if (p != NULL)
+ 137:./src/udp_total.c ****     {
+ 138:./src/udp_total.c ****       /* copy data to pbuf */
+ 139:./src/udp_total.c ****       pbuf_take(p, dataBuf, len);
+ 140:./src/udp_total.c ****       
+ 141:./src/udp_total.c ****       /* send udp data */
+ 142:./src/udp_total.c ****       udp_send(udp_can_pcb, p); 
+ 143:./src/udp_total.c ****       
+ 144:./src/udp_total.c ****       /* free pbuf */
+ 145:./src/udp_total.c ****       pbuf_free(p);
+ 146:./src/udp_total.c ****     }
+ 147:./src/udp_total.c ****   }
+ 148:./src/udp_total.c **** 
+ 149:./src/udp_total.c ****   else if( status == osErrorResource){
+ 150:./src/udp_total.c ****     
+ 151:./src/udp_total.c ****   }
+ 152:./src/udp_total.c **** }
+ 449              		.loc 3 152 1 view .LVU103
+ 450 0124 5DB0     		add	sp, sp, #372
+ 451              	.LCFI11:
+ 452              		.cfi_remember_state
+ 453              		.cfi_def_cfa_offset 20
+ 454              		@ sp needed
+ 455 0126 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 456              	.LVL30:
+ 457              	.L37:
+ 458              	.LCFI12:
+ 459              		.cfi_restore_state
+ 114:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
+ 460              		.loc 3 114 24 view .LVU104
+ 461 0128 9DF82460 		ldrb	r6, [sp, #36]	@ zero_extendqisi2
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 462              		.loc 3 119 11 view .LVU105
+ 463 012c 1CA8     		add	r0, sp, #112
+ 464              	.LVL31:
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 465              		.loc 3 119 11 view .LVU106
+ 466 012e 0A99     		ldr	r1, [sp, #40]
+ 114:./src/udp_total.c ****   uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
+ 467              		.loc 3 114 24 view .LVU107
+ 468 0130 3609     		lsrs	r6, r6, #4
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 469              		.loc 3 119 5 is_stmt 1 view .LVU108
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 470              		.loc 3 119 11 is_stmt 0 view .LVU109
+ 471 0132 0291     		str	r1, [sp, #8]
+ 472 0134 4FF48071 		mov	r1, #256
+ 115:./src/udp_total.c **** 
+ 473              		.loc 3 115 12 view .LVU110
+ 474 0138 DDE90523 		ldrd	r2, r3, [sp, #20]
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 475              		.loc 3 119 11 view .LVU111
+ 476 013c 0092     		str	r2, [sp]
+ 477 013e 0193     		str	r3, [sp, #4]
+ 478 0140 1D4A     		ldr	r2, .L38+4
+ 479 0142 FFF7FEFF 		bl	snprintf
+ 480              	.LVL32:
+ 119:./src/udp_total.c ****                    "%llu,%08X,",
+ 481              		.loc 3 119 11 view .LVU112
+ 482 0146 0446     		mov	r4, r0
+ 483              	.LVL33:
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 484              		.loc 3 125 5 is_stmt 1 view .LVU113
+ 485              	.LBB23:
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 486              		.loc 3 125 10 view .LVU114
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 487              		.loc 3 125 21 view .LVU115
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 488              		.loc 3 125 5 is_stmt 0 view .LVU116
+ 489 0148 7EB1     		cbz	r6, .L26
+ 490 014a 0DF12B05 		add	r5, sp, #43
+ 126:./src/udp_total.c ****     }
+ 491              		.loc 3 126 16 view .LVU117
+ 492 014e 1B4F     		ldr	r7, .L38+8
+ 493 0150 2E44     		add	r6, r6, r5
+ 494              	.LVL34:
+ 495              	.L27:
+ 126:./src/udp_total.c ****     }
+ 496              		.loc 3 126 9 is_stmt 1 discriminator 3 view .LVU118
+ 126:./src/udp_total.c ****     }
+ 497              		.loc 3 126 16 is_stmt 0 discriminator 3 view .LVU119
+ 498 0152 1CAB     		add	r3, sp, #112
+ 499 0154 C4F58071 		rsb	r1, r4, #256
+ 500 0158 3A46     		mov	r2, r7
+ 501 015a 1819     		adds	r0, r3, r4
+ 502 015c 15F8013F 		ldrb	r3, [r5, #1]!	@ zero_extendqisi2
+ 503              	.LVL35:
+ 126:./src/udp_total.c ****     }
+ 504              		.loc 3 126 16 discriminator 3 view .LVU120
+ 505 0160 FFF7FEFF 		bl	snprintf
+ 506              	.LVL36:
+ 126:./src/udp_total.c ****     }
+ 507              		.loc 3 126 13 discriminator 3 view .LVU121
+ 508 0164 0444     		add	r4, r4, r0
+ 509              	.LVL37:
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 510              		.loc 3 125 30 is_stmt 1 discriminator 3 view .LVU122
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 511              		.loc 3 125 21 discriminator 3 view .LVU123
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 512              		.loc 3 125 5 is_stmt 0 discriminator 3 view .LVU124
+ 513 0166 B542     		cmp	r5, r6
+ 514 0168 F3D1     		bne	.L27
+ 515              	.LVL38:
+ 516              	.L26:
+ 125:./src/udp_total.c ****         len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+ 517              		.loc 3 125 5 discriminator 3 view .LVU125
+ 518              	.LBE23:
+ 130:./src/udp_total.c **** 
+ 519              		.loc 3 130 5 is_stmt 1 view .LVU126
+ 130:./src/udp_total.c **** 
+ 520              		.loc 3 130 12 is_stmt 0 view .LVU127
+ 521 016a 1CAB     		add	r3, sp, #112
+ 134:./src/udp_total.c ****     
+ 522              		.loc 3 134 35 view .LVU128
+ 523 016c 144F     		ldr	r7, .L38+12
+ 130:./src/udp_total.c **** 
+ 524              		.loc 3 130 12 view .LVU129
+ 525 016e 154A     		ldr	r2, .L38+16
+ 526 0170 C4F58071 		rsb	r1, r4, #256
+ 527 0174 1819     		adds	r0, r3, r4
+ 528 0176 FFF7FEFF 		bl	snprintf
+ 529              	.LVL39:
+ 530 017a 0646     		mov	r6, r0
+ 531              	.LVL40:
+ 134:./src/udp_total.c ****     
+ 532              		.loc 3 134 5 is_stmt 1 view .LVU130
+ 134:./src/udp_total.c ****     
+ 533              		.loc 3 134 35 is_stmt 0 view .LVU131
+ 534 017c 07F10C00 		add	r0, r7, #12
+ 535              	.LVL41:
+ 134:./src/udp_total.c ****     
+ 536              		.loc 3 134 35 view .LVU132
+ 537 0180 FFF7FEFF 		bl	strlen
+ 538              	.LVL42:
+ 134:./src/udp_total.c ****     
+ 539              		.loc 3 134 9 view .LVU133
+ 540 0184 4FF4C172 		mov	r2, #386
+ 541 0188 81B2     		uxth	r1, r0
+ 542 018a 3620     		movs	r0, #54
+ 543 018c FFF7FEFF 		bl	pbuf_alloc
+ 544              	.LVL43:
+ 136:./src/udp_total.c ****     {
+ 545              		.loc 3 136 5 is_stmt 1 view .LVU134
+ 136:./src/udp_total.c ****     {
+ 546              		.loc 3 136 8 is_stmt 0 view .LVU135
+ 547 0190 0546     		mov	r5, r0
+ 548 0192 0028     		cmp	r0, #0
+ 549 0194 C6D0     		beq	.L23
+ 139:./src/udp_total.c ****       
+ 550              		.loc 3 139 7 is_stmt 1 view .LVU136
+ 130:./src/udp_total.c **** 
+ 551              		.loc 3 130 9 is_stmt 0 view .LVU137
+ 552 0196 3219     		adds	r2, r6, r4
+ 553              	.LVL44:
+ 139:./src/udp_total.c ****       
+ 554              		.loc 3 139 7 view .LVU138
+ 555 0198 1CA9     		add	r1, sp, #112
+ 556 019a 92B2     		uxth	r2, r2
+ 557              	.LVL45:
+ 139:./src/udp_total.c ****       
+ 558              		.loc 3 139 7 view .LVU139
+ 559 019c FFF7FEFF 		bl	pbuf_take
+ 560              	.LVL46:
+ 142:./src/udp_total.c ****       
+ 561              		.loc 3 142 7 is_stmt 1 view .LVU140
+ 562 01a0 2946     		mov	r1, r5
+ 563 01a2 7868     		ldr	r0, [r7, #4]
+ 564 01a4 FFF7FEFF 		bl	udp_send
+ 565              	.LVL47:
+ 145:./src/udp_total.c ****     }
+ 566              		.loc 3 145 7 view .LVU141
+ 567 01a8 2846     		mov	r0, r5
+ 568 01aa FFF7FEFF 		bl	pbuf_free
+ 569              	.LVL48:
+ 151:./src/udp_total.c **** }
+ 570              		.loc 3 151 3 view .LVU142
+ 571              		.loc 3 152 1 is_stmt 0 view .LVU143
+ 572 01ae 5DB0     		add	sp, sp, #372
+ 573              	.LCFI13:
+ 574              		.cfi_def_cfa_offset 20
+ 575              		@ sp needed
+ 576 01b0 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 577              	.LVL49:
+ 578              	.L39:
+ 579              		.loc 3 152 1 view .LVU144
+ 580 01b2 00BF     		.align	2
+ 581              	.L38:
+ 582 01b4 00000000 		.word	canmessageQueue
+ 583 01b8 50000000 		.word	.LC3
+ 584 01bc 5C000000 		.word	.LC4
+ 585 01c0 00000000 		.word	.LANCHOR1
+ 586 01c4 64000000 		.word	.LC5
+ 587              		.cfi_endproc
+ 588              	.LFE171:
+ 590              		.align	1
+ 591              		.p2align 2,,3
+ 592              		.global	udp_echoclient_send
+ 593              		.syntax unified
+ 594              		.thumb
+ 595              		.thumb_func
+ 596              		.fpu fpv5-d16
+ 598              	udp_echoclient_send:
+ 599              	.LFB172:
+ 153:./src/udp_total.c **** 
+ 154:./src/udp_total.c **** void udp_echoclient_send(void)
+ 155:./src/udp_total.c **** {
+ 600              		.loc 3 155 1 is_stmt 1 view -0
+ 601              		.cfi_startproc
+ 602              		@ args = 0, pretend = 0, frame = 512
+ 603              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156:./src/udp_total.c ****   struct pbuf *p;
+ 604              		.loc 3 156 3 view .LVU146
+ 157:./src/udp_total.c ****   char receiveValue[512];
+ 605              		.loc 3 157 3 view .LVU147
+ 158:./src/udp_total.c ****   osStatus_t status;
+ 606              		.loc 3 158 3 view .LVU148
+ 159:./src/udp_total.c ****   
+ 160:./src/udp_total.c ****   status = osMessageQueueGet(debugQueue, &receiveValue, NULL, 0);
+ 607              		.loc 3 160 3 view .LVU149
+ 155:./src/udp_total.c ****   struct pbuf *p;
+ 608              		.loc 3 155 1 is_stmt 0 view .LVU150
+ 609 01c8 30B5     		push	{r4, r5, lr}
+ 610              	.LCFI14:
+ 611              		.cfi_def_cfa_offset 12
+ 612              		.cfi_offset 4, -12
+ 613              		.cfi_offset 5, -8
+ 614              		.cfi_offset 14, -4
+ 615              		.loc 3 160 12 view .LVU151
+ 616 01ca 0023     		movs	r3, #0
+ 155:./src/udp_total.c ****   struct pbuf *p;
+ 617              		.loc 3 155 1 view .LVU152
+ 618 01cc ADF5017D 		sub	sp, sp, #516
+ 619              	.LCFI15:
+ 620              		.cfi_def_cfa_offset 528
+ 621              		.loc 3 160 12 view .LVU153
+ 622 01d0 1948     		ldr	r0, .L49
+ 623 01d2 1A46     		mov	r2, r3
+ 624 01d4 6946     		mov	r1, sp
+ 625 01d6 0068     		ldr	r0, [r0]
+ 626 01d8 FFF7FEFF 		bl	osMessageQueueGet
+ 627              	.LVL50:
+ 161:./src/udp_total.c **** 
+ 162:./src/udp_total.c **** 
+ 163:./src/udp_total.c ****   if( status == osOK){
+ 628              		.loc 3 163 3 is_stmt 1 view .LVU154
+ 629              		.loc 3 163 5 is_stmt 0 view .LVU155
+ 630 01dc 10B1     		cbz	r0, .L48
+ 631              	.LVL51:
+ 632              	.L40:
+ 164:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
+ 165:./src/udp_total.c ****     
+ 166:./src/udp_total.c ****     /* allocate pbuf from pool*/
+ 167:./src/udp_total.c ****     p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
+ 168:./src/udp_total.c ****     
+ 169:./src/udp_total.c ****     if (p != NULL)
+ 170:./src/udp_total.c ****     {
+ 171:./src/udp_total.c ****       /* copy data to pbuf */
+ 172:./src/udp_total.c ****       pbuf_take(p, (char*)data, strlen((char*)data));
+ 173:./src/udp_total.c ****       
+ 174:./src/udp_total.c ****       /* send udp data */
+ 175:./src/udp_total.c ****       udp_send(udp_client_pcb, p); 
+ 176:./src/udp_total.c ****       
+ 177:./src/udp_total.c ****       /* free pbuf */
+ 178:./src/udp_total.c ****       pbuf_free(p);
+ 179:./src/udp_total.c ****     }
+ 180:./src/udp_total.c ****   }
+ 181:./src/udp_total.c **** 
+ 182:./src/udp_total.c ****   else if( status == osErrorResource){
+ 183:./src/udp_total.c ****     
+ 184:./src/udp_total.c ****   }
+ 185:./src/udp_total.c **** }
+ 633              		.loc 3 185 1 view .LVU156
+ 634 01de 0DF5017D 		add	sp, sp, #516
+ 635              	.LCFI16:
+ 636              		.cfi_remember_state
+ 637              		.cfi_def_cfa_offset 12
+ 638              		@ sp needed
+ 639 01e2 30BD     		pop	{r4, r5, pc}
+ 640              	.LVL52:
+ 641              	.L48:
+ 642              	.LCFI17:
+ 643              		.cfi_restore_state
+ 164:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
+ 644              		.loc 3 164 5 is_stmt 1 view .LVU157
+ 645 01e4 154D     		ldr	r5, .L49+4
+ 646 01e6 6946     		mov	r1, sp
+ 647 01e8 05F10C00 		add	r0, r5, #12
+ 648              	.LVL53:
+ 164:./src/udp_total.c ****     sprintf((char*)data, "%s", receiveValue); 
+ 649              		.loc 3 164 5 is_stmt 0 view .LVU158
+ 650 01ec FFF7FEFF 		bl	strcpy
+ 651              	.LVL54:
+ 167:./src/udp_total.c ****     
+ 652              		.loc 3 167 5 is_stmt 1 view .LVU159
+ 167:./src/udp_total.c ****     
+ 653              		.loc 3 167 35 is_stmt 0 view .LVU160
+ 654 01f0 05F10C00 		add	r0, r5, #12
+ 655 01f4 FFF7FEFF 		bl	strlen
+ 656              	.LVL55:
+ 657 01f8 0146     		mov	r1, r0
+ 167:./src/udp_total.c ****     
+ 658              		.loc 3 167 9 view .LVU161
+ 659 01fa 4FF4C172 		mov	r2, #386
+ 660 01fe 3620     		movs	r0, #54
+ 661 0200 89B2     		uxth	r1, r1
+ 662 0202 FFF7FEFF 		bl	pbuf_alloc
+ 663              	.LVL56:
+ 169:./src/udp_total.c ****     {
+ 664              		.loc 3 169 5 is_stmt 1 view .LVU162
+ 169:./src/udp_total.c ****     {
+ 665              		.loc 3 169 8 is_stmt 0 view .LVU163
+ 666 0206 0446     		mov	r4, r0
+ 667 0208 0028     		cmp	r0, #0
+ 668 020a E8D0     		beq	.L40
+ 172:./src/udp_total.c ****       
+ 669              		.loc 3 172 7 is_stmt 1 view .LVU164
+ 172:./src/udp_total.c ****       
+ 670              		.loc 3 172 33 is_stmt 0 view .LVU165
+ 671 020c 05F10C00 		add	r0, r5, #12
+ 672              	.LVL57:
+ 172:./src/udp_total.c ****       
+ 673              		.loc 3 172 33 view .LVU166
+ 674 0210 FFF7FEFF 		bl	strlen
+ 675              	.LVL58:
+ 676 0214 0246     		mov	r2, r0
+ 172:./src/udp_total.c ****       
+ 677              		.loc 3 172 7 view .LVU167
+ 678 0216 05F10C01 		add	r1, r5, #12
+ 679 021a 2046     		mov	r0, r4
+ 680 021c 92B2     		uxth	r2, r2
+ 681 021e FFF7FEFF 		bl	pbuf_take
+ 682              	.LVL59:
+ 175:./src/udp_total.c ****       
+ 683              		.loc 3 175 7 is_stmt 1 view .LVU168
+ 684 0222 2146     		mov	r1, r4
+ 685 0224 2868     		ldr	r0, [r5]
+ 686 0226 FFF7FEFF 		bl	udp_send
+ 687              	.LVL60:
+ 178:./src/udp_total.c ****     }
+ 688              		.loc 3 178 7 view .LVU169
+ 689 022a 2046     		mov	r0, r4
+ 690 022c FFF7FEFF 		bl	pbuf_free
+ 691              	.LVL61:
+ 184:./src/udp_total.c **** }
+ 692              		.loc 3 184 3 view .LVU170
+ 693              		.loc 3 185 1 is_stmt 0 view .LVU171
+ 694 0230 0DF5017D 		add	sp, sp, #516
+ 695              	.LCFI18:
+ 696              		.cfi_def_cfa_offset 12
+ 697              		@ sp needed
+ 698 0234 30BD     		pop	{r4, r5, pc}
+ 699              	.LVL62:
+ 700              	.L50:
+ 701              		.loc 3 185 1 view .LVU172
+ 702 0236 00BF     		.align	2
+ 703              	.L49:
+ 704 0238 00000000 		.word	debugQueue
+ 705 023c 00000000 		.word	.LANCHOR1
+ 706              		.cfi_endproc
+ 707              	.LFE172:
+ 709              		.align	1
+ 710              		.p2align 2,,3
+ 711              		.global	UDP_thread
+ 712              		.syntax unified
+ 713              		.thumb
+ 714              		.thumb_func
+ 715              		.fpu fpv5-d16
+ 717              	UDP_thread:
+ 718              	.LVL63:
+ 719              	.LFB173:
+ 186:./src/udp_total.c **** 
+ 187:./src/udp_total.c **** void UDP_thread(void *argument)
+ 188:./src/udp_total.c **** {
+ 720              		.loc 3 188 1 is_stmt 1 view -0
+ 721              		.cfi_startproc
+ 722              		@ Volatile: function does not return.
+ 723              		@ args = 0, pretend = 0, frame = 0
+ 724              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189:./src/udp_total.c ****   (void)argument;
+ 190:./src/udp_total.c ****   for(;;)
+ 191:./src/udp_total.c ****   {
+ 192:./src/udp_total.c ****     udp_echoclient_send();
+ 193:./src/udp_total.c ****     udp_can_send();
+ 194:./src/udp_total.c ****     HAL_IWDG_Refresh(&hiwdg);
+ 725              		.loc 3 194 5 is_stmt 0 view .LVU174
+ 726 0240 064C     		ldr	r4, .L54
+ 188:./src/udp_total.c ****   (void)argument;
+ 727              		.loc 3 188 1 view .LVU175
+ 728 0242 08B5     		push	{r3, lr}
+ 729              	.LCFI19:
+ 730              		.cfi_def_cfa_offset 8
+ 731              		.cfi_offset 3, -8
+ 732              		.cfi_offset 14, -4
+ 733              	.LVL64:
+ 734              	.L52:
+ 189:./src/udp_total.c ****   (void)argument;
+ 735              		.loc 3 189 3 is_stmt 1 discriminator 1 view .LVU176
+ 190:./src/udp_total.c ****   {
+ 736              		.loc 3 190 3 discriminator 1 view .LVU177
+ 192:./src/udp_total.c ****     udp_can_send();
+ 737              		.loc 3 192 5 discriminator 1 view .LVU178
+ 738 0244 FFF7FEFF 		bl	udp_echoclient_send
+ 739              	.LVL65:
+ 193:./src/udp_total.c ****     HAL_IWDG_Refresh(&hiwdg);
+ 740              		.loc 3 193 5 discriminator 1 view .LVU179
+ 741 0248 FFF7FEFF 		bl	udp_can_send
+ 742              	.LVL66:
+ 743              		.loc 3 194 5 discriminator 1 view .LVU180
+ 744 024c 2046     		mov	r0, r4
+ 745 024e FFF7FEFF 		bl	HAL_IWDG_Refresh
+ 746              	.LVL67:
+ 195:./src/udp_total.c ****     osDelay(DLY_MS(20));                      //[user custom] : osDelay setting , now we send UDP m
+ 747              		.loc 3 195 5 discriminator 1 view .LVU181
+ 748 0252 6420     		movs	r0, #100
+ 749 0254 FFF7FEFF 		bl	osDelay
+ 750              	.LVL68:
+ 190:./src/udp_total.c ****   {
+ 751              		.loc 3 190 8 discriminator 1 view .LVU182
+ 752 0258 F4E7     		b	.L52
+ 753              	.L55:
+ 754 025a 00BF     		.align	2
+ 755              	.L54:
+ 756 025c 00000000 		.word	hiwdg
+ 757              		.cfi_endproc
+ 758              	.LFE173:
+ 760              		.align	1
+ 761              		.p2align 2,,3
+ 762              		.global	UDP_task
+ 763              		.syntax unified
+ 764              		.thumb
+ 765              		.thumb_func
+ 766              		.fpu fpv5-d16
+ 768              	UDP_task:
+ 769              	.LVL69:
+ 770              	.LFB174:
+ 196:./src/udp_total.c ****   }
+ 197:./src/udp_total.c **** }
+ 198:./src/udp_total.c **** 
+ 199:./src/udp_total.c **** 
+ 200:./src/udp_total.c **** void UDP_task(void *argument)
+ 201:./src/udp_total.c **** {
+ 771              		.loc 3 201 1 view -0
+ 772              		.cfi_startproc
+ 773              		@ args = 0, pretend = 0, frame = 0
+ 774              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202:./src/udp_total.c ****     (void)argument;
+ 775              		.loc 3 202 5 view .LVU184
+ 203:./src/udp_total.c **** 
+ 204:./src/udp_total.c ****     UDPHandle = osThreadNew(UDP_thread, NULL, &UDP_attributes);
+ 776              		.loc 3 204 5 view .LVU185
+ 201:./src/udp_total.c ****     (void)argument;
+ 777              		.loc 3 201 1 is_stmt 0 view .LVU186
+ 778 0260 08B5     		push	{r3, lr}
+ 779              	.LCFI20:
+ 780              		.cfi_def_cfa_offset 8
+ 781              		.cfi_offset 3, -8
+ 782              		.cfi_offset 14, -4
+ 783              		.loc 3 204 17 view .LVU187
+ 784 0262 044A     		ldr	r2, .L58
+ 785 0264 0021     		movs	r1, #0
+ 786 0266 0448     		ldr	r0, .L58+4
+ 787              	.LVL70:
+ 788              		.loc 3 204 17 view .LVU188
+ 789 0268 FFF7FEFF 		bl	osThreadNew
+ 790              	.LVL71:
+ 791              		.loc 3 204 15 view .LVU189
+ 792 026c 034B     		ldr	r3, .L58+8
+ 793 026e 1867     		str	r0, [r3, #112]
+ 205:./src/udp_total.c ****     if(UDPHandle == NULL)
+ 794              		.loc 3 205 5 is_stmt 1 view .LVU190
+ 206:./src/udp_total.c ****     {
+ 207:./src/udp_total.c ****       
+ 208:./src/udp_total.c ****     }
+ 795              		.loc 3 208 5 view .LVU191
+ 209:./src/udp_total.c **** }...
+ 796              		.loc 3 209 1 is_stmt 0 view .LVU192
+ 797 0270 08BD     		pop	{r3, pc}
+ 798              	.L59:
+ 799 0272 00BF     		.align	2
+ 800              	.L58:
+ 801 0274 00000000 		.word	.LANCHOR2
+ 802 0278 00000000 		.word	UDP_thread
+ 803 027c 00000000 		.word	.LANCHOR1
+ 804              		.cfi_endproc
+ 805              	.LFE174:
+ 807              		.global	UDP_attributes
+ 808              		.section	.rodata.str1.4
+ 809 0066 0000     		.align	2
+ 810              	.LC6:
+ 811 0068 7564705F 		.ascii	"udp_send\000"
+ 811      73656E64 
+ 811      00
+ 812              		.global	UDPHandle
+ 813              		.global	JUMP_FW_STR
+ 814 0071 000000   		.align	2
+ 815              	.LC7:
+ 816 0074 52455345 		.ascii	"RESET SSSAAA\000"
+ 816      54205353 
+ 816      53414141 
+ 816      00
+ 817              		.global	JUMP_BOOT_STR
+ 818 0081 000000   		.align	2
+ 819              	.LC8:
+ 820 0084 534F4654 		.ascii	"SOFT RESET SSSAAA\000"
+ 820      20524553 
+ 820      45542053 
+ 820      53534141 
+ 820      4100
+ 821              		.global	udp_can_pcb
+ 822              		.global	udp_server_pcb
+ 823              		.global	udp_client_pcb
+ 824              		.global	data
+ 825              		.section	.rodata
+ 826              		.align	2
+ 827              		.set	.LANCHOR2,. + 0
+ 830              	UDP_attributes:
+ 831 0000 68000000 		.word	.LC6
+ 832 0004 00000000 		.space	16
+ 832      00000000 
+ 832      00000000 
+ 832      00000000 
+ 833 0014 00080000 		.word	2048
+ 834 0018 10000000 		.word	16
+ 835 001c 00000000 		.space	8
+ 835      00000000 
+ 836              		.data
+ 837              		.align	2
+ 838              		.set	.LANCHOR0,. + 0
+ 841              	JUMP_BOOT_STR:
+ 842 0000 84000000 		.word	.LC8
+ 845              	JUMP_FW_STR:
+ 846 0004 74000000 		.word	.LC7
+ 847              		.bss
+ 848              		.align	2
+ 849              		.set	.LANCHOR1,. + 0
+ 852              	udp_client_pcb:
+ 853 0000 00000000 		.space	4
+ 856              	udp_can_pcb:
+ 857 0004 00000000 		.space	4
+ 860              	udp_server_pcb:
+ 861 0008 00000000 		.space	4
+ 864              	data:
+ 865 000c 00000000 		.space	100
+ 865      00000000 
+ 865      00000000 
+ 865      00000000 
+ 865      00000000 
+ 868              	UDPHandle:
+ 869 0070 00000000 		.space	4
+ 870              		.text
+ 871              	.Letext0:
+ 872              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 873              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 874              		.file 6 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 875              		.file 7 "./lwip-2.1.2/src/include/lwip/err.h"
+ 876              		.file 8 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 877              		.file 9 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 878              		.file 10 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 879              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 880              		.file 12 "./lwip-2.1.2/src/include/lwip/udp.h"
+ 881              		.file 13 "./inc/cmsis_os2.h"
+ 882              		.file 14 "./inc/stm32f765xx.h"
+ 883              		.file 15 "./inc/stm32f7xx_hal_iwdg.h"
+ 884              		.file 16 "./inc/can_user.h"
+ 885              		.file 17 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
+ 886              		.file 18 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
+ 887              		.file 19 "<built-in>"
+ 888              		.file 20 "./inc/reset.h"
+ 889              		.file 21 "./lwip-2.1.2/src/include/lwip/netif.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 udp_total.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:24     .text:00000000 __NVIC_SystemReset
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:89     .text:0000001c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:95     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:102    .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:110    .text:00000024 udp_receive_callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:263    .text:00000098 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:283    .text:000000a4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:291    .text:000000a4 udp_can_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:467    .text:00000144 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:475    .text:00000158 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:483    .text:00000158 udp_echoclient_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:589    .text:000001c0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:594    .text:000001c8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:602    .text:000001c8 UDP_thread
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:641    .text:000001e4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:656    .text:000001e8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:664    .text:000001e8 udp_client_send
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:804    .text:00000254 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:816    .text:00000264 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:824    .text:00000264 udp_total_connect
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:934    .text:000002cc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:942    .text:000002e0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:950    .text:000002e0 UDP_task
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:983    .text:000002f4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1013   .rodata:00000000 UDP_attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1055   .bss:00000074 UDPHandle
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1028   .data:00000004 JUMP_FW_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1024   .data:00000000 JUMP_BOOT_STR
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1039   .bss:00000064 udp_can_pcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1051   .bss:00000070 udp_server_pcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1047   .bss:0000006c upcb_sys
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1043   .bss:00000068 upcb
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1035   .bss:00000000 data
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1009   .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1020   .data:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc2JVSFw.s:1031   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:16     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:24     .text:00000000 __NVIC_SystemReset
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:89     .text:0000001c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:95     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:102    .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:110    .text:00000024 udp_receive_callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:263    .text:00000098 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:277    .text:000000a4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:285    .text:000000a4 udp_total_connect
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:379    .text:000000fc $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:398    .text:00000110 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:406    .text:00000110 udp_can_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:582    .text:000001b4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:590    .text:000001c8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:598    .text:000001c8 udp_echoclient_send
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:704    .text:00000238 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:709    .text:00000240 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:717    .text:00000240 UDP_thread
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:756    .text:0000025c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:760    .text:00000260 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:768    .text:00000260 UDP_task
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:801    .text:00000274 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:830    .rodata:00000000 UDP_attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:868    .bss:00000070 UDPHandle
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:845    .data:00000004 JUMP_FW_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:841    .data:00000000 JUMP_BOOT_STR
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:856    .bss:00000004 udp_can_pcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:860    .bss:00000008 udp_server_pcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:852    .bss:00000000 udp_client_pcb
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:864    .bss:0000000c data
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:826    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:837    .data:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc3iiohz.s:848    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 memcpy
@@ -4650,6 +4354,11 @@ puts
 osDelay
 clear_boot_flag
 write_boot_flag_soft_reset
+udp_new
+udp_connect
+udp_bind
+udp_recv
+ip_addr_any
 osMessageQueueGet
 snprintf
 strlen
@@ -4661,10 +4370,4 @@ strcpy
 debugQueue
 HAL_IWDG_Refresh
 hiwdg
-printf
-udp_new
-udp_connect
-udp_bind
-udp_recv
-ip_addr_any
 osThreadNew

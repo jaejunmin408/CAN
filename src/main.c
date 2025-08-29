@@ -45,7 +45,7 @@ static void  thread_main ( void  *argument)
   	osDelay ( DLY_MS(75));	// for 100Base-TX
 
 	startDebug(NULL);
-	printf("START FW\n");
+	printf("[FW]  START FW\n");
 	
 	UDP_task(NULL);
 	task03_init(NULL);

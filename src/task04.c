@@ -131,6 +131,8 @@ void task04_thread(void *argument)
 					
 					LED_toggleCAN4 ^= 1;
 
+					printf("TEST!!!\n");
+
 					if ( LED_toggleCAN4)
 					{
 						HW_SetLED ( HW_LED_CAN4, HW_LED_ORANGE);
@@ -140,24 +142,25 @@ void task04_thread(void *argument)
 					{
 						HW_SetLED ( HW_LED_CAN4, HW_LED_GREEN);
 					}
-
-					DEBUG("CAN4 \n");
-					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+					printf("TEST!!!\n");
+					// DEBUG("CAN4 \n");
+					// DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
 				
 		
-					snprintf(buf, sizeof(buf), "");
+					// snprintf(buf, sizeof(buf), "");
 
-					for (int i = 0; i < RxMsg.dlc; i++)
-					{
-						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
-					}
-					DEBUG("%s\n", buf);
+					// for (int i = 0; i < RxMsg.dlc; i++)
+					// {
+					// 	snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+					// }
+					// DEBUG("%s\n", buf);
 
 				break;
 
 
 				case CAN_BUS5:
 					
+					printf("TEST!!!\n");
 					LED_toggleCAN5 ^= 1;
 
 					if ( LED_toggleCAN5)

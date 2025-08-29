@@ -48,21 +48,10 @@ void startDebug(void *argument)
 int _write(int file, char *ptr, int len)
 {
     (void)file;
-  
-  if(strstr(ptr, "[FW]" ) != NULL)
-  {
-    char queue_buf[(sizeof(char) * 512)] = {0};
-    strncpy(queue_buf, ptr, len);
-    queue_buf[len] = '\0';
-    udp_client_send(queue_buf);
-  }
-  else
-  {
     char queue_buf[(sizeof(char) * 512)] = {0};
     strncpy(queue_buf, ptr, len);
     queue_buf[len] = '\0';
     osMessageQueuePut(debugQueue, queue_buf, 0, 0);
-  }
   return len;
 }
 

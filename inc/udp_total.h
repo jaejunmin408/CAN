@@ -28,12 +28,8 @@
 void udp_total_connect(void);
 void udp_can_send(void);
 void udp_echoclient_send(void);
-void udp_client_send(const char *msg);
 void UDP_thread(void *argument);
 void UDP_task(void *argument);
-// void udp_star(void);
-// void udp_test(const char *msg);
-// void udp_clos(void);
 
 #endif /* __UDP_ECHOCLIENT_H__ */
 

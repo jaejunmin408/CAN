@@ -22,7 +22,6 @@
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
 #define UDP_CAN_PORT       5010
 #define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
-#define UDP_SYSTEM_PORT    7010
 
 
 
@@ -33,8 +32,7 @@ extern IWDG_HandleTypeDef hiwdg;
 extern struct netif gnetif;
 
 u8_t   data[100];
-struct udp_pcb *upcb;
-struct udp_pcb *upcb_sys;
+struct udp_pcb *udp_client_pcb;
 struct udp_pcb *udp_server_pcb;
 struct udp_pcb *udp_can_pcb;
 
@@ -85,13 +83,9 @@ void udp_total_connect(void)
   err_t err;
   
   /* Create a new UDP control block  */
-  upcb = udp_new();
+  udp_client_pcb = udp_new();
   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
-  err= udp_connect(upcb, &DestIPaddr, UDP_CLIENT_PORT);
-
-  upcb_sys = udp_new();
-  IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
-  err= udp_connect(upcb_sys, &DestIPaddr, UDP_SYSTEM_PORT);
+  err= udp_connect(udp_client_pcb, &DestIPaddr, UDP_CLIENT_PORT);
 
   udp_can_pcb = udp_new();
   IP4_ADDR( &DestIPaddr, 192, 168, 20, 69);
@@ -100,7 +94,7 @@ void udp_total_connect(void)
   udp_server_pcb = udp_new();
   if (!udp_server_pcb)
   {
-    udp_client_send("Can not create pcb1 \n");
+    printf("[FW] Can not create pcb1 \n");
   }
   udp_bind(udp_server_pcb, IP_ADDR_ANY, UDP_SERVER_PORT); // 수신 포트
   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
@@ -178,7 +172,7 @@ void udp_echoclient_send(void)
       pbuf_take(p, (char*)data, strlen((char*)data));
       
       /* send udp data */
-      udp_send(upcb, p); 
+      udp_send(udp_client_pcb, p); 
       
       /* free pbuf */
       pbuf_free(p);
@@ -188,31 +182,6 @@ void udp_echoclient_send(void)
   else if( status == osErrorResource){
     
   }
-}
-
-
-void udp_client_send(const char *msg)
-{
-    if (!upcb_sys) {
-        printf("[CHECK] UDP PCB not initialized\n");
-        return;
-    }
-
-
-    struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, strlen(msg), PBUF_POOL);
-    if (!p) {
-        printf("[CHECK] pbuf_alloc failed\n");
-        return;
-    }
-
-    pbuf_take(p, msg, strlen(msg));
-
-    err_t err = udp_send(upcb_sys, p);
-    if (err != ERR_OK) {
-        printf("[CHECK] udp_send failed: %d\n", err);
-    }
-
-    pbuf_free(p);
 }
 
 void UDP_thread(void *argument)
@@ -228,9 +197,6 @@ void UDP_thread(void *argument)
 }
 
 
-
-
-
 void UDP_task(void *argument)
 {
     (void)argument;
@@ -241,23 +207,3 @@ void UDP_task(void *argument)
       
     }
 }
-
-// int sock;
-// struct sockaddr_in serv_adr;
-
-// void udp_star() {
-//     sock = socket(PF_INET, SOCK_DGRAM, 0);
-//     memset(&serv_adr, 0, sizeof(serv_adr));
-//     serv_adr.sin_family = AF_INET;
-//     serv_adr.sin_addr.s_addr = inet_addr("192.168.20.69");
-//     serv_adr.sin_port = htons(7010);
-// }
-
-// void udp_test(const char *msg) {
-//     sendto(sock, msg, strlen(msg)+1, 0, (struct sockaddr*)&serv_adr, sizeof(serv_adr));
-// }
-
-// void udp_clos() {
-//     close(sock);
-// }
-// 쓸데없이 추가한 .c파일 makefile에서 제거해주기
