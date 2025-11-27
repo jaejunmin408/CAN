@@ -217,9 +217,11 @@ PRJLIBS = $(LIB_FOLDER)/libRTX_CM4F.a
 # ---------------------------------------------------------------------------
 
 # Define programs and commands.
-ifeq ($(CROSS_COMPILE),)
-CROSS_COMPILE = arm-none-eabi-
-endif
+#ifeq ($(CROSS_COMPILE),)
+#CROSS_COMPILE = arm-none-eabi-
+#endif
+
+CROSS_COMPILE = C:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-
 
 SHELL = sh
 CC = $(CROSS_COMPILE)gcc

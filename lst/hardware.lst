@@ -1,28 +1,29 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"hardware.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	__NVIC_SystemReset:
-  25              	.LFB119:
-  26              		.file 1 "./inc/core_cm7.h"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"hardware.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/hardware.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	__NVIC_SystemReset:
+  26              	.LFB119:
+  27              		.file 2 "./inc/core_cm7.h"
    1:./inc/core_cm7.h **** /**************************************************************************//**
    2:./inc/core_cm7.h ****  * @file     core_cm7.h
    3:./inc/core_cm7.h ****  * @brief    CMSIS Cortex-M7 Core Peripheral Access Layer Header File
@@ -2180,17 +2181,17 @@
 2155:./inc/core_cm7.h ****  */
 2156:./inc/core_cm7.h **** __NO_RETURN __STATIC_INLINE void __NVIC_SystemReset(void)
 2157:./inc/core_cm7.h **** {
-  27              		.loc 1 2157 1 view -0
-  28              		.cfi_startproc
-  29              		@ Volatile: function does not return.
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32              		@ link register save eliminated.
+  28              		.loc 2 2157 1 view -0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
 2158:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure all outstanding memor
-  33              		.loc 1 2158 3 view .LVU1
-  34              	.LBB26:
-  35              	.LBI26:
-  36              		.file 2 "./inc/cmsis_gcc.h"
+  34              		.loc 2 2158 3 view .LVU1
+  35              	.LBB26:
+  36              	.LBI26:
+  37              		.file 3 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -3135,88 +3136,86 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
-  37              		.loc 2 944 27 view .LVU2
-  38              	.LBB27:
+  38              		.loc 3 944 27 view .LVU2
+  39              	.LBB27:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
-  39              		.loc 2 946 3 view .LVU3
-  40              		.syntax unified
-  41              	@ 946 "./inc/cmsis_gcc.h" 1
-  42 0000 BFF34F8F 		dsb 0xF
-  43              	@ 0 "" 2
-  44              		.thumb
-  45              		.syntax unified
-  46              	.LBE27:
-  47              	.LBE26:
+  40              		.loc 3 946 3 view .LVU3
+  41              		.syntax unified
+  42              	@ 946 "./inc/cmsis_gcc.h" 1
+  43 0000 BFF34F8F 		dsb 0xF
+  44              	@ 0 "" 2
+  45              		.thumb
+  46              		.syntax unified
+  47              	.LBE27:
+  48              	.LBE26:
 2159:./inc/core_cm7.h ****                                                                        buffered write are completed
 2160:./inc/core_cm7.h ****   SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
-  48              		.loc 1 2160 3 view .LVU4
+  49              		.loc 2 2160 3 view .LVU4
 2161:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-  49              		.loc 1 2161 32 is_stmt 0 view .LVU5
-  50 0004 0549     		ldr	r1, .L4
+  50              		.loc 2 2161 32 is_stmt 0 view .LVU5
+  51 0004 0549     		ldr	r1, .L4
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-  51              		.loc 1 2160 17 view .LVU6
-  52 0006 064B     		ldr	r3, .L4+4
-  53              		.loc 1 2161 32 view .LVU7
-  54 0008 CA68     		ldr	r2, [r1, #12]
-  55              		.loc 1 2161 40 view .LVU8
-  56 000a 02F4E062 		and	r2, r2, #1792
+  52              		.loc 2 2160 17 view .LVU6
+  53 0006 064B     		ldr	r3, .L4+4
+  54              		.loc 2 2161 32 view .LVU7
+  55 0008 CA68     		ldr	r2, [r1, #12]
+  56              		.loc 2 2161 40 view .LVU8
+  57 000a 02F4E062 		and	r2, r2, #1792
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-  57              		.loc 1 2160 17 view .LVU9
-  58 000e 1343     		orrs	r3, r3, r2
+  58              		.loc 2 2160 17 view .LVU9
+  59 000e 1343     		orrs	r3, r3, r2
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-  59              		.loc 1 2160 15 view .LVU10
-  60 0010 CB60     		str	r3, [r1, #12]
+  60              		.loc 2 2160 15 view .LVU10
+  61 0010 CB60     		str	r3, [r1, #12]
 2162:./inc/core_cm7.h ****                             SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchange
 2163:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure completion of memory 
-  61              		.loc 1 2163 3 is_stmt 1 view .LVU11
-  62              	.LBB28:
-  63              	.LBI28:
+  62              		.loc 2 2163 3 is_stmt 1 view .LVU11
+  63              	.LBB28:
+  64              	.LBI28:
  944:./inc/cmsis_gcc.h **** {
-  64              		.loc 2 944 27 view .LVU12
-  65              	.LBB29:
-  66              		.loc 2 946 3 view .LVU13
-  67              		.syntax unified
-  68              	@ 946 "./inc/cmsis_gcc.h" 1
-  69 0012 BFF34F8F 		dsb 0xF
-  70              	@ 0 "" 2
-  71              		.thumb
-  72              		.syntax unified
-  73              	.L2:
-  74              	.LBE29:
-  75              	.LBE28:
+  65              		.loc 3 944 27 view .LVU12
+  66              	.LBB29:
+  67              		.loc 3 946 3 view .LVU13
+  68              		.syntax unified
+  69              	@ 946 "./inc/cmsis_gcc.h" 1
+  70 0012 BFF34F8F 		dsb 0xF
+  71              	@ 0 "" 2
+  72              		.thumb
+  73              		.syntax unified
+  74              	.L2:
+  75              	.LBE29:
+  76              	.LBE28:
 2164:./inc/core_cm7.h **** 
 2165:./inc/core_cm7.h ****   for(;;)                                                           /* wait until reset */
-  76              		.loc 1 2165 3 discriminator 1 view .LVU14
+  77              		.loc 2 2165 3 view .LVU14
 2166:./inc/core_cm7.h ****   {
 2167:./inc/core_cm7.h ****     __NOP();
-  77              		.loc 1 2167 5 discriminator 1 view .LVU15
-  78              		.syntax unified
-  79              	@ 2167 "./inc/core_cm7.h" 1
-  80 0016 00BF     		nop
-  81              	@ 0 "" 2
+  78              		.loc 2 2167 5 discriminator 1 view .LVU15
+  79              		.syntax unified
+  80              	@ 2167 "./inc/core_cm7.h" 1
+  81 0016 00BF     		nop
+  82              	@ 0 "" 2
 2165:./inc/core_cm7.h ****   {
-  82              		.loc 1 2165 8 discriminator 1 view .LVU16
-  83              		.thumb
-  84              		.syntax unified
-  85 0018 FDE7     		b	.L2
-  86              	.L5:
-  87 001a 00BF     		.align	2
-  88              	.L4:
-  89 001c 00ED00E0 		.word	-536810240
-  90 0020 0400FA05 		.word	100270084
-  91              		.cfi_endproc
-  92              	.LFE119:
-  94              		.align	1
-  95              		.p2align 2,,3
-  96              		.weak	EEPROM_Init
-  97              		.syntax unified
-  98              		.thumb
-  99              		.thumb_func
- 100              		.fpu fpv5-d16
+  83              		.loc 2 2165 3 view .LVU16
+  84              		.thumb
+  85              		.syntax unified
+  86 0018 FDE7     		b	.L2
+  87              	.L5:
+  88 001a 00BF     		.align	2
+  89              	.L4:
+  90 001c 00ED00E0 		.word	-536810240
+  91 0020 0400FA05 		.word	100270084
+  92              		.cfi_endproc
+  93              	.LFE119:
+  95              		.align	1
+  96              		.p2align 2,,3
+  97              		.weak	EEPROM_Init
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
  102              	EEPROM_Init:
  103              	.LFB144:
- 104              		.file 3 "./src/hardware.c"
    1:./src/hardware.c **** 
    2:./src/hardware.c **** #include <stdint.h>
    3:./src/hardware.c **** #include <stdlib.h>
@@ -3237,25 +3236,24 @@
   18:./src/hardware.c **** //!             Overwritten if eeprom.c is added to project
   19:./src/hardware.c **** void  EEPROM_Init ( void)
   20:./src/hardware.c **** {
- 105              		.loc 3 20 1 view -0
- 106              		.cfi_startproc
- 107              		@ args = 0, pretend = 0, frame = 0
- 108              		@ frame_needed = 0, uses_anonymous_args = 0
- 109              		@ link register save eliminated.
+ 104              		.loc 1 20 1 view -0
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 0
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              		@ link register save eliminated.
   21:./src/hardware.c **** }
- 110              		.loc 3 21 1 view .LVU18
- 111 0024 7047     		bx	lr
- 112              		.cfi_endproc
- 113              	.LFE144:
- 115              		.align	1
- 116 0026 00BF     		.p2align 2,,3
- 117              		.global	HW_PassUsbToHost
- 118              		.syntax unified
- 119              		.thumb
- 120              		.thumb_func
- 121              		.fpu fpv5-d16
- 123              	HW_PassUsbToHost:
- 124              	.LFB146:
+ 109              		.loc 1 21 1 view .LVU18
+ 110 0024 7047     		bx	lr
+ 111              		.cfi_endproc
+ 112              	.LFE144:
+ 114              		.align	1
+ 115 0026 00BF     		.p2align 2,,3
+ 116              		.global	HW_PassUsbToHost
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	HW_PassUsbToHost:
+ 122              	.LFB146:
   22:./src/hardware.c **** 
   23:./src/hardware.c **** 
   24:./src/hardware.c **** 
@@ -3276,65 +3274,59 @@
   39:./src/hardware.c **** 
   40:./src/hardware.c **** void  HW_PassUsbToHost ( void)
   41:./src/hardware.c **** {
- 125              		.loc 3 41 1 view -0
- 126              		.cfi_startproc
- 127              		@ args = 0, pretend = 0, frame = 0
- 128              		@ frame_needed = 0, uses_anonymous_args = 0
- 129              		@ link register save eliminated.
+ 123              		.loc 1 41 1 view -0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127              		@ link register save eliminated.
   42:./src/hardware.c **** 	// MSD control by USBC
   43:./src/hardware.c **** 	HW_MSD_ACCESS_USBC;
- 130              		.loc 3 43 2 view .LVU20
- 131 0028 074A     		ldr	r2, .L10
- 132 002a 4FF4C021 		mov	r1, #393216
- 133 002e 4FF4FA63 		mov	r3, #2000
- 134 0032 9161     		str	r1, [r2, #24]
+ 128              		.loc 1 43 2 view .LVU20
+ 129 0028 074A     		ldr	r2, .L10
+ 130 002a 4FF4C021 		mov	r1, #393216
+ 131 002e 4FF4FA63 		mov	r3, #2000
+ 132 0032 9161     		str	r1, [r2, #24]
   44:./src/hardware.c **** 	HW_WaitMicros ( 20);
- 135              		.loc 3 44 2 view .LVU21
- 136              	.LVL0:
- 137              	.LBB30:
- 138              	.LBI30:
+ 133              		.loc 1 44 2 view .LVU21
+ 134              	.LVL0:
+ 135              	.LBB30:
+ 136              	.LBI30:
   25:./src/hardware.c **** {
- 139              		.loc 3 25 14 view .LVU22
- 140              	.LBB31:
+ 137              		.loc 1 25 14 view .LVU22
+ 138              	.LBB31:
   27:./src/hardware.c **** 
- 141              		.loc 3 27 2 view .LVU23
+ 139              		.loc 1 27 2 view .LVU23
   30:./src/hardware.c **** 
- 142              		.loc 3 30 2 view .LVU24
+ 140              		.loc 1 30 2 view .LVU24
   32:./src/hardware.c **** 	{	
- 143              		.loc 3 32 2 view .LVU25
+ 141              		.loc 1 32 2 view .LVU25
   32:./src/hardware.c **** 	{	
- 144              		.loc 3 32 15 view .LVU26
- 145              	.L8:
+ 142              		.loc 1 32 17 discriminator 1 view .LVU26
+ 143              	.L8:
   34:./src/hardware.c **** 	}
- 146              		.loc 3 34 3 view .LVU27
- 147              		.syntax unified
- 148              	@ 34 "./src/hardware.c" 1
- 149 0034 00BF     		nop
- 150              	@ 0 "" 2
+ 144              		.loc 1 34 3 view .LVU27
+ 145              		.syntax unified
+ 146              	@ 34 "./src/hardware.c" 1
+ 147 0034 00BF     		nop
+ 148              	@ 0 "" 2
   32:./src/hardware.c **** 	{	
- 151              		.loc 3 32 22 view .LVU28
- 152              	.LVL1:
+ 149              		.loc 1 32 23 discriminator 3 view .LVU28
   32:./src/hardware.c **** 	{	
- 153              		.loc 3 32 15 view .LVU29
+ 150              		.loc 1 32 17 discriminator 1 view .LVU29
+ 151              		.thumb
+ 152              		.syntax unified
+ 153 0036 013B     		subs	r3, r3, #1
+ 154 0038 FCD1     		bne	.L8
+ 155              	.LVL1:
   32:./src/hardware.c **** 	{	
- 154              		.loc 3 32 2 is_stmt 0 view .LVU30
- 155              		.thumb
- 156              		.syntax unified
- 157 0036 013B     		subs	r3, r3, #1
- 158              	.LVL2:
-  32:./src/hardware.c **** 	{	
- 159              		.loc 3 32 2 view .LVU31
- 160 0038 FCD1     		bne	.L8
- 161              	.LVL3:
-  32:./src/hardware.c **** 	{	
- 162              		.loc 3 32 2 view .LVU32
- 163              	.LBE31:
- 164              	.LBE30:
+ 156              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU30
+ 157              	.LBE31:
+ 158              	.LBE30:
   45:./src/hardware.c **** 
   46:./src/hardware.c **** 	__DMB();
- 165              		.loc 3 46 2 is_stmt 1 view .LVU33
- 166              	.LBB32:
- 167              	.LBI32:
+ 159              		.loc 1 46 2 is_stmt 1 view .LVU31
+ 160              	.LBB32:
+ 161              	.LBI32:
  947:./inc/cmsis_gcc.h **** }
  948:./inc/cmsis_gcc.h **** 
  949:./inc/cmsis_gcc.h **** 
@@ -3344,409 +3336,371 @@
  953:./inc/cmsis_gcc.h ****            and after the instruction, without ensuring their completion.
  954:./inc/cmsis_gcc.h ****  */
  955:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DMB(void)
- 168              		.loc 2 955 27 view .LVU34
- 169              	.LBB33:
+ 162              		.loc 3 955 27 view .LVU32
+ 163              	.LBB33:
  956:./inc/cmsis_gcc.h **** {
  957:./inc/cmsis_gcc.h ****   __ASM volatile ("dmb 0xF":::"memory");
- 170              		.loc 2 957 3 view .LVU35
- 171              		.syntax unified
- 172              	@ 957 "./inc/cmsis_gcc.h" 1
- 173 003a BFF35F8F 		dmb 0xF
- 174              	@ 0 "" 2
- 175              		.thumb
- 176              		.syntax unified
- 177              	.LBE33:
- 178              	.LBE32:
+ 164              		.loc 3 957 3 view .LVU33
+ 165              		.syntax unified
+ 166              	@ 957 "./inc/cmsis_gcc.h" 1
+ 167 003a BFF35F8F 		dmb 0xF
+ 168              	@ 0 "" 2
+ 169              		.thumb
+ 170              		.syntax unified
+ 171              	.LBE33:
+ 172              	.LBE32:
   47:./src/hardware.c **** 
   48:./src/hardware.c **** 	// run card reader
   49:./src/hardware.c **** 	HW_USB_CR_DEASSERT_RST;
- 179              		.loc 3 49 2 view .LVU36
- 180 003e 024B     		ldr	r3, .L10
- 181 0040 4FF40002 		mov	r2, #8388608
- 182 0044 9A61     		str	r2, [r3, #24]
+ 173              		.loc 1 49 2 view .LVU34
+ 174 003e 024B     		ldr	r3, .L10
+ 175 0040 4FF40002 		mov	r2, #8388608
+ 176 0044 9A61     		str	r2, [r3, #24]
   50:./src/hardware.c **** }
- 183              		.loc 3 50 1 is_stmt 0 view .LVU37
- 184 0046 7047     		bx	lr
- 185              	.L11:
- 186              		.align	2
- 187              	.L10:
- 188 0048 00240240 		.word	1073882112
- 189              		.cfi_endproc
- 190              	.LFE146:
- 192              		.align	1
- 193              		.p2align 2,,3
- 194              		.global	HW_PassUsbToMe
- 195              		.syntax unified
- 196              		.thumb
- 197              		.thumb_func
- 198              		.fpu fpv5-d16
- 200              	HW_PassUsbToMe:
- 201              	.LFB147:
+ 177              		.loc 1 50 1 is_stmt 0 view .LVU35
+ 178 0046 7047     		bx	lr
+ 179              	.L11:
+ 180              		.align	2
+ 181              	.L10:
+ 182 0048 00240240 		.word	1073882112
+ 183              		.cfi_endproc
+ 184              	.LFE146:
+ 186              		.align	1
+ 187              		.p2align 2,,3
+ 188              		.global	HW_PassUsbToMe
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 193              	HW_PassUsbToMe:
+ 194              	.LFB147:
   51:./src/hardware.c **** 
   52:./src/hardware.c **** 
   53:./src/hardware.c **** 
   54:./src/hardware.c **** void  HW_PassUsbToMe ( void)
   55:./src/hardware.c **** {
- 202              		.loc 3 55 1 is_stmt 1 view -0
- 203              		.cfi_startproc
- 204              		@ args = 0, pretend = 0, frame = 0
- 205              		@ frame_needed = 0, uses_anonymous_args = 0
- 206              		@ link register save eliminated.
+ 195              		.loc 1 55 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
   56:./src/hardware.c **** 	uint32_t  i;
- 207              		.loc 3 56 2 view .LVU39
+ 200              		.loc 1 56 2 view .LVU37
   57:./src/hardware.c **** 
   58:./src/hardware.c **** 
   59:./src/hardware.c **** 	// USB card reader reset
   60:./src/hardware.c **** 	HW_USB_CR_ASSERT_RST;
- 208              		.loc 3 60 2 view .LVU40
- 209 004c 124A     		ldr	r2, .L23
- 210 004e 8021     		movs	r1, #128
- 211 0050 4FF4FA63 		mov	r3, #2000
- 212 0054 9161     		str	r1, [r2, #24]
+ 201              		.loc 1 60 2 view .LVU38
+ 202 004c 124A     		ldr	r2, .L23
+ 203 004e 8021     		movs	r1, #128
+ 204 0050 4FF4FA63 		mov	r3, #2000
+ 205 0054 9161     		str	r1, [r2, #24]
   61:./src/hardware.c **** 	HW_WaitMicros ( 20);
- 213              		.loc 3 61 2 view .LVU41
- 214              	.LVL4:
- 215              	.LBB34:
- 216              	.LBI34:
+ 206              		.loc 1 61 2 view .LVU39
+ 207              	.LVL2:
+ 208              	.LBB34:
+ 209              	.LBI34:
   25:./src/hardware.c **** {
- 217              		.loc 3 25 14 view .LVU42
- 218              	.LBB35:
+ 210              		.loc 1 25 14 view .LVU40
+ 211              	.LBB35:
   27:./src/hardware.c **** 
- 219              		.loc 3 27 2 view .LVU43
+ 212              		.loc 1 27 2 view .LVU41
   30:./src/hardware.c **** 
- 220              		.loc 3 30 2 view .LVU44
+ 213              		.loc 1 30 2 view .LVU42
   32:./src/hardware.c **** 	{	
- 221              		.loc 3 32 2 view .LVU45
+ 214              		.loc 1 32 2 view .LVU43
   32:./src/hardware.c **** 	{	
- 222              		.loc 3 32 15 view .LVU46
- 223              	.L13:
+ 215              		.loc 1 32 17 discriminator 1 view .LVU44
+ 216              	.L13:
   34:./src/hardware.c **** 	}
- 224              		.loc 3 34 3 view .LVU47
+ 217              		.loc 1 34 3 view .LVU45
+ 218              		.syntax unified
+ 219              	@ 34 "./src/hardware.c" 1
+ 220 0056 00BF     		nop
+ 221              	@ 0 "" 2
+  32:./src/hardware.c **** 	{	
+ 222              		.loc 1 32 23 discriminator 3 view .LVU46
+  32:./src/hardware.c **** 	{	
+ 223              		.loc 1 32 17 discriminator 1 view .LVU47
+ 224              		.thumb
  225              		.syntax unified
- 226              	@ 34 "./src/hardware.c" 1
- 227 0056 00BF     		nop
- 228              	@ 0 "" 2
+ 226 0058 013B     		subs	r3, r3, #1
+ 227 005a FCD1     		bne	.L13
+ 228              	.LVL3:
   32:./src/hardware.c **** 	{	
- 229              		.loc 3 32 22 view .LVU48
- 230              	.LVL5:
-  32:./src/hardware.c **** 	{	
- 231              		.loc 3 32 15 view .LVU49
-  32:./src/hardware.c **** 	{	
- 232              		.loc 3 32 2 is_stmt 0 view .LVU50
- 233              		.thumb
- 234              		.syntax unified
- 235 0058 013B     		subs	r3, r3, #1
- 236              	.LVL6:
-  32:./src/hardware.c **** 	{	
- 237              		.loc 3 32 2 view .LVU51
- 238 005a FCD1     		bne	.L13
- 239              	.LVL7:
-  32:./src/hardware.c **** 	{	
- 240              		.loc 3 32 2 view .LVU52
- 241              	.LBE35:
- 242              	.LBE34:
+ 229              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU48
+ 230              	.LBE35:
+ 231              	.LBE34:
   62:./src/hardware.c **** 
   63:./src/hardware.c **** 	// switch MSD signal lines
   64:./src/hardware.c **** 	HW_MSD_ACCESS_CPU;
- 243              		.loc 3 64 2 is_stmt 1 view .LVU53
- 244 005c 0E4A     		ldr	r2, .L23
- 245 005e 0621     		movs	r1, #6
- 246 0060 4FF47A73 		mov	r3, #1000
- 247 0064 9161     		str	r1, [r2, #24]
+ 232              		.loc 1 64 2 is_stmt 1 view .LVU49
+ 233 005c 0E4A     		ldr	r2, .L23
+ 234 005e 0621     		movs	r1, #6
+ 235 0060 4FF47A73 		mov	r3, #1000
+ 236 0064 9161     		str	r1, [r2, #24]
   65:./src/hardware.c **** 	HW_WaitMicros ( 10);
- 248              		.loc 3 65 2 view .LVU54
- 249              	.LVL8:
- 250              	.LBB36:
- 251              	.LBI36:
+ 237              		.loc 1 65 2 view .LVU50
+ 238              	.LVL4:
+ 239              	.LBB36:
+ 240              	.LBI36:
   25:./src/hardware.c **** {
- 252              		.loc 3 25 14 view .LVU55
- 253              	.LBB37:
+ 241              		.loc 1 25 14 view .LVU51
+ 242              	.LBB37:
   27:./src/hardware.c **** 
- 254              		.loc 3 27 2 view .LVU56
+ 243              		.loc 1 27 2 view .LVU52
   30:./src/hardware.c **** 
- 255              		.loc 3 30 2 view .LVU57
+ 244              		.loc 1 30 2 view .LVU53
   32:./src/hardware.c **** 	{	
- 256              		.loc 3 32 2 view .LVU58
+ 245              		.loc 1 32 2 view .LVU54
   32:./src/hardware.c **** 	{	
- 257              		.loc 3 32 15 view .LVU59
- 258              	.L14:
+ 246              		.loc 1 32 17 discriminator 1 view .LVU55
+ 247              	.L14:
   34:./src/hardware.c **** 	}
- 259              		.loc 3 34 3 view .LVU60
- 260              		.syntax unified
- 261              	@ 34 "./src/hardware.c" 1
- 262 0066 00BF     		nop
- 263              	@ 0 "" 2
+ 248              		.loc 1 34 3 view .LVU56
+ 249              		.syntax unified
+ 250              	@ 34 "./src/hardware.c" 1
+ 251 0066 00BF     		nop
+ 252              	@ 0 "" 2
   32:./src/hardware.c **** 	{	
- 264              		.loc 3 32 22 view .LVU61
- 265              	.LVL9:
+ 253              		.loc 1 32 23 discriminator 3 view .LVU57
   32:./src/hardware.c **** 	{	
- 266              		.loc 3 32 15 view .LVU62
+ 254              		.loc 1 32 17 discriminator 1 view .LVU58
+ 255              		.thumb
+ 256              		.syntax unified
+ 257 0068 013B     		subs	r3, r3, #1
+ 258 006a FCD1     		bne	.L14
+ 259              	.LVL5:
   32:./src/hardware.c **** 	{	
- 267              		.loc 3 32 2 is_stmt 0 view .LVU63
- 268              		.thumb
- 269              		.syntax unified
- 270 0068 013B     		subs	r3, r3, #1
- 271              	.LVL10:
-  32:./src/hardware.c **** 	{	
- 272              		.loc 3 32 2 view .LVU64
- 273 006a FCD1     		bne	.L14
- 274              	.LVL11:
-  32:./src/hardware.c **** 	{	
- 275              		.loc 3 32 2 view .LVU65
- 276              	.LBE37:
- 277              	.LBE36:
+ 260              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU59
+ 261              	.LBE37:
+ 262              	.LBE36:
   66:./src/hardware.c **** 
   67:./src/hardware.c **** 	// generate I2C dummy clocks to prevent firmware eeprom
   68:./src/hardware.c **** 	// blocking I2C bus, so SD card reader can safely boot
   69:./src/hardware.c **** 	// on next USB enumeration cycle
   70:./src/hardware.c **** 	__DMB();
- 278              		.loc 3 70 2 is_stmt 1 view .LVU66
- 279              	.LBB38:
- 280              	.LBI38:
+ 263              		.loc 1 70 2 is_stmt 1 view .LVU60
+ 264              	.LBB38:
+ 265              	.LBI38:
  955:./inc/cmsis_gcc.h **** {
- 281              		.loc 2 955 27 view .LVU67
- 282              	.LBB39:
- 283              		.loc 2 957 3 view .LVU68
- 284              		.syntax unified
- 285              	@ 957 "./inc/cmsis_gcc.h" 1
- 286 006c BFF35F8F 		dmb 0xF
- 287              	@ 0 "" 2
- 288              		.thumb
- 289              		.syntax unified
- 290              	.LBE39:
- 291              	.LBE38:
+ 266              		.loc 3 955 27 view .LVU61
+ 267              	.LBB39:
+ 268              		.loc 3 957 3 view .LVU62
+ 269              		.syntax unified
+ 270              	@ 957 "./inc/cmsis_gcc.h" 1
+ 271 006c BFF35F8F 		dmb 0xF
+ 272              	@ 0 "" 2
+ 273              		.thumb
+ 274              		.syntax unified
+ 275              	.LBE39:
+ 276              	.LBE38:
   71:./src/hardware.c **** 
   72:./src/hardware.c **** 	for ( i = 0; i < 12; i++)
- 292              		.loc 3 72 2 view .LVU69
- 293              	.LVL12:
- 294              		.loc 3 72 15 view .LVU70
- 295              	.LBB41:
- 296              	.LBB40:
- 297              		.loc 2 957 3 is_stmt 0 view .LVU71
- 298 0070 0C22     		movs	r2, #12
- 299              	.LBE40:
- 300              	.LBE41:
+ 277              		.loc 1 72 2 view .LVU63
+ 278              	.LVL6:
+ 279              		.loc 1 72 17 discriminator 1 view .LVU64
+ 280              	.LBB41:
+ 281              	.LBB40:
+ 282              		.loc 3 957 3 is_stmt 0 view .LVU65
+ 283 0070 0C22     		movs	r2, #12
+ 284              	.LBE40:
+ 285              	.LBE41:
   73:./src/hardware.c **** 	{
   74:./src/hardware.c **** 		FPGA->SYS_CNTL_CLR = 1 << 24;
- 301              		.loc 3 74 22 view .LVU72
- 302 0072 4FF0C840 		mov	r0, #1677721600
- 303 0076 4FF08071 		mov	r1, #16777216
- 304              	.LVL13:
- 305              	.L17:
- 306              		.loc 3 74 3 is_stmt 1 discriminator 3 view .LVU73
- 307              		.loc 3 74 22 is_stmt 0 discriminator 3 view .LVU74
- 308 007a 4FF4C873 		mov	r3, #400
- 309 007e 0161     		str	r1, [r0, #16]
+ 286              		.loc 1 74 22 view .LVU66
+ 287 0072 4FF0C840 		mov	r0, #1677721600
+ 288 0076 4FF08071 		mov	r1, #16777216
+ 289              	.LVL7:
+ 290              	.L17:
+ 291              		.loc 1 74 3 is_stmt 1 view .LVU67
+ 292              		.loc 1 74 22 is_stmt 0 view .LVU68
+ 293 007a 4FF4C873 		mov	r3, #400
+ 294 007e 0161     		str	r1, [r0, #16]
   75:./src/hardware.c **** 		HW_WaitMicros ( 4);
- 310              		.loc 3 75 3 is_stmt 1 discriminator 3 view .LVU75
- 311              	.LVL14:
- 312              	.LBB42:
- 313              	.LBI42:
+ 295              		.loc 1 75 3 is_stmt 1 view .LVU69
+ 296              	.LVL8:
+ 297              	.LBB42:
+ 298              	.LBI42:
   25:./src/hardware.c **** {
- 314              		.loc 3 25 14 discriminator 3 view .LVU76
- 315              	.LBB43:
+ 299              		.loc 1 25 14 view .LVU70
+ 300              	.LBB43:
   27:./src/hardware.c **** 
- 316              		.loc 3 27 2 discriminator 3 view .LVU77
+ 301              		.loc 1 27 2 view .LVU71
   30:./src/hardware.c **** 
- 317              		.loc 3 30 2 discriminator 3 view .LVU78
+ 302              		.loc 1 30 2 view .LVU72
   32:./src/hardware.c **** 	{	
- 318              		.loc 3 32 2 discriminator 3 view .LVU79
+ 303              		.loc 1 32 2 view .LVU73
   32:./src/hardware.c **** 	{	
- 319              		.loc 3 32 15 discriminator 3 view .LVU80
- 320              	.L15:
+ 304              		.loc 1 32 17 discriminator 1 view .LVU74
+ 305              	.L15:
   34:./src/hardware.c **** 	}
- 321              		.loc 3 34 3 view .LVU81
- 322              		.syntax unified
- 323              	@ 34 "./src/hardware.c" 1
- 324 0080 00BF     		nop
- 325              	@ 0 "" 2
+ 306              		.loc 1 34 3 view .LVU75
+ 307              		.syntax unified
+ 308              	@ 34 "./src/hardware.c" 1
+ 309 0080 00BF     		nop
+ 310              	@ 0 "" 2
   32:./src/hardware.c **** 	{	
- 326              		.loc 3 32 22 view .LVU82
- 327              	.LVL15:
+ 311              		.loc 1 32 23 discriminator 3 view .LVU76
   32:./src/hardware.c **** 	{	
- 328              		.loc 3 32 15 view .LVU83
+ 312              		.loc 1 32 17 discriminator 1 view .LVU77
+ 313              		.thumb
+ 314              		.syntax unified
+ 315 0082 013B     		subs	r3, r3, #1
+ 316 0084 FCD1     		bne	.L15
+ 317              	.LVL9:
   32:./src/hardware.c **** 	{	
- 329              		.loc 3 32 2 is_stmt 0 view .LVU84
- 330              		.thumb
- 331              		.syntax unified
- 332 0082 013B     		subs	r3, r3, #1
- 333              	.LVL16:
-  32:./src/hardware.c **** 	{	
- 334              		.loc 3 32 2 view .LVU85
- 335 0084 FCD1     		bne	.L15
- 336              	.LVL17:
-  32:./src/hardware.c **** 	{	
- 337              		.loc 3 32 2 view .LVU86
- 338              	.LBE43:
- 339              	.LBE42:
+ 318              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU78
+ 319              	.LBE43:
+ 320              	.LBE42:
   76:./src/hardware.c **** 		FPGA->SYS_CNTL_SET = 1 << 24;
- 340              		.loc 3 76 3 is_stmt 1 discriminator 3 view .LVU87
- 341              		.loc 3 76 22 is_stmt 0 discriminator 3 view .LVU88
- 342 0086 4FF4C873 		mov	r3, #400
- 343 008a 8160     		str	r1, [r0, #8]
+ 321              		.loc 1 76 3 is_stmt 1 view .LVU79
+ 322              		.loc 1 76 22 is_stmt 0 view .LVU80
+ 323 0086 4FF4C873 		mov	r3, #400
+ 324 008a 8160     		str	r1, [r0, #8]
   77:./src/hardware.c **** 		HW_WaitMicros ( 4);
- 344              		.loc 3 77 3 is_stmt 1 discriminator 3 view .LVU89
- 345              	.LVL18:
- 346              	.LBB44:
- 347              	.LBI44:
+ 325              		.loc 1 77 3 is_stmt 1 view .LVU81
+ 326              	.LVL10:
+ 327              	.LBB44:
+ 328              	.LBI44:
   25:./src/hardware.c **** {
- 348              		.loc 3 25 14 discriminator 3 view .LVU90
- 349              	.LBB45:
+ 329              		.loc 1 25 14 view .LVU82
+ 330              	.LBB45:
   27:./src/hardware.c **** 
- 350              		.loc 3 27 2 discriminator 3 view .LVU91
+ 331              		.loc 1 27 2 view .LVU83
   30:./src/hardware.c **** 
- 351              		.loc 3 30 2 discriminator 3 view .LVU92
+ 332              		.loc 1 30 2 view .LVU84
   32:./src/hardware.c **** 	{	
- 352              		.loc 3 32 2 discriminator 3 view .LVU93
+ 333              		.loc 1 32 2 view .LVU85
   32:./src/hardware.c **** 	{	
- 353              		.loc 3 32 15 discriminator 3 view .LVU94
- 354              	.L16:
+ 334              		.loc 1 32 17 discriminator 1 view .LVU86
+ 335              	.L16:
   34:./src/hardware.c **** 	}
- 355              		.loc 3 34 3 view .LVU95
- 356              		.syntax unified
- 357              	@ 34 "./src/hardware.c" 1
- 358 008c 00BF     		nop
- 359              	@ 0 "" 2
+ 336              		.loc 1 34 3 view .LVU87
+ 337              		.syntax unified
+ 338              	@ 34 "./src/hardware.c" 1
+ 339 008c 00BF     		nop
+ 340              	@ 0 "" 2
   32:./src/hardware.c **** 	{	
- 360              		.loc 3 32 22 view .LVU96
- 361              	.LVL19:
+ 341              		.loc 1 32 23 discriminator 3 view .LVU88
   32:./src/hardware.c **** 	{	
- 362              		.loc 3 32 15 view .LVU97
+ 342              		.loc 1 32 17 discriminator 1 view .LVU89
+ 343              		.thumb
+ 344              		.syntax unified
+ 345 008e 013B     		subs	r3, r3, #1
+ 346 0090 FCD1     		bne	.L16
+ 347              	.LVL11:
   32:./src/hardware.c **** 	{	
- 363              		.loc 3 32 2 is_stmt 0 view .LVU98
- 364              		.thumb
- 365              		.syntax unified
- 366 008e 013B     		subs	r3, r3, #1
- 367              	.LVL20:
-  32:./src/hardware.c **** 	{	
- 368              		.loc 3 32 2 view .LVU99
- 369 0090 FCD1     		bne	.L16
- 370              	.LVL21:
-  32:./src/hardware.c **** 	{	
- 371              		.loc 3 32 2 view .LVU100
- 372              	.LBE45:
- 373              	.LBE44:
+ 348              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU90
+ 349              	.LBE45:
+ 350              	.LBE44:
   72:./src/hardware.c **** 	{
- 374              		.loc 3 72 23 is_stmt 1 discriminator 3 view .LVU101
+ 351              		.loc 1 72 24 is_stmt 1 discriminator 3 view .LVU91
   72:./src/hardware.c **** 	{
- 375              		.loc 3 72 15 discriminator 3 view .LVU102
-  72:./src/hardware.c **** 	{
- 376              		.loc 3 72 2 is_stmt 0 discriminator 3 view .LVU103
- 377 0092 013A     		subs	r2, r2, #1
- 378              	.LVL22:
-  72:./src/hardware.c **** 	{
- 379              		.loc 3 72 2 discriminator 3 view .LVU104
- 380 0094 F1D1     		bne	.L17
+ 352              		.loc 1 72 17 discriminator 1 view .LVU92
+ 353 0092 013A     		subs	r2, r2, #1
+ 354 0094 F1D1     		bne	.L17
   78:./src/hardware.c **** 	}
   79:./src/hardware.c **** 
   80:./src/hardware.c **** }
- 381              		.loc 3 80 1 view .LVU105
- 382 0096 7047     		bx	lr
- 383              	.L24:
- 384              		.align	2
- 385              	.L23:
- 386 0098 00240240 		.word	1073882112
- 387              		.cfi_endproc
- 388              	.LFE147:
- 390              		.align	1
- 391              		.p2align 2,,3
- 392              		.global	HW_ResetModule
- 393              		.syntax unified
- 394              		.thumb
- 395              		.thumb_func
- 396              		.fpu fpv5-d16
- 398              	HW_ResetModule:
- 399              	.LFB148:
+ 355              		.loc 1 80 1 is_stmt 0 view .LVU93
+ 356 0096 7047     		bx	lr
+ 357              	.L24:
+ 358              		.align	2
+ 359              	.L23:
+ 360 0098 00240240 		.word	1073882112
+ 361              		.cfi_endproc
+ 362              	.LFE147:
+ 364              		.align	1
+ 365              		.p2align 2,,3
+ 366              		.global	HW_ResetModule
+ 367              		.syntax unified
+ 368              		.thumb
+ 369              		.thumb_func
+ 371              	HW_ResetModule:
+ 372              	.LFB148:
   81:./src/hardware.c **** 
   82:./src/hardware.c **** 
   83:./src/hardware.c **** 
   84:./src/hardware.c **** void  HW_ResetModule ( void)
   85:./src/hardware.c **** {
- 400              		.loc 3 85 1 is_stmt 1 view -0
- 401              		.cfi_startproc
- 402              		@ Volatile: function does not return.
- 403              		@ args = 0, pretend = 0, frame = 0
- 404              		@ frame_needed = 0, uses_anonymous_args = 0
+ 373              		.loc 1 85 1 is_stmt 1 view -0
+ 374              		.cfi_startproc
+ 375              		@ Volatile: function does not return.
+ 376              		@ args = 0, pretend = 0, frame = 0
+ 377              		@ frame_needed = 0, uses_anonymous_args = 0
   86:./src/hardware.c **** 	// FPGA reset
   87:./src/hardware.c **** 	GPIOG->BSRR = 1 << 22;
- 405              		.loc 3 87 2 view .LVU107
+ 378              		.loc 1 87 2 view .LVU95
   85:./src/hardware.c **** 	// FPGA reset
- 406              		.loc 3 85 1 is_stmt 0 view .LVU108
- 407 009c 08B5     		push	{r3, lr}
- 408              	.LCFI0:
- 409              		.cfi_def_cfa_offset 8
- 410              		.cfi_offset 3, -8
- 411              		.cfi_offset 14, -4
- 412              		.loc 3 87 14 view .LVU109
- 413 009e 054A     		ldr	r2, .L29
- 414 00a0 4FF48001 		mov	r1, #4194304
- 415 00a4 41F28833 		movw	r3, #5000
- 416 00a8 9161     		str	r1, [r2, #24]
+ 379              		.loc 1 85 1 is_stmt 0 view .LVU96
+ 380 009c 08B5     		push	{r3, lr}
+ 381              	.LCFI0:
+ 382              		.cfi_def_cfa_offset 8
+ 383              		.cfi_offset 3, -8
+ 384              		.cfi_offset 14, -4
+ 385              		.loc 1 87 14 view .LVU97
+ 386 009e 054A     		ldr	r2, .L29
+ 387 00a0 4FF48001 		mov	r1, #4194304
+ 388 00a4 41F28833 		movw	r3, #5000
+ 389 00a8 9161     		str	r1, [r2, #24]
   88:./src/hardware.c **** 	
   89:./src/hardware.c **** 	HW_WaitMicros ( 50);
- 417              		.loc 3 89 2 is_stmt 1 view .LVU110
- 418              	.LVL23:
- 419              	.LBB46:
- 420              	.LBI46:
+ 390              		.loc 1 89 2 is_stmt 1 view .LVU98
+ 391              	.LVL12:
+ 392              	.LBB46:
+ 393              	.LBI46:
   25:./src/hardware.c **** {
- 421              		.loc 3 25 14 view .LVU111
- 422              	.LBB47:
+ 394              		.loc 1 25 14 view .LVU99
+ 395              	.LBB47:
   27:./src/hardware.c **** 
- 423              		.loc 3 27 2 view .LVU112
+ 396              		.loc 1 27 2 view .LVU100
   30:./src/hardware.c **** 
- 424              		.loc 3 30 2 view .LVU113
+ 397              		.loc 1 30 2 view .LVU101
   32:./src/hardware.c **** 	{	
- 425              		.loc 3 32 2 view .LVU114
+ 398              		.loc 1 32 2 view .LVU102
   32:./src/hardware.c **** 	{	
- 426              		.loc 3 32 15 view .LVU115
- 427              	.L26:
+ 399              		.loc 1 32 17 discriminator 1 view .LVU103
+ 400              	.L26:
   34:./src/hardware.c **** 	}
- 428              		.loc 3 34 3 view .LVU116
- 429              		.syntax unified
- 430              	@ 34 "./src/hardware.c" 1
- 431 00aa 00BF     		nop
- 432              	@ 0 "" 2
+ 401              		.loc 1 34 3 view .LVU104
+ 402              		.syntax unified
+ 403              	@ 34 "./src/hardware.c" 1
+ 404 00aa 00BF     		nop
+ 405              	@ 0 "" 2
   32:./src/hardware.c **** 	{	
- 433              		.loc 3 32 22 view .LVU117
- 434              	.LVL24:
+ 406              		.loc 1 32 23 discriminator 3 view .LVU105
   32:./src/hardware.c **** 	{	
- 435              		.loc 3 32 15 view .LVU118
+ 407              		.loc 1 32 17 discriminator 1 view .LVU106
+ 408              		.thumb
+ 409              		.syntax unified
+ 410 00ac 013B     		subs	r3, r3, #1
+ 411 00ae FCD1     		bne	.L26
+ 412              	.LVL13:
   32:./src/hardware.c **** 	{	
- 436              		.loc 3 32 2 is_stmt 0 view .LVU119
- 437              		.thumb
- 438              		.syntax unified
- 439 00ac 013B     		subs	r3, r3, #1
- 440              	.LVL25:
-  32:./src/hardware.c **** 	{	
- 441              		.loc 3 32 2 view .LVU120
- 442 00ae FCD1     		bne	.L26
- 443              	.LVL26:
-  32:./src/hardware.c **** 	{	
- 444              		.loc 3 32 2 view .LVU121
- 445              	.LBE47:
- 446              	.LBE46:
+ 413              		.loc 1 32 17 is_stmt 0 discriminator 1 view .LVU107
+ 414              	.LBE47:
+ 415              	.LBE46:
   90:./src/hardware.c **** 
   91:./src/hardware.c **** 	// reset
   92:./src/hardware.c **** 	NVIC_SystemReset();
- 447              		.loc 3 92 2 is_stmt 1 view .LVU122
- 448 00b0 FFF7A6FF 		bl	__NVIC_SystemReset
- 449              	.LVL27:
- 450              	.L30:
- 451              		.align	2
- 452              	.L29:
- 453 00b4 00180240 		.word	1073879040
- 454              		.cfi_endproc
- 455              	.LFE148:
- 457              		.align	1
- 458              		.p2align 2,,3
- 459              		.global	HW_GetAIN
- 460              		.syntax unified
- 461              		.thumb
- 462              		.thumb_func
- 463              		.fpu fpv5-d16
- 465              	HW_GetAIN:
- 466              	.LVL28:
- 467              	.LFB149:
+ 416              		.loc 1 92 2 is_stmt 1 view .LVU108
+ 417 00b0 FFF7A6FF 		bl	__NVIC_SystemReset
+ 418              	.LVL14:
+ 419              	.L30:
+ 420              		.align	2
+ 421              	.L29:
+ 422 00b4 00180240 		.word	1073879040
+ 423              		.cfi_endproc
+ 424              	.LFE148:
+ 426              		.align	1
+ 427              		.p2align 2,,3
+ 428              		.global	HW_GetAIN
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 433              	HW_GetAIN:
+ 434              	.LVL15:
+ 435              	.LFB149:
   93:./src/hardware.c **** }
   94:./src/hardware.c **** 
   95:./src/hardware.c **** 
@@ -3755,105 +3709,105 @@
   98:./src/hardware.c **** //! @param[out] buffer  result buffer (single uint32_t)
   99:./src/hardware.c **** HWResult_t  HW_GetAIN ( uint32_t  *buffer)
  100:./src/hardware.c **** {
- 468              		.loc 3 100 1 view -0
- 469              		.cfi_startproc
- 470              		@ args = 0, pretend = 0, frame = 0
- 471              		@ frame_needed = 0, uses_anonymous_args = 0
- 472              		@ link register save eliminated.
+ 436              		.loc 1 100 1 view -0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440              		@ link register save eliminated.
  101:./src/hardware.c ****    if ( buffer == NULL)
- 473              		.loc 3 101 4 view .LVU124
- 474              		.loc 3 101 7 is_stmt 0 view .LVU125
- 475 00b8 0146     		mov	r1, r0
- 476 00ba 98B1     		cbz	r0, .L34
+ 441              		.loc 1 101 4 view .LVU110
+ 442              		.loc 1 101 7 is_stmt 0 view .LVU111
+ 443 00b8 0146     		mov	r1, r0
+ 444 00ba 98B1     		cbz	r0, .L34
  102:./src/hardware.c ****     { return HW_ERR_ILLPARAMVAL;}
  103:./src/hardware.c **** 
  104:./src/hardware.c ****    // clear EOC flag
  105:./src/hardware.c ****    buffer[0] = ADC2->DR & 0xFFF;
- 477              		.loc 3 105 4 is_stmt 1 view .LVU126
- 478              		.loc 3 105 20 is_stmt 0 view .LVU127
- 479 00bc 0A4A     		ldr	r2, .L37
+ 445              		.loc 1 105 4 is_stmt 1 view .LVU112
+ 446              		.loc 1 105 20 is_stmt 0 view .LVU113
+ 447 00bc 0A4A     		ldr	r2, .L37
  106:./src/hardware.c ****    ADC2->SQR3 = 6;
- 480              		.loc 3 106 15 view .LVU128
- 481 00be 0620     		movs	r0, #6
- 482              	.LVL29:
+ 448              		.loc 1 106 15 view .LVU114
+ 449 00be 0620     		movs	r0, #6
+ 450              	.LVL16:
  105:./src/hardware.c ****    ADC2->SQR3 = 6;
- 483              		.loc 3 105 20 view .LVU129
- 484 00c0 D36C     		ldr	r3, [r2, #76]
+ 451              		.loc 1 105 20 view .LVU115
+ 452 00c0 D36C     		ldr	r3, [r2, #76]
  105:./src/hardware.c ****    ADC2->SQR3 = 6;
- 485              		.loc 3 105 25 view .LVU130
- 486 00c2 C3F30B03 		ubfx	r3, r3, #0, #12
+ 453              		.loc 1 105 25 view .LVU116
+ 454 00c2 C3F30B03 		ubfx	r3, r3, #0, #12
  105:./src/hardware.c ****    ADC2->SQR3 = 6;
- 487              		.loc 3 105 14 view .LVU131
- 488 00c6 0B60     		str	r3, [r1]
- 489              		.loc 3 106 4 is_stmt 1 view .LVU132
- 490              		.loc 3 106 15 is_stmt 0 view .LVU133
- 491 00c8 5063     		str	r0, [r2, #52]
+ 455              		.loc 1 105 14 view .LVU117
+ 456 00c6 0B60     		str	r3, [r1]
+ 457              		.loc 1 106 4 is_stmt 1 view .LVU118
+ 458              		.loc 1 106 15 is_stmt 0 view .LVU119
+ 459 00c8 5063     		str	r0, [r2, #52]
  107:./src/hardware.c ****    ADC2->CR2 |= 1 << 30;
- 492              		.loc 3 107 4 is_stmt 1 view .LVU134
- 493              		.loc 3 107 14 is_stmt 0 view .LVU135
- 494 00ca 9368     		ldr	r3, [r2, #8]
- 495 00cc 43F08043 		orr	r3, r3, #1073741824
- 496 00d0 9360     		str	r3, [r2, #8]
+ 460              		.loc 1 107 4 is_stmt 1 view .LVU120
+ 461              		.loc 1 107 8 is_stmt 0 view .LVU121
+ 462 00ca 9368     		ldr	r3, [r2, #8]
+ 463              		.loc 1 107 14 view .LVU122
+ 464 00cc 43F08043 		orr	r3, r3, #1073741824
+ 465 00d0 9360     		str	r3, [r2, #8]
  108:./src/hardware.c ****    
  109:./src/hardware.c ****    // wait EOC flag
  110:./src/hardware.c ****    while ( !( ADC2->SR & ( 1 << 1)))
- 497              		.loc 3 110 4 is_stmt 1 view .LVU136
- 498              	.L33:
+ 466              		.loc 1 110 4 is_stmt 1 view .LVU123
+ 467              	.L33:
  111:./src/hardware.c ****     {}
- 499              		.loc 3 111 6 discriminator 1 view .LVU137
+ 468              		.loc 1 111 6 view .LVU124
  110:./src/hardware.c ****     {}
- 500              		.loc 3 110 10 discriminator 1 view .LVU138
+ 469              		.loc 1 110 12 discriminator 1 view .LVU125
  110:./src/hardware.c ****     {}
- 501              		.loc 3 110 19 is_stmt 0 discriminator 1 view .LVU139
- 502 00d2 1368     		ldr	r3, [r2]
+ 470              		.loc 1 110 19 is_stmt 0 discriminator 1 view .LVU126
+ 471 00d2 1368     		ldr	r3, [r2]
  110:./src/hardware.c ****     {}
- 503              		.loc 3 110 10 discriminator 1 view .LVU140
- 504 00d4 9B07     		lsls	r3, r3, #30
- 505 00d6 FCD5     		bpl	.L33
+ 472              		.loc 1 110 12 discriminator 1 view .LVU127
+ 473 00d4 9B07     		lsls	r3, r3, #30
+ 474 00d6 FCD5     		bpl	.L33
  112:./src/hardware.c **** 
  113:./src/hardware.c ****    // return raw value
  114:./src/hardware.c ****    buffer[0] = ADC2->DR & 0xFFF;
- 506              		.loc 3 114 4 is_stmt 1 view .LVU141
- 507              		.loc 3 114 20 is_stmt 0 view .LVU142
- 508 00d8 D36C     		ldr	r3, [r2, #76]
+ 475              		.loc 1 114 4 is_stmt 1 view .LVU128
+ 476              		.loc 1 114 20 is_stmt 0 view .LVU129
+ 477 00d8 D36C     		ldr	r3, [r2, #76]
  115:./src/hardware.c **** 
  116:./src/hardware.c ****    return HW_ERR_OK;
- 509              		.loc 3 116 11 view .LVU143
- 510 00da 0020     		movs	r0, #0
+ 478              		.loc 1 116 11 view .LVU130
+ 479 00da 0020     		movs	r0, #0
  114:./src/hardware.c **** 
- 511              		.loc 3 114 25 view .LVU144
- 512 00dc C3F30B03 		ubfx	r3, r3, #0, #12
+ 480              		.loc 1 114 25 view .LVU131
+ 481 00dc C3F30B03 		ubfx	r3, r3, #0, #12
  114:./src/hardware.c **** 
- 513              		.loc 3 114 14 view .LVU145
- 514 00e0 0B60     		str	r3, [r1]
- 515              		.loc 3 116 4 is_stmt 1 view .LVU146
- 516              		.loc 3 116 11 is_stmt 0 view .LVU147
- 517 00e2 7047     		bx	lr
- 518              	.LVL30:
- 519              	.L34:
+ 482              		.loc 1 114 14 view .LVU132
+ 483 00e0 0B60     		str	r3, [r1]
+ 484              		.loc 1 116 4 is_stmt 1 view .LVU133
+ 485              		.loc 1 116 11 is_stmt 0 view .LVU134
+ 486 00e2 7047     		bx	lr
+ 487              	.LVL17:
+ 488              	.L34:
  102:./src/hardware.c **** 
- 520              		.loc 3 102 14 view .LVU148
- 521 00e4 0120     		movs	r0, #1
- 522              	.LVL31:
+ 489              		.loc 1 102 14 view .LVU135
+ 490 00e4 0120     		movs	r0, #1
+ 491              	.LVL18:
  117:./src/hardware.c **** }
- 523              		.loc 3 117 1 view .LVU149
- 524 00e6 7047     		bx	lr
- 525              	.L38:
- 526              		.align	2
- 527              	.L37:
- 528 00e8 00210140 		.word	1073815808
- 529              		.cfi_endproc
- 530              	.LFE149:
- 532              		.align	1
- 533              		.p2align 2,,3
- 534              		.global	HW_GetDIN
- 535              		.syntax unified
- 536              		.thumb
- 537              		.thumb_func
- 538              		.fpu fpv5-d16
- 540              	HW_GetDIN:
- 541              	.LVL32:
- 542              	.LFB150:
+ 492              		.loc 1 117 1 view .LVU136
+ 493 00e6 7047     		bx	lr
+ 494              	.L38:
+ 495              		.align	2
+ 496              	.L37:
+ 497 00e8 00210140 		.word	1073815808
+ 498              		.cfi_endproc
+ 499              	.LFE149:
+ 501              		.align	1
+ 502              		.p2align 2,,3
+ 503              		.global	HW_GetDIN
+ 504              		.syntax unified
+ 505              		.thumb
+ 506              		.thumb_func
+ 508              	HW_GetDIN:
+ 509              	.LVL19:
+ 510              	.LFB150:
  118:./src/hardware.c **** 
  119:./src/hardware.c **** 
  120:./src/hardware.c **** 
@@ -3861,65 +3815,64 @@
  122:./src/hardware.c **** //! @param[out] buffer  result buffer (single uint32_t)
  123:./src/hardware.c **** HWResult_t  HW_GetDIN ( uint32_t  *buffer)
  124:./src/hardware.c **** {
- 543              		.loc 3 124 1 is_stmt 1 view -0
- 544              		.cfi_startproc
- 545              		@ args = 0, pretend = 0, frame = 0
- 546              		@ frame_needed = 0, uses_anonymous_args = 0
- 547              		@ link register save eliminated.
+ 511              		.loc 1 124 1 is_stmt 1 view -0
+ 512              		.cfi_startproc
+ 513              		@ args = 0, pretend = 0, frame = 0
+ 514              		@ frame_needed = 0, uses_anonymous_args = 0
+ 515              		@ link register save eliminated.
  125:./src/hardware.c **** 	if ( buffer == NULL)
- 548              		.loc 3 125 2 view .LVU151
- 549              		.loc 3 125 5 is_stmt 0 view .LVU152
- 550 00ec 0246     		mov	r2, r0
- 551 00ee 40B1     		cbz	r0, .L41
+ 516              		.loc 1 125 2 view .LVU138
+ 517              		.loc 1 125 5 is_stmt 0 view .LVU139
+ 518 00ec 0246     		mov	r2, r0
+ 519 00ee 40B1     		cbz	r0, .L41
  126:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
  127:./src/hardware.c **** 
  128:./src/hardware.c **** 	buffer[0] = (( GPIOK->IDR >> 4) & 0xF) ^ 0xF;
- 552              		.loc 3 128 2 is_stmt 1 view .LVU153
- 553              		.loc 3 128 22 is_stmt 0 view .LVU154
- 554 00f0 054B     		ldr	r3, .L42
+ 520              		.loc 1 128 2 is_stmt 1 view .LVU140
+ 521              		.loc 1 128 22 is_stmt 0 view .LVU141
+ 522 00f0 054B     		ldr	r3, .L42
  129:./src/hardware.c **** 	
  130:./src/hardware.c **** 	return HW_ERR_OK;
- 555              		.loc 3 130 9 view .LVU155
- 556 00f2 0020     		movs	r0, #0
- 557              	.LVL33:
+ 523              		.loc 1 130 9 view .LVU142
+ 524 00f2 0020     		movs	r0, #0
+ 525              	.LVL20:
  128:./src/hardware.c **** 	
- 558              		.loc 3 128 22 view .LVU156
- 559 00f4 1B69     		ldr	r3, [r3, #16]
+ 526              		.loc 1 128 22 view .LVU143
+ 527 00f4 1B69     		ldr	r3, [r3, #16]
  128:./src/hardware.c **** 	
- 560              		.loc 3 128 41 view .LVU157
- 561 00f6 6FEA1313 		mvn	r3, r3, lsr #4
- 562 00fa 03F00F03 		and	r3, r3, #15
+ 528              		.loc 1 128 41 view .LVU144
+ 529 00f6 6FEA1313 		mvn	r3, r3, lsr #4
+ 530 00fa 03F00F03 		and	r3, r3, #15
  128:./src/hardware.c **** 	
- 563              		.loc 3 128 12 view .LVU158
- 564 00fe 1360     		str	r3, [r2]
- 565              		.loc 3 130 2 is_stmt 1 view .LVU159
- 566              		.loc 3 130 9 is_stmt 0 view .LVU160
- 567 0100 7047     		bx	lr
- 568              	.LVL34:
- 569              	.L41:
+ 531              		.loc 1 128 12 view .LVU145
+ 532 00fe 1360     		str	r3, [r2]
+ 533              		.loc 1 130 2 is_stmt 1 view .LVU146
+ 534              		.loc 1 130 9 is_stmt 0 view .LVU147
+ 535 0100 7047     		bx	lr
+ 536              	.LVL21:
+ 537              	.L41:
  126:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
- 570              		.loc 3 126 12 view .LVU161
- 571 0102 0120     		movs	r0, #1
- 572              	.LVL35:
+ 538              		.loc 1 126 12 view .LVU148
+ 539 0102 0120     		movs	r0, #1
+ 540              	.LVL22:
  131:./src/hardware.c **** }
- 573              		.loc 3 131 1 view .LVU162
- 574 0104 7047     		bx	lr
- 575              	.L43:
- 576 0106 00BF     		.align	2
- 577              	.L42:
- 578 0108 00280240 		.word	1073883136
- 579              		.cfi_endproc
- 580              	.LFE150:
- 582              		.align	1
- 583              		.p2align 2,,3
- 584              		.global	HW_SetDOUT
- 585              		.syntax unified
- 586              		.thumb
- 587              		.thumb_func
- 588              		.fpu fpv5-d16
- 590              	HW_SetDOUT:
- 591              	.LVL36:
- 592              	.LFB151:
+ 541              		.loc 1 131 1 view .LVU149
+ 542 0104 7047     		bx	lr
+ 543              	.L43:
+ 544 0106 00BF     		.align	2
+ 545              	.L42:
+ 546 0108 00280240 		.word	1073883136
+ 547              		.cfi_endproc
+ 548              	.LFE150:
+ 550              		.align	1
+ 551              		.p2align 2,,3
+ 552              		.global	HW_SetDOUT
+ 553              		.syntax unified
+ 554              		.thumb
+ 555              		.thumb_func
+ 557              	HW_SetDOUT:
+ 558              	.LVL23:
+ 559              	.LFB151:
  132:./src/hardware.c **** 
  133:./src/hardware.c **** 
  134:./src/hardware.c **** 
@@ -3927,55 +3880,54 @@
  136:./src/hardware.c **** //! @param[in]  buffer input buffer ( single uint32_t)
  137:./src/hardware.c **** HWResult_t  HW_SetDOUT ( uint32_t  *buffer)
  138:./src/hardware.c **** {
- 593              		.loc 3 138 1 is_stmt 1 view -0
- 594              		.cfi_startproc
- 595              		@ args = 0, pretend = 0, frame = 0
- 596              		@ frame_needed = 0, uses_anonymous_args = 0
- 597              		@ link register save eliminated.
+ 560              		.loc 1 138 1 is_stmt 1 view -0
+ 561              		.cfi_startproc
+ 562              		@ args = 0, pretend = 0, frame = 0
+ 563              		@ frame_needed = 0, uses_anonymous_args = 0
+ 564              		@ link register save eliminated.
  139:./src/hardware.c ****    if ( buffer == NULL)
- 598              		.loc 3 139 4 view .LVU164
- 599              		.loc 3 139 7 is_stmt 0 view .LVU165
- 600 010c 28B1     		cbz	r0, .L46
+ 565              		.loc 1 139 4 view .LVU151
+ 566              		.loc 1 139 7 is_stmt 0 view .LVU152
+ 567 010c 28B1     		cbz	r0, .L46
  140:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
  141:./src/hardware.c ****    
  142:./src/hardware.c ****    FPGA->SYS_DOUT_WR = buffer[0];
- 601              		.loc 3 142 4 is_stmt 1 view .LVU166
- 602              		.loc 3 142 30 is_stmt 0 view .LVU167
- 603 010e 0268     		ldr	r2, [r0]
- 604              		.loc 3 142 22 view .LVU168
- 605 0110 4FF0C843 		mov	r3, #1677721600
+ 568              		.loc 1 142 4 is_stmt 1 view .LVU153
+ 569              		.loc 1 142 30 is_stmt 0 view .LVU154
+ 570 010e 0268     		ldr	r2, [r0]
+ 571              		.loc 1 142 22 view .LVU155
+ 572 0110 4FF0C843 		mov	r3, #1677721600
  143:./src/hardware.c **** 
  144:./src/hardware.c ****    return HW_ERR_OK;
- 606              		.loc 3 144 11 view .LVU169
- 607 0114 0020     		movs	r0, #0
- 608              	.LVL37:
+ 573              		.loc 1 144 11 view .LVU156
+ 574 0114 0020     		movs	r0, #0
+ 575              	.LVL24:
  142:./src/hardware.c **** 
- 609              		.loc 3 142 22 view .LVU170
- 610 0116 9A65     		str	r2, [r3, #88]
- 611              		.loc 3 144 4 is_stmt 1 view .LVU171
- 612              		.loc 3 144 11 is_stmt 0 view .LVU172
- 613 0118 7047     		bx	lr
- 614              	.LVL38:
- 615              	.L46:
+ 576              		.loc 1 142 22 view .LVU157
+ 577 0116 9A65     		str	r2, [r3, #88]
+ 578              		.loc 1 144 4 is_stmt 1 view .LVU158
+ 579              		.loc 1 144 11 is_stmt 0 view .LVU159
+ 580 0118 7047     		bx	lr
+ 581              	.LVL25:
+ 582              	.L46:
  140:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
- 616              		.loc 3 140 12 view .LVU173
- 617 011a 0120     		movs	r0, #1
- 618              	.LVL39:
+ 583              		.loc 1 140 12 view .LVU160
+ 584 011a 0120     		movs	r0, #1
+ 585              	.LVL26:
  145:./src/hardware.c **** }
- 619              		.loc 3 145 1 view .LVU174
- 620 011c 7047     		bx	lr
- 621              		.cfi_endproc
- 622              	.LFE151:
- 624              		.align	1
- 625 011e 00BF     		.p2align 2,,3
- 626              		.global	HW_GetModuleID
- 627              		.syntax unified
- 628              		.thumb
- 629              		.thumb_func
- 630              		.fpu fpv5-d16
- 632              	HW_GetModuleID:
- 633              	.LVL40:
- 634              	.LFB152:
+ 586              		.loc 1 145 1 view .LVU161
+ 587 011c 7047     		bx	lr
+ 588              		.cfi_endproc
+ 589              	.LFE151:
+ 591              		.align	1
+ 592 011e 00BF     		.p2align 2,,3
+ 593              		.global	HW_GetModuleID
+ 594              		.syntax unified
+ 595              		.thumb
+ 596              		.thumb_func
+ 598              	HW_GetModuleID:
+ 599              	.LVL27:
+ 600              	.LFB152:
  146:./src/hardware.c **** 
  147:./src/hardware.c **** 
  148:./src/hardware.c **** 
@@ -3983,75 +3935,74 @@
  150:./src/hardware.c **** //! @param[out] buffer  result buffer (single uint8_t)
  151:./src/hardware.c **** HWResult_t  HW_GetModuleID (	uint8_t  *buffer)
  152:./src/hardware.c **** {
- 635              		.loc 3 152 1 is_stmt 1 view -0
- 636              		.cfi_startproc
- 637              		@ args = 0, pretend = 0, frame = 0
- 638              		@ frame_needed = 0, uses_anonymous_args = 0
- 639              		@ link register save eliminated.
+ 601              		.loc 1 152 1 is_stmt 1 view -0
+ 602              		.cfi_startproc
+ 603              		@ args = 0, pretend = 0, frame = 0
+ 604              		@ frame_needed = 0, uses_anonymous_args = 0
+ 605              		@ link register save eliminated.
  153:./src/hardware.c **** 	if ( buffer == NULL)
- 640              		.loc 3 153 2 view .LVU176
- 641              		.loc 3 153 5 is_stmt 0 view .LVU177
- 642 0120 0246     		mov	r2, r0
- 643 0122 40B1     		cbz	r0, .L49
+ 606              		.loc 1 153 2 view .LVU163
+ 607              		.loc 1 153 5 is_stmt 0 view .LVU164
+ 608 0120 0246     		mov	r2, r0
+ 609 0122 40B1     		cbz	r0, .L49
  154:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
  155:./src/hardware.c **** 
  156:./src/hardware.c **** 
  157:./src/hardware.c **** 	buffer[0] = (( GPIOJ->IDR >> 12) & 0xF) ^ 0xF;
- 644              		.loc 3 157 2 is_stmt 1 view .LVU178
- 645              		.loc 3 157 22 is_stmt 0 view .LVU179
- 646 0124 054B     		ldr	r3, .L50
+ 610              		.loc 1 157 2 is_stmt 1 view .LVU165
+ 611              		.loc 1 157 22 is_stmt 0 view .LVU166
+ 612 0124 054B     		ldr	r3, .L50
  158:./src/hardware.c **** 	
  159:./src/hardware.c **** 	return HW_ERR_OK;
- 647              		.loc 3 159 9 view .LVU180
- 648 0126 0020     		movs	r0, #0
- 649              	.LVL41:
+ 613              		.loc 1 159 9 view .LVU167
+ 614 0126 0020     		movs	r0, #0
+ 615              	.LVL28:
  157:./src/hardware.c **** 	
- 650              		.loc 3 157 22 view .LVU181
- 651 0128 1B69     		ldr	r3, [r3, #16]
+ 616              		.loc 1 157 22 view .LVU168
+ 617 0128 1B69     		ldr	r3, [r3, #16]
  157:./src/hardware.c **** 	
- 652              		.loc 3 157 42 view .LVU182
- 653 012a 6FEA1333 		mvn	r3, r3, lsr #12
- 654 012e 03F00F03 		and	r3, r3, #15
+ 618              		.loc 1 157 42 view .LVU169
+ 619 012a 6FEA1333 		mvn	r3, r3, lsr #12
+ 620 012e 03F00F03 		and	r3, r3, #15
  157:./src/hardware.c **** 	
- 655              		.loc 3 157 12 view .LVU183
- 656 0132 1370     		strb	r3, [r2]
- 657              		.loc 3 159 2 is_stmt 1 view .LVU184
- 658              		.loc 3 159 9 is_stmt 0 view .LVU185
- 659 0134 7047     		bx	lr
- 660              	.LVL42:
- 661              	.L49:
+ 621              		.loc 1 157 12 view .LVU170
+ 622 0132 1370     		strb	r3, [r2]
+ 623              		.loc 1 159 2 is_stmt 1 view .LVU171
+ 624              		.loc 1 159 9 is_stmt 0 view .LVU172
+ 625 0134 7047     		bx	lr
+ 626              	.LVL29:
+ 627              	.L49:
  154:./src/hardware.c **** 	 { return HW_ERR_ILLPARAMVAL;}
- 662              		.loc 3 154 12 view .LVU186
- 663 0136 0120     		movs	r0, #1
- 664              	.LVL43:
+ 628              		.loc 1 154 12 view .LVU173
+ 629 0136 0120     		movs	r0, #1
+ 630              	.LVL30:
  160:./src/hardware.c **** }
- 665              		.loc 3 160 1 view .LVU187
- 666 0138 7047     		bx	lr
- 667              	.L51:
- 668 013a 00BF     		.align	2
- 669              	.L50:
- 670 013c 00240240 		.word	1073882112
- 671              		.cfi_endproc
- 672              	.LFE152:
- 674              		.section	.rodata.str1.4,"aMS",%progbits,1
- 675              		.align	2
- 676              	.LC0:
- 677 0000 63616C6C 		.ascii	"call bootloader!\000"
- 677      20626F6F 
- 677      746C6F61 
- 677      64657221 
- 677      00
- 678              		.text
- 679              		.align	1
- 680              		.p2align 2,,3
- 681              		.global	HW_JumpToBootloader
- 682              		.syntax unified
- 683              		.thumb
- 684              		.thumb_func
- 685              		.fpu fpv5-d16
- 687              	HW_JumpToBootloader:
- 688              	.LVL44:
- 689              	.LFB153:
+ 631              		.loc 1 160 1 view .LVU174
+ 632 0138 7047     		bx	lr
+ 633              	.L51:
+ 634 013a 00BF     		.align	2
+ 635              	.L50:
+ 636 013c 00240240 		.word	1073882112
+ 637              		.cfi_endproc
+ 638              	.LFE152:
+ 640              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 641              		.align	2
+ 642              	.LC0:
+ 643 0000 63616C6C 		.ascii	"call bootloader!\000"
+ 643      20626F6F 
+ 643      746C6F61 
+ 643      64657221 
+ 643      00
+ 644              		.text
+ 645              		.align	1
+ 646              		.p2align 2,,3
+ 647              		.global	HW_JumpToBootloader
+ 648              		.syntax unified
+ 649              		.thumb
+ 650              		.thumb_func
+ 652              	HW_JumpToBootloader:
+ 653              	.LVL31:
+ 654              	.LFB153:
  161:./src/hardware.c **** 
  162:./src/hardware.c **** 
  163:./src/hardware.c **** 
@@ -4059,105 +4010,104 @@
  165:./src/hardware.c **** //! @param[in]  timing  bitrates for all CANs
  166:./src/hardware.c **** void  HW_JumpToBootloader ( const CANTiming_t  *timing)
  167:./src/hardware.c **** {
- 690              		.loc 3 167 1 is_stmt 1 view -0
- 691              		.cfi_startproc
- 692              		@ Volatile: function does not return.
- 693              		@ args = 0, pretend = 0, frame = 0
- 694              		@ frame_needed = 0, uses_anonymous_args = 0
+ 655              		.loc 1 167 1 is_stmt 1 view -0
+ 656              		.cfi_startproc
+ 657              		@ Volatile: function does not return.
+ 658              		@ args = 0, pretend = 0, frame = 0
+ 659              		@ frame_needed = 0, uses_anonymous_args = 0
  168:./src/hardware.c **** 	// FPGA reset
  169:./src/hardware.c **** 	GPIOG->BSRR = 1 << 22;
- 695              		.loc 3 169 2 view .LVU189
+ 660              		.loc 1 169 2 view .LVU176
  167:./src/hardware.c **** 	// FPGA reset
- 696              		.loc 3 167 1 is_stmt 0 view .LVU190
- 697 0140 08B5     		push	{r3, lr}
- 698              	.LCFI1:
- 699              		.cfi_def_cfa_offset 8
- 700              		.cfi_offset 3, -8
- 701              		.cfi_offset 14, -4
- 702              		.loc 3 169 14 view .LVU191
- 703 0142 0D49     		ldr	r1, .L58
+ 661              		.loc 1 167 1 is_stmt 0 view .LVU177
+ 662 0140 08B5     		push	{r3, lr}
+ 663              	.LCFI1:
+ 664              		.cfi_def_cfa_offset 8
+ 665              		.cfi_offset 3, -8
+ 666              		.cfi_offset 14, -4
+ 667              		.loc 1 169 14 view .LVU178
+ 668 0142 0D49     		ldr	r1, .L58
  170:./src/hardware.c **** 	
  171:./src/hardware.c **** 	// invoke PCANFlash loader
  172:./src/hardware.c **** 	BL_INVOKE->version = 1;
- 704              		.loc 3 172 21 view .LVU192
- 705 0144 0122     		movs	r2, #1
- 706 0146 0D4B     		ldr	r3, .L58+4
+ 669              		.loc 1 172 21 view .LVU179
+ 670 0144 0122     		movs	r2, #1
+ 671 0146 0D4B     		ldr	r3, .L58+4
  169:./src/hardware.c **** 	
- 707              		.loc 3 169 14 view .LVU193
- 708 0148 4FF48005 		mov	r5, #4194304
+ 672              		.loc 1 169 14 view .LVU180
+ 673 0148 4FF48005 		mov	r5, #4194304
  167:./src/hardware.c **** 	// FPGA reset
- 709              		.loc 3 167 1 view .LVU194
- 710 014c 0446     		mov	r4, r0
+ 674              		.loc 1 167 1 view .LVU181
+ 675 014c 0446     		mov	r4, r0
  173:./src/hardware.c **** 	
  174:./src/hardware.c **** 	strncpy ( &BL_INVOKE->str_invoke[0], "call bootloader!", sizeof ( BL_INVOKE->str_invoke));
- 711              		.loc 3 174 2 view .LVU195
- 712 014e 0C48     		ldr	r0, .L58+8
- 713              	.LVL45:
+ 676              		.loc 1 174 2 view .LVU182
+ 677 014e 0C48     		ldr	r0, .L58+8
+ 678              	.LVL32:
  169:./src/hardware.c **** 	
- 714              		.loc 3 169 14 view .LVU196
- 715 0150 8D61     		str	r5, [r1, #24]
+ 679              		.loc 1 169 14 view .LVU183
+ 680 0150 8D61     		str	r5, [r1, #24]
  172:./src/hardware.c **** 	
- 716              		.loc 3 172 2 is_stmt 1 view .LVU197
- 717              		.loc 3 174 2 is_stmt 0 view .LVU198
- 718 0152 0C49     		ldr	r1, .L58+12
+ 681              		.loc 1 172 2 is_stmt 1 view .LVU184
+ 682              		.loc 1 174 2 is_stmt 0 view .LVU185
+ 683 0152 0C49     		ldr	r1, .L58+12
  172:./src/hardware.c **** 	
- 719              		.loc 3 172 21 view .LVU199
- 720 0154 1A60     		str	r2, [r3]
- 721              		.loc 3 174 2 is_stmt 1 view .LVU200
- 722 0156 2022     		movs	r2, #32
- 723 0158 FFF7FEFF 		bl	strncpy
- 724              	.LVL46:
+ 684              		.loc 1 172 21 view .LVU186
+ 685 0154 1A60     		str	r2, [r3]
+ 686              		.loc 1 174 2 is_stmt 1 view .LVU187
+ 687 0156 2022     		movs	r2, #32
+ 688 0158 FFF7FEFF 		bl	strncpy
+ 689              	.LVL33:
  175:./src/hardware.c **** 	
  176:./src/hardware.c **** 	// zero
  177:./src/hardware.c **** 	memset ( &BL_INVOKE->timing[0], 0, 6 * sizeof ( CANTiming_t));
- 725              		.loc 3 177 2 view .LVU201
- 726 015c 7822     		movs	r2, #120
- 727 015e 0021     		movs	r1, #0
- 728 0160 0948     		ldr	r0, .L58+16
- 729 0162 FFF7FEFF 		bl	memset
- 730              	.LVL47:
+ 690              		.loc 1 177 2 view .LVU188
+ 691 015c 7822     		movs	r2, #120
+ 692 015e 0021     		movs	r1, #0
+ 693 0160 0948     		ldr	r0, .L58+16
+ 694 0162 FFF7FEFF 		bl	memset
+ 695              	.LVL34:
  178:./src/hardware.c **** 	
  179:./src/hardware.c **** 	if ( timing)
- 731              		.loc 3 179 2 view .LVU202
- 732              		.loc 3 179 5 is_stmt 0 view .LVU203
- 733 0166 24B1     		cbz	r4, .L53
+ 696              		.loc 1 179 2 view .LVU189
+ 697              		.loc 1 179 5 is_stmt 0 view .LVU190
+ 698 0166 24B1     		cbz	r4, .L53
  180:./src/hardware.c **** 	{
  181:./src/hardware.c **** 		// copy timings for loader
  182:./src/hardware.c **** 		memcpy ( &BL_INVOKE->timing[0], timing, 6 * sizeof ( CANTiming_t));
- 734              		.loc 3 182 3 is_stmt 1 view .LVU204
- 735 0168 7822     		movs	r2, #120
- 736 016a 2146     		mov	r1, r4
- 737 016c 0648     		ldr	r0, .L58+16
- 738 016e FFF7FEFF 		bl	memcpy
- 739              	.LVL48:
- 740              	.L53:
+ 699              		.loc 1 182 3 is_stmt 1 view .LVU191
+ 700 0168 7822     		movs	r2, #120
+ 701 016a 2146     		mov	r1, r4
+ 702 016c 0648     		ldr	r0, .L58+16
+ 703 016e FFF7FEFF 		bl	memcpy
+ 704              	.LVL35:
+ 705              	.L53:
  183:./src/hardware.c **** 	}
  184:./src/hardware.c **** 	
  185:./src/hardware.c **** 	// reset
  186:./src/hardware.c **** 	NVIC_SystemReset();
- 741              		.loc 3 186 2 view .LVU205
- 742 0172 FFF745FF 		bl	__NVIC_SystemReset
- 743              	.LVL49:
- 744              	.L59:
- 745 0176 00BF     		.align	2
- 746              	.L58:
- 747 0178 00180240 		.word	1073879040
- 748 017c 00FF0120 		.word	537001728
- 749 0180 04FF0120 		.word	537001732
- 750 0184 00000000 		.word	.LC0
- 751 0188 24FF0120 		.word	537001764
- 752              		.cfi_endproc
- 753              	.LFE153:
- 755              		.align	1
- 756              		.p2align 2,,3
- 757              		.global	HW_SetLED
- 758              		.syntax unified
- 759              		.thumb
- 760              		.thumb_func
- 761              		.fpu fpv5-d16
- 763              	HW_SetLED:
- 764              	.LVL50:
- 765              	.LFB154:
+ 706              		.loc 1 186 2 view .LVU192
+ 707 0172 FFF745FF 		bl	__NVIC_SystemReset
+ 708              	.LVL36:
+ 709              	.L59:
+ 710 0176 00BF     		.align	2
+ 711              	.L58:
+ 712 0178 00180240 		.word	1073879040
+ 713 017c 00FF0120 		.word	537001728
+ 714 0180 04FF0120 		.word	537001732
+ 715 0184 00000000 		.word	.LC0
+ 716 0188 24FF0120 		.word	537001764
+ 717              		.cfi_endproc
+ 718              	.LFE153:
+ 720              		.align	1
+ 721              		.p2align 2,,3
+ 722              		.global	HW_SetLED
+ 723              		.syntax unified
+ 724              		.thumb
+ 725              		.thumb_func
+ 727              	HW_SetLED:
+ 728              	.LVL37:
+ 729              	.LFB154:
  187:./src/hardware.c **** }
  188:./src/hardware.c **** 
  189:./src/hardware.c **** 
@@ -4167,35 +4117,35 @@
  193:./src/hardware.c **** //! @param[in]  color  color for LED
  194:./src/hardware.c **** HWResult_t  HW_SetLED (	LEDHandle_t  hLED, LEDColor_t  color)
  195:./src/hardware.c **** {
- 766              		.loc 3 195 1 view -0
- 767              		.cfi_startproc
- 768              		@ args = 0, pretend = 0, frame = 0
- 769              		@ frame_needed = 0, uses_anonymous_args = 0
- 770              		@ link register save eliminated.
+ 730              		.loc 1 195 1 view -0
+ 731              		.cfi_startproc
+ 732              		@ args = 0, pretend = 0, frame = 0
+ 733              		@ frame_needed = 0, uses_anonymous_args = 0
+ 734              		@ link register save eliminated.
  196:./src/hardware.c **** 	HWResult_t  ret;
- 771              		.loc 3 196 2 view .LVU207
+ 735              		.loc 1 196 2 view .LVU194
  197:./src/hardware.c **** 	
  198:./src/hardware.c **** 	
  199:./src/hardware.c **** 	ret = HW_ERR_OK;
- 772              		.loc 3 199 2 view .LVU208
+ 736              		.loc 1 199 2 view .LVU195
  200:./src/hardware.c **** 	
  201:./src/hardware.c **** 	switch ( hLED)
- 773              		.loc 3 201 2 view .LVU209
- 774 018c 0828     		cmp	r0, #8
- 775 018e 00F2A780 		bhi	.L86
- 776 0192 DFE800F0 		tbb	[pc, r0]
- 777              	.L63:
- 778 0196 0E       		.byte	(.L66-.L63)/2
- 779 0197 05       		.byte	(.L65-.L63)/2
- 780 0198 05       		.byte	(.L65-.L63)/2
- 781 0199 05       		.byte	(.L65-.L63)/2
- 782 019a 05       		.byte	(.L65-.L63)/2
- 783 019b 05       		.byte	(.L65-.L63)/2
- 784 019c 05       		.byte	(.L65-.L63)/2
- 785 019d 25       		.byte	(.L64-.L63)/2
- 786 019e 1F       		.byte	(.L62-.L63)/2
- 787 019f 00       		.p2align 1
- 788              	.L65:
+ 737              		.loc 1 201 2 view .LVU196
+ 738 018c 0828     		cmp	r0, #8
+ 739 018e 00F29680 		bhi	.L87
+ 740 0192 DFE800F0 		tbb	[pc, r0]
+ 741              	.L63:
+ 742 0196 0E       		.byte	(.L66-.L63)/2
+ 743 0197 05       		.byte	(.L65-.L63)/2
+ 744 0198 05       		.byte	(.L65-.L63)/2
+ 745 0199 05       		.byte	(.L65-.L63)/2
+ 746 019a 05       		.byte	(.L65-.L63)/2
+ 747 019b 05       		.byte	(.L65-.L63)/2
+ 748 019c 05       		.byte	(.L65-.L63)/2
+ 749 019d 2A       		.byte	(.L64-.L63)/2
+ 750 019e 24       		.byte	(.L62-.L63)/2
+ 751 019f 00       		.p2align 1
+ 752              	.L65:
  202:./src/hardware.c **** 	{
  203:./src/hardware.c **** 		case HW_LED_STATUS:
  204:./src/hardware.c **** 			// status LED
@@ -4233,70 +4183,74 @@
  236:./src/hardware.c **** 		case HW_LED_CAN6:
  237:./src/hardware.c **** 			// CAN LED
  238:./src/hardware.c **** 			hLED -= 1;
- 789              		.loc 3 238 4 view .LVU210
- 790              		.loc 3 238 9 is_stmt 0 view .LVU211
- 791 01a0 0138     		subs	r0, r0, #1
- 792              	.LVL51:
- 793              		.loc 3 238 9 view .LVU212
- 794 01a2 C0B2     		uxtb	r0, r0
- 795              	.LVL52:
+ 753              		.loc 1 238 4 view .LVU197
+ 754              		.loc 1 238 9 is_stmt 0 view .LVU198
+ 755 01a0 0138     		subs	r0, r0, #1
+ 756              	.LVL38:
+ 757              		.loc 1 238 9 view .LVU199
+ 758 01a2 C0B2     		uxtb	r0, r0
+ 759              	.LVL39:
  239:./src/hardware.c **** 			
  240:./src/hardware.c **** 			switch ( color)
- 796              		.loc 3 240 4 is_stmt 1 view .LVU213
- 797 01a4 0329     		cmp	r1, #3
- 798 01a6 00F29D80 		bhi	.L87
- 799 01aa DFE801F0 		tbb	[pc, r1]
- 800              	.L72:
- 801 01ae 46       		.byte	(.L75-.L72)/2
- 802 01af 4E       		.byte	(.L74-.L72)/2
- 803 01b0 56       		.byte	(.L73-.L72)/2
- 804 01b1 5E       		.byte	(.L71-.L72)/2
- 805              		.p2align 1
- 806              	.L66:
+ 760              		.loc 1 240 4 is_stmt 1 view .LVU200
+ 761 01a4 0329     		cmp	r1, #3
+ 762 01a6 00F28C80 		bhi	.L88
+ 763 01aa DFE801F0 		tbb	[pc, r1]
+ 764              	.L73:
+ 765 01ae 48       		.byte	(.L76-.L73)/2
+ 766 01af 4F       		.byte	(.L75-.L73)/2
+ 767 01b0 56       		.byte	(.L74-.L73)/2
+ 768 01b1 5D       		.byte	(.L72-.L73)/2
+ 769              		.p2align 1
+ 770              	.L66:
  205:./src/hardware.c **** 			GPIOB->BSRR = 1UL << 15UL;
- 807              		.loc 3 205 4 view .LVU214
+ 771              		.loc 1 205 4 view .LVU201
  195:./src/hardware.c **** 	HWResult_t  ret;
- 808              		.loc 3 195 1 is_stmt 0 view .LVU215
- 809 01b2 10B4     		push	{r4}
- 810              	.LCFI2:
- 811              		.cfi_def_cfa_offset 4
- 812              		.cfi_offset 4, -4
+ 772              		.loc 1 195 1 is_stmt 0 view .LVU202
+ 773 01b2 10B4     		push	{r4}
+ 774              	.LCFI2:
+ 775              		.cfi_def_cfa_offset 4
+ 776              		.cfi_offset 4, -4
  205:./src/hardware.c **** 			GPIOB->BSRR = 1UL << 15UL;
- 813              		.loc 3 205 16 view .LVU216
- 814 01b4 4C4A     		ldr	r2, .L92
- 815 01b6 4FF40074 		mov	r4, #512
+ 777              		.loc 1 205 16 view .LVU203
+ 778 01b4 444A     		ldr	r2, .L95
+ 779 01b6 4FF40074 		mov	r4, #512
  206:./src/hardware.c **** 
- 816              		.loc 3 206 16 view .LVU217
- 817 01ba 4C4B     		ldr	r3, .L92+4
- 818 01bc 4FF40040 		mov	r0, #32768
- 819              	.LVL53:
- 206:./src/hardware.c **** 
- 820              		.loc 3 206 16 view .LVU218
- 821 01c0 0229     		cmp	r1, #2
- 205:./src/hardware.c **** 			GPIOB->BSRR = 1UL << 15UL;
- 822              		.loc 3 205 16 view .LVU219
- 823 01c2 9461     		str	r4, [r2, #24]
- 206:./src/hardware.c **** 
- 824              		.loc 3 206 4 is_stmt 1 view .LVU220
- 206:./src/hardware.c **** 
- 825              		.loc 3 206 16 is_stmt 0 view .LVU221
- 826 01c4 9861     		str	r0, [r3, #24]
+ 780              		.loc 1 206 16 view .LVU204
+ 781 01ba 444B     		ldr	r3, .L95+4
+ 782 01bc 4FF40040 		mov	r0, #32768
+ 783              	.LVL40:
  208:./src/hardware.c **** 				case HW_LED_OFF:
- 827              		.loc 3 208 4 is_stmt 1 view .LVU222
- 828 01c6 20D0     		beq	.L67
- 829 01c8 0329     		cmp	r1, #3
- 830 01ca 0FD0     		beq	.L68
- 831 01cc 0129     		cmp	r1, #1
- 832 01ce 17D0     		beq	.L69
+ 784              		.loc 1 208 4 view .LVU205
+ 785 01c0 0229     		cmp	r1, #2
+ 205:./src/hardware.c **** 			GPIOB->BSRR = 1UL << 15UL;
+ 786              		.loc 1 205 16 view .LVU206
+ 787 01c2 9461     		str	r4, [r2, #24]
+ 206:./src/hardware.c **** 
+ 788              		.loc 1 206 4 is_stmt 1 view .LVU207
+ 206:./src/hardware.c **** 
+ 789              		.loc 1 206 16 is_stmt 0 view .LVU208
+ 790 01c4 9861     		str	r0, [r3, #24]
+ 208:./src/hardware.c **** 				case HW_LED_OFF:
+ 791              		.loc 1 208 4 is_stmt 1 view .LVU209
+ 792 01c6 16D0     		beq	.L67
+ 793 01c8 0329     		cmp	r1, #3
+ 794 01ca 18D0     		beq	.L68
+ 795 01cc 0129     		cmp	r1, #1
+ 796 01ce 02D1     		bne	.L71
+ 214:./src/hardware.c **** 					break;
+ 797              		.loc 1 214 6 view .LVU210
+ 214:./src/hardware.c **** 					break;
+ 798              		.loc 1 214 18 is_stmt 0 view .LVU211
+ 799 01d0 4FF00073 		mov	r3, #33554432
+ 800 01d4 9361     		str	r3, [r2, #24]
+ 215:./src/hardware.c **** 
+ 801              		.loc 1 215 6 is_stmt 1 view .LVU212
+ 802              	.LVL41:
+ 803              	.L71:
  199:./src/hardware.c **** 	
- 833              		.loc 3 199 6 is_stmt 0 view .LVU223
- 834 01d0 0020     		movs	r0, #0
- 835 01d2 12E0     		b	.L60
- 836              	.LVL54:
- 837              	.L62:
- 838              	.LCFI3:
- 839              		.cfi_def_cfa_offset 0
- 840              		.cfi_restore 4
+ 804              		.loc 1 199 6 is_stmt 0 view .LVU213
+ 805 01d6 0020     		movs	r0, #0
  241:./src/hardware.c **** 			{
  242:./src/hardware.c **** 				case HW_LED_OFF:
  243:./src/hardware.c **** 					FPGA->CAN[hLED].CAN_CNTL = 2 << 10 | 2 << 8;
@@ -4355,56 +4309,6 @@
  296:./src/hardware.c **** 		case HW_LED_SD2:
  297:./src/hardware.c **** 			// SD card LED 2
  298:./src/hardware.c **** 			switch ( color) {
- 841              		.loc 3 298 4 is_stmt 1 view .LVU224
- 842 01d4 0329     		cmp	r1, #3
- 843 01d6 1DD8     		bhi	.L90
- 844 01d8 DFE801F0 		tbb	[pc, r1]
- 845              	.L82:
- 846 01dc 71       		.byte	(.L85-.L82)/2
- 847 01dd 78       		.byte	(.L84-.L82)/2
- 848 01de 4F       		.byte	(.L83-.L82)/2
- 849 01df 59       		.byte	(.L81-.L82)/2
- 850              		.p2align 1
- 851              	.L64:
- 271:./src/hardware.c **** 				case HW_LED_OFF:
- 852              		.loc 3 271 4 view .LVU225
- 853 01e0 0329     		cmp	r1, #3
- 854 01e2 17D8     		bhi	.L90
- 855 01e4 DFE801F0 		tbb	[pc, r1]
- 856              	.L77:
- 857 01e8 5A       		.byte	(.L80-.L77)/2
- 858 01e9 61       		.byte	(.L79-.L77)/2
- 859 01ea 18       		.byte	(.L78-.L77)/2
- 860 01eb 22       		.byte	(.L76-.L77)/2
- 861              	.LVL55:
- 862              		.p2align 1
- 863              	.L68:
- 864              	.LCFI4:
- 865              		.cfi_def_cfa_offset 4
- 866              		.cfi_offset 4, -4
- 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
- 867              		.loc 3 224 6 view .LVU226
- 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
- 868              		.loc 3 224 18 is_stmt 0 view .LVU227
- 869 01ec 4FF00074 		mov	r4, #33554432
- 225:./src/hardware.c **** 					break;
- 870              		.loc 3 225 18 view .LVU228
- 871 01f0 4FF00041 		mov	r1, #-2147483648
- 872              	.LVL56:
- 199:./src/hardware.c **** 	
- 873              		.loc 3 199 6 view .LVU229
- 874 01f4 0020     		movs	r0, #0
- 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
- 875              		.loc 3 224 18 view .LVU230
- 876 01f6 9461     		str	r4, [r2, #24]
- 225:./src/hardware.c **** 					break;
- 877              		.loc 3 225 6 is_stmt 1 view .LVU231
- 225:./src/hardware.c **** 					break;
- 878              		.loc 3 225 18 is_stmt 0 view .LVU232
- 879 01f8 9961     		str	r1, [r3, #24]
- 226:./src/hardware.c **** 			}
- 880              		.loc 3 226 6 is_stmt 1 view .LVU233
- 881              	.L60:
  299:./src/hardware.c **** 				case HW_LED_OFF:
  300:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 3 << 22;
  301:./src/hardware.c **** 					break;
@@ -4437,358 +4341,321 @@
  328:./src/hardware.c **** 	
  329:./src/hardware.c **** 	return ret;
  330:./src/hardware.c **** }
- 882              		.loc 3 330 1 is_stmt 0 view .LVU234
- 883 01fa 5DF8044B 		ldr	r4, [sp], #4
- 884              	.LCFI5:
- 885              		.cfi_remember_state
- 886              		.cfi_restore 4
- 887              		.cfi_def_cfa_offset 0
- 888 01fe 7047     		bx	lr
- 889              	.LVL57:
- 890              	.L69:
- 891              	.LCFI6:
- 892              		.cfi_restore_state
- 214:./src/hardware.c **** 					break;
- 893              		.loc 3 214 6 is_stmt 1 view .LVU235
- 214:./src/hardware.c **** 					break;
- 894              		.loc 3 214 18 is_stmt 0 view .LVU236
- 895 0200 4FF00073 		mov	r3, #33554432
- 199:./src/hardware.c **** 	
- 896              		.loc 3 199 6 view .LVU237
- 897 0204 0020     		movs	r0, #0
- 214:./src/hardware.c **** 					break;
- 898              		.loc 3 214 18 view .LVU238
- 899 0206 9361     		str	r3, [r2, #24]
- 215:./src/hardware.c **** 
- 900              		.loc 3 215 6 is_stmt 1 view .LVU239
- 901 0208 F7E7     		b	.L60
- 902              	.L67:
+ 806              		.loc 1 330 1 view .LVU214
+ 807 01d8 5DF8044B 		ldr	r4, [sp], #4
+ 808              	.LCFI3:
+ 809              		.cfi_restore 4
+ 810              		.cfi_def_cfa_offset 0
+ 811 01dc 7047     		bx	lr
+ 812              	.LVL42:
+ 813              	.L62:
+ 298:./src/hardware.c **** 				case HW_LED_OFF:
+ 814              		.loc 1 298 4 is_stmt 1 view .LVU215
+ 815 01de 0329     		cmp	r1, #3
+ 816 01e0 1CD8     		bhi	.L92
+ 817 01e2 DFE801F0 		tbb	[pc, r1]
+ 818              	.L83:
+ 819 01e6 66       		.byte	(.L86-.L83)/2
+ 820 01e7 13       		.byte	(.L85-.L83)/2
+ 821 01e8 48       		.byte	(.L84-.L83)/2
+ 822 01e9 51       		.byte	(.L82-.L83)/2
+ 823              		.p2align 1
+ 824              	.L64:
+ 271:./src/hardware.c **** 				case HW_LED_OFF:
+ 825              		.loc 1 271 4 view .LVU216
+ 826 01ea 0329     		cmp	r1, #3
+ 827 01ec 16D8     		bhi	.L92
+ 828 01ee DFE801F0 		tbb	[pc, r1]
+ 829              	.L78:
+ 830 01f2 51       		.byte	(.L81-.L78)/2
+ 831 01f3 57       		.byte	(.L80-.L78)/2
+ 832 01f4 17       		.byte	(.L79-.L78)/2
+ 833 01f5 20       		.byte	(.L77-.L78)/2
+ 834              	.LVL43:
+ 835              		.p2align 1
+ 836              	.L67:
+ 837              	.LCFI4:
+ 838              		.cfi_def_cfa_offset 4
+ 839              		.cfi_offset 4, -4
  219:./src/hardware.c **** 					break;
- 903              		.loc 3 219 6 view .LVU240
+ 840              		.loc 1 219 6 view .LVU217
  219:./src/hardware.c **** 					break;
- 904              		.loc 3 219 18 is_stmt 0 view .LVU241
- 905 020a 4FF00042 		mov	r2, #-2147483648
- 199:./src/hardware.c **** 	
- 906              		.loc 3 199 6 view .LVU242
- 907 020e 0020     		movs	r0, #0
- 219:./src/hardware.c **** 					break;
- 908              		.loc 3 219 18 view .LVU243
- 909 0210 9A61     		str	r2, [r3, #24]
+ 841              		.loc 1 219 18 is_stmt 0 view .LVU218
+ 842 01f6 4FF00042 		mov	r2, #-2147483648
+ 843 01fa 9A61     		str	r2, [r3, #24]
  220:./src/hardware.c **** 
- 910              		.loc 3 220 6 is_stmt 1 view .LVU244
- 911 0212 F2E7     		b	.L60
- 912              	.LVL58:
- 913              	.L90:
- 914              	.LCFI7:
- 915              		.cfi_def_cfa_offset 0
- 916              		.cfi_restore 4
- 199:./src/hardware.c **** 	
- 917              		.loc 3 199 6 is_stmt 0 view .LVU245
- 918 0214 0020     		movs	r0, #0
- 919              	.LVL59:
- 920              		.loc 3 330 1 view .LVU246
- 921 0216 7047     		bx	lr
- 922              	.LVL60:
- 923              	.L78:
- 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
- 924              		.loc 3 284 6 is_stmt 1 view .LVU247
- 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
- 925              		.loc 3 284 25 is_stmt 0 view .LVU248
- 926 0218 4FF0C843 		mov	r3, #1677721600
- 927 021c 4FF40011 		mov	r1, #2097152
- 928              	.LVL61:
- 285:./src/hardware.c **** 					break;
- 929              		.loc 3 285 25 view .LVU249
- 930 0220 4FF48012 		mov	r2, #1048576
- 199:./src/hardware.c **** 	
- 931              		.loc 3 199 6 view .LVU250
- 932 0224 0020     		movs	r0, #0
- 933              	.LVL62:
- 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
- 934              		.loc 3 284 25 view .LVU251
- 935 0226 1961     		str	r1, [r3, #16]
- 285:./src/hardware.c **** 					break;
- 936              		.loc 3 285 6 is_stmt 1 view .LVU252
- 285:./src/hardware.c **** 					break;
- 937              		.loc 3 285 25 is_stmt 0 view .LVU253
- 938 0228 9A60     		str	r2, [r3, #8]
- 286:./src/hardware.c **** 
- 939              		.loc 3 286 6 is_stmt 1 view .LVU254
- 940 022a 7047     		bx	lr
- 941              	.LVL63:
- 942              	.L76:
- 290:./src/hardware.c **** 					break;
- 943              		.loc 3 290 6 view .LVU255
- 290:./src/hardware.c **** 					break;
- 944              		.loc 3 290 25 is_stmt 0 view .LVU256
- 945 022c 4FF0C843 		mov	r3, #1677721600
- 946 0230 4FF44012 		mov	r2, #3145728
- 199:./src/hardware.c **** 	
- 947              		.loc 3 199 6 view .LVU257
- 948 0234 0020     		movs	r0, #0
- 949              	.LVL64:
- 290:./src/hardware.c **** 					break;
- 950              		.loc 3 290 25 view .LVU258
- 951 0236 1A61     		str	r2, [r3, #16]
- 291:./src/hardware.c **** 			}
- 952              		.loc 3 291 6 is_stmt 1 view .LVU259
- 953 0238 7047     		bx	lr
- 954              	.LVL65:
- 955              	.L75:
- 243:./src/hardware.c **** 					break;
- 956              		.loc 3 243 6 view .LVU260
- 243:./src/hardware.c **** 					break;
- 957              		.loc 3 243 31 is_stmt 0 view .LVU261
- 958 023a C302     		lsls	r3, r0, #11
- 959 023c 2C4A     		ldr	r2, .L92+8
- 960 023e 4FF42061 		mov	r1, #2560
- 961              	.LVL66:
- 199:./src/hardware.c **** 	
- 962              		.loc 3 199 6 view .LVU262
- 963 0242 0020     		movs	r0, #0
- 964              	.LVL67:
- 243:./src/hardware.c **** 					break;
- 965              		.loc 3 243 31 view .LVU263
- 966 0244 1A44     		add	r2, r2, r3
- 967 0246 1160     		str	r1, [r2]
- 244:./src/hardware.c **** 					
- 968              		.loc 3 244 6 is_stmt 1 view .LVU264
- 969 0248 7047     		bx	lr
- 970              	.LVL68:
- 971              	.L74:
- 248:./src/hardware.c **** 					break;
- 972              		.loc 3 248 6 view .LVU265
- 248:./src/hardware.c **** 					break;
- 973              		.loc 3 248 31 is_stmt 0 view .LVU266
- 974 024a C302     		lsls	r3, r0, #11
- 975 024c 284A     		ldr	r2, .L92+8
- 976 024e 4FF41061 		mov	r1, #2304
- 977              	.LVL69:
- 199:./src/hardware.c **** 	
- 978              		.loc 3 199 6 view .LVU267
- 979 0252 0020     		movs	r0, #0
- 980              	.LVL70:
- 248:./src/hardware.c **** 					break;
- 981              		.loc 3 248 31 view .LVU268
- 982 0254 1A44     		add	r2, r2, r3
- 983 0256 1160     		str	r1, [r2]
- 249:./src/hardware.c **** 					
- 984              		.loc 3 249 6 is_stmt 1 view .LVU269
- 985 0258 7047     		bx	lr
- 986              	.LVL71:
- 987              	.L73:
- 253:./src/hardware.c **** 					break;
- 988              		.loc 3 253 6 view .LVU270
- 253:./src/hardware.c **** 					break;
- 989              		.loc 3 253 31 is_stmt 0 view .LVU271
- 990 025a C302     		lsls	r3, r0, #11
- 991 025c 244A     		ldr	r2, .L92+8
- 992 025e 4FF4C061 		mov	r1, #1536
- 993              	.LVL72:
- 199:./src/hardware.c **** 	
- 994              		.loc 3 199 6 view .LVU272
- 995 0262 0020     		movs	r0, #0
- 996              	.LVL73:
- 253:./src/hardware.c **** 					break;
- 997              		.loc 3 253 31 view .LVU273
- 998 0264 1A44     		add	r2, r2, r3
- 999 0266 1160     		str	r1, [r2]
- 254:./src/hardware.c **** 					
- 1000              		.loc 3 254 6 is_stmt 1 view .LVU274
- 1001 0268 7047     		bx	lr
- 1002              	.LVL74:
- 1003              	.L71:
- 258:./src/hardware.c **** 					break;
- 1004              		.loc 3 258 6 view .LVU275
- 258:./src/hardware.c **** 					break;
- 1005              		.loc 3 258 31 is_stmt 0 view .LVU276
- 1006 026a C302     		lsls	r3, r0, #11
- 1007 026c 204A     		ldr	r2, .L92+8
- 1008 026e 4FF4A061 		mov	r1, #1280
- 1009              	.LVL75:
- 199:./src/hardware.c **** 	
- 1010              		.loc 3 199 6 view .LVU277
- 1011 0272 0020     		movs	r0, #0
- 1012              	.LVL76:
- 258:./src/hardware.c **** 					break;
- 1013              		.loc 3 258 31 view .LVU278
- 1014 0274 1A44     		add	r2, r2, r3
- 1015 0276 1160     		str	r1, [r2]
- 259:./src/hardware.c **** 					
- 1016              		.loc 3 259 6 is_stmt 1 view .LVU279
- 1017 0278 7047     		bx	lr
- 1018              	.LVL77:
- 1019              	.L83:
- 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
- 1020              		.loc 3 311 6 view .LVU280
- 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
- 1021              		.loc 3 311 25 is_stmt 0 view .LVU281
- 1022 027a 4FF0C843 		mov	r3, #1677721600
- 1023 027e 4FF40001 		mov	r1, #8388608
- 1024              	.LVL78:
- 312:./src/hardware.c **** 					break;
- 1025              		.loc 3 312 25 view .LVU282
- 1026 0282 4FF48002 		mov	r2, #4194304
- 199:./src/hardware.c **** 	
- 1027              		.loc 3 199 6 view .LVU283
- 1028 0286 0020     		movs	r0, #0
- 1029              	.LVL79:
- 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
- 1030              		.loc 3 311 25 view .LVU284
- 1031 0288 1961     		str	r1, [r3, #16]
- 312:./src/hardware.c **** 					break;
- 1032              		.loc 3 312 6 is_stmt 1 view .LVU285
- 312:./src/hardware.c **** 					break;
- 1033              		.loc 3 312 25 is_stmt 0 view .LVU286
- 1034 028a 9A60     		str	r2, [r3, #8]
- 313:./src/hardware.c **** 
- 1035              		.loc 3 313 6 is_stmt 1 view .LVU287
- 1036 028c 7047     		bx	lr
- 1037              	.LVL80:
- 1038              	.L81:
- 317:./src/hardware.c **** 					break;
- 1039              		.loc 3 317 6 view .LVU288
- 317:./src/hardware.c **** 					break;
- 1040              		.loc 3 317 25 is_stmt 0 view .LVU289
- 1041 028e 4FF0C843 		mov	r3, #1677721600
- 1042 0292 4FF44002 		mov	r2, #12582912
- 199:./src/hardware.c **** 	
- 1043              		.loc 3 199 6 view .LVU290
- 1044 0296 0020     		movs	r0, #0
- 1045              	.LVL81:
- 317:./src/hardware.c **** 					break;
- 1046              		.loc 3 317 25 view .LVU291
- 1047 0298 1A61     		str	r2, [r3, #16]
- 318:./src/hardware.c **** 			}
- 1048              		.loc 3 318 6 is_stmt 1 view .LVU292
- 1049 029a 7047     		bx	lr
- 1050              	.LVL82:
- 1051              	.L80:
- 273:./src/hardware.c **** 					break;
- 1052              		.loc 3 273 6 view .LVU293
- 273:./src/hardware.c **** 					break;
- 1053              		.loc 3 273 25 is_stmt 0 view .LVU294
- 1054 029c 4FF0C843 		mov	r3, #1677721600
- 1055 02a0 4FF44012 		mov	r2, #3145728
- 199:./src/hardware.c **** 	
- 1056              		.loc 3 199 6 view .LVU295
- 1057 02a4 0020     		movs	r0, #0
- 1058              	.LVL83:
- 273:./src/hardware.c **** 					break;
- 1059              		.loc 3 273 25 view .LVU296
- 1060 02a6 9A60     		str	r2, [r3, #8]
- 274:./src/hardware.c **** 
- 1061              		.loc 3 274 6 is_stmt 1 view .LVU297
- 1062 02a8 7047     		bx	lr
- 1063              	.LVL84:
- 1064              	.L79:
- 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
- 1065              		.loc 3 278 6 view .LVU298
- 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
- 1066              		.loc 3 278 25 is_stmt 0 view .LVU299
- 1067 02aa 4FF0C843 		mov	r3, #1677721600
- 1068 02ae 4FF48011 		mov	r1, #1048576
- 1069              	.LVL85:
- 279:./src/hardware.c **** 					break;
- 1070              		.loc 3 279 25 view .LVU300
- 1071 02b2 4FF40012 		mov	r2, #2097152
- 199:./src/hardware.c **** 	
- 1072              		.loc 3 199 6 view .LVU301
- 1073 02b6 0020     		movs	r0, #0
- 1074              	.LVL86:
- 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
- 1075              		.loc 3 278 25 view .LVU302
- 1076 02b8 1961     		str	r1, [r3, #16]
- 279:./src/hardware.c **** 					break;
- 1077              		.loc 3 279 6 is_stmt 1 view .LVU303
- 279:./src/hardware.c **** 					break;
- 1078              		.loc 3 279 25 is_stmt 0 view .LVU304
- 1079 02ba 9A60     		str	r2, [r3, #8]
- 280:./src/hardware.c **** 
- 1080              		.loc 3 280 6 is_stmt 1 view .LVU305
- 1081 02bc 7047     		bx	lr
- 1082              	.LVL87:
- 1083              	.L85:
- 300:./src/hardware.c **** 					break;
- 1084              		.loc 3 300 6 view .LVU306
- 300:./src/hardware.c **** 					break;
- 1085              		.loc 3 300 25 is_stmt 0 view .LVU307
- 1086 02be 4FF0C843 		mov	r3, #1677721600
- 1087 02c2 4FF44002 		mov	r2, #12582912
- 199:./src/hardware.c **** 	
- 1088              		.loc 3 199 6 view .LVU308
- 1089 02c6 0020     		movs	r0, #0
- 1090              	.LVL88:
- 300:./src/hardware.c **** 					break;
- 1091              		.loc 3 300 25 view .LVU309
- 1092 02c8 9A60     		str	r2, [r3, #8]
- 301:./src/hardware.c **** 
- 1093              		.loc 3 301 6 is_stmt 1 view .LVU310
- 1094 02ca 7047     		bx	lr
- 1095              	.LVL89:
- 1096              	.L84:
+ 844              		.loc 1 220 6 is_stmt 1 view .LVU219
+ 845 01fc EBE7     		b	.L71
+ 846              	.L68:
+ 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
+ 847              		.loc 1 224 6 view .LVU220
+ 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
+ 848              		.loc 1 224 18 is_stmt 0 view .LVU221
+ 849 01fe 4FF00070 		mov	r0, #33554432
+ 225:./src/hardware.c **** 					break;
+ 850              		.loc 1 225 18 view .LVU222
+ 851 0202 4FF00041 		mov	r1, #-2147483648
+ 852              	.LVL44:
+ 224:./src/hardware.c **** 					GPIOB->BSRR = 1UL << 31UL;
+ 853              		.loc 1 224 18 view .LVU223
+ 854 0206 9061     		str	r0, [r2, #24]
+ 225:./src/hardware.c **** 					break;
+ 855              		.loc 1 225 6 is_stmt 1 view .LVU224
+ 225:./src/hardware.c **** 					break;
+ 856              		.loc 1 225 18 is_stmt 0 view .LVU225
+ 857 0208 9961     		str	r1, [r3, #24]
+ 226:./src/hardware.c **** 			}
+ 858              		.loc 1 226 6 is_stmt 1 view .LVU226
+ 859 020a E4E7     		b	.L71
+ 860              	.LVL45:
+ 861              	.L85:
+ 862              	.LCFI5:
+ 863              		.cfi_def_cfa_offset 0
+ 864              		.cfi_restore 4
  305:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 23;
- 1097              		.loc 3 305 6 view .LVU311
+ 865              		.loc 1 305 6 view .LVU227
  305:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 23;
- 1098              		.loc 3 305 25 is_stmt 0 view .LVU312
- 1099 02cc 4FF0C843 		mov	r3, #1677721600
- 1100 02d0 4FF48001 		mov	r1, #4194304
- 1101              	.LVL90:
+ 866              		.loc 1 305 25 is_stmt 0 view .LVU228
+ 867 020c 4FF0C843 		mov	r3, #1677721600
+ 868 0210 4FF48001 		mov	r1, #4194304
+ 869              	.LVL46:
  306:./src/hardware.c **** 					break;
- 1102              		.loc 3 306 25 view .LVU313
- 1103 02d4 4FF40002 		mov	r2, #8388608
- 199:./src/hardware.c **** 	
- 1104              		.loc 3 199 6 view .LVU314
- 1105 02d8 0020     		movs	r0, #0
- 1106              	.LVL91:
+ 870              		.loc 1 306 25 view .LVU229
+ 871 0214 4FF40002 		mov	r2, #8388608
  305:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 23;
- 1107              		.loc 3 305 25 view .LVU315
- 1108 02da 1961     		str	r1, [r3, #16]
+ 872              		.loc 1 305 25 view .LVU230
+ 873 0218 1961     		str	r1, [r3, #16]
  306:./src/hardware.c **** 					break;
- 1109              		.loc 3 306 6 is_stmt 1 view .LVU316
+ 874              		.loc 1 306 6 is_stmt 1 view .LVU231
  306:./src/hardware.c **** 					break;
- 1110              		.loc 3 306 25 is_stmt 0 view .LVU317
- 1111 02dc 9A60     		str	r2, [r3, #8]
+ 875              		.loc 1 306 25 is_stmt 0 view .LVU232
+ 876 021a 9A60     		str	r2, [r3, #8]
  307:./src/hardware.c **** 
- 1112              		.loc 3 307 6 is_stmt 1 view .LVU318
- 1113 02de 7047     		bx	lr
- 1114              	.LVL92:
- 1115              	.L86:
+ 877              		.loc 1 307 6 is_stmt 1 view .LVU233
+ 878              	.LVL47:
+ 879              	.L92:
  199:./src/hardware.c **** 	
- 1116              		.loc 3 199 6 is_stmt 0 view .LVU319
- 1117 02e0 0220     		movs	r0, #2
- 1118              	.LVL93:
- 199:./src/hardware.c **** 	
- 1119              		.loc 3 199 6 view .LVU320
- 1120 02e2 7047     		bx	lr
- 1121              	.LVL94:
- 1122              	.L87:
- 238:./src/hardware.c **** 			
- 1123              		.loc 3 238 9 view .LVU321
- 1124 02e4 0120     		movs	r0, #1
- 1125              	.LVL95:
+ 880              		.loc 1 199 6 is_stmt 0 view .LVU234
+ 881 021c 0020     		movs	r0, #0
+ 882              		.loc 1 330 1 view .LVU235
+ 883 021e 7047     		bx	lr
+ 884              	.LVL48:
+ 885              	.L79:
+ 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
+ 886              		.loc 1 284 6 is_stmt 1 view .LVU236
+ 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
+ 887              		.loc 1 284 25 is_stmt 0 view .LVU237
+ 888 0220 4FF0C843 		mov	r3, #1677721600
+ 889 0224 4FF40011 		mov	r1, #2097152
+ 890              	.LVL49:
+ 285:./src/hardware.c **** 					break;
+ 891              		.loc 1 285 25 view .LVU238
+ 892 0228 4FF48012 		mov	r2, #1048576
+ 284:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 20;
+ 893              		.loc 1 284 25 view .LVU239
+ 894 022c 1961     		str	r1, [r3, #16]
+ 285:./src/hardware.c **** 					break;
+ 895              		.loc 1 285 6 is_stmt 1 view .LVU240
+ 285:./src/hardware.c **** 					break;
+ 896              		.loc 1 285 25 is_stmt 0 view .LVU241
+ 897 022e 9A60     		str	r2, [r3, #8]
+ 286:./src/hardware.c **** 
+ 898              		.loc 1 286 6 is_stmt 1 view .LVU242
+ 899 0230 F4E7     		b	.L92
+ 900              	.LVL50:
+ 901              	.L77:
+ 290:./src/hardware.c **** 					break;
+ 902              		.loc 1 290 6 view .LVU243
+ 290:./src/hardware.c **** 					break;
+ 903              		.loc 1 290 25 is_stmt 0 view .LVU244
+ 904 0232 4FF0C843 		mov	r3, #1677721600
+ 905 0236 4FF44012 		mov	r2, #3145728
+ 906 023a 1A61     		str	r2, [r3, #16]
+ 291:./src/hardware.c **** 			}
+ 907              		.loc 1 291 6 is_stmt 1 view .LVU245
+ 908 023c EEE7     		b	.L92
+ 909              	.L76:
+ 243:./src/hardware.c **** 					break;
+ 910              		.loc 1 243 6 view .LVU246
+ 243:./src/hardware.c **** 					break;
+ 911              		.loc 1 243 31 is_stmt 0 view .LVU247
+ 912 023e C002     		lsls	r0, r0, #11
+ 913              	.LVL51:
+ 243:./src/hardware.c **** 					break;
+ 914              		.loc 1 243 31 view .LVU248
+ 915 0240 234B     		ldr	r3, .L95+8
+ 916 0242 4FF42062 		mov	r2, #2560
+ 917 0246 0344     		add	r3, r3, r0
+ 918 0248 1A60     		str	r2, [r3]
+ 244:./src/hardware.c **** 					
+ 919              		.loc 1 244 6 is_stmt 1 view .LVU249
+ 920 024a E7E7     		b	.L92
+ 921              	.LVL52:
+ 922              	.L75:
+ 248:./src/hardware.c **** 					break;
+ 923              		.loc 1 248 6 view .LVU250
+ 248:./src/hardware.c **** 					break;
+ 924              		.loc 1 248 31 is_stmt 0 view .LVU251
+ 925 024c C002     		lsls	r0, r0, #11
+ 926              	.LVL53:
+ 248:./src/hardware.c **** 					break;
+ 927              		.loc 1 248 31 view .LVU252
+ 928 024e 204B     		ldr	r3, .L95+8
+ 929 0250 4FF41062 		mov	r2, #2304
+ 930 0254 0344     		add	r3, r3, r0
+ 931 0256 1A60     		str	r2, [r3]
+ 249:./src/hardware.c **** 					
+ 932              		.loc 1 249 6 is_stmt 1 view .LVU253
+ 933 0258 E0E7     		b	.L92
+ 934              	.LVL54:
+ 935              	.L74:
+ 253:./src/hardware.c **** 					break;
+ 936              		.loc 1 253 6 view .LVU254
+ 253:./src/hardware.c **** 					break;
+ 937              		.loc 1 253 31 is_stmt 0 view .LVU255
+ 938 025a C002     		lsls	r0, r0, #11
+ 939              	.LVL55:
+ 253:./src/hardware.c **** 					break;
+ 940              		.loc 1 253 31 view .LVU256
+ 941 025c 1C4B     		ldr	r3, .L95+8
+ 942 025e 4FF4C062 		mov	r2, #1536
+ 943 0262 0344     		add	r3, r3, r0
+ 944 0264 1A60     		str	r2, [r3]
+ 254:./src/hardware.c **** 					
+ 945              		.loc 1 254 6 is_stmt 1 view .LVU257
+ 946 0266 D9E7     		b	.L92
+ 947              	.LVL56:
+ 948              	.L72:
+ 258:./src/hardware.c **** 					break;
+ 949              		.loc 1 258 6 view .LVU258
+ 258:./src/hardware.c **** 					break;
+ 950              		.loc 1 258 31 is_stmt 0 view .LVU259
+ 951 0268 C002     		lsls	r0, r0, #11
+ 952              	.LVL57:
+ 258:./src/hardware.c **** 					break;
+ 953              		.loc 1 258 31 view .LVU260
+ 954 026a 194B     		ldr	r3, .L95+8
+ 955 026c 4FF4A062 		mov	r2, #1280
+ 956 0270 0344     		add	r3, r3, r0
+ 957 0272 1A60     		str	r2, [r3]
+ 259:./src/hardware.c **** 					
+ 958              		.loc 1 259 6 is_stmt 1 view .LVU261
+ 959 0274 D2E7     		b	.L92
+ 960              	.LVL58:
+ 961              	.L84:
+ 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
+ 962              		.loc 1 311 6 view .LVU262
+ 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
+ 963              		.loc 1 311 25 is_stmt 0 view .LVU263
+ 964 0276 4FF0C843 		mov	r3, #1677721600
+ 965 027a 4FF40001 		mov	r1, #8388608
+ 966              	.LVL59:
+ 312:./src/hardware.c **** 					break;
+ 967              		.loc 1 312 25 view .LVU264
+ 968 027e 4FF48002 		mov	r2, #4194304
+ 311:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 22;
+ 969              		.loc 1 311 25 view .LVU265
+ 970 0282 1961     		str	r1, [r3, #16]
+ 312:./src/hardware.c **** 					break;
+ 971              		.loc 1 312 6 is_stmt 1 view .LVU266
+ 312:./src/hardware.c **** 					break;
+ 972              		.loc 1 312 25 is_stmt 0 view .LVU267
+ 973 0284 9A60     		str	r2, [r3, #8]
+ 313:./src/hardware.c **** 
+ 974              		.loc 1 313 6 is_stmt 1 view .LVU268
+ 975 0286 C9E7     		b	.L92
+ 976              	.LVL60:
+ 977              	.L82:
+ 317:./src/hardware.c **** 					break;
+ 978              		.loc 1 317 6 view .LVU269
+ 317:./src/hardware.c **** 					break;
+ 979              		.loc 1 317 25 is_stmt 0 view .LVU270
+ 980 0288 4FF0C843 		mov	r3, #1677721600
+ 981 028c 4FF44002 		mov	r2, #12582912
+ 982 0290 1A61     		str	r2, [r3, #16]
+ 318:./src/hardware.c **** 			}
+ 983              		.loc 1 318 6 is_stmt 1 view .LVU271
+ 984 0292 C3E7     		b	.L92
+ 985              	.L81:
+ 273:./src/hardware.c **** 					break;
+ 986              		.loc 1 273 6 view .LVU272
+ 273:./src/hardware.c **** 					break;
+ 987              		.loc 1 273 25 is_stmt 0 view .LVU273
+ 988 0294 4FF0C843 		mov	r3, #1677721600
+ 989 0298 4FF44012 		mov	r2, #3145728
+ 990 029c 9A60     		str	r2, [r3, #8]
+ 274:./src/hardware.c **** 
+ 991              		.loc 1 274 6 is_stmt 1 view .LVU274
+ 992 029e BDE7     		b	.L92
+ 993              	.L80:
+ 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
+ 994              		.loc 1 278 6 view .LVU275
+ 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
+ 995              		.loc 1 278 25 is_stmt 0 view .LVU276
+ 996 02a0 4FF0C843 		mov	r3, #1677721600
+ 997 02a4 4FF48011 		mov	r1, #1048576
+ 998              	.LVL61:
+ 279:./src/hardware.c **** 					break;
+ 999              		.loc 1 279 25 view .LVU277
+ 1000 02a8 4FF40012 		mov	r2, #2097152
+ 278:./src/hardware.c **** 					FPGA->SYS_CNTL_SET = 1 << 21;
+ 1001              		.loc 1 278 25 view .LVU278
+ 1002 02ac 1961     		str	r1, [r3, #16]
+ 279:./src/hardware.c **** 					break;
+ 1003              		.loc 1 279 6 is_stmt 1 view .LVU279
+ 279:./src/hardware.c **** 					break;
+ 1004              		.loc 1 279 25 is_stmt 0 view .LVU280
+ 1005 02ae 9A60     		str	r2, [r3, #8]
+ 280:./src/hardware.c **** 
+ 1006              		.loc 1 280 6 is_stmt 1 view .LVU281
+ 1007 02b0 B4E7     		b	.L92
+ 1008              	.LVL62:
+ 1009              	.L86:
+ 300:./src/hardware.c **** 					break;
+ 1010              		.loc 1 300 6 view .LVU282
+ 300:./src/hardware.c **** 					break;
+ 1011              		.loc 1 300 25 is_stmt 0 view .LVU283
+ 1012 02b2 4FF0C843 		mov	r3, #1677721600
+ 1013 02b6 4FF44002 		mov	r2, #12582912
+ 1014 02ba 9A60     		str	r2, [r3, #8]
+ 301:./src/hardware.c **** 
+ 1015              		.loc 1 301 6 is_stmt 1 view .LVU284
+ 1016 02bc AEE7     		b	.L92
+ 1017              	.L87:
+ 201:./src/hardware.c **** 	{
+ 1018              		.loc 1 201 2 is_stmt 0 view .LVU285
+ 1019 02be 0220     		movs	r0, #2
+ 1020              	.LVL63:
+ 201:./src/hardware.c **** 	{
+ 1021              		.loc 1 201 2 view .LVU286
+ 1022 02c0 7047     		bx	lr
+ 1023              	.LVL64:
+ 1024              	.L88:
+ 240:./src/hardware.c **** 			{
+ 1025              		.loc 1 240 4 view .LVU287
+ 1026 02c2 0120     		movs	r0, #1
+ 1027              	.LVL65:
  329:./src/hardware.c **** }
- 1126              		.loc 3 329 2 is_stmt 1 view .LVU322
+ 1028              		.loc 1 329 2 is_stmt 1 view .LVU288
  329:./src/hardware.c **** }
- 1127              		.loc 3 329 9 is_stmt 0 view .LVU323
- 1128 02e6 7047     		bx	lr
- 1129              	.L93:
- 1130              		.align	2
- 1131              	.L92:
- 1132 02e8 00240240 		.word	1073882112
- 1133 02ec 00040240 		.word	1073873920
- 1134 02f0 00080064 		.word	1677723648
- 1135              		.cfi_endproc
- 1136              	.LFE154:
- 1138              		.align	1
- 1139              		.p2align 2,,3
- 1140              		.global	HW_EnterPowerDown
- 1141              		.syntax unified
- 1142              		.thumb
- 1143              		.thumb_func
- 1144              		.fpu fpv5-d16
- 1146              	HW_EnterPowerDown:
- 1147              	.LFB155:
+ 1029              		.loc 1 329 9 is_stmt 0 view .LVU289
+ 1030 02c4 7047     		bx	lr
+ 1031              	.L96:
+ 1032 02c6 00BF     		.align	2
+ 1033              	.L95:
+ 1034 02c8 00240240 		.word	1073882112
+ 1035 02cc 00040240 		.word	1073873920
+ 1036 02d0 00080064 		.word	1677723648
+ 1037              		.cfi_endproc
+ 1038              	.LFE154:
+ 1040              		.align	1
+ 1041              		.p2align 2,,3
+ 1042              		.global	HW_EnterPowerDown
+ 1043              		.syntax unified
+ 1044              		.thumb
+ 1045              		.thumb_func
+ 1047              	HW_EnterPowerDown:
+ 1048              	.LFB155:
  331:./src/hardware.c **** 
  332:./src/hardware.c **** 
  333:./src/hardware.c **** 
@@ -4799,13 +4666,13 @@
  338:./src/hardware.c **** //!             active.
  339:./src/hardware.c **** void  HW_EnterPowerDown ( void)
  340:./src/hardware.c **** {
- 1148              		.loc 3 340 1 is_stmt 1 view -0
- 1149              		.cfi_startproc
- 1150              		@ args = 0, pretend = 0, frame = 0
- 1151              		@ frame_needed = 0, uses_anonymous_args = 0
- 1152              		@ link register save eliminated.
+ 1049              		.loc 1 340 1 is_stmt 1 view -0
+ 1050              		.cfi_startproc
+ 1051              		@ args = 0, pretend = 0, frame = 0
+ 1052              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1053              		@ link register save eliminated.
  341:./src/hardware.c **** 	static const uint8_t  sleep[16] = {
- 1153              		.loc 3 341 2 view .LVU325
+ 1054              		.loc 1 341 2 view .LVU291
  342:./src/hardware.c **** 		3, 3, 0, 2, 1, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3
  343:./src/hardware.c **** 	};
  344:./src/hardware.c **** 
@@ -4813,192 +4680,179 @@
  346:./src/hardware.c **** 	// put all CANs into sleep.
  347:./src/hardware.c **** 	// Only affecting wake-up capable PHYs like TJA1043.
  348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS1].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS1].CAN_PHY & 0xF] << 
- 1154              		.loc 3 348 2 view .LVU326
- 1155              		.loc 3 348 81 is_stmt 0 view .LVU327
- 1156 02f4 4FF0C843 		mov	r3, #1677721600
- 1157              		.loc 3 348 61 view .LVU328
- 1158 02f8 254A     		ldr	r2, .L96
- 1159              		.loc 3 348 81 view .LVU329
- 1160 02fa D3F82018 		ldr	r1, [r3, #2080]
+ 1055              		.loc 1 348 2 view .LVU292
+ 1056              		.loc 1 348 81 is_stmt 0 view .LVU293
+ 1057 02d4 4FF0C843 		mov	r3, #1677721600
+ 1058              		.loc 1 348 61 view .LVU294
+ 1059 02d8 254A     		ldr	r2, .L99
+ 1060              		.loc 1 348 81 view .LVU295
+ 1061 02da D3F82018 		ldr	r1, [r3, #2080]
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1161              		.loc 3 349 81 view .LVU330
- 1162 02fe 03F5805C 		add	ip, r3, #4096
+ 1062              		.loc 1 349 81 view .LVU296
+ 1063 02de 03F5805C 		add	ip, r3, #4096
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1163              		.loc 3 351 81 view .LVU331
- 1164 0302 03F50050 		add	r0, r3, #8192
+ 1064              		.loc 1 351 81 view .LVU297
+ 1065 02e2 03F50050 		add	r0, r3, #8192
  348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1165              		.loc 3 348 90 view .LVU332
- 1166 0306 01F00F01 		and	r1, r1, #15
+ 1066              		.loc 1 348 90 view .LVU298
+ 1067 02e6 01F00F01 		and	r1, r1, #15
  348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1167              		.loc 3 348 61 view .LVU333
- 1168 030a 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1068              		.loc 1 348 97 view .LVU299
+ 1069 02ea 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1070 02ec 0907     		lsls	r1, r1, #28
  348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1169              		.loc 3 348 97 view .LVU334
- 1170 030c 0907     		lsls	r1, r1, #28
- 348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1171              		.loc 3 348 54 view .LVU335
- 1172 030e 41F04041 		orr	r1, r1, #-1073741824
+ 1071              		.loc 1 348 54 view .LVU300
+ 1072 02ee 41F04041 		orr	r1, r1, #-1073741824
  340:./src/hardware.c **** 	static const uint8_t  sleep[16] = {
- 1173              		.loc 3 340 1 view .LVU336
- 1174 0312 10B4     		push	{r4}
- 1175              	.LCFI8:
- 1176              		.cfi_def_cfa_offset 4
- 1177              		.cfi_offset 4, -4
+ 1073              		.loc 1 340 1 view .LVU301
+ 1074 02f2 10B4     		push	{r4}
+ 1075              	.LCFI6:
+ 1076              		.cfi_def_cfa_offset 4
+ 1077              		.cfi_offset 4, -4
  348:./src/hardware.c **** 	FPGA->CAN[CAN_BUS2].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS2].CAN_PHY & 0xF] << 
- 1178              		.loc 3 348 30 view .LVU337
- 1179 0314 C3F82018 		str	r1, [r3, #2080]
+ 1078              		.loc 1 348 30 view .LVU302
+ 1079 02f4 C3F82018 		str	r1, [r3, #2080]
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1180              		.loc 3 349 2 is_stmt 1 view .LVU338
+ 1080              		.loc 1 349 2 is_stmt 1 view .LVU303
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
  353:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1181              		.loc 3 353 81 is_stmt 0 view .LVU339
- 1182 0318 03F54053 		add	r3, r3, #12288
+ 1081              		.loc 1 353 81 is_stmt 0 view .LVU304
+ 1082 02f8 03F54053 		add	r3, r3, #12288
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1183              		.loc 3 349 81 view .LVU340
- 1184 031c DCF82010 		ldr	r1, [ip, #32]
+ 1083              		.loc 1 349 81 view .LVU305
+ 1084 02fc DCF82010 		ldr	r1, [ip, #32]
  354:./src/hardware.c **** 
  355:./src/hardware.c **** 	// disable ACCU backup.
  356:./src/hardware.c **** 	// Shutdown backup regulator if accumulator is present
  357:./src/hardware.c **** 	HW_DIS_ACCU_BACKUP;
- 1185              		.loc 3 357 2 view .LVU341
- 1186 0320 1C4C     		ldr	r4, .L96+4
+ 1085              		.loc 1 357 2 view .LVU306
+ 1086 0300 1C4C     		ldr	r4, .L99+4
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1187              		.loc 3 349 90 view .LVU342
- 1188 0322 01F00F01 		and	r1, r1, #15
+ 1087              		.loc 1 349 90 view .LVU307
+ 1088 0302 01F00F01 		and	r1, r1, #15
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1189              		.loc 3 349 61 view .LVU343
- 1190 0326 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1089              		.loc 1 349 97 view .LVU308
+ 1090 0306 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1091 0308 0907     		lsls	r1, r1, #28
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1191              		.loc 3 349 97 view .LVU344
- 1192 0328 0907     		lsls	r1, r1, #28
+ 1092              		.loc 1 349 54 view .LVU309
+ 1093 030a 41F04041 		orr	r1, r1, #-1073741824
  349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1193              		.loc 3 349 54 view .LVU345
- 1194 032a 41F04041 		orr	r1, r1, #-1073741824
- 349:./src/hardware.c **** 	FPGA->CAN[CAN_BUS3].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS3].CAN_PHY & 0xF] << 
- 1195              		.loc 3 349 30 view .LVU346
- 1196 032e CCF82010 		str	r1, [ip, #32]
+ 1094              		.loc 1 349 30 view .LVU310
+ 1095 030e CCF82010 		str	r1, [ip, #32]
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1197              		.loc 3 350 2 is_stmt 1 view .LVU347
+ 1096              		.loc 1 350 2 is_stmt 1 view .LVU311
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1198              		.loc 3 350 81 is_stmt 0 view .LVU348
- 1199 0332 DCF82018 		ldr	r1, [ip, #2080]
+ 1097              		.loc 1 350 81 is_stmt 0 view .LVU312
+ 1098 0312 DCF82018 		ldr	r1, [ip, #2080]
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1200              		.loc 3 350 90 view .LVU349
- 1201 0336 01F00F01 		and	r1, r1, #15
+ 1099              		.loc 1 350 90 view .LVU313
+ 1100 0316 01F00F01 		and	r1, r1, #15
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1202              		.loc 3 350 61 view .LVU350
- 1203 033a 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1101              		.loc 1 350 97 view .LVU314
+ 1102 031a 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1103 031c 0907     		lsls	r1, r1, #28
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1204              		.loc 3 350 97 view .LVU351
- 1205 033c 0907     		lsls	r1, r1, #28
+ 1104              		.loc 1 350 54 view .LVU315
+ 1105 031e 41F04041 		orr	r1, r1, #-1073741824
  350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1206              		.loc 3 350 54 view .LVU352
- 1207 033e 41F04041 		orr	r1, r1, #-1073741824
- 350:./src/hardware.c **** 	FPGA->CAN[CAN_BUS4].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS4].CAN_PHY & 0xF] << 
- 1208              		.loc 3 350 30 view .LVU353
- 1209 0342 CCF82018 		str	r1, [ip, #2080]
+ 1106              		.loc 1 350 30 view .LVU316
+ 1107 0322 CCF82018 		str	r1, [ip, #2080]
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1210              		.loc 3 351 2 is_stmt 1 view .LVU354
+ 1108              		.loc 1 351 2 is_stmt 1 view .LVU317
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1211              		.loc 3 351 81 is_stmt 0 view .LVU355
- 1212 0346 016A     		ldr	r1, [r0, #32]
+ 1109              		.loc 1 351 81 is_stmt 0 view .LVU318
+ 1110 0326 016A     		ldr	r1, [r0, #32]
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1213              		.loc 3 351 90 view .LVU356
- 1214 0348 01F00F01 		and	r1, r1, #15
+ 1111              		.loc 1 351 90 view .LVU319
+ 1112 0328 01F00F01 		and	r1, r1, #15
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1215              		.loc 3 351 61 view .LVU357
- 1216 034c 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1113              		.loc 1 351 97 view .LVU320
+ 1114 032c 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1115 032e 0907     		lsls	r1, r1, #28
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1217              		.loc 3 351 97 view .LVU358
- 1218 034e 0907     		lsls	r1, r1, #28
+ 1116              		.loc 1 351 54 view .LVU321
+ 1117 0330 41F04041 		orr	r1, r1, #-1073741824
  351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1219              		.loc 3 351 54 view .LVU359
- 1220 0350 41F04041 		orr	r1, r1, #-1073741824
- 351:./src/hardware.c **** 	FPGA->CAN[CAN_BUS5].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS5].CAN_PHY & 0xF] << 
- 1221              		.loc 3 351 30 view .LVU360
- 1222 0354 0162     		str	r1, [r0, #32]
+ 1118              		.loc 1 351 30 view .LVU322
+ 1119 0334 0162     		str	r1, [r0, #32]
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1223              		.loc 3 352 2 is_stmt 1 view .LVU361
+ 1120              		.loc 1 352 2 is_stmt 1 view .LVU323
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1224              		.loc 3 352 81 is_stmt 0 view .LVU362
- 1225 0356 D0F82018 		ldr	r1, [r0, #2080]
+ 1121              		.loc 1 352 81 is_stmt 0 view .LVU324
+ 1122 0336 D0F82018 		ldr	r1, [r0, #2080]
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1226              		.loc 3 352 90 view .LVU363
- 1227 035a 01F00F01 		and	r1, r1, #15
+ 1123              		.loc 1 352 90 view .LVU325
+ 1124 033a 01F00F01 		and	r1, r1, #15
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1228              		.loc 3 352 61 view .LVU364
- 1229 035e 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1125              		.loc 1 352 97 view .LVU326
+ 1126 033e 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 1127 0340 0907     		lsls	r1, r1, #28
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1230              		.loc 3 352 97 view .LVU365
- 1231 0360 0907     		lsls	r1, r1, #28
+ 1128              		.loc 1 352 54 view .LVU327
+ 1129 0342 41F04041 		orr	r1, r1, #-1073741824
  352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1232              		.loc 3 352 54 view .LVU366
- 1233 0362 41F04041 		orr	r1, r1, #-1073741824
- 352:./src/hardware.c **** 	FPGA->CAN[CAN_BUS6].CAN_PHY = 1UL << 31 | 1UL << 30 | sleep[FPGA->CAN[CAN_BUS6].CAN_PHY & 0xF] << 
- 1234              		.loc 3 352 30 view .LVU367
- 1235 0366 C0F82018 		str	r1, [r0, #2080]
+ 1130              		.loc 1 352 30 view .LVU328
+ 1131 0346 C0F82018 		str	r1, [r0, #2080]
  353:./src/hardware.c **** 
- 1236              		.loc 3 353 2 is_stmt 1 view .LVU368
- 1237              		.loc 3 357 2 is_stmt 0 view .LVU369
- 1238 036a 4FF48030 		mov	r0, #65536
+ 1132              		.loc 1 353 2 is_stmt 1 view .LVU329
+ 1133              		.loc 1 357 2 is_stmt 0 view .LVU330
+ 1134 034a 4FF48030 		mov	r0, #65536
  353:./src/hardware.c **** 
- 1239              		.loc 3 353 81 view .LVU370
- 1240 036e 196A     		ldr	r1, [r3, #32]
+ 1135              		.loc 1 353 81 view .LVU331
+ 1136 034e 196A     		ldr	r1, [r3, #32]
  353:./src/hardware.c **** 
- 1241              		.loc 3 353 90 view .LVU371
- 1242 0370 01F00F01 		and	r1, r1, #15
+ 1137              		.loc 1 353 90 view .LVU332
+ 1138 0350 01F00F01 		and	r1, r1, #15
  353:./src/hardware.c **** 
- 1243              		.loc 3 353 61 view .LVU372
- 1244 0374 525C     		ldrb	r2, [r2, r1]	@ zero_extendqisi2
+ 1139              		.loc 1 353 97 view .LVU333
+ 1140 0354 525C     		ldrb	r2, [r2, r1]	@ zero_extendqisi2
+ 1141 0356 1207     		lsls	r2, r2, #28
  353:./src/hardware.c **** 
- 1245              		.loc 3 353 97 view .LVU373
- 1246 0376 1207     		lsls	r2, r2, #28
+ 1142              		.loc 1 353 54 view .LVU334
+ 1143 0358 42F04042 		orr	r2, r2, #-1073741824
  353:./src/hardware.c **** 
- 1247              		.loc 3 353 54 view .LVU374
- 1248 0378 42F04042 		orr	r2, r2, #-1073741824
- 353:./src/hardware.c **** 
- 1249              		.loc 3 353 30 view .LVU375
- 1250 037c 1A62     		str	r2, [r3, #32]
- 1251              		.loc 3 357 2 is_stmt 1 view .LVU376
+ 1144              		.loc 1 353 30 view .LVU335
+ 1145 035c 1A62     		str	r2, [r3, #32]
+ 1146              		.loc 1 357 2 is_stmt 1 view .LVU336
  358:./src/hardware.c **** 
  359:./src/hardware.c **** 	// release selfhold
  360:./src/hardware.c **** 	HW_DIS_SELFHOLD;
- 1252              		.loc 3 360 2 is_stmt 0 view .LVU377
- 1253 037e 4FF08072 		mov	r2, #16777216
- 1254 0382 054B     		ldr	r3, .L96+8
+ 1147              		.loc 1 360 2 is_stmt 0 view .LVU337
+ 1148 035e 4FF08072 		mov	r2, #16777216
+ 1149 0362 054B     		ldr	r3, .L99+8
  357:./src/hardware.c **** 
- 1255              		.loc 3 357 2 view .LVU378
- 1256 0384 A061     		str	r0, [r4, #24]
- 1257              		.loc 3 360 2 is_stmt 1 view .LVU379
+ 1150              		.loc 1 357 2 view .LVU338
+ 1151 0364 A061     		str	r0, [r4, #24]
+ 1152              		.loc 1 360 2 is_stmt 1 view .LVU339
  361:./src/hardware.c **** }
- 1258              		.loc 3 361 1 is_stmt 0 view .LVU380
- 1259 0386 5DF8044B 		ldr	r4, [sp], #4
- 1260              	.LCFI9:
- 1261              		.cfi_restore 4
- 1262              		.cfi_def_cfa_offset 0
+ 1153              		.loc 1 361 1 is_stmt 0 view .LVU340
+ 1154 0366 5DF8044B 		ldr	r4, [sp], #4
+ 1155              	.LCFI7:
+ 1156              		.cfi_restore 4
+ 1157              		.cfi_def_cfa_offset 0
  360:./src/hardware.c **** }
- 1263              		.loc 3 360 2 view .LVU381
- 1264 038a 9A61     		str	r2, [r3, #24]
- 1265              		.loc 3 361 1 view .LVU382
- 1266 038c 7047     		bx	lr
- 1267              	.L97:
- 1268 038e 00BF     		.align	2
- 1269              	.L96:
- 1270 0390 00000000 		.word	.LANCHOR0
- 1271 0394 00280240 		.word	1073883136
- 1272 0398 00200240 		.word	1073881088
- 1273              		.cfi_endproc
- 1274              	.LFE155:
- 1276              		.align	1
- 1277              		.p2align 2,,3
- 1278              		.global	HW_Init
- 1279              		.syntax unified
- 1280              		.thumb
- 1281              		.thumb_func
- 1282              		.fpu fpv5-d16
- 1284              	HW_Init:
- 1285              	.LFB156:
+ 1158              		.loc 1 360 2 view .LVU341
+ 1159 036a 9A61     		str	r2, [r3, #24]
+ 1160              		.loc 1 361 1 view .LVU342
+ 1161 036c 7047     		bx	lr
+ 1162              	.L100:
+ 1163 036e 00BF     		.align	2
+ 1164              	.L99:
+ 1165 0370 00000000 		.word	.LANCHOR0
+ 1166 0374 00280240 		.word	1073883136
+ 1167 0378 00200240 		.word	1073881088
+ 1168              		.cfi_endproc
+ 1169              	.LFE155:
+ 1171              		.align	1
+ 1172              		.p2align 2,,3
+ 1173              		.global	HW_Init
+ 1174              		.syntax unified
+ 1175              		.thumb
+ 1176              		.thumb_func
+ 1178              	HW_Init:
+ 1179              	.LFB156:
  362:./src/hardware.c **** 
  363:./src/hardware.c **** 
  364:./src/hardware.c **** 
@@ -5006,104 +4860,105 @@
  366:./src/hardware.c **** //! @brief      initial at power up
  367:./src/hardware.c **** HWResult_t  HW_Init ( void)
  368:./src/hardware.c **** {
- 1286              		.loc 3 368 1 is_stmt 1 view -0
- 1287              		.cfi_startproc
- 1288              		@ args = 0, pretend = 0, frame = 0
- 1289              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1180              		.loc 1 368 1 is_stmt 1 view -0
+ 1181              		.cfi_startproc
+ 1182              		@ args = 0, pretend = 0, frame = 0
+ 1183              		@ frame_needed = 0, uses_anonymous_args = 0
  369:./src/hardware.c **** 	// basic initialization for CAN
  370:./src/hardware.c **** 	CAN_Startup();
- 1290              		.loc 3 370 2 view .LVU384
+ 1184              		.loc 1 370 2 view .LVU344
  368:./src/hardware.c **** 	// basic initialization for CAN
- 1291              		.loc 3 368 1 is_stmt 0 view .LVU385
- 1292 039c 08B5     		push	{r3, lr}
- 1293              	.LCFI10:
- 1294              		.cfi_def_cfa_offset 8
- 1295              		.cfi_offset 3, -8
- 1296              		.cfi_offset 14, -4
- 1297              		.loc 3 370 2 view .LVU386
- 1298 039e FFF7FEFF 		bl	CAN_Startup
- 1299              	.LVL96:
+ 1185              		.loc 1 368 1 is_stmt 0 view .LVU345
+ 1186 037c 08B5     		push	{r3, lr}
+ 1187              	.LCFI8:
+ 1188              		.cfi_def_cfa_offset 8
+ 1189              		.cfi_offset 3, -8
+ 1190              		.cfi_offset 14, -4
+ 1191              		.loc 1 370 2 view .LVU346
+ 1192 037e FFF7FEFF 		bl	CAN_Startup
+ 1193              	.LVL66:
  371:./src/hardware.c **** 	
  372:./src/hardware.c **** 	// local (weak) func or from eeprom.c
  373:./src/hardware.c **** 	EEPROM_Init();
- 1300              		.loc 3 373 2 is_stmt 1 view .LVU387
- 1301 03a2 FFF7FEFF 		bl	EEPROM_Init
- 1302              	.LVL97:
+ 1194              		.loc 1 373 2 is_stmt 1 view .LVU347
+ 1195 0382 FFF7FEFF 		bl	EEPROM_Init
+ 1196              	.LVL67:
  374:./src/hardware.c **** 	
  375:./src/hardware.c **** 	return HW_ERR_OK;
- 1303              		.loc 3 375 2 view .LVU388
+ 1197              		.loc 1 375 2 view .LVU348
  376:./src/hardware.c **** }
- 1304              		.loc 3 376 1 is_stmt 0 view .LVU389
- 1305 03a6 0020     		movs	r0, #0
- 1306 03a8 08BD     		pop	{r3, pc}
- 1307              		.cfi_endproc
- 1308              	.LFE156:
- 1310              		.section	.rodata
- 1311              		.align	2
- 1312              		.set	.LANCHOR0,. + 0
- 1315              	sleep.0:
- 1316 0000 03030002 		.ascii	"\003\003\000\002\001\003\003\003\003\002\003\003\003"
- 1316      01030303 
- 1316      03020303 
- 1316      03
- 1317 000d 030303   		.ascii	"\003\003\003"
- 1318              		.text
- 1319              	.Letext0:
- 1320              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1321              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1322              		.file 6 "./inc/can.h"
- 1323              		.file 7 "./inc/hardware_private.h"
- 1324              		.file 8 "./inc/stm32f765xx.h"
- 1325              		.file 9 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1326              		.file 10 "<built-in>"
+ 1198              		.loc 1 376 1 is_stmt 0 view .LVU349
+ 1199 0386 0020     		movs	r0, #0
+ 1200 0388 08BD     		pop	{r3, pc}
+ 1201              		.cfi_endproc
+ 1202              	.LFE156:
+ 1204              		.section	.rodata
+ 1205              		.align	2
+ 1206              		.set	.LANCHOR0,. + 0
+ 1209              	sleep.0:
+ 1210 0000 03030002 		.ascii	"\003\003\000\002\001\003\003\003\003\002\003\003\003"
+ 1210      01030303 
+ 1210      03020303 
+ 1210      03
+ 1211 000d 030303   		.ascii	"\003\003\003"
+ 1212              		.text
+ 1213              	.Letext0:
+ 1214              		.file 4 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1215              		.file 5 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1216              		.file 6 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/in
+ 1217              		.file 7 "./inc/can.h"
+ 1218              		.file 8 "./inc/hardware_private.h"
+ 1219              		.file 9 "./inc/stm32f765xx.h"
+ 1220              		.file 10 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/.
+ 1221              		.file 11 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 hardware.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:24     .text:00000000 __NVIC_SystemReset
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:89     .text:0000001c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:94     .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:102    .text:00000024 EEPROM_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:123    .text:00000028 HW_PassUsbToHost
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:188    .text:00000048 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:192    .text:0000004c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:200    .text:0000004c HW_PassUsbToMe
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:386    .text:00000098 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:390    .text:0000009c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:398    .text:0000009c HW_ResetModule
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:453    .text:000000b4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:457    .text:000000b8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:465    .text:000000b8 HW_GetAIN
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:528    .text:000000e8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:532    .text:000000ec $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:540    .text:000000ec HW_GetDIN
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:578    .text:00000108 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:582    .text:0000010c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:590    .text:0000010c HW_SetDOUT
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:632    .text:00000120 HW_GetModuleID
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:670    .text:0000013c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:675    .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:679    .text:00000140 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:687    .text:00000140 HW_JumpToBootloader
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:747    .text:00000178 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:755    .text:0000018c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:763    .text:0000018c HW_SetLED
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:778    .text:00000196 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:801    .text:000001ae $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:805    .text:000001b2 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:846    .text:000001dc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:850    .text:000001e0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:857    .text:000001e8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:862    .text:000001ec $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1132   .text:000002e8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1138   .text:000002f4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1146   .text:000002f4 HW_EnterPowerDown
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1270   .text:00000390 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1276   .text:0000039c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1284   .text:0000039c HW_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1311   .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:1315   .rodata:00000000 sleep.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:787    .text:0000019f $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccaoEbk2.s:787    .text:000001a0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:25     .text:00000000 __NVIC_SystemReset
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:90     .text:0000001c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:95     .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:102    .text:00000024 EEPROM_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:121    .text:00000028 HW_PassUsbToHost
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:182    .text:00000048 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:186    .text:0000004c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:193    .text:0000004c HW_PassUsbToMe
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:360    .text:00000098 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:364    .text:0000009c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:371    .text:0000009c HW_ResetModule
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:422    .text:000000b4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:426    .text:000000b8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:433    .text:000000b8 HW_GetAIN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:497    .text:000000e8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:501    .text:000000ec $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:508    .text:000000ec HW_GetDIN
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:546    .text:00000108 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:550    .text:0000010c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:557    .text:0000010c HW_SetDOUT
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:598    .text:00000120 HW_GetModuleID
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:636    .text:0000013c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:641    .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:645    .text:00000140 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:652    .text:00000140 HW_JumpToBootloader
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:712    .text:00000178 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:720    .text:0000018c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:727    .text:0000018c HW_SetLED
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:742    .text:00000196 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:765    .text:000001ae $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:769    .text:000001b2 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:819    .text:000001e6 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:823    .text:000001ea $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:830    .text:000001f2 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:835    .text:000001f6 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1034   .text:000002c8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1040   .text:000002d4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1047   .text:000002d4 HW_EnterPowerDown
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1165   .text:00000370 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1171   .text:0000037c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1178   .text:0000037c HW_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1205   .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:1209   .rodata:00000000 sleep.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:751    .text:0000019f $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccKgZqy6.s:751    .text:000001a0 $t
 
 UNDEFINED SYMBOLS
 strncpy

@@ -1,29 +1,29 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"timeouts.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	sys_timeout_abs:
-  25              	.LVL0:
-  26              	.LFB171:
-  27              		.file 1 "./lwip-2.1.2/src/core/timeouts.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"timeouts.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./lwip-2.1.2/src/core/timeouts.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	sys_timeout_abs:
+  26              	.LVL0:
+  27              	.LFB172:
    1:./lwip-2.1.2/src/core/timeouts.c **** /**
    2:./lwip-2.1.2/src/core/timeouts.c ****  * @file
    3:./lwip-2.1.2/src/core/timeouts.c ****  * Stack-internal timers implementation.
@@ -264,7 +264,7 @@
  204:./lwip-2.1.2/src/core/timeouts.c **** 
  205:./lwip-2.1.2/src/core/timeouts.c ****   if (next_timeout == NULL) {
   59              		.loc 1 205 20 view .LVU12
-  60 0012 0949     		ldr	r1, .L21
+  60 0012 0949     		ldr	r1, .L22
  195:./lwip-2.1.2/src/core/timeouts.c ****   timeout->h = handler;
   61              		.loc 1 195 14 view .LVU13
   62 0014 8660     		str	r6, [r0, #8]
@@ -278,8 +278,8 @@
   68              		.loc 1 205 20 is_stmt 0 view .LVU17
   69 001c 0B68     		ldr	r3, [r1]
   70              		.loc 1 205 6 view .LVU18
-  71 001e 1BB9     		cbnz	r3, .L19
-  72 0020 07E0     		b	.L17
+  71 001e 1BB9     		cbnz	r3, .L17
+  72 0020 07E0     		b	.L19
   73              	.L4:
   74              	.LVL3:
  206:./lwip-2.1.2/src/core/timeouts.c ****     next_timeout = timeout;
@@ -290,58 +290,58 @@
  211:./lwip-2.1.2/src/core/timeouts.c ****     next_timeout = timeout;
  212:./lwip-2.1.2/src/core/timeouts.c ****   } else {
  213:./lwip-2.1.2/src/core/timeouts.c ****     for (t = next_timeout; t != NULL; t = t->next) {
+  75              		.loc 1 213 30 is_stmt 1 discriminator 1 view .LVU19
  214:./lwip-2.1.2/src/core/timeouts.c ****       if ((t->next == NULL) || TIME_LESS_THAN(timeout->time, t->next->time)) {
-  75              		.loc 1 214 7 is_stmt 1 view .LVU19
-  76 0022 1946     		mov	r1, r3
-  77              		.loc 1 214 13 is_stmt 0 view .LVU20
-  78 0024 1B68     		ldr	r3, [r3]
-  79              	.LVL4:
-  80              		.loc 1 214 10 view .LVU21
-  81 0026 1BB1     		cbz	r3, .L5
-  82              	.LVL5:
-  83              	.L19:
-  84              		.loc 1 214 32 discriminator 1 view .LVU22
-  85 0028 5A68     		ldr	r2, [r3, #4]
-  86 002a A21A     		subs	r2, r4, r2
-  87              		.loc 1 214 29 discriminator 1 view .LVU23
-  88 002c 002A     		cmp	r2, #0
-  89 002e F8DA     		bge	.L4
-  90              	.L5:
+  76              		.loc 1 214 7 view .LVU20
+  77 0022 1946     		mov	r1, r3
+  78              		.loc 1 214 13 is_stmt 0 view .LVU21
+  79 0024 1B68     		ldr	r3, [r3]
+  80              	.LVL4:
+  81              		.loc 1 214 10 view .LVU22
+  82 0026 1BB1     		cbz	r3, .L5
+  83              	.LVL5:
+  84              	.L17:
+  85              		.loc 1 214 32 discriminator 1 view .LVU23
+  86 0028 5A68     		ldr	r2, [r3, #4]
+  87 002a A21A     		subs	r2, r4, r2
+  88              		.loc 1 214 29 discriminator 1 view .LVU24
+  89 002c 002A     		cmp	r2, #0
+  90 002e F8DA     		bge	.L4
+  91              	.L5:
  215:./lwip-2.1.2/src/core/timeouts.c ****         timeout->next = t->next;
-  91              		.loc 1 215 9 is_stmt 1 view .LVU24
-  92              		.loc 1 215 23 is_stmt 0 view .LVU25
-  93 0030 0360     		str	r3, [r0]
-  94              	.L17:
+  92              		.loc 1 215 9 is_stmt 1 view .LVU25
+  93              		.loc 1 215 23 is_stmt 0 view .LVU26
+  94 0030 0360     		str	r3, [r0]
+  95              	.L19:
  216:./lwip-2.1.2/src/core/timeouts.c ****         t->next = timeout;
-  95              		.loc 1 216 9 is_stmt 1 view .LVU26
-  96              		.loc 1 216 17 is_stmt 0 view .LVU27
-  97 0032 0860     		str	r0, [r1]
+  96              		.loc 1 216 9 is_stmt 1 view .LVU27
+  97              		.loc 1 216 17 is_stmt 0 view .LVU28
+  98 0032 0860     		str	r0, [r1]
  217:./lwip-2.1.2/src/core/timeouts.c ****         break;
-  98              		.loc 1 217 9 is_stmt 1 view .LVU28
-  99              	.L1:
+  99              		.loc 1 217 9 is_stmt 1 view .LVU29
+ 100              	.L1:
  218:./lwip-2.1.2/src/core/timeouts.c ****       }
  219:./lwip-2.1.2/src/core/timeouts.c ****     }
  220:./lwip-2.1.2/src/core/timeouts.c ****   }
  221:./lwip-2.1.2/src/core/timeouts.c **** }
- 100              		.loc 1 221 1 is_stmt 0 view .LVU29
- 101 0034 70BD     		pop	{r4, r5, r6, pc}
- 102              	.LVL6:
- 103              	.L22:
- 104              		.loc 1 221 1 view .LVU30
- 105 0036 00BF     		.align	2
- 106              	.L21:
- 107 0038 00000000 		.word	.LANCHOR0
- 108              		.cfi_endproc
- 109              	.LFE171:
- 111              		.align	1
- 112              		.p2align 2,,3
- 113              		.syntax unified
- 114              		.thumb
- 115              		.thumb_func
- 116              		.fpu fpv5-d16
+ 101              		.loc 1 221 1 is_stmt 0 view .LVU30
+ 102 0034 70BD     		pop	{r4, r5, r6, pc}
+ 103              	.LVL6:
+ 104              	.L23:
+ 105              		.loc 1 221 1 view .LVU31
+ 106 0036 00BF     		.align	2
+ 107              	.L22:
+ 108 0038 00000000 		.word	.LANCHOR0
+ 109              		.cfi_endproc
+ 110              	.LFE172:
+ 112              		.align	1
+ 113              		.p2align 2,,3
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
  118              	lwip_cyclic_timer:
  119              	.LVL7:
- 120              	.LFB172:
+ 120              	.LFB173:
  222:./lwip-2.1.2/src/core/timeouts.c **** 
  223:./lwip-2.1.2/src/core/timeouts.c **** /**
  224:./lwip-2.1.2/src/core/timeouts.c ****  * Timer callback function that calls cyclic->handler() and reschedules itself.
@@ -359,13 +359,13 @@
  123              		@ args = 0, pretend = 0, frame = 0
  124              		@ frame_needed = 0, uses_anonymous_args = 0
  234:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 125              		.loc 1 234 3 view .LVU32
+ 125              		.loc 1 234 3 view .LVU33
  235:./lwip-2.1.2/src/core/timeouts.c ****   u32_t next_timeout_time;
- 126              		.loc 1 235 3 view .LVU33
+ 126              		.loc 1 235 3 view .LVU34
  236:./lwip-2.1.2/src/core/timeouts.c ****   const struct lwip_cyclic_timer *cyclic = (const struct lwip_cyclic_timer *)arg;
- 127              		.loc 1 236 3 view .LVU34
+ 127              		.loc 1 236 3 view .LVU35
  233:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 128              		.loc 1 233 1 is_stmt 0 view .LVU35
+ 128              		.loc 1 233 1 is_stmt 0 view .LVU36
  129 003c 38B5     		push	{r3, r4, r5, lr}
  130              	.LCFI1:
  131              		.cfi_def_cfa_offset 16
@@ -378,57 +378,57 @@
  239:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_DEBUGF(TIMERS_DEBUG, ("tcpip: %s()\n", cyclic->handler_name));
  240:./lwip-2.1.2/src/core/timeouts.c **** #endif
  241:./lwip-2.1.2/src/core/timeouts.c ****   cyclic->handler();
- 136              		.loc 1 241 3 view .LVU36
+ 136              		.loc 1 241 3 view .LVU37
  137 003e 4368     		ldr	r3, [r0, #4]
  233:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 138              		.loc 1 233 1 view .LVU37
+ 138              		.loc 1 233 1 view .LVU38
  139 0040 0446     		mov	r4, r0
  140              	.LVL8:
- 141              		.loc 1 241 3 is_stmt 1 view .LVU38
+ 141              		.loc 1 241 3 is_stmt 1 view .LVU39
  142 0042 9847     		blx	r3
  143              	.LVL9:
  242:./lwip-2.1.2/src/core/timeouts.c **** 
  243:./lwip-2.1.2/src/core/timeouts.c ****   now = sys_now();
- 144              		.loc 1 243 3 view .LVU39
- 145              		.loc 1 243 9 is_stmt 0 view .LVU40
+ 144              		.loc 1 243 3 view .LVU40
+ 145              		.loc 1 243 9 is_stmt 0 view .LVU41
  146 0044 FFF7FEFF 		bl	sys_now
  147              	.LVL10:
  244:./lwip-2.1.2/src/core/timeouts.c ****   next_timeout_time = (u32_t)(current_timeout_due_time + cyclic->interval_ms);  /* overflow handled
- 148              		.loc 1 244 23 view .LVU41
- 149 0048 084B     		ldr	r3, .L26
- 150              		.loc 1 244 64 view .LVU42
+ 148              		.loc 1 244 23 view .LVU42
+ 149 0048 094B     		ldr	r3, .L27
+ 150              		.loc 1 244 64 view .LVU43
  151 004a 2568     		ldr	r5, [r4]
- 152              		.loc 1 244 21 view .LVU43
- 153 004c 5B68     		ldr	r3, [r3, #4]
+ 243:./lwip-2.1.2/src/core/timeouts.c ****   next_timeout_time = (u32_t)(current_timeout_due_time + cyclic->interval_ms);  /* overflow handled
+ 152              		.loc 1 243 9 view .LVU44
+ 153 004c 8446     		mov	ip, r0
  154              	.LVL11:
- 155              		.loc 1 244 3 is_stmt 1 view .LVU44
+ 155              		.loc 1 244 3 is_stmt 1 view .LVU45
+ 156              		.loc 1 244 21 is_stmt 0 view .LVU46
+ 157 004e 5B68     		ldr	r3, [r3, #4]
  245:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
  246:./lwip-2.1.2/src/core/timeouts.c ****     /* timer would immediately expire again -> "overload" -> restart without any correction */
  247:./lwip-2.1.2/src/core/timeouts.c **** #if LWIP_DEBUG_TIMERNAMES
  248:./lwip-2.1.2/src/core/timeouts.c ****     sys_timeout_abs((u32_t)(now + cyclic->interval_ms), lwip_cyclic_timer, arg, cyclic->handler_nam
  249:./lwip-2.1.2/src/core/timeouts.c **** #else
  250:./lwip-2.1.2/src/core/timeouts.c ****     sys_timeout_abs((u32_t)(now + cyclic->interval_ms), lwip_cyclic_timer, arg);
- 156              		.loc 1 250 5 is_stmt 0 view .LVU45
- 157 004e 0849     		ldr	r1, .L26+4
- 244:./lwip-2.1.2/src/core/timeouts.c ****   next_timeout_time = (u32_t)(current_timeout_due_time + cyclic->interval_ms);  /* overflow handled
- 158              		.loc 1 244 21 view .LVU46
- 159 0050 2B44     		add	r3, r3, r5
- 160              	.LVL12:
+ 158              		.loc 1 250 5 view .LVU47
+ 159 0050 2246     		mov	r2, r4
+ 160 0052 0849     		ldr	r1, .L27+4
+ 244:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
+ 161              		.loc 1 244 21 view .LVU48
+ 162 0054 E818     		adds	r0, r5, r3
+ 163              	.LVL12:
  245:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
- 161              		.loc 1 245 3 is_stmt 1 view .LVU47
+ 164              		.loc 1 245 3 is_stmt 1 view .LVU49
  245:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
- 162              		.loc 1 245 7 is_stmt 0 view .LVU48
- 163 0052 1A1A     		subs	r2, r3, r0
+ 165              		.loc 1 245 7 is_stmt 0 view .LVU50
+ 166 0056 A0EB0C03 		sub	r3, r0, ip
  245:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
- 164              		.loc 1 245 6 view .LVU49
- 165 0054 002A     		cmp	r2, #0
- 166              		.loc 1 250 5 view .LVU50
- 167 0056 2246     		mov	r2, r4
- 245:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout_time, now)) {
- 168              		.loc 1 245 6 view .LVU51
- 169 0058 03DA     		bge	.L24
+ 167              		.loc 1 245 6 view .LVU51
+ 168 005a 002B     		cmp	r3, #0
+ 169 005c 04DA     		bge	.L25
  170              		.loc 1 250 5 is_stmt 1 view .LVU52
- 171 005a 2844     		add	r0, r0, r5
+ 171 005e 05EB0C00 		add	r0, r5, ip
  172              	.LVL13:
  251:./lwip-2.1.2/src/core/timeouts.c **** #endif
  252:./lwip-2.1.2/src/core/timeouts.c **** 
@@ -442,7 +442,7 @@
  260:./lwip-2.1.2/src/core/timeouts.c ****   }
  261:./lwip-2.1.2/src/core/timeouts.c **** }
  173              		.loc 1 261 1 is_stmt 0 view .LVU53
- 174 005c BDE83840 		pop	{r3, r4, r5, lr}
+ 174 0062 BDE83840 		pop	{r3, r4, r5, lr}
  175              	.LCFI2:
  176              		.cfi_remember_state
  177              		.cfi_restore 14
@@ -453,81 +453,77 @@
  182              	.LVL14:
  250:./lwip-2.1.2/src/core/timeouts.c **** #endif
  183              		.loc 1 250 5 view .LVU54
- 184 0060 CEE7     		b	sys_timeout_abs
+ 184 0066 CBE7     		b	sys_timeout_abs
  185              	.LVL15:
- 186              	.L24:
+ 186              	.L25:
  187              	.LCFI3:
  188              		.cfi_restore_state
  258:./lwip-2.1.2/src/core/timeouts.c **** #endif
  189              		.loc 1 258 5 is_stmt 1 view .LVU55
- 190 0062 1846     		mov	r0, r3
- 191              	.LVL16:
- 192              		.loc 1 261 1 is_stmt 0 view .LVU56
- 193 0064 BDE83840 		pop	{r3, r4, r5, lr}
- 194              	.LCFI4:
- 195              		.cfi_restore 14
- 196              		.cfi_restore 5
- 197              		.cfi_restore 4
- 198              		.cfi_restore 3
- 199              		.cfi_def_cfa_offset 0
- 200              	.LVL17:
+ 190              		.loc 1 261 1 is_stmt 0 view .LVU56
+ 191 0068 BDE83840 		pop	{r3, r4, r5, lr}
+ 192              	.LCFI4:
+ 193              		.cfi_restore 14
+ 194              		.cfi_restore 5
+ 195              		.cfi_restore 4
+ 196              		.cfi_restore 3
+ 197              		.cfi_def_cfa_offset 0
  258:./lwip-2.1.2/src/core/timeouts.c **** #endif
- 201              		.loc 1 258 5 view .LVU57
- 202 0068 CAE7     		b	sys_timeout_abs
- 203              	.LVL18:
+ 198              		.loc 1 258 5 view .LVU57
+ 199 006c C8E7     		b	sys_timeout_abs
+ 200              	.LVL16:
+ 201              	.L28:
+ 258:./lwip-2.1.2/src/core/timeouts.c **** #endif
+ 202              		.loc 1 258 5 view .LVU58
+ 203 006e 00BF     		.align	2
  204              	.L27:
- 258:./lwip-2.1.2/src/core/timeouts.c **** #endif
- 205              		.loc 1 258 5 view .LVU58
- 206 006a 00BF     		.align	2
- 207              	.L26:
- 208 006c 00000000 		.word	.LANCHOR0
- 209 0070 00000000 		.word	lwip_cyclic_timer
- 210              		.cfi_endproc
- 211              	.LFE172:
- 213              		.align	1
- 214              		.p2align 2,,3
- 215              		.syntax unified
- 216              		.thumb
- 217              		.thumb_func
- 218              		.fpu fpv5-d16
- 220              	tcpip_tcp_timer:
- 221              	.LVL19:
- 222              	.LFB169:
+ 205 0070 00000000 		.word	.LANCHOR0
+ 206 0074 00000000 		.word	lwip_cyclic_timer
+ 207              		.cfi_endproc
+ 208              	.LFE173:
+ 210              		.align	1
+ 211              		.p2align 2,,3
+ 212              		.syntax unified
+ 213              		.thumb
+ 214              		.thumb_func
+ 216              	tcpip_tcp_timer:
+ 217              	.LVL17:
+ 218              	.LFB170:
  145:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_UNUSED_ARG(arg);
- 223              		.loc 1 145 1 is_stmt 1 view -0
- 224              		.cfi_startproc
- 225              		@ args = 0, pretend = 0, frame = 0
- 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219              		.loc 1 145 1 is_stmt 1 view -0
+ 220              		.cfi_startproc
+ 221              		@ args = 0, pretend = 0, frame = 0
+ 222              		@ frame_needed = 0, uses_anonymous_args = 0
  146:./lwip-2.1.2/src/core/timeouts.c **** 
- 227              		.loc 1 146 3 view .LVU60
+ 223              		.loc 1 146 3 view .LVU60
  149:./lwip-2.1.2/src/core/timeouts.c ****   /* timer still needed? */
- 228              		.loc 1 149 3 view .LVU61
+ 224              		.loc 1 149 3 view .LVU61
  145:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_UNUSED_ARG(arg);
- 229              		.loc 1 145 1 is_stmt 0 view .LVU62
- 230 0074 08B5     		push	{r3, lr}
- 231              	.LCFI5:
- 232              		.cfi_def_cfa_offset 8
- 233              		.cfi_offset 3, -8
- 234              		.cfi_offset 14, -4
+ 225              		.loc 1 145 1 is_stmt 0 view .LVU62
+ 226 0078 08B5     		push	{r3, lr}
+ 227              	.LCFI5:
+ 228              		.cfi_def_cfa_offset 8
+ 229              		.cfi_offset 3, -8
+ 230              		.cfi_offset 14, -4
  149:./lwip-2.1.2/src/core/timeouts.c ****   /* timer still needed? */
- 235              		.loc 1 149 3 view .LVU63
- 236 0076 FFF7FEFF 		bl	tcp_tmr
- 237              	.LVL20:
+ 231              		.loc 1 149 3 view .LVU63
+ 232 007a FFF7FEFF 		bl	tcp_tmr
+ 233              	.LVL18:
  151:./lwip-2.1.2/src/core/timeouts.c ****     /* restart timer */
- 238              		.loc 1 151 3 is_stmt 1 view .LVU64
+ 234              		.loc 1 151 3 is_stmt 1 view .LVU64
  151:./lwip-2.1.2/src/core/timeouts.c ****     /* restart timer */
- 239              		.loc 1 151 7 is_stmt 0 view .LVU65
- 240 007a 094B     		ldr	r3, .L33
+ 235              		.loc 1 151 7 is_stmt 0 view .LVU65
+ 236 007e 094B     		ldr	r3, .L34
  151:./lwip-2.1.2/src/core/timeouts.c ****     /* restart timer */
- 241              		.loc 1 151 6 view .LVU66
- 242 007c 1B68     		ldr	r3, [r3]
- 243 007e 3BB1     		cbz	r3, .L32
- 244              	.L29:
+ 237              		.loc 1 151 6 view .LVU66
+ 238 0080 1B68     		ldr	r3, [r3]
+ 239 0082 3BB1     		cbz	r3, .L33
+ 240              	.L30:
  153:./lwip-2.1.2/src/core/timeouts.c ****   } else {
- 245              		.loc 1 153 5 is_stmt 1 view .LVU67
- 246              	.LVL21:
- 247              	.LBB4:
- 248              	.LBI4:
+ 241              		.loc 1 153 5 is_stmt 1 view .LVU67
+ 242              	.LVL19:
+ 243              	.LBB4:
+ 244              	.LBI4:
  262:./lwip-2.1.2/src/core/timeouts.c **** 
  263:./lwip-2.1.2/src/core/timeouts.c **** /** Initialize this module */
  264:./lwip-2.1.2/src/core/timeouts.c **** void sys_timeouts_init(void)
@@ -557,370 +553,357 @@
  288:./lwip-2.1.2/src/core/timeouts.c **** #else /* LWIP_DEBUG_TIMERNAMES */
  289:./lwip-2.1.2/src/core/timeouts.c **** void
  290:./lwip-2.1.2/src/core/timeouts.c **** sys_timeout(u32_t msecs, sys_timeout_handler handler, void *arg)
- 249              		.loc 1 290 1 view .LVU68
- 250              	.LBB5:
+ 245              		.loc 1 290 1 view .LVU68
+ 246              	.LBB5:
  291:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_DEBUG_TIMERNAMES */
  292:./lwip-2.1.2/src/core/timeouts.c **** {
  293:./lwip-2.1.2/src/core/timeouts.c ****   u32_t next_timeout_time;
- 251              		.loc 1 293 3 view .LVU69
+ 247              		.loc 1 293 3 view .LVU69
  294:./lwip-2.1.2/src/core/timeouts.c **** 
  295:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 252              		.loc 1 295 28 view .LVU70
+ 248              		.loc 1 295 28 view .LVU70
  296:./lwip-2.1.2/src/core/timeouts.c **** 
  297:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT("Timeout time too long, max is LWIP_UINT32_MAX/4 msecs", msecs <= (LWIP_UINT32_MAX / 
- 253              		.loc 1 297 103 view .LVU71
+ 249              		.loc 1 297 103 view .LVU71
  298:./lwip-2.1.2/src/core/timeouts.c **** 
  299:./lwip-2.1.2/src/core/timeouts.c ****   next_timeout_time = (u32_t)(sys_now() + msecs); /* overflow handled by TIME_LESS_THAN macro */ 
- 254              		.loc 1 299 3 view .LVU72
- 255              		.loc 1 299 31 is_stmt 0 view .LVU73
- 256 0080 FFF7FEFF 		bl	sys_now
- 257              	.LVL22:
+ 250              		.loc 1 299 3 view .LVU72
+ 251              		.loc 1 299 31 is_stmt 0 view .LVU73
+ 252 0084 FFF7FEFF 		bl	sys_now
+ 253              	.LVL20:
  300:./lwip-2.1.2/src/core/timeouts.c **** 
  301:./lwip-2.1.2/src/core/timeouts.c **** #if LWIP_DEBUG_TIMERNAMES
  302:./lwip-2.1.2/src/core/timeouts.c ****   sys_timeout_abs(next_timeout_time, handler, arg, handler_name);
  303:./lwip-2.1.2/src/core/timeouts.c **** #else
  304:./lwip-2.1.2/src/core/timeouts.c ****   sys_timeout_abs(next_timeout_time, handler, arg);
- 258              		.loc 1 304 3 is_stmt 1 view .LVU74
- 259 0084 0022     		movs	r2, #0
- 260 0086 0749     		ldr	r1, .L33+4
- 261 0088 FA30     		adds	r0, r0, #250
- 262              	.LVL23:
- 263              		.loc 1 304 3 is_stmt 0 view .LVU75
- 264              	.LBE5:
- 265              	.LBE4:
+ 254              		.loc 1 304 3 is_stmt 1 view .LVU74
+ 255 0088 0022     		movs	r2, #0
+ 256 008a 0749     		ldr	r1, .L34+4
+ 257 008c FA30     		adds	r0, r0, #250
+ 258              	.LVL21:
+ 259              		.loc 1 304 3 is_stmt 0 view .LVU75
+ 260              	.LBE5:
+ 261              	.LBE4:
  158:./lwip-2.1.2/src/core/timeouts.c **** 
- 266              		.loc 1 158 1 view .LVU76
- 267 008a BDE80840 		pop	{r3, lr}
- 268              	.LCFI6:
- 269              		.cfi_remember_state
- 270              		.cfi_restore 14
- 271              		.cfi_restore 3
- 272              		.cfi_def_cfa_offset 0
- 273              	.LBB7:
- 274              	.LBB6:
- 275              		.loc 1 304 3 view .LVU77
- 276 008e B7E7     		b	sys_timeout_abs
- 277              	.LVL24:
- 278              	.L32:
- 279              	.LCFI7:
- 280              		.cfi_restore_state
- 281              		.loc 1 304 3 view .LVU78
- 282              	.LBE6:
- 283              	.LBE7:
+ 262              		.loc 1 158 1 view .LVU76
+ 263 008e BDE80840 		pop	{r3, lr}
+ 264              	.LCFI6:
+ 265              		.cfi_remember_state
+ 266              		.cfi_restore 14
+ 267              		.cfi_restore 3
+ 268              		.cfi_def_cfa_offset 0
+ 269              	.LBB7:
+ 270              	.LBB6:
+ 271              		.loc 1 304 3 view .LVU77
+ 272 0092 B5E7     		b	sys_timeout_abs
+ 273              	.LVL22:
+ 274              	.L33:
+ 275              	.LCFI7:
+ 276              		.cfi_restore_state
+ 277              		.loc 1 304 3 view .LVU78
+ 278              	.LBE6:
+ 279              	.LBE7:
  151:./lwip-2.1.2/src/core/timeouts.c ****     /* restart timer */
- 284              		.loc 1 151 23 discriminator 1 view .LVU79
- 285 0090 054B     		ldr	r3, .L33+8
- 286 0092 1B68     		ldr	r3, [r3]
- 287 0094 002B     		cmp	r3, #0
- 288 0096 F3D1     		bne	.L29
+ 280              		.loc 1 151 23 discriminator 1 view .LVU79
+ 281 0094 054B     		ldr	r3, .L34+8
+ 282 0096 1B68     		ldr	r3, [r3]
+ 283 0098 002B     		cmp	r3, #0
+ 284 009a F3D1     		bne	.L30
  156:./lwip-2.1.2/src/core/timeouts.c ****   }
- 289              		.loc 1 156 5 is_stmt 1 view .LVU80
+ 285              		.loc 1 156 5 is_stmt 1 view .LVU80
  156:./lwip-2.1.2/src/core/timeouts.c ****   }
- 290              		.loc 1 156 28 is_stmt 0 view .LVU81
- 291 0098 044A     		ldr	r2, .L33+12
- 292 009a 9360     		str	r3, [r2, #8]
+ 286              		.loc 1 156 28 is_stmt 0 view .LVU81
+ 287 009c 044A     		ldr	r2, .L34+12
+ 288 009e 9360     		str	r3, [r2, #8]
  158:./lwip-2.1.2/src/core/timeouts.c **** 
- 293              		.loc 1 158 1 view .LVU82
- 294 009c 08BD     		pop	{r3, pc}
- 295              	.L34:
- 296 009e 00BF     		.align	2
- 297              	.L33:
- 298 00a0 00000000 		.word	tcp_active_pcbs
- 299 00a4 00000000 		.word	tcpip_tcp_timer
- 300 00a8 00000000 		.word	tcp_tw_pcbs
- 301 00ac 00000000 		.word	.LANCHOR0
- 302              		.cfi_endproc
- 303              	.LFE169:
- 305              		.align	1
- 306              		.p2align 2,,3
- 307              		.global	tcp_timer_needed
- 308              		.syntax unified
- 309              		.thumb
- 310              		.thumb_func
- 311              		.fpu fpv5-d16
- 313              	tcp_timer_needed:
- 314              	.LFB170:
+ 289              		.loc 1 158 1 view .LVU82
+ 290 00a0 08BD     		pop	{r3, pc}
+ 291              	.L35:
+ 292 00a2 00BF     		.align	2
+ 293              	.L34:
+ 294 00a4 00000000 		.word	tcp_active_pcbs
+ 295 00a8 00000000 		.word	tcpip_tcp_timer
+ 296 00ac 00000000 		.word	tcp_tw_pcbs
+ 297 00b0 00000000 		.word	.LANCHOR0
+ 298              		.cfi_endproc
+ 299              	.LFE170:
+ 301              		.align	1
+ 302              		.p2align 2,,3
+ 303              		.global	tcp_timer_needed
+ 304              		.syntax unified
+ 305              		.thumb
+ 306              		.thumb_func
+ 308              	tcp_timer_needed:
+ 309              	.LFB171:
  167:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 315              		.loc 1 167 1 is_stmt 1 view -0
- 316              		.cfi_startproc
- 317              		@ args = 0, pretend = 0, frame = 0
- 318              		@ frame_needed = 0, uses_anonymous_args = 0
+ 310              		.loc 1 167 1 is_stmt 1 view -0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 0
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
  168:./lwip-2.1.2/src/core/timeouts.c **** 
- 319              		.loc 1 168 28 view .LVU84
+ 314              		.loc 1 168 28 view .LVU84
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 320              		.loc 1 171 3 view .LVU85
+ 315              		.loc 1 171 3 view .LVU85
  167:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 321              		.loc 1 167 1 is_stmt 0 view .LVU86
- 322 00b0 08B5     		push	{r3, lr}
- 323              	.LCFI8:
- 324              		.cfi_def_cfa_offset 8
- 325              		.cfi_offset 3, -8
- 326              		.cfi_offset 14, -4
+ 316              		.loc 1 167 1 is_stmt 0 view .LVU86
+ 317 00b4 08B5     		push	{r3, lr}
+ 318              	.LCFI8:
+ 319              		.cfi_def_cfa_offset 8
+ 320              		.cfi_offset 3, -8
+ 321              		.cfi_offset 14, -4
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 327              		.loc 1 171 7 view .LVU87
- 328 00b2 0A4B     		ldr	r3, .L43
+ 322              		.loc 1 171 7 view .LVU87
+ 323 00b6 0A4B     		ldr	r3, .L44
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 329              		.loc 1 171 6 view .LVU88
- 330 00b4 9A68     		ldr	r2, [r3, #8]
- 331 00b6 82B9     		cbnz	r2, .L35
+ 324              		.loc 1 171 6 view .LVU88
+ 325 00b8 9A68     		ldr	r2, [r3, #8]
+ 326 00ba 82B9     		cbnz	r2, .L36
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 332              		.loc 1 171 35 discriminator 1 view .LVU89
- 333 00b8 094A     		ldr	r2, .L43+4
+ 327              		.loc 1 171 35 discriminator 1 view .LVU89
+ 328 00bc 094A     		ldr	r2, .L44+4
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 334              		.loc 1 171 31 discriminator 1 view .LVU90
- 335 00ba 1268     		ldr	r2, [r2]
- 336 00bc 4AB1     		cbz	r2, .L42
- 337              	.L37:
+ 329              		.loc 1 171 31 discriminator 1 view .LVU90
+ 330 00be 1268     		ldr	r2, [r2]
+ 331 00c0 4AB1     		cbz	r2, .L43
+ 332              	.L38:
  173:./lwip-2.1.2/src/core/timeouts.c ****     sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, NULL);
- 338              		.loc 1 173 5 is_stmt 1 view .LVU91
+ 333              		.loc 1 173 5 is_stmt 1 view .LVU91
  173:./lwip-2.1.2/src/core/timeouts.c ****     sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, NULL);
- 339              		.loc 1 173 28 is_stmt 0 view .LVU92
- 340 00be 0122     		movs	r2, #1
- 341 00c0 9A60     		str	r2, [r3, #8]
+ 334              		.loc 1 173 28 is_stmt 0 view .LVU92
+ 335 00c2 0122     		movs	r2, #1
+ 336 00c4 9A60     		str	r2, [r3, #8]
  174:./lwip-2.1.2/src/core/timeouts.c ****   }
- 342              		.loc 1 174 5 is_stmt 1 view .LVU93
- 343              	.LVL25:
- 344              	.LBB10:
- 345              	.LBI10:
+ 337              		.loc 1 174 5 is_stmt 1 view .LVU93
+ 338              	.LVL23:
+ 339              	.LBB10:
+ 340              	.LBI10:
  290:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_DEBUG_TIMERNAMES */
- 346              		.loc 1 290 1 view .LVU94
- 347              	.LBB11:
+ 341              		.loc 1 290 1 view .LVU94
+ 342              	.LBB11:
  293:./lwip-2.1.2/src/core/timeouts.c **** 
- 348              		.loc 1 293 3 view .LVU95
+ 343              		.loc 1 293 3 view .LVU95
  295:./lwip-2.1.2/src/core/timeouts.c **** 
- 349              		.loc 1 295 28 view .LVU96
+ 344              		.loc 1 295 28 view .LVU96
  297:./lwip-2.1.2/src/core/timeouts.c **** 
- 350              		.loc 1 297 103 view .LVU97
+ 345              		.loc 1 297 103 view .LVU97
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 351              		.loc 1 299 3 view .LVU98
+ 346              		.loc 1 299 3 view .LVU98
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 352              		.loc 1 299 31 is_stmt 0 view .LVU99
- 353 00c2 FFF7FEFF 		bl	sys_now
- 354              	.LVL26:
- 355              		.loc 1 304 3 is_stmt 1 view .LVU100
- 356 00c6 0022     		movs	r2, #0
- 357 00c8 0649     		ldr	r1, .L43+8
- 358 00ca FA30     		adds	r0, r0, #250
- 359              	.LVL27:
- 360              		.loc 1 304 3 is_stmt 0 view .LVU101
- 361              	.LBE11:
- 362              	.LBE10:
+ 347              		.loc 1 299 31 is_stmt 0 view .LVU99
+ 348 00c6 FFF7FEFF 		bl	sys_now
+ 349              	.LVL24:
+ 350              		.loc 1 304 3 is_stmt 1 view .LVU100
+ 351 00ca 0022     		movs	r2, #0
+ 352 00cc 0649     		ldr	r1, .L44+8
+ 353 00ce FA30     		adds	r0, r0, #250
+ 354              	.LVL25:
+ 355              		.loc 1 304 3 is_stmt 0 view .LVU101
+ 356              	.LBE11:
+ 357              	.LBE10:
  176:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_TCP */
- 363              		.loc 1 176 1 view .LVU102
- 364 00cc BDE80840 		pop	{r3, lr}
- 365              	.LCFI9:
- 366              		.cfi_remember_state
- 367              		.cfi_restore 14
- 368              		.cfi_restore 3
- 369              		.cfi_def_cfa_offset 0
- 370              	.LBB13:
- 371              	.LBB12:
- 372              		.loc 1 304 3 view .LVU103
- 373 00d0 96E7     		b	sys_timeout_abs
- 374              	.LVL28:
- 375              	.L42:
- 376              	.LCFI10:
- 377              		.cfi_restore_state
- 378              		.loc 1 304 3 view .LVU104
- 379              	.LBE12:
- 380              	.LBE13:
+ 358              		.loc 1 176 1 view .LVU102
+ 359 00d0 BDE80840 		pop	{r3, lr}
+ 360              	.LCFI9:
+ 361              		.cfi_remember_state
+ 362              		.cfi_restore 14
+ 363              		.cfi_restore 3
+ 364              		.cfi_def_cfa_offset 0
+ 365              	.LBB13:
+ 366              	.LBB12:
+ 367              		.loc 1 304 3 view .LVU103
+ 368 00d4 94E7     		b	sys_timeout_abs
+ 369              	.LVL26:
+ 370              	.L43:
+ 371              	.LCFI10:
+ 372              		.cfi_restore_state
+ 373              		.loc 1 304 3 view .LVU104
+ 374              	.LBE12:
+ 375              	.LBE13:
  171:./lwip-2.1.2/src/core/timeouts.c ****     /* enable and start timer */
- 381              		.loc 1 171 51 discriminator 2 view .LVU105
- 382 00d2 054A     		ldr	r2, .L43+12
- 383 00d4 1268     		ldr	r2, [r2]
- 384 00d6 002A     		cmp	r2, #0
- 385 00d8 F1D1     		bne	.L37
- 386              	.L35:
+ 376              		.loc 1 171 51 discriminator 2 view .LVU105
+ 377 00d6 054A     		ldr	r2, .L44+12
+ 378 00d8 1268     		ldr	r2, [r2]
+ 379 00da 002A     		cmp	r2, #0
+ 380 00dc F1D1     		bne	.L38
+ 381              	.L36:
  176:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_TCP */
- 387              		.loc 1 176 1 view .LVU106
- 388 00da 08BD     		pop	{r3, pc}
- 389              	.L44:
- 390              		.align	2
- 391              	.L43:
- 392 00dc 00000000 		.word	.LANCHOR0
- 393 00e0 00000000 		.word	tcp_active_pcbs
- 394 00e4 00000000 		.word	tcpip_tcp_timer
- 395 00e8 00000000 		.word	tcp_tw_pcbs
- 396              		.cfi_endproc
- 397              	.LFE170:
- 399              		.align	1
- 400              		.p2align 2,,3
- 401              		.global	sys_timeouts_init
- 402              		.syntax unified
- 403              		.thumb
- 404              		.thumb_func
- 405              		.fpu fpv5-d16
- 407              	sys_timeouts_init:
- 408              	.LFB173:
+ 382              		.loc 1 176 1 view .LVU106
+ 383 00de 08BD     		pop	{r3, pc}
+ 384              	.L45:
+ 385              		.align	2
+ 386              	.L44:
+ 387 00e0 00000000 		.word	.LANCHOR0
+ 388 00e4 00000000 		.word	tcp_active_pcbs
+ 389 00e8 00000000 		.word	tcpip_tcp_timer
+ 390 00ec 00000000 		.word	tcp_tw_pcbs
+ 391              		.cfi_endproc
+ 392              	.LFE171:
+ 394              		.align	1
+ 395              		.p2align 2,,3
+ 396              		.global	sys_timeouts_init
+ 397              		.syntax unified
+ 398              		.thumb
+ 399              		.thumb_func
+ 401              	sys_timeouts_init:
+ 402              	.LFB174:
  265:./lwip-2.1.2/src/core/timeouts.c ****   size_t i;
- 409              		.loc 1 265 1 is_stmt 1 view -0
- 410              		.cfi_startproc
- 411              		@ args = 0, pretend = 0, frame = 0
- 412              		@ frame_needed = 0, uses_anonymous_args = 0
+ 403              		.loc 1 265 1 is_stmt 1 view -0
+ 404              		.cfi_startproc
+ 405              		@ args = 0, pretend = 0, frame = 0
+ 406              		@ frame_needed = 0, uses_anonymous_args = 0
  266:./lwip-2.1.2/src/core/timeouts.c ****   /* tcp_tmr() at index 0 is started on demand */
- 413              		.loc 1 266 3 view .LVU108
+ 407              		.loc 1 266 3 view .LVU108
  268:./lwip-2.1.2/src/core/timeouts.c ****     /* we have to cast via size_t to get rid of const warning
- 414              		.loc 1 268 3 view .LVU109
- 415              	.LVL29:
+ 408              		.loc 1 268 3 view .LVU109
+ 409              	.LVL27:
  268:./lwip-2.1.2/src/core/timeouts.c ****     /* we have to cast via size_t to get rid of const warning
- 416              		.loc 1 268 32 view .LVU110
+ 410              		.loc 1 268 34 discriminator 1 view .LVU110
  265:./lwip-2.1.2/src/core/timeouts.c ****   size_t i;
- 417              		.loc 1 265 1 is_stmt 0 view .LVU111
- 418 00ec F8B5     		push	{r3, r4, r5, r6, r7, lr}
- 419              	.LCFI11:
- 420              		.cfi_def_cfa_offset 24
- 421              		.cfi_offset 3, -24
- 422              		.cfi_offset 4, -20
- 423              		.cfi_offset 5, -16
- 424              		.cfi_offset 6, -12
- 425              		.cfi_offset 7, -8
- 426              		.cfi_offset 14, -4
- 427 00ee 094C     		ldr	r4, .L49
- 265:./lwip-2.1.2/src/core/timeouts.c ****   size_t i;
- 428              		.loc 1 265 1 view .LVU112
- 429 00f0 4FF47A75 		mov	r5, #1000
- 430              	.LBB16:
- 431              	.LBB17:
- 432              		.loc 1 304 3 view .LVU113
- 433 00f4 084F     		ldr	r7, .L49+4
- 434 00f6 04F11806 		add	r6, r4, #24
- 435              	.LVL30:
- 436              	.L47:
- 437              		.loc 1 304 3 view .LVU114
- 438              	.LBE17:
- 439              	.LBE16:
+ 411              		.loc 1 265 1 is_stmt 0 view .LVU111
+ 412 00f0 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 413              	.LCFI11:
+ 414              		.cfi_def_cfa_offset 24
+ 415              		.cfi_offset 3, -24
+ 416              		.cfi_offset 4, -20
+ 417              		.cfi_offset 5, -16
+ 418              		.cfi_offset 6, -12
+ 419              		.cfi_offset 7, -8
+ 420              		.cfi_offset 14, -4
+ 421 00f2 084C     		ldr	r4, .L50
+ 422              	.LBB16:
+ 423              	.LBB17:
+ 424              		.loc 1 304 3 view .LVU112
+ 425 00f4 084F     		ldr	r7, .L50+4
+ 426 00f6 04F12006 		add	r6, r4, #32
+ 427              	.LVL28:
+ 428              	.L47:
+ 429              		.loc 1 304 3 view .LVU113
+ 430              	.LBE17:
+ 431              	.LBE16:
  271:./lwip-2.1.2/src/core/timeouts.c ****   }
- 440              		.loc 1 271 5 is_stmt 1 discriminator 3 view .LVU115
- 441              	.LBB19:
- 442              	.LBI16:
+ 432              		.loc 1 271 5 is_stmt 1 view .LVU114
+ 271:./lwip-2.1.2/src/core/timeouts.c ****   }
+ 433              		.loc 1 271 38 is_stmt 0 view .LVU115
+ 434 00fa 54F8085F 		ldr	r5, [r4, #8]!
+ 435              	.LVL29:
+ 436              	.LBB19:
+ 437              	.LBI16:
  290:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_DEBUG_TIMERNAMES */
- 443              		.loc 1 290 1 discriminator 3 view .LVU116
- 444              	.LBB18:
+ 438              		.loc 1 290 1 is_stmt 1 view .LVU116
+ 439              	.LBB18:
  293:./lwip-2.1.2/src/core/timeouts.c **** 
- 445              		.loc 1 293 3 discriminator 3 view .LVU117
+ 440              		.loc 1 293 3 view .LVU117
  295:./lwip-2.1.2/src/core/timeouts.c **** 
- 446              		.loc 1 295 28 discriminator 3 view .LVU118
+ 441              		.loc 1 295 28 view .LVU118
  297:./lwip-2.1.2/src/core/timeouts.c **** 
- 447              		.loc 1 297 103 discriminator 3 view .LVU119
+ 442              		.loc 1 297 103 view .LVU119
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 448              		.loc 1 299 3 discriminator 3 view .LVU120
+ 443              		.loc 1 299 3 view .LVU120
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 449              		.loc 1 299 31 is_stmt 0 discriminator 3 view .LVU121
- 450 00fa FFF7FEFF 		bl	sys_now
+ 444              		.loc 1 299 31 is_stmt 0 view .LVU121
+ 445 00fe FFF7FEFF 		bl	sys_now
+ 446              	.LVL30:
+ 447              		.loc 1 304 3 is_stmt 1 view .LVU122
+ 448 0102 3946     		mov	r1, r7
+ 449 0104 2246     		mov	r2, r4
+ 450 0106 2844     		add	r0, r0, r5
  451              	.LVL31:
- 452              		.loc 1 304 3 is_stmt 1 discriminator 3 view .LVU122
- 453 00fe 2246     		mov	r2, r4
- 454 0100 3946     		mov	r1, r7
- 455 0102 2844     		add	r0, r0, r5
- 456              	.LVL32:
- 457              		.loc 1 304 3 is_stmt 0 discriminator 3 view .LVU123
- 458 0104 FFF77CFF 		bl	sys_timeout_abs
- 459              	.LVL33:
- 460              		.loc 1 304 3 discriminator 3 view .LVU124
- 461              	.LBE18:
- 462              	.LBE19:
+ 452              		.loc 1 304 3 is_stmt 0 view .LVU123
+ 453 0108 FFF77AFF 		bl	sys_timeout_abs
+ 454              	.LVL32:
+ 455              		.loc 1 304 3 view .LVU124
+ 456              	.LBE18:
+ 457              	.LBE19:
  268:./lwip-2.1.2/src/core/timeouts.c ****     /* we have to cast via size_t to get rid of const warning
- 463              		.loc 1 268 72 is_stmt 1 discriminator 3 view .LVU125
+ 458              		.loc 1 268 73 is_stmt 1 discriminator 3 view .LVU125
  268:./lwip-2.1.2/src/core/timeouts.c ****     /* we have to cast via size_t to get rid of const warning
- 464              		.loc 1 268 32 discriminator 3 view .LVU126
- 268:./lwip-2.1.2/src/core/timeouts.c ****     /* we have to cast via size_t to get rid of const warning
- 465              		.loc 1 268 3 is_stmt 0 discriminator 3 view .LVU127
- 466 0108 B442     		cmp	r4, r6
- 467 010a 02D0     		beq	.L45
- 271:./lwip-2.1.2/src/core/timeouts.c ****   }
- 468              		.loc 1 271 5 view .LVU128
- 469 010c 54F8085F 		ldr	r5, [r4, #8]!
- 470 0110 F3E7     		b	.L47
- 471              	.L45:
+ 459              		.loc 1 268 34 discriminator 1 view .LVU126
+ 460 010c B442     		cmp	r4, r6
+ 461 010e F4D1     		bne	.L47
  273:./lwip-2.1.2/src/core/timeouts.c **** 
- 472              		.loc 1 273 1 view .LVU129
- 473 0112 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
- 474              	.L50:
- 475              		.align	2
- 476              	.L49:
- 477 0114 08000000 		.word	.LANCHOR1+8
- 478 0118 00000000 		.word	lwip_cyclic_timer
- 479              		.cfi_endproc
- 480              	.LFE173:
- 482              		.align	1
- 483              		.p2align 2,,3
- 484              		.global	sys_timeout
- 485              		.syntax unified
- 486              		.thumb
- 487              		.thumb_func
- 488              		.fpu fpv5-d16
- 490              	sys_timeout:
- 491              	.LVL34:
- 492              	.LFB174:
+ 462              		.loc 1 273 1 is_stmt 0 view .LVU127
+ 463 0110 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 464              	.L51:
+ 465 0112 00BF     		.align	2
+ 466              	.L50:
+ 467 0114 00000000 		.word	.LANCHOR1
+ 468 0118 00000000 		.word	lwip_cyclic_timer
+ 469              		.cfi_endproc
+ 470              	.LFE174:
+ 472              		.align	1
+ 473              		.p2align 2,,3
+ 474              		.global	sys_timeout
+ 475              		.syntax unified
+ 476              		.thumb
+ 477              		.thumb_func
+ 479              	sys_timeout:
+ 480              	.LVL33:
+ 481              	.LFB175:
  292:./lwip-2.1.2/src/core/timeouts.c ****   u32_t next_timeout_time;
- 493              		.loc 1 292 1 is_stmt 1 view -0
- 494              		.cfi_startproc
- 495              		@ args = 0, pretend = 0, frame = 8
- 496              		@ frame_needed = 0, uses_anonymous_args = 0
+ 482              		.loc 1 292 1 is_stmt 1 view -0
+ 483              		.cfi_startproc
+ 484              		@ args = 0, pretend = 0, frame = 0
+ 485              		@ frame_needed = 0, uses_anonymous_args = 0
  293:./lwip-2.1.2/src/core/timeouts.c **** 
- 497              		.loc 1 293 3 view .LVU131
+ 486              		.loc 1 293 3 view .LVU129
  295:./lwip-2.1.2/src/core/timeouts.c **** 
- 498              		.loc 1 295 28 view .LVU132
+ 487              		.loc 1 295 28 view .LVU130
  297:./lwip-2.1.2/src/core/timeouts.c **** 
- 499              		.loc 1 297 103 view .LVU133
+ 488              		.loc 1 297 103 view .LVU131
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 500              		.loc 1 299 3 view .LVU134
+ 489              		.loc 1 299 3 view .LVU132
  292:./lwip-2.1.2/src/core/timeouts.c ****   u32_t next_timeout_time;
- 501              		.loc 1 292 1 is_stmt 0 view .LVU135
- 502 011c 10B5     		push	{r4, lr}
- 503              	.LCFI12:
- 504              		.cfi_def_cfa_offset 8
- 505              		.cfi_offset 4, -8
- 506              		.cfi_offset 14, -4
- 507 011e 0446     		mov	r4, r0
- 508 0120 82B0     		sub	sp, sp, #8
- 509              	.LCFI13:
- 510              		.cfi_def_cfa_offset 16
+ 490              		.loc 1 292 1 is_stmt 0 view .LVU133
+ 491 011c 70B5     		push	{r4, r5, r6, lr}
+ 492              	.LCFI12:
+ 493              		.cfi_def_cfa_offset 16
+ 494              		.cfi_offset 4, -16
+ 495              		.cfi_offset 5, -12
+ 496              		.cfi_offset 6, -8
+ 497              		.cfi_offset 14, -4
  292:./lwip-2.1.2/src/core/timeouts.c ****   u32_t next_timeout_time;
- 511              		.loc 1 292 1 view .LVU136
- 512 0122 CDE90021 		strd	r2, r1, [sp]
+ 498              		.loc 1 292 1 view .LVU134
+ 499 011e 0446     		mov	r4, r0
+ 500 0120 0D46     		mov	r5, r1
+ 501 0122 1646     		mov	r6, r2
  299:./lwip-2.1.2/src/core/timeouts.c **** 
- 513              		.loc 1 299 31 view .LVU137
- 514 0126 FFF7FEFF 		bl	sys_now
- 515              	.LVL35:
- 516              		.loc 1 304 3 is_stmt 1 view .LVU138
- 517 012a 2044     		add	r0, r0, r4
- 518              	.LVL36:
- 519              		.loc 1 304 3 is_stmt 0 view .LVU139
- 520 012c DDE90021 		ldrd	r2, r1, [sp]
+ 502              		.loc 1 299 31 view .LVU135
+ 503 0124 FFF7FEFF 		bl	sys_now
+ 504              	.LVL34:
+ 505              		.loc 1 304 3 is_stmt 1 view .LVU136
+ 506 0128 2946     		mov	r1, r5
+ 507 012a 2044     		add	r0, r0, r4
+ 508              	.LVL35:
+ 509              		.loc 1 304 3 is_stmt 0 view .LVU137
+ 510 012c 3246     		mov	r2, r6
  305:./lwip-2.1.2/src/core/timeouts.c **** #endif
  306:./lwip-2.1.2/src/core/timeouts.c **** }
- 521              		.loc 1 306 1 view .LVU140
- 522 0130 02B0     		add	sp, sp, #8
- 523              	.LCFI14:
- 524              		.cfi_def_cfa_offset 8
- 525              	.LVL37:
- 526              		.loc 1 306 1 view .LVU141
- 527              		@ sp needed
- 528 0132 BDE81040 		pop	{r4, lr}
- 529              	.LCFI15:
- 530              		.cfi_restore 14
- 531              		.cfi_restore 4
- 532              		.cfi_def_cfa_offset 0
- 533              	.LVL38:
+ 511              		.loc 1 306 1 view .LVU138
+ 512 012e BDE87040 		pop	{r4, r5, r6, lr}
+ 513              	.LCFI13:
+ 514              		.cfi_restore 14
+ 515              		.cfi_restore 6
+ 516              		.cfi_restore 5
+ 517              		.cfi_restore 4
+ 518              		.cfi_def_cfa_offset 0
+ 519              	.LVL36:
  304:./lwip-2.1.2/src/core/timeouts.c **** #endif
- 534              		.loc 1 304 3 view .LVU142
- 535 0136 63E7     		b	sys_timeout_abs
- 536              	.LVL39:
+ 520              		.loc 1 304 3 view .LVU139
+ 521 0132 65E7     		b	sys_timeout_abs
+ 522              	.LVL37:
  304:./lwip-2.1.2/src/core/timeouts.c **** #endif
- 537              		.loc 1 304 3 view .LVU143
- 538              		.cfi_endproc
- 539              	.LFE174:
- 541              		.align	1
- 542              		.p2align 2,,3
- 543              		.global	sys_untimeout
- 544              		.syntax unified
- 545              		.thumb
- 546              		.thumb_func
- 547              		.fpu fpv5-d16
- 549              	sys_untimeout:
- 550              	.LVL40:
- 551              	.LFB175:
+ 523              		.loc 1 304 3 view .LVU140
+ 524              		.cfi_endproc
+ 525              	.LFE175:
+ 527              		.align	1
+ 528              		.p2align 2,,3
+ 529              		.global	sys_untimeout
+ 530              		.syntax unified
+ 531              		.thumb
+ 532              		.thumb_func
+ 534              	sys_untimeout:
+ 535              	.LVL38:
+ 536              	.LFB176:
  307:./lwip-2.1.2/src/core/timeouts.c **** 
  308:./lwip-2.1.2/src/core/timeouts.c **** /**
  309:./lwip-2.1.2/src/core/timeouts.c ****  * Go through timeout list (for this task only) and remove the first matching
@@ -933,139 +916,138 @@
  316:./lwip-2.1.2/src/core/timeouts.c **** void
  317:./lwip-2.1.2/src/core/timeouts.c **** sys_untimeout(sys_timeout_handler handler, void *arg)
  318:./lwip-2.1.2/src/core/timeouts.c **** {
- 552              		.loc 1 318 1 is_stmt 1 view -0
- 553              		.cfi_startproc
- 554              		@ args = 0, pretend = 0, frame = 0
- 555              		@ frame_needed = 0, uses_anonymous_args = 0
- 556              		@ link register save eliminated.
+ 537              		.loc 1 318 1 is_stmt 1 view -0
+ 538              		.cfi_startproc
+ 539              		@ args = 0, pretend = 0, frame = 0
+ 540              		@ frame_needed = 0, uses_anonymous_args = 0
+ 541              		@ link register save eliminated.
  319:./lwip-2.1.2/src/core/timeouts.c ****   struct sys_timeo *prev_t, *t;
- 557              		.loc 1 319 3 view .LVU145
+ 542              		.loc 1 319 3 view .LVU142
  320:./lwip-2.1.2/src/core/timeouts.c **** 
  321:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 558              		.loc 1 321 28 view .LVU146
+ 543              		.loc 1 321 28 view .LVU143
  322:./lwip-2.1.2/src/core/timeouts.c **** 
  323:./lwip-2.1.2/src/core/timeouts.c ****   if (next_timeout == NULL) {
- 559              		.loc 1 323 3 view .LVU147
+ 544              		.loc 1 323 3 view .LVU144
  318:./lwip-2.1.2/src/core/timeouts.c ****   struct sys_timeo *prev_t, *t;
- 560              		.loc 1 318 1 is_stmt 0 view .LVU148
- 561 0138 30B4     		push	{r4, r5}
- 562              	.LCFI16:
- 563              		.cfi_def_cfa_offset 8
- 564              		.cfi_offset 4, -8
- 565              		.cfi_offset 5, -4
- 566              		.loc 1 323 20 view .LVU149
- 567 013a 0D4D     		ldr	r5, .L65
- 568 013c 2B68     		ldr	r3, [r5]
- 569              		.loc 1 323 6 view .LVU150
- 570 013e 9BB1     		cbz	r3, .L53
+ 545              		.loc 1 318 1 is_stmt 0 view .LVU145
+ 546 0134 30B4     		push	{r4, r5}
+ 547              	.LCFI14:
+ 548              		.cfi_def_cfa_offset 8
+ 549              		.cfi_offset 4, -8
+ 550              		.cfi_offset 5, -4
+ 551              		.loc 1 323 20 view .LVU146
+ 552 0136 0D4D     		ldr	r5, .L66
+ 553 0138 2B68     		ldr	r3, [r5]
+ 554              		.loc 1 323 6 view .LVU147
+ 555 013a 9BB1     		cbz	r3, .L54
  324:./lwip-2.1.2/src/core/timeouts.c ****     return;
  325:./lwip-2.1.2/src/core/timeouts.c ****   }
  326:./lwip-2.1.2/src/core/timeouts.c **** 
  327:./lwip-2.1.2/src/core/timeouts.c ****   for (t = next_timeout, prev_t = NULL; t != NULL; prev_t = t, t = t->next) {
- 571              		.loc 1 327 33 view .LVU151
- 572 0140 0024     		movs	r4, #0
- 573 0142 03E0     		b	.L58
- 574              	.LVL41:
- 575              	.L55:
- 576              		.loc 1 327 66 discriminator 2 view .LVU152
- 577 0144 1A68     		ldr	r2, [r3]
- 578              	.LVL42:
- 579              		.loc 1 327 41 is_stmt 1 discriminator 2 view .LVU153
- 580 0146 1C46     		mov	r4, r3
- 581 0148 1346     		mov	r3, r2
- 582              	.LVL43:
- 583              		.loc 1 327 3 is_stmt 0 discriminator 2 view .LVU154
- 584 014a 6AB1     		cbz	r2, .L53
- 585              	.LVL44:
- 586              	.L58:
+ 556              		.loc 1 327 33 view .LVU148
+ 557 013c 0024     		movs	r4, #0
+ 558 013e 03E0     		b	.L59
+ 559              	.LVL39:
+ 560              	.L56:
+ 561              		.loc 1 327 66 discriminator 2 view .LVU149
+ 562 0140 1A68     		ldr	r2, [r3]
+ 563              	.LVL40:
+ 564              		.loc 1 327 43 is_stmt 1 discriminator 1 view .LVU150
+ 565 0142 1C46     		mov	r4, r3
+ 566 0144 1346     		mov	r3, r2
+ 567              	.LVL41:
+ 568              		.loc 1 327 43 is_stmt 0 discriminator 1 view .LVU151
+ 569 0146 6AB1     		cbz	r2, .L54
+ 570              	.LVL42:
+ 571              	.L59:
  328:./lwip-2.1.2/src/core/timeouts.c ****     if ((t->h == handler) && (t->arg == arg)) {
- 587              		.loc 1 328 5 is_stmt 1 view .LVU155
+ 572              		.loc 1 328 5 is_stmt 1 view .LVU152
  327:./lwip-2.1.2/src/core/timeouts.c ****     if ((t->h == handler) && (t->arg == arg)) {
- 588              		.loc 1 327 52 view .LVU156
- 589              		.loc 1 328 8 is_stmt 0 view .LVU157
- 590 014c 9A68     		ldr	r2, [r3, #8]
- 591 014e 8242     		cmp	r2, r0
- 592 0150 F8D1     		bne	.L55
- 593              		.loc 1 328 27 discriminator 1 view .LVU158
- 594 0152 DA68     		ldr	r2, [r3, #12]
- 595 0154 8A42     		cmp	r2, r1
- 596 0156 F5D1     		bne	.L55
+ 573              		.loc 1 327 62 discriminator 2 view .LVU153
+ 574              		.loc 1 328 8 is_stmt 0 view .LVU154
+ 575 0148 9A68     		ldr	r2, [r3, #8]
+ 576 014a 8242     		cmp	r2, r0
+ 577 014c F8D1     		bne	.L56
+ 578              		.loc 1 328 27 discriminator 1 view .LVU155
+ 579 014e DA68     		ldr	r2, [r3, #12]
+ 580 0150 8A42     		cmp	r2, r1
+ 581 0152 F5D1     		bne	.L56
  329:./lwip-2.1.2/src/core/timeouts.c ****       /* We have a match */
  330:./lwip-2.1.2/src/core/timeouts.c ****       /* Unlink from previous in list */
  331:./lwip-2.1.2/src/core/timeouts.c ****       if (prev_t == NULL) {
- 597              		.loc 1 331 7 is_stmt 1 view .LVU159
+ 582              		.loc 1 331 7 is_stmt 1 view .LVU156
  332:./lwip-2.1.2/src/core/timeouts.c ****         next_timeout = t->next;
- 598              		.loc 1 332 22 is_stmt 0 view .LVU160
- 599 0158 1A68     		ldr	r2, [r3]
+ 583              		.loc 1 332 25 is_stmt 0 view .LVU157
+ 584 0154 1A68     		ldr	r2, [r3]
  331:./lwip-2.1.2/src/core/timeouts.c ****         next_timeout = t->next;
- 600              		.loc 1 331 10 view .LVU161
- 601 015a 3CB1     		cbz	r4, .L64
+ 585              		.loc 1 331 10 view .LVU158
+ 586 0156 3CB1     		cbz	r4, .L65
  333:./lwip-2.1.2/src/core/timeouts.c ****       } else {
  334:./lwip-2.1.2/src/core/timeouts.c ****         prev_t->next = t->next;
- 602              		.loc 1 334 9 is_stmt 1 view .LVU162
- 603              		.loc 1 334 22 is_stmt 0 view .LVU163
- 604 015c 2260     		str	r2, [r4]
- 605              	.L57:
+ 587              		.loc 1 334 9 is_stmt 1 view .LVU159
+ 588              		.loc 1 334 22 is_stmt 0 view .LVU160
+ 589 0158 2260     		str	r2, [r4]
+ 590              	.L58:
  335:./lwip-2.1.2/src/core/timeouts.c ****       }
  336:./lwip-2.1.2/src/core/timeouts.c ****       memp_free(MEMP_SYS_TIMEOUT, t);
- 606              		.loc 1 336 7 is_stmt 1 view .LVU164
- 607 015e 1946     		mov	r1, r3
- 608              	.LVL45:
- 609              		.loc 1 336 7 is_stmt 0 view .LVU165
- 610 0160 0A20     		movs	r0, #10
- 611              	.LVL46:
+ 591              		.loc 1 336 7 is_stmt 1 view .LVU161
+ 592 015a 1946     		mov	r1, r3
+ 593              	.LVL43:
+ 594              		.loc 1 336 7 is_stmt 0 view .LVU162
+ 595 015c 0A20     		movs	r0, #10
+ 596              	.LVL44:
  337:./lwip-2.1.2/src/core/timeouts.c ****       return;
  338:./lwip-2.1.2/src/core/timeouts.c ****     }
  339:./lwip-2.1.2/src/core/timeouts.c ****   }
  340:./lwip-2.1.2/src/core/timeouts.c ****   return;
  341:./lwip-2.1.2/src/core/timeouts.c **** }
- 612              		.loc 1 341 1 view .LVU166
- 613 0162 30BC     		pop	{r4, r5}
- 614              	.LCFI17:
- 615              		.cfi_remember_state
- 616              		.cfi_restore 5
- 617              		.cfi_restore 4
- 618              		.cfi_def_cfa_offset 0
+ 597              		.loc 1 341 1 view .LVU163
+ 598 015e 30BC     		pop	{r4, r5}
+ 599              	.LCFI15:
+ 600              		.cfi_remember_state
+ 601              		.cfi_restore 5
+ 602              		.cfi_restore 4
+ 603              		.cfi_def_cfa_offset 0
  336:./lwip-2.1.2/src/core/timeouts.c ****       return;
- 619              		.loc 1 336 7 view .LVU167
- 620 0164 FFF7FEBF 		b	memp_free
- 621              	.LVL47:
- 622              	.L53:
- 623              	.LCFI18:
- 624              		.cfi_restore_state
- 625              		.loc 1 341 1 view .LVU168
- 626 0168 30BC     		pop	{r4, r5}
- 627              	.LCFI19:
- 628              		.cfi_remember_state
- 629              		.cfi_restore 5
- 630              		.cfi_restore 4
- 631              		.cfi_def_cfa_offset 0
- 632 016a 7047     		bx	lr
- 633              	.LVL48:
- 634              	.L64:
- 635              	.LCFI20:
- 636              		.cfi_restore_state
+ 604              		.loc 1 336 7 view .LVU164
+ 605 0160 FFF7FEBF 		b	memp_free
+ 606              	.LVL45:
+ 607              	.L54:
+ 608              	.LCFI16:
+ 609              		.cfi_restore_state
+ 610              		.loc 1 341 1 view .LVU165
+ 611 0164 30BC     		pop	{r4, r5}
+ 612              	.LCFI17:
+ 613              		.cfi_remember_state
+ 614              		.cfi_restore 5
+ 615              		.cfi_restore 4
+ 616              		.cfi_def_cfa_offset 0
+ 617 0166 7047     		bx	lr
+ 618              	.LVL46:
+ 619              	.L65:
+ 620              	.LCFI18:
+ 621              		.cfi_restore_state
  332:./lwip-2.1.2/src/core/timeouts.c ****       } else {
- 637              		.loc 1 332 9 is_stmt 1 view .LVU169
+ 622              		.loc 1 332 9 is_stmt 1 view .LVU166
  332:./lwip-2.1.2/src/core/timeouts.c ****       } else {
- 638              		.loc 1 332 22 is_stmt 0 view .LVU170
- 639 016c 2A60     		str	r2, [r5]
- 640 016e F6E7     		b	.L57
- 641              	.L66:
- 642              		.align	2
- 643              	.L65:
- 644 0170 00000000 		.word	.LANCHOR0
- 645              		.cfi_endproc
- 646              	.LFE175:
- 648              		.align	1
- 649              		.p2align 2,,3
- 650              		.global	sys_check_timeouts
- 651              		.syntax unified
- 652              		.thumb
- 653              		.thumb_func
- 654              		.fpu fpv5-d16
- 656              	sys_check_timeouts:
- 657              	.LFB176:
+ 623              		.loc 1 332 22 is_stmt 0 view .LVU167
+ 624 0168 2A60     		str	r2, [r5]
+ 625 016a F6E7     		b	.L58
+ 626              	.L67:
+ 627              		.align	2
+ 628              	.L66:
+ 629 016c 00000000 		.word	.LANCHOR0
+ 630              		.cfi_endproc
+ 631              	.LFE176:
+ 633              		.align	1
+ 634              		.p2align 2,,3
+ 635              		.global	sys_check_timeouts
+ 636              		.syntax unified
+ 637              		.thumb
+ 638              		.thumb_func
+ 640              	sys_check_timeouts:
+ 641              	.LFB177:
  342:./lwip-2.1.2/src/core/timeouts.c **** 
  343:./lwip-2.1.2/src/core/timeouts.c **** /**
  344:./lwip-2.1.2/src/core/timeouts.c ****  * @ingroup lwip_nosys
@@ -1078,41 +1060,41 @@
  351:./lwip-2.1.2/src/core/timeouts.c **** void
  352:./lwip-2.1.2/src/core/timeouts.c **** sys_check_timeouts(void)
  353:./lwip-2.1.2/src/core/timeouts.c **** {
- 658              		.loc 1 353 1 is_stmt 1 view -0
- 659              		.cfi_startproc
- 660              		@ args = 0, pretend = 0, frame = 0
- 661              		@ frame_needed = 0, uses_anonymous_args = 0
+ 642              		.loc 1 353 1 is_stmt 1 view -0
+ 643              		.cfi_startproc
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
  354:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 662              		.loc 1 354 3 view .LVU172
+ 646              		.loc 1 354 3 view .LVU169
  355:./lwip-2.1.2/src/core/timeouts.c **** 
  356:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 663              		.loc 1 356 28 view .LVU173
+ 647              		.loc 1 356 28 view .LVU170
  357:./lwip-2.1.2/src/core/timeouts.c **** 
  358:./lwip-2.1.2/src/core/timeouts.c ****   /* Process only timers expired at the start of the function. */
  359:./lwip-2.1.2/src/core/timeouts.c ****   now = sys_now();
- 664              		.loc 1 359 3 view .LVU174
+ 648              		.loc 1 359 3 view .LVU171
  353:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 665              		.loc 1 353 1 is_stmt 0 view .LVU175
- 666 0174 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 667              	.LCFI21:
- 668              		.cfi_def_cfa_offset 24
- 669              		.cfi_offset 4, -24
- 670              		.cfi_offset 5, -20
- 671              		.cfi_offset 6, -16
- 672              		.cfi_offset 7, -12
- 673              		.cfi_offset 8, -8
- 674              		.cfi_offset 14, -4
- 675              		.loc 1 359 9 view .LVU176
- 676 0178 FFF7FEFF 		bl	sys_now
- 677              	.LVL49:
- 678 017c 0D4C     		ldr	r4, .L79
- 679 017e 0746     		mov	r7, r0
- 680              	.LVL50:
- 681              		.loc 1 359 9 view .LVU177
- 682 0180 0EE0     		b	.L69
- 683              	.LVL51:
- 684              	.L78:
- 685              	.LBB20:
+ 649              		.loc 1 353 1 is_stmt 0 view .LVU172
+ 650 0170 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 651              	.LCFI19:
+ 652              		.cfi_def_cfa_offset 24
+ 653              		.cfi_offset 4, -24
+ 654              		.cfi_offset 5, -20
+ 655              		.cfi_offset 6, -16
+ 656              		.cfi_offset 7, -12
+ 657              		.cfi_offset 8, -8
+ 658              		.cfi_offset 14, -4
+ 659              		.loc 1 359 9 view .LVU173
+ 660 0174 FFF7FEFF 		bl	sys_now
+ 661              	.LVL47:
+ 662 0178 0D4C     		ldr	r4, .L80
+ 663 017a 0746     		mov	r7, r0
+ 664              	.LVL48:
+ 665              		.loc 1 359 9 view .LVU174
+ 666 017c 0DE0     		b	.L70
+ 667              	.LVL49:
+ 668              	.L79:
+ 669              	.LBB20:
  360:./lwip-2.1.2/src/core/timeouts.c **** 
  361:./lwip-2.1.2/src/core/timeouts.c ****   do {
  362:./lwip-2.1.2/src/core/timeouts.c ****     struct sys_timeo *tmptimeout;
@@ -1127,35 +1109,32 @@
  371:./lwip-2.1.2/src/core/timeouts.c ****     }
  372:./lwip-2.1.2/src/core/timeouts.c **** 
  373:./lwip-2.1.2/src/core/timeouts.c ****     if (TIME_LESS_THAN(now, tmptimeout->time)) {
- 686              		.loc 1 373 9 view .LVU178
- 687 0182 5A68     		ldr	r2, [r3, #4]
- 688 0184 A7EB020C 		sub	ip, r7, r2
- 689              		.loc 1 373 8 view .LVU179
- 690 0188 BCF1000F 		cmp	ip, #0
- 691 018c 0DDB     		blt	.L67
+ 670              		.loc 1 373 9 view .LVU175
+ 671 017e 5A68     		ldr	r2, [r3, #4]
+ 672 0180 A7EB020C 		sub	ip, r7, r2
+ 673              		.loc 1 373 8 view .LVU176
+ 674 0184 BCF1000F 		cmp	ip, #0
+ 675 0188 0CDB     		blt	.L68
  374:./lwip-2.1.2/src/core/timeouts.c ****       return;
  375:./lwip-2.1.2/src/core/timeouts.c ****     }
  376:./lwip-2.1.2/src/core/timeouts.c **** 
  377:./lwip-2.1.2/src/core/timeouts.c ****     /* Timeout has expired */
  378:./lwip-2.1.2/src/core/timeouts.c ****     next_timeout = tmptimeout->next;
+ 676              		.loc 1 378 18 view .LVU177
+ 677 018a 1E68     		ldr	r6, [r3]
  379:./lwip-2.1.2/src/core/timeouts.c ****     handler = tmptimeout->h;
- 692              		.loc 1 379 13 view .LVU180
- 693 018e 9D68     		ldr	r5, [r3, #8]
- 378:./lwip-2.1.2/src/core/timeouts.c ****     handler = tmptimeout->h;
- 694              		.loc 1 378 18 view .LVU181
- 695 0190 1E68     		ldr	r6, [r3]
  380:./lwip-2.1.2/src/core/timeouts.c ****     arg = tmptimeout->arg;
- 696              		.loc 1 380 9 view .LVU182
- 697 0192 D3F80C80 		ldr	r8, [r3, #12]
+ 678              		.loc 1 380 9 view .LVU178
+ 679 018c D3E90258 		ldrd	r5, r8, [r3, #8]
  378:./lwip-2.1.2/src/core/timeouts.c ****     handler = tmptimeout->h;
- 698              		.loc 1 378 18 view .LVU183
- 699 0196 C4E90062 		strd	r6, r2, [r4]
- 379:./lwip-2.1.2/src/core/timeouts.c ****     arg = tmptimeout->arg;
- 700              		.loc 1 379 5 is_stmt 1 view .LVU184
- 701              	.LVL52:
- 702              		.loc 1 380 5 view .LVU185
+ 680              		.loc 1 378 18 view .LVU179
+ 681 0190 C4E90062 		strd	r6, r2, [r4]
+ 379:./lwip-2.1.2/src/core/timeouts.c ****     handler = tmptimeout->h;
+ 682              		.loc 1 379 5 is_stmt 1 view .LVU180
+ 683              	.LVL50:
+ 684              		.loc 1 380 5 view .LVU181
  381:./lwip-2.1.2/src/core/timeouts.c ****     current_timeout_due_time = tmptimeout->time;
- 703              		.loc 1 381 5 view .LVU186
+ 685              		.loc 1 381 5 view .LVU182
  382:./lwip-2.1.2/src/core/timeouts.c **** #if LWIP_DEBUG_TIMERNAMES
  383:./lwip-2.1.2/src/core/timeouts.c ****     if (handler != NULL) {
  384:./lwip-2.1.2/src/core/timeouts.c ****       LWIP_DEBUGF(TIMERS_DEBUG, ("sct calling h=%s t=%"U32_F" arg=%p\n",
@@ -1163,50 +1142,50 @@
  386:./lwip-2.1.2/src/core/timeouts.c ****     }
  387:./lwip-2.1.2/src/core/timeouts.c **** #endif /* LWIP_DEBUG_TIMERNAMES */
  388:./lwip-2.1.2/src/core/timeouts.c ****     memp_free(MEMP_SYS_TIMEOUT, tmptimeout);
- 704              		.loc 1 388 5 view .LVU187
- 705 019a FFF7FEFF 		bl	memp_free
- 706              	.LVL53:
+ 686              		.loc 1 388 5 view .LVU183
+ 687 0194 FFF7FEFF 		bl	memp_free
+ 688              	.LVL51:
  389:./lwip-2.1.2/src/core/timeouts.c ****     if (handler != NULL) {
- 707              		.loc 1 389 5 view .LVU188
- 708              		.loc 1 389 8 is_stmt 0 view .LVU189
- 709 019e 35B9     		cbnz	r5, .L77
- 710              	.LVL54:
- 711              	.L69:
- 712              		.loc 1 389 8 view .LVU190
- 713              	.LBE20:
+ 689              		.loc 1 389 5 view .LVU184
+ 690              		.loc 1 389 8 is_stmt 0 view .LVU185
+ 691 0198 35B9     		cbnz	r5, .L78
+ 692              	.LVL52:
+ 693              	.L70:
+ 694              		.loc 1 389 8 view .LVU186
+ 695              	.LBE20:
  361:./lwip-2.1.2/src/core/timeouts.c ****     struct sys_timeo *tmptimeout;
- 714              		.loc 1 361 3 is_stmt 1 view .LVU191
- 715              	.LBB21:
+ 696              		.loc 1 361 3 is_stmt 1 view .LVU187
+ 697              	.LBB21:
  362:./lwip-2.1.2/src/core/timeouts.c ****     sys_timeout_handler handler;
- 716              		.loc 1 362 5 view .LVU192
+ 698              		.loc 1 362 5 view .LVU188
  363:./lwip-2.1.2/src/core/timeouts.c ****     void *arg;
- 717              		.loc 1 363 5 view .LVU193
+ 699              		.loc 1 363 5 view .LVU189
  364:./lwip-2.1.2/src/core/timeouts.c **** 
- 718              		.loc 1 364 5 view .LVU194
+ 700              		.loc 1 364 5 view .LVU190
  366:./lwip-2.1.2/src/core/timeouts.c **** 
- 719              		.loc 1 366 28 view .LVU195
+ 701              		.loc 1 366 28 view .LVU191
  368:./lwip-2.1.2/src/core/timeouts.c ****     if (tmptimeout == NULL) {
- 720              		.loc 1 368 5 view .LVU196
+ 702              		.loc 1 368 5 view .LVU192
  373:./lwip-2.1.2/src/core/timeouts.c ****       return;
- 721              		.loc 1 373 5 view .LVU197
+ 703              		.loc 1 373 5 view .LVU193
  378:./lwip-2.1.2/src/core/timeouts.c ****     handler = tmptimeout->h;
- 722              		.loc 1 378 5 view .LVU198
+ 704              		.loc 1 378 5 view .LVU194
  368:./lwip-2.1.2/src/core/timeouts.c ****     if (tmptimeout == NULL) {
- 723              		.loc 1 368 16 is_stmt 0 view .LVU199
- 724 01a0 2368     		ldr	r3, [r4]
- 725              	.LVL55:
+ 705              		.loc 1 368 16 is_stmt 0 view .LVU195
+ 706 019a 2368     		ldr	r3, [r4]
+ 707              	.LVL53:
  369:./lwip-2.1.2/src/core/timeouts.c ****       return;
- 726              		.loc 1 369 5 is_stmt 1 view .LVU200
+ 708              		.loc 1 369 5 is_stmt 1 view .LVU196
  388:./lwip-2.1.2/src/core/timeouts.c ****     if (handler != NULL) {
- 727              		.loc 1 388 5 is_stmt 0 view .LVU201
- 728 01a2 0A20     		movs	r0, #10
- 729 01a4 1946     		mov	r1, r3
+ 709              		.loc 1 388 5 is_stmt 0 view .LVU197
+ 710 019c 0A20     		movs	r0, #10
+ 711 019e 1946     		mov	r1, r3
  369:./lwip-2.1.2/src/core/timeouts.c ****       return;
- 730              		.loc 1 369 8 view .LVU202
- 731 01a6 002B     		cmp	r3, #0
- 732 01a8 EBD1     		bne	.L78
- 733              	.L67:
- 734              	.LBE21:
+ 712              		.loc 1 369 8 view .LVU198
+ 713 01a0 002B     		cmp	r3, #0
+ 714 01a2 ECD1     		bne	.L79
+ 715              	.L68:
+ 716              	.LBE21:
  390:./lwip-2.1.2/src/core/timeouts.c ****       handler(arg);
  391:./lwip-2.1.2/src/core/timeouts.c ****     }
  392:./lwip-2.1.2/src/core/timeouts.c ****     LWIP_TCPIP_THREAD_ALIVE();
@@ -1214,33 +1193,32 @@
  394:./lwip-2.1.2/src/core/timeouts.c ****     /* Repeat until all expired timers have been called */
  395:./lwip-2.1.2/src/core/timeouts.c ****   } while (1);
  396:./lwip-2.1.2/src/core/timeouts.c **** }
- 735              		.loc 1 396 1 view .LVU203
- 736 01aa BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 737              	.LVL56:
- 738              	.L77:
- 739              	.LBB22:
+ 717              		.loc 1 396 1 view .LVU199
+ 718 01a4 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 719              	.LVL54:
+ 720              	.L78:
+ 721              	.LBB22:
  390:./lwip-2.1.2/src/core/timeouts.c ****       handler(arg);
- 740              		.loc 1 390 7 is_stmt 1 view .LVU204
- 741 01ae 4046     		mov	r0, r8
- 742 01b0 A847     		blx	r5
- 743              	.LVL57:
- 744 01b2 F5E7     		b	.L69
- 745              	.L80:
- 746              		.align	2
- 747              	.L79:
- 748 01b4 00000000 		.word	.LANCHOR0
- 749              	.LBE22:
- 750              		.cfi_endproc
- 751              	.LFE176:
- 753              		.align	1
- 754              		.p2align 2,,3
- 755              		.global	sys_restart_timeouts
- 756              		.syntax unified
- 757              		.thumb
- 758              		.thumb_func
- 759              		.fpu fpv5-d16
- 761              	sys_restart_timeouts:
- 762              	.LFB177:
+ 722              		.loc 1 390 7 is_stmt 1 view .LVU200
+ 723 01a8 4046     		mov	r0, r8
+ 724 01aa A847     		blx	r5
+ 725              	.LVL55:
+ 726 01ac F5E7     		b	.L70
+ 727              	.L81:
+ 728 01ae 00BF     		.align	2
+ 729              	.L80:
+ 730 01b0 00000000 		.word	.LANCHOR0
+ 731              	.LBE22:
+ 732              		.cfi_endproc
+ 733              	.LFE177:
+ 735              		.align	1
+ 736              		.p2align 2,,3
+ 737              		.global	sys_restart_timeouts
+ 738              		.syntax unified
+ 739              		.thumb
+ 740              		.thumb_func
+ 742              	sys_restart_timeouts:
+ 743              	.LFB178:
  397:./lwip-2.1.2/src/core/timeouts.c **** 
  398:./lwip-2.1.2/src/core/timeouts.c **** /** Rebase the timeout times to the current time.
  399:./lwip-2.1.2/src/core/timeouts.c ****  * This is necessary if sys_check_timeouts() hasn't been called for a long
@@ -1250,98 +1228,99 @@
  403:./lwip-2.1.2/src/core/timeouts.c **** void
  404:./lwip-2.1.2/src/core/timeouts.c **** sys_restart_timeouts(void)
  405:./lwip-2.1.2/src/core/timeouts.c **** {
- 763              		.loc 1 405 1 view -0
- 764              		.cfi_startproc
- 765              		@ args = 0, pretend = 0, frame = 0
- 766              		@ frame_needed = 0, uses_anonymous_args = 0
+ 744              		.loc 1 405 1 view -0
+ 745              		.cfi_startproc
+ 746              		@ args = 0, pretend = 0, frame = 0
+ 747              		@ frame_needed = 0, uses_anonymous_args = 0
  406:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 767              		.loc 1 406 3 view .LVU206
+ 748              		.loc 1 406 3 view .LVU202
  407:./lwip-2.1.2/src/core/timeouts.c ****   u32_t base;
- 768              		.loc 1 407 3 view .LVU207
+ 749              		.loc 1 407 3 view .LVU203
  408:./lwip-2.1.2/src/core/timeouts.c ****   struct sys_timeo *t;
- 769              		.loc 1 408 3 view .LVU208
+ 750              		.loc 1 408 3 view .LVU204
  409:./lwip-2.1.2/src/core/timeouts.c **** 
  410:./lwip-2.1.2/src/core/timeouts.c ****   if (next_timeout == NULL) {
- 770              		.loc 1 410 3 view .LVU209
+ 751              		.loc 1 410 3 view .LVU205
  405:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 771              		.loc 1 405 1 is_stmt 0 view .LVU210
- 772 01b8 10B5     		push	{r4, lr}
- 773              	.LCFI22:
- 774              		.cfi_def_cfa_offset 8
- 775              		.cfi_offset 4, -8
- 776              		.cfi_offset 14, -4
- 777              		.loc 1 410 20 view .LVU211
- 778 01ba 084C     		ldr	r4, .L92
- 779              		.loc 1 410 6 view .LVU212
- 780 01bc 2368     		ldr	r3, [r4]
- 781 01be 5BB1     		cbz	r3, .L81
+ 752              		.loc 1 405 1 is_stmt 0 view .LVU206
+ 753 01b4 10B5     		push	{r4, lr}
+ 754              	.LCFI20:
+ 755              		.cfi_def_cfa_offset 8
+ 756              		.cfi_offset 4, -8
+ 757              		.cfi_offset 14, -4
+ 758              		.loc 1 410 20 view .LVU207
+ 759 01b6 094C     		ldr	r4, .L92
+ 760              		.loc 1 410 6 view .LVU208
+ 761 01b8 2368     		ldr	r3, [r4]
+ 762 01ba 6BB1     		cbz	r3, .L82
  411:./lwip-2.1.2/src/core/timeouts.c ****     return;
  412:./lwip-2.1.2/src/core/timeouts.c ****   }
  413:./lwip-2.1.2/src/core/timeouts.c **** 
  414:./lwip-2.1.2/src/core/timeouts.c ****   now = sys_now();
- 782              		.loc 1 414 3 is_stmt 1 view .LVU213
- 783              		.loc 1 414 9 is_stmt 0 view .LVU214
- 784 01c0 FFF7FEFF 		bl	sys_now
- 785              	.LVL58:
+ 763              		.loc 1 414 3 is_stmt 1 view .LVU209
+ 764              		.loc 1 414 9 is_stmt 0 view .LVU210
+ 765 01bc FFF7FEFF 		bl	sys_now
+ 766              	.LVL56:
  415:./lwip-2.1.2/src/core/timeouts.c ****   base = next_timeout->time;
- 786              		.loc 1 415 3 is_stmt 1 view .LVU215
- 787              		.loc 1 415 22 is_stmt 0 view .LVU216
- 788 01c4 2368     		ldr	r3, [r4]
- 789              		.loc 1 415 8 view .LVU217
- 790 01c6 5A68     		ldr	r2, [r3, #4]
- 791              	.LVL59:
+ 767              		.loc 1 415 22 view .LVU211
+ 768 01c0 2268     		ldr	r2, [r4]
+ 769              	.LVL57:
+ 770              		.loc 1 415 3 is_stmt 1 view .LVU212
  416:./lwip-2.1.2/src/core/timeouts.c **** 
  417:./lwip-2.1.2/src/core/timeouts.c ****   for (t = next_timeout; t != NULL; t = t->next) {
- 792              		.loc 1 417 3 is_stmt 1 view .LVU218
- 793              		.loc 1 417 26 view .LVU219
- 794 01c8 801A     		subs	r0, r0, r2
- 795              	.LVL60:
- 796              		.loc 1 417 26 is_stmt 0 view .LVU220
- 797 01ca 00E0     		b	.L83
- 798              	.LVL61:
- 799              	.L91:
+ 771              		.loc 1 417 3 view .LVU213
+ 772              		.loc 1 417 28 discriminator 1 view .LVU214
+ 773              		.loc 1 417 39 is_stmt 0 discriminator 3 view .LVU215
+ 774 01c2 D2E90031 		ldrd	r3, r1, [r2]
  418:./lwip-2.1.2/src/core/timeouts.c ****     t->time = (t->time - base) + now;
- 800              		.loc 1 418 17 view .LVU221
- 801 01cc 5A68     		ldr	r2, [r3, #4]
- 802              	.L83:
- 803              		.loc 1 418 5 is_stmt 1 discriminator 3 view .LVU222
- 804              		.loc 1 418 32 is_stmt 0 discriminator 3 view .LVU223
- 805 01ce 0244     		add	r2, r2, r0
- 806              		.loc 1 418 13 discriminator 3 view .LVU224
- 807 01d0 5A60     		str	r2, [r3, #4]
+ 775              		.loc 1 418 13 view .LVU216
+ 776 01c6 5060     		str	r0, [r2, #4]
+ 777              	.LVL58:
+ 778              		.loc 1 418 13 view .LVU217
+ 779 01c8 401A     		subs	r0, r0, r1
+ 780              	.LVL59:
+ 781              		.loc 1 418 5 is_stmt 1 view .LVU218
  417:./lwip-2.1.2/src/core/timeouts.c ****     t->time = (t->time - base) + now;
- 808              		.loc 1 417 37 is_stmt 1 discriminator 3 view .LVU225
+ 782              		.loc 1 417 39 discriminator 3 view .LVU219
  417:./lwip-2.1.2/src/core/timeouts.c ****     t->time = (t->time - base) + now;
- 809              		.loc 1 417 39 is_stmt 0 discriminator 3 view .LVU226
- 810 01d2 1B68     		ldr	r3, [r3]
- 811              	.LVL62:
+ 783              		.loc 1 417 28 discriminator 1 view .LVU220
+ 784 01ca 2BB1     		cbz	r3, .L82
+ 785              	.LVL60:
+ 786              	.L84:
+ 787              		.loc 1 418 5 view .LVU221
+ 788              		.loc 1 418 32 is_stmt 0 view .LVU222
+ 789 01cc 5A68     		ldr	r2, [r3, #4]
+ 790 01ce 0244     		add	r2, r2, r0
+ 791              		.loc 1 418 13 view .LVU223
+ 792 01d0 5A60     		str	r2, [r3, #4]
  417:./lwip-2.1.2/src/core/timeouts.c ****     t->time = (t->time - base) + now;
- 812              		.loc 1 417 26 is_stmt 1 discriminator 3 view .LVU227
+ 793              		.loc 1 417 39 is_stmt 1 discriminator 3 view .LVU224
+ 794 01d2 1B68     		ldr	r3, [r3]
+ 795              	.LVL61:
  417:./lwip-2.1.2/src/core/timeouts.c ****     t->time = (t->time - base) + now;
- 813              		.loc 1 417 3 is_stmt 0 discriminator 3 view .LVU228
- 814 01d4 002B     		cmp	r3, #0
- 815 01d6 F9D1     		bne	.L91
- 816              	.LVL63:
- 817              	.L81:
+ 796              		.loc 1 417 28 discriminator 1 view .LVU225
+ 797 01d4 002B     		cmp	r3, #0
+ 798 01d6 F9D1     		bne	.L84
+ 799              	.LVL62:
+ 800              	.L82:
  419:./lwip-2.1.2/src/core/timeouts.c ****   }
  420:./lwip-2.1.2/src/core/timeouts.c **** }
- 818              		.loc 1 420 1 view .LVU229
- 819 01d8 10BD     		pop	{r4, pc}
- 820              	.L93:
- 821 01da 00BF     		.align	2
- 822              	.L92:
- 823 01dc 00000000 		.word	.LANCHOR0
- 824              		.cfi_endproc
- 825              	.LFE177:
- 827              		.align	1
- 828              		.p2align 2,,3
- 829              		.global	sys_timeouts_sleeptime
- 830              		.syntax unified
- 831              		.thumb
- 832              		.thumb_func
- 833              		.fpu fpv5-d16
- 835              	sys_timeouts_sleeptime:
- 836              	.LFB178:
+ 801              		.loc 1 420 1 is_stmt 0 view .LVU226
+ 802 01d8 10BD     		pop	{r4, pc}
+ 803              	.L93:
+ 804 01da 00BF     		.align	2
+ 805              	.L92:
+ 806 01dc 00000000 		.word	.LANCHOR0
+ 807              		.cfi_endproc
+ 808              	.LFE178:
+ 810              		.align	1
+ 811              		.p2align 2,,3
+ 812              		.global	sys_timeouts_sleeptime
+ 813              		.syntax unified
+ 814              		.thumb
+ 815              		.thumb_func
+ 817              	sys_timeouts_sleeptime:
+ 818              	.LFB179:
  421:./lwip-2.1.2/src/core/timeouts.c **** 
  422:./lwip-2.1.2/src/core/timeouts.c **** /** Return the time left before the next timeout is due. If no timeouts are
  423:./lwip-2.1.2/src/core/timeouts.c ****  * enqueued, returns 0xffffffff
@@ -1349,151 +1328,155 @@
  425:./lwip-2.1.2/src/core/timeouts.c **** u32_t
  426:./lwip-2.1.2/src/core/timeouts.c **** sys_timeouts_sleeptime(void)
  427:./lwip-2.1.2/src/core/timeouts.c **** {
- 837              		.loc 1 427 1 is_stmt 1 view -0
- 838              		.cfi_startproc
- 839              		@ args = 0, pretend = 0, frame = 0
- 840              		@ frame_needed = 0, uses_anonymous_args = 0
+ 819              		.loc 1 427 1 is_stmt 1 view -0
+ 820              		.cfi_startproc
+ 821              		@ args = 0, pretend = 0, frame = 0
+ 822              		@ frame_needed = 0, uses_anonymous_args = 0
  428:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 841              		.loc 1 428 3 view .LVU231
+ 823              		.loc 1 428 3 view .LVU228
  429:./lwip-2.1.2/src/core/timeouts.c **** 
  430:./lwip-2.1.2/src/core/timeouts.c ****   LWIP_ASSERT_CORE_LOCKED();
- 842              		.loc 1 430 28 view .LVU232
+ 824              		.loc 1 430 28 view .LVU229
  431:./lwip-2.1.2/src/core/timeouts.c **** 
  432:./lwip-2.1.2/src/core/timeouts.c ****   if (next_timeout == NULL) {
- 843              		.loc 1 432 3 view .LVU233
+ 825              		.loc 1 432 3 view .LVU230
  427:./lwip-2.1.2/src/core/timeouts.c ****   u32_t now;
- 844              		.loc 1 427 1 is_stmt 0 view .LVU234
- 845 01e0 10B5     		push	{r4, lr}
- 846              	.LCFI23:
- 847              		.cfi_def_cfa_offset 8
- 848              		.cfi_offset 4, -8
- 849              		.cfi_offset 14, -4
- 850              		.loc 1 432 20 view .LVU235
- 851 01e2 074C     		ldr	r4, .L100
- 852              		.loc 1 432 6 view .LVU236
- 853 01e4 2368     		ldr	r3, [r4]
- 854 01e6 3BB1     		cbz	r3, .L96
+ 826              		.loc 1 427 1 is_stmt 0 view .LVU231
+ 827 01e0 10B5     		push	{r4, lr}
+ 828              	.LCFI21:
+ 829              		.cfi_def_cfa_offset 8
+ 830              		.cfi_offset 4, -8
+ 831              		.cfi_offset 14, -4
+ 832              		.loc 1 432 20 view .LVU232
+ 833 01e2 074C     		ldr	r4, .L100
+ 834              		.loc 1 432 6 view .LVU233
+ 835 01e4 2368     		ldr	r3, [r4]
+ 836 01e6 3BB1     		cbz	r3, .L96
  433:./lwip-2.1.2/src/core/timeouts.c ****     return SYS_TIMEOUTS_SLEEPTIME_INFINITE;
  434:./lwip-2.1.2/src/core/timeouts.c ****   }
  435:./lwip-2.1.2/src/core/timeouts.c ****   now = sys_now();
- 855              		.loc 1 435 3 is_stmt 1 view .LVU237
- 856              		.loc 1 435 9 is_stmt 0 view .LVU238
- 857 01e8 FFF7FEFF 		bl	sys_now
- 858              	.LVL64:
+ 837              		.loc 1 435 3 is_stmt 1 view .LVU234
+ 838              		.loc 1 435 9 is_stmt 0 view .LVU235
+ 839 01e8 FFF7FEFF 		bl	sys_now
+ 840              	.LVL63:
  436:./lwip-2.1.2/src/core/timeouts.c ****   if (TIME_LESS_THAN(next_timeout->time, now)) {
- 859              		.loc 1 436 3 is_stmt 1 view .LVU239
- 860              		.loc 1 436 7 is_stmt 0 view .LVU240
- 861 01ec 2368     		ldr	r3, [r4]
- 862 01ee 5B68     		ldr	r3, [r3, #4]
+ 841              		.loc 1 436 3 is_stmt 1 view .LVU236
+ 842              		.loc 1 436 7 is_stmt 0 view .LVU237
+ 843 01ec 2368     		ldr	r3, [r4]
+ 844 01ee 5B68     		ldr	r3, [r3, #4]
  437:./lwip-2.1.2/src/core/timeouts.c ****     return 0;
- 863              		.loc 1 437 12 view .LVU241
- 864 01f0 181A     		subs	r0, r3, r0
- 865              	.LVL65:
- 866              		.loc 1 437 12 view .LVU242
- 867 01f2 48BF     		it	mi
- 868 01f4 0020     		movmi	r0, #0
+ 845              		.loc 1 437 12 view .LVU238
+ 846 01f0 181A     		subs	r0, r3, r0
+ 847              	.LVL64:
+ 848              		.loc 1 437 12 view .LVU239
+ 849 01f2 48BF     		it	mi
+ 850 01f4 0020     		movmi	r0, #0
  438:./lwip-2.1.2/src/core/timeouts.c ****   } else {
  439:./lwip-2.1.2/src/core/timeouts.c ****     u32_t ret = (u32_t)(next_timeout->time - now);
  440:./lwip-2.1.2/src/core/timeouts.c ****     LWIP_ASSERT("invalid sleeptime", ret <= LWIP_MAX_TIMEOUT);
  441:./lwip-2.1.2/src/core/timeouts.c ****     return ret;
  442:./lwip-2.1.2/src/core/timeouts.c ****   }
  443:./lwip-2.1.2/src/core/timeouts.c **** }
- 869              		.loc 1 443 1 view .LVU243
- 870 01f6 10BD     		pop	{r4, pc}
- 871              	.L96:
+ 851              		.loc 1 443 1 view .LVU240
+ 852 01f6 10BD     		pop	{r4, pc}
+ 853              	.LVL65:
+ 854              	.L96:
  433:./lwip-2.1.2/src/core/timeouts.c ****   }
- 872              		.loc 1 433 12 view .LVU244
- 873 01f8 4FF0FF30 		mov	r0, #-1
- 874              		.loc 1 443 1 view .LVU245
- 875 01fc 10BD     		pop	{r4, pc}
- 876              	.L101:
- 877 01fe 00BF     		.align	2
- 878              	.L100:
- 879 0200 00000000 		.word	.LANCHOR0
- 880              		.cfi_endproc
- 881              	.LFE178:
- 883              		.global	lwip_num_cyclic_timers
- 884              		.global	lwip_cyclic_timers
- 885              		.section	.rodata
- 886              		.align	2
- 887              		.set	.LANCHOR1,. + 0
- 890              	lwip_cyclic_timers:
- 891 0000 FA000000 		.word	250
- 892 0004 00000000 		.word	tcp_tmr
- 893 0008 E8030000 		.word	1000
- 894 000c 00000000 		.word	ip_reass_tmr
- 895 0010 E8030000 		.word	1000
- 896 0014 00000000 		.word	etharp_tmr
- 897 0018 60EA0000 		.word	60000
- 898 001c 00000000 		.word	dhcp_coarse_tmr
- 899 0020 F4010000 		.word	500
- 900 0024 00000000 		.word	dhcp_fine_tmr
- 903              	lwip_num_cyclic_timers:
- 904 0028 05000000 		.word	5
- 905              		.bss
- 906              		.align	2
- 907              		.set	.LANCHOR0,. + 0
- 910              	next_timeout:
- 911 0000 00000000 		.space	4
- 914              	current_timeout_due_time:
- 915 0004 00000000 		.space	4
- 918              	tcpip_tcp_timer_active:
- 919 0008 00000000 		.space	4
- 920              		.text
- 921              	.Letext0:
- 922              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\lib\\gcc\\arm-
- 923              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 924              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 925              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
- 926              		.file 6 "./lwip-2.1.2/src/include/lwip/err.h"
- 927              		.file 7 "./lwip-2.1.2/src/include/lwip/timeouts.h"
- 928              		.file 8 "./lwip-2.1.2/src/include/lwip/tcpbase.h"
- 929              		.file 9 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 930              		.file 10 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 931              		.file 11 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 932              		.file 12 "./lwip-2.1.2/src/include/lwip/netif.h"
- 933              		.file 13 "./lwip-2.1.2/src/include/lwip/tcp.h"
- 934              		.file 14 "./lwip-2.1.2/src/include/lwip/priv/tcp_priv.h"
- 935              		.file 15 "./lwip-2.1.2/src/include/lwip/prot/tcp.h"
- 936              		.file 16 "./lwip-2.1.2/src/include/lwip/sys.h"
- 937              		.file 17 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 855              		.loc 1 433 12 view .LVU241
+ 856 01f8 4FF0FF30 		mov	r0, #-1
+ 857              		.loc 1 443 1 view .LVU242
+ 858 01fc 10BD     		pop	{r4, pc}
+ 859              	.L101:
+ 860 01fe 00BF     		.align	2
+ 861              	.L100:
+ 862 0200 00000000 		.word	.LANCHOR0
+ 863              		.cfi_endproc
+ 864              	.LFE179:
+ 866              		.global	lwip_num_cyclic_timers
+ 867              		.global	lwip_cyclic_timers
+ 868              		.section	.rodata
+ 869              		.align	2
+ 870              		.set	.LANCHOR1,. + 0
+ 873              	lwip_cyclic_timers:
+ 874 0000 FA000000 		.word	250
+ 875 0004 00000000 		.word	tcp_tmr
+ 876 0008 E8030000 		.word	1000
+ 877 000c 00000000 		.word	ip_reass_tmr
+ 878 0010 E8030000 		.word	1000
+ 879 0014 00000000 		.word	etharp_tmr
+ 880 0018 60EA0000 		.word	60000
+ 881 001c 00000000 		.word	dhcp_coarse_tmr
+ 882 0020 F4010000 		.word	500
+ 883 0024 00000000 		.word	dhcp_fine_tmr
+ 886              	lwip_num_cyclic_timers:
+ 887 0028 05000000 		.word	5
+ 888              		.bss
+ 889              		.align	2
+ 890              		.set	.LANCHOR0,. + 0
+ 893              	next_timeout:
+ 894 0000 00000000 		.space	4
+ 897              	current_timeout_due_time:
+ 898 0004 00000000 		.space	4
+ 901              	tcpip_tcp_timer_active:
+ 902 0008 00000000 		.space	4
+ 903              		.text
+ 904              	.Letext0:
+ 905              		.file 2 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/in
+ 906              		.file 3 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 907              		.file 4 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 908              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 909              		.file 6 "./lwip-2.1.2/src/include/lwip/err.h"
+ 910              		.file 7 "./lwip-2.1.2/src/include/lwip/timeouts.h"
+ 911              		.file 8 "./lwip-2.1.2/src/include/lwip/tcpbase.h"
+ 912              		.file 9 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 913              		.file 10 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 914              		.file 11 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 915              		.file 12 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 916              		.file 13 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 917              		.file 14 "./lwip-2.1.2/src/include/lwip/tcp.h"
+ 918              		.file 15 "./lwip-2.1.2/src/include/lwip/priv/tcp_priv.h"
+ 919              		.file 16 "./lwip-2.1.2/src/include/lwip/prot/tcp.h"
+ 920              		.file 17 "./lwip-2.1.2/src/include/lwip/dhcp.h"
+ 921              		.file 18 "./lwip-2.1.2/src/include/lwip/etharp.h"
+ 922              		.file 19 "./lwip-2.1.2/src/include/lwip/ip4_frag.h"
+ 923              		.file 20 "./lwip-2.1.2/src/include/lwip/sys.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 timeouts.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:24     .text:00000000 sys_timeout_abs
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:107    .text:00000038 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:111    .text:0000003c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:118    .text:0000003c lwip_cyclic_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:208    .text:0000006c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:213    .text:00000074 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:220    .text:00000074 tcpip_tcp_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:298    .text:000000a0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:305    .text:000000b0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:313    .text:000000b0 tcp_timer_needed
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:392    .text:000000dc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:399    .text:000000ec $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:407    .text:000000ec sys_timeouts_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:477    .text:00000114 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:482    .text:0000011c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:490    .text:0000011c sys_timeout
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:549    .text:00000138 sys_untimeout
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:644    .text:00000170 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:648    .text:00000174 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:656    .text:00000174 sys_check_timeouts
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:748    .text:000001b4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:753    .text:000001b8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:761    .text:000001b8 sys_restart_timeouts
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:823    .text:000001dc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:827    .text:000001e0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:835    .text:000001e0 sys_timeouts_sleeptime
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:879    .text:00000200 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:903    .rodata:00000028 lwip_num_cyclic_timers
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:890    .rodata:00000000 lwip_cyclic_timers
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:886    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:906    .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:910    .bss:00000000 next_timeout
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:914    .bss:00000004 current_timeout_due_time
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccGh73kf.s:918    .bss:00000008 tcpip_tcp_timer_active
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:25     .text:00000000 sys_timeout_abs
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:108    .text:00000038 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:112    .text:0000003c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:118    .text:0000003c lwip_cyclic_timer
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:205    .text:00000070 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:210    .text:00000078 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:216    .text:00000078 tcpip_tcp_timer
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:294    .text:000000a4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:301    .text:000000b4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:308    .text:000000b4 tcp_timer_needed
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:387    .text:000000e0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:394    .text:000000f0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:401    .text:000000f0 sys_timeouts_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:467    .text:00000114 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:472    .text:0000011c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:479    .text:0000011c sys_timeout
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:534    .text:00000134 sys_untimeout
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:629    .text:0000016c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:633    .text:00000170 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:640    .text:00000170 sys_check_timeouts
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:730    .text:000001b0 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:735    .text:000001b4 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:742    .text:000001b4 sys_restart_timeouts
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:806    .text:000001dc $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:810    .text:000001e0 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:817    .text:000001e0 sys_timeouts_sleeptime
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:862    .text:00000200 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:886    .rodata:00000028 lwip_num_cyclic_timers
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:873    .rodata:00000000 lwip_cyclic_timers
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:869    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:889    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:893    .bss:00000000 next_timeout
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:897    .bss:00000004 current_timeout_due_time
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccJ0Q4av.s:901    .bss:00000008 tcpip_tcp_timer_active
 
 UNDEFINED SYMBOLS
 memp_malloc

@@ -1,30 +1,30 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"stm32f7xx_hal_cortex.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.global	HAL_NVIC_SetPriorityGrouping
-  19              		.arch armv7e-m
-  20              		.syntax unified
-  21              		.thumb
-  22              		.thumb_func
-  23              		.fpu fpv5-d16
-  25              	HAL_NVIC_SetPriorityGrouping:
-  26              	.LVL0:
-  27              	.LFB144:
-  28              		.file 1 "./src/stm32f7xx_hal_cortex.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"stm32f7xx_hal_cortex.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/stm32f7xx_hal_cortex.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.global	HAL_NVIC_SetPriorityGrouping
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	HAL_NVIC_SetPriorityGrouping:
+  27              	.LVL0:
+  28              	.LFB144:
    1:./src/stm32f7xx_hal_cortex.c **** /**
    2:./src/stm32f7xx_hal_cortex.c ****   ******************************************************************************
    3:./src/stm32f7xx_hal_cortex.c ****   * @file    stm32f7xx_hal_cortex.c
@@ -181,8 +181,8 @@
  148:./src/stm32f7xx_hal_cortex.c ****   /* Set the PRIGROUP[10:8] bits according to the PriorityGroup parameter value */
  149:./src/stm32f7xx_hal_cortex.c ****   NVIC_SetPriorityGrouping(PriorityGroup);
   35              		.loc 1 149 3 view .LVU2
-  36              	.LBB36:
-  37              	.LBB37:
+  36              	.LBB32:
+  37              	.LBB33:
   38              		.file 2 "./inc/core_cm7.h"
    1:./inc/core_cm7.h **** /**************************************************************************//**
    2:./inc/core_cm7.h ****  * @file     core_cm7.h
@@ -2064,11 +2064,11 @@
   40 0000 0649     		ldr	r1, .L3
   41              	.LVL1:
   42              		.loc 2 1876 14 view .LVU4
-  43              	.LBE37:
-  44              	.LBI36:
+  43              	.LBE33:
+  44              	.LBI32:
 1871:./inc/core_cm7.h **** {
   45              		.loc 2 1871 22 is_stmt 1 view .LVU5
-  46              	.LBB38:
+  46              	.LBB34:
 1873:./inc/core_cm7.h ****   uint32_t PriorityGroupTmp = (PriorityGroup & (uint32_t)0x07UL);             /* only values 0..7 a
   47              		.loc 2 1873 3 view .LVU6
 1874:./inc/core_cm7.h **** 
@@ -2113,8 +2113,8 @@
   74 0018 CB60     		str	r3, [r1, #12]
   75              	.LVL6:
   76              		.loc 2 1881 14 view .LVU21
-  77              	.LBE38:
-  78              	.LBE36:
+  77              	.LBE34:
+  78              	.LBE32:
  150:./src/stm32f7xx_hal_cortex.c **** }
   79              		.loc 1 150 1 view .LVU22
   80 001a 7047     		bx	lr
@@ -2131,10 +2131,9 @@
   92              		.syntax unified
   93              		.thumb
   94              		.thumb_func
-  95              		.fpu fpv5-d16
-  97              	HAL_NVIC_SetPriority:
-  98              	.LVL7:
-  99              	.LFB145:
+  96              	HAL_NVIC_SetPriority:
+  97              	.LVL7:
+  98              	.LFB145:
  151:./src/stm32f7xx_hal_cortex.c **** 
  152:./src/stm32f7xx_hal_cortex.c **** /**
  153:./src/stm32f7xx_hal_cortex.c ****   * @brief  Sets the priority of an interrupt.
@@ -2151,23 +2150,23 @@
  164:./src/stm32f7xx_hal_cortex.c ****   */
  165:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
  166:./src/stm32f7xx_hal_cortex.c **** { 
- 100              		.loc 1 166 1 is_stmt 1 view -0
- 101              		.cfi_startproc
- 102              		@ args = 0, pretend = 0, frame = 0
- 103              		@ frame_needed = 0, uses_anonymous_args = 0
+  99              		.loc 1 166 1 is_stmt 1 view -0
+ 100              		.cfi_startproc
+ 101              		@ args = 0, pretend = 0, frame = 0
+ 102              		@ frame_needed = 0, uses_anonymous_args = 0
  167:./src/stm32f7xx_hal_cortex.c ****   uint32_t prioritygroup = 0x00;
- 104              		.loc 1 167 3 view .LVU24
+ 103              		.loc 1 167 3 view .LVU24
  168:./src/stm32f7xx_hal_cortex.c ****   
  169:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  170:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_SUB_PRIORITY(SubPriority));
- 105              		.loc 1 170 3 view .LVU25
+ 104              		.loc 1 170 3 view .LVU25
  171:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_PREEMPTION_PRIORITY(PreemptPriority));
- 106              		.loc 1 171 3 view .LVU26
+ 105              		.loc 1 171 3 view .LVU26
  172:./src/stm32f7xx_hal_cortex.c ****   
  173:./src/stm32f7xx_hal_cortex.c ****   prioritygroup = NVIC_GetPriorityGrouping();
- 107              		.loc 1 173 3 view .LVU27
- 108              	.LBB45:
- 109              	.LBI45:
+ 106              		.loc 1 173 3 view .LVU27
+ 107              	.LBB43:
+ 108              	.LBI43:
 1882:./inc/core_cm7.h **** }
 1883:./inc/core_cm7.h **** 
 1884:./inc/core_cm7.h **** 
@@ -2177,25 +2176,25 @@
 1888:./inc/core_cm7.h ****   \return                Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field).
 1889:./inc/core_cm7.h ****  */
 1890:./inc/core_cm7.h **** __STATIC_INLINE uint32_t __NVIC_GetPriorityGrouping(void)
- 110              		.loc 2 1890 26 view .LVU28
- 111              	.LBB46:
+ 109              		.loc 2 1890 26 view .LVU28
+ 110              	.LBB44:
 1891:./inc/core_cm7.h **** {
 1892:./inc/core_cm7.h ****   return ((uint32_t)((SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) >> SCB_AIRCR_PRIGROUP_Pos));
- 112              		.loc 2 1892 3 view .LVU29
- 113              		.loc 2 1892 26 is_stmt 0 view .LVU30
- 114 0024 1B4B     		ldr	r3, .L11
- 115 0026 DB68     		ldr	r3, [r3, #12]
- 116              		.loc 2 1892 11 view .LVU31
- 117 0028 C3F30223 		ubfx	r3, r3, #8, #3
- 118              	.LVL8:
- 119              		.loc 2 1892 11 view .LVU32
- 120              	.LBE46:
- 121              	.LBE45:
+ 111              		.loc 2 1892 3 view .LVU29
+ 112              		.loc 2 1892 26 is_stmt 0 view .LVU30
+ 113 0024 1A4B     		ldr	r3, .L11
+ 114 0026 DB68     		ldr	r3, [r3, #12]
+ 115              		.loc 2 1892 11 view .LVU31
+ 116 0028 C3F30223 		ubfx	r3, r3, #8, #3
+ 117              	.LVL8:
+ 118              		.loc 2 1892 11 view .LVU32
+ 119              	.LBE44:
+ 120              	.LBE43:
  174:./src/stm32f7xx_hal_cortex.c ****   
  175:./src/stm32f7xx_hal_cortex.c ****   NVIC_SetPriority(IRQn, NVIC_EncodePriority(prioritygroup, PreemptPriority, SubPriority));
- 122              		.loc 1 175 3 is_stmt 1 view .LVU33
- 123              	.LBB47:
- 124              	.LBI47:
+ 121              		.loc 1 175 3 is_stmt 1 view .LVU33
+ 122              	.LBB45:
+ 123              	.LBI45:
 1893:./inc/core_cm7.h **** }
 1894:./inc/core_cm7.h **** 
 1895:./inc/core_cm7.h **** 
@@ -2383,187 +2382,190 @@
 2077:./inc/core_cm7.h ****   \return                        Encoded priority. Value can be used in the function \ref NVIC_SetP
 2078:./inc/core_cm7.h ****  */
 2079:./inc/core_cm7.h **** __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uin
- 125              		.loc 2 2079 26 view .LVU34
- 126              	.LBB48:
+ 124              		.loc 2 2079 26 view .LVU34
+ 125              	.LBB46:
 2080:./inc/core_cm7.h **** {
 2081:./inc/core_cm7.h ****   uint32_t PriorityGroupTmp = (PriorityGroup & (uint32_t)0x07UL);   /* only values 0..7 are used   
- 127              		.loc 2 2081 3 view .LVU35
+ 126              		.loc 2 2081 3 view .LVU35
 2082:./inc/core_cm7.h ****   uint32_t PreemptPriorityBits;
- 128              		.loc 2 2082 3 view .LVU36
+ 127              		.loc 2 2082 3 view .LVU36
 2083:./inc/core_cm7.h ****   uint32_t SubPriorityBits;
- 129              		.loc 2 2083 3 view .LVU37
+ 128              		.loc 2 2083 3 view .LVU37
 2084:./inc/core_cm7.h **** 
 2085:./inc/core_cm7.h ****   PreemptPriorityBits = ((7UL - PriorityGroupTmp) > (uint32_t)(__NVIC_PRIO_BITS)) ? (uint32_t)(__NV
- 130              		.loc 2 2085 3 view .LVU38
- 131              	.LBE48:
- 132              	.LBE47:
+ 129              		.loc 2 2085 3 view .LVU38
+ 130              	.LBE46:
+ 131              	.LBE45:
  166:./src/stm32f7xx_hal_cortex.c ****   uint32_t prioritygroup = 0x00;
- 133              		.loc 1 166 1 is_stmt 0 view .LVU39
- 134 002c 00B5     		push	{lr}
- 135              	.LCFI0:
- 136              		.cfi_def_cfa_offset 4
- 137              		.cfi_offset 14, -4
- 138              	.LBB52:
- 139              	.LBB49:
- 140              		.loc 2 2085 31 view .LVU40
- 141 002e C3F1070E 		rsb	lr, r3, #7
+ 132              		.loc 1 166 1 is_stmt 0 view .LVU39
+ 133 002c 00B5     		push	{lr}
+ 134              	.LCFI0:
+ 135              		.cfi_def_cfa_offset 4
+ 136              		.cfi_offset 14, -4
+ 137              	.LBB51:
+ 138              	.LBB47:
+ 139              		.loc 2 2085 31 view .LVU40
+ 140 002e C3F1070E 		rsb	lr, r3, #7
 2086:./inc/core_cm7.h ****   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint
- 142              		.loc 2 2086 44 view .LVU41
- 143 0032 03F1040C 		add	ip, r3, #4
+ 141              		.loc 2 2086 44 view .LVU41
+ 142 0032 03F1040C 		add	ip, r3, #4
 2085:./inc/core_cm7.h ****   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint
- 144              		.loc 2 2085 23 view .LVU42
- 145 0036 BEF1040F 		cmp	lr, #4
- 146 003a 28BF     		it	cs
- 147 003c 4FF0040E 		movcs	lr, #4
- 148              	.LVL9:
- 149              		.loc 2 2086 3 is_stmt 1 view .LVU43
- 150              		.loc 2 2086 109 is_stmt 0 view .LVU44
- 151 0040 BCF1060F 		cmp	ip, #6
- 152 0044 1AD9     		bls	.L9
- 153 0046 033B     		subs	r3, r3, #3
- 154              	.LVL10:
+ 143              		.loc 2 2085 23 view .LVU42
+ 144 0036 BEF1040F 		cmp	lr, #4
+ 145 003a 28BF     		it	cs
+ 146 003c 4FF0040E 		movcs	lr, #4
+ 147              	.LVL9:
+ 148              		.loc 2 2086 3 is_stmt 1 view .LVU43
+ 149              		.loc 2 2086 109 is_stmt 0 view .LVU44
+ 150 0040 BCF1060F 		cmp	ip, #6
+ 151 0044 1AD9     		bls	.L9
+ 152              		.loc 2 2086 109 discriminator 1 view .LVU45
+ 153 0046 A3F1030C 		sub	ip, r3, #3
 2087:./inc/core_cm7.h **** 
 2088:./inc/core_cm7.h ****   return (
 2089:./inc/core_cm7.h ****            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits
 2090:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 155              		.loc 2 2090 30 view .LVU45
- 156 0048 4FF0FF3C 		mov	ip, #-1
- 157 004c 0CFA03FC 		lsl	ip, ip, r3
- 158 0050 22EA0C02 		bic	r2, r2, ip
- 159              	.LVL11:
- 160              	.L6:
+ 154              		.loc 2 2090 30 view .LVU46
+ 155 004a 4FF0FF33 		mov	r3, #-1
+ 156              	.LVL10:
+ 157              		.loc 2 2090 30 view .LVU47
+ 158 004e 03FA0CF3 		lsl	r3, r3, ip
+ 159 0052 22EA0302 		bic	r2, r2, r3
+ 160              	.LVL11:
+ 161              	.L6:
 2088:./inc/core_cm7.h ****            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits
- 161              		.loc 2 2088 3 is_stmt 1 view .LVU46
-2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 162              		.loc 2 2089 30 is_stmt 0 view .LVU47
- 163 0054 4FF0FF3C 		mov	ip, #-1
- 164              	.LBE49:
- 165              	.LBE52:
- 166              	.LBB53:
- 167              	.LBB54:
-2034:./inc/core_cm7.h ****   {
- 168              		.loc 2 2034 6 view .LVU48
- 169 0058 0028     		cmp	r0, #0
- 170              	.LBE54:
- 171              	.LBE53:
- 172              	.LBB57:
- 173              	.LBB50:
-2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 174              		.loc 2 2089 30 view .LVU49
- 175 005a 0CFA0EFC 		lsl	ip, ip, lr
- 176 005e 21EA0C01 		bic	r1, r1, ip
- 177              	.LVL12:
-2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 178              		.loc 2 2089 82 view .LVU50
- 179 0062 01FA03F1 		lsl	r1, r1, r3
-2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 180              		.loc 2 2089 102 view .LVU51
- 181 0066 41EA0201 		orr	r1, r1, r2
- 182              	.LVL13:
-2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 183              		.loc 2 2089 102 view .LVU52
- 184              	.LBE50:
- 185              	.LBE57:
- 186              	.LBB58:
- 187              	.LBI53:
+ 162              		.loc 2 2088 3 is_stmt 1 view .LVU48
+2088:./inc/core_cm7.h ****            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits
+ 163              		.loc 2 2088 3 is_stmt 0 view .LVU49
+ 164              	.LBE47:
+ 165              	.LBE51:
+ 166              	.LBB52:
+ 167              	.LBI52:
 2032:./inc/core_cm7.h **** {
- 188              		.loc 2 2032 22 is_stmt 1 view .LVU53
- 189              	.LBB55:
+ 168              		.loc 2 2032 22 is_stmt 1 view .LVU50
+ 169              	.LBB53:
 2034:./inc/core_cm7.h ****   {
- 190              		.loc 2 2034 3 view .LVU54
+ 170              		.loc 2 2034 3 view .LVU51
+ 171              	.LBE53:
+ 172              	.LBE52:
+ 173              	.LBB59:
+ 174              	.LBB48:
+2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+ 175              		.loc 2 2089 30 is_stmt 0 view .LVU52
+ 176 0056 4FF0FF33 		mov	r3, #-1
+ 177              	.LBE48:
+ 178              	.LBE59:
+ 179              	.LBB60:
+ 180              	.LBB56:
 2034:./inc/core_cm7.h ****   {
- 191              		.loc 2 2034 6 is_stmt 0 view .LVU55
- 192 006a 0ADB     		blt	.L7
+ 181              		.loc 2 2034 6 view .LVU53
+ 182 005a 0028     		cmp	r0, #0
+ 183              	.LBE56:
+ 184              	.LBE60:
+ 185              	.LBB61:
+ 186              	.LBB49:
+2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+ 187              		.loc 2 2089 30 view .LVU54
+ 188 005c 03FA0EF3 		lsl	r3, r3, lr
+ 189              	.LVL12:
+2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+ 190              		.loc 2 2089 30 view .LVU55
+ 191 0060 21EA0303 		bic	r3, r1, r3
+ 192              	.LVL13:
+2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+ 193              		.loc 2 2089 82 view .LVU56
+ 194 0064 03FA0CF3 		lsl	r3, r3, ip
+2089:./inc/core_cm7.h ****            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+ 195              		.loc 2 2089 102 view .LVU57
+ 196 0068 43EA0203 		orr	r3, r3, r2
+ 197              	.LBE49:
+ 198              	.LBE61:
+ 199              	.LBB62:
+ 200              	.LBB57:
 2036:./inc/core_cm7.h ****   }
- 193              		.loc 2 2036 5 is_stmt 1 view .LVU56
+ 201              		.loc 2 2036 49 view .LVU58
+ 202 006c 4FEA0313 		lsl	r3, r3, #4
+ 203 0070 DBB2     		uxtb	r3, r3
+2034:./inc/core_cm7.h ****   {
+ 204              		.loc 2 2034 6 view .LVU59
+ 205 0072 06DB     		blt	.L7
 2036:./inc/core_cm7.h ****   }
- 194              		.loc 2 2036 49 is_stmt 0 view .LVU57
- 195 006c 0901     		lsls	r1, r1, #4
- 196              	.LVL14:
+ 206              		.loc 2 2036 5 is_stmt 1 view .LVU60
 2036:./inc/core_cm7.h ****   }
- 197              		.loc 2 2036 47 view .LVU58
- 198 006e 0A4B     		ldr	r3, .L11+4
- 199              	.LVL15:
+ 207              		.loc 2 2036 47 is_stmt 0 view .LVU61
+ 208 0074 074A     		ldr	r2, .L11+4
+ 209              	.LVL14:
 2036:./inc/core_cm7.h ****   }
- 200              		.loc 2 2036 49 view .LVU59
- 201 0070 C9B2     		uxtb	r1, r1
-2036:./inc/core_cm7.h ****   }
- 202              		.loc 2 2036 47 view .LVU60
- 203 0072 0344     		add	r3, r3, r0
- 204 0074 83F80013 		strb	r1, [r3, #768]
- 205              	.LBE55:
- 206              	.LBE58:
+ 210              		.loc 2 2036 47 view .LVU62
+ 211 0076 1354     		strb	r3, [r2, r0]
+ 212              	.LBE57:
+ 213              	.LBE62:
  176:./src/stm32f7xx_hal_cortex.c **** }
- 207              		.loc 1 176 1 view .LVU61
- 208 0078 5DF804FB 		ldr	pc, [sp], #4
- 209              	.LVL16:
- 210              	.L9:
- 211              	.LBB59:
- 212              	.LBB51:
- 213              		.loc 1 176 1 view .LVU62
- 214 007c 0022     		movs	r2, #0
- 215              	.LVL17:
+ 214              		.loc 1 176 1 view .LVU63
+ 215 0078 5DF804FB 		ldr	pc, [sp], #4
+ 216              	.LVL15:
+ 217              	.L9:
+ 218              	.LBB63:
+ 219              	.LBB50:
+ 220              		.loc 1 176 1 view .LVU64
+ 221 007c 0022     		movs	r2, #0
+ 222              	.LVL16:
 2086:./inc/core_cm7.h **** 
- 216              		.loc 2 2086 109 view .LVU63
- 217 007e 1346     		mov	r3, r2
- 218              	.LVL18:
+ 223              		.loc 2 2086 109 discriminator 2 view .LVU65
+ 224 007e 9446     		mov	ip, r2
+ 225 0080 E9E7     		b	.L6
+ 226              	.LVL17:
+ 227              	.L7:
 2086:./inc/core_cm7.h **** 
- 219              		.loc 2 2086 109 view .LVU64
- 220 0080 E8E7     		b	.L6
- 221              	.LVL19:
- 222              	.L7:
-2086:./inc/core_cm7.h **** 
- 223              		.loc 2 2086 109 view .LVU65
- 224              	.LBE51:
- 225              	.LBE59:
- 226              	.LBB60:
- 227              	.LBB56:
+ 228              		.loc 2 2086 109 discriminator 2 view .LVU66
+ 229              	.LBE50:
+ 230              	.LBE63:
+ 231              	.LBB64:
+ 232              	.LBB58:
+ 233              	.LBB54:
+ 234              	.LBI54:
+2032:./inc/core_cm7.h **** {
+ 235              		.loc 2 2032 22 is_stmt 1 view .LVU67
+ 236              	.LBB55:
 2040:./inc/core_cm7.h ****   }
- 228              		.loc 2 2040 5 is_stmt 1 view .LVU66
+ 237              		.loc 2 2040 5 view .LVU68
 2040:./inc/core_cm7.h ****   }
- 229              		.loc 2 2040 33 is_stmt 0 view .LVU67
- 230 0082 00F00F00 		and	r0, r0, #15
- 231              	.LVL20:
+ 238              		.loc 2 2040 33 is_stmt 0 view .LVU69
+ 239 0082 00F00F00 		and	r0, r0, #15
+ 240              	.LVL18:
 2040:./inc/core_cm7.h ****   }
- 232              		.loc 2 2040 49 view .LVU68
- 233 0086 0901     		lsls	r1, r1, #4
- 234              	.LVL21:
+ 241              		.loc 2 2040 47 view .LVU70
+ 242 0086 044A     		ldr	r2, .L11+8
+ 243              	.LVL19:
 2040:./inc/core_cm7.h ****   }
- 235              		.loc 2 2040 47 view .LVU69
- 236 0088 044B     		ldr	r3, .L11+8
- 237              	.LVL22:
+ 244              		.loc 2 2040 47 view .LVU71
+ 245 0088 1354     		strb	r3, [r2, r0]
+ 246              	.LVL20:
 2040:./inc/core_cm7.h ****   }
- 238              		.loc 2 2040 49 view .LVU70
- 239 008a C9B2     		uxtb	r1, r1
-2040:./inc/core_cm7.h ****   }
- 240              		.loc 2 2040 47 view .LVU71
- 241 008c 0344     		add	r3, r3, r0
- 242 008e 1976     		strb	r1, [r3, #24]
- 243              	.LVL23:
-2040:./inc/core_cm7.h ****   }
- 244              		.loc 2 2040 47 view .LVU72
- 245              	.LBE56:
- 246              	.LBE60:
- 247              		.loc 1 176 1 view .LVU73
- 248 0090 5DF804FB 		ldr	pc, [sp], #4
- 249              	.L12:
- 250              		.align	2
- 251              	.L11:
- 252 0094 00ED00E0 		.word	-536810240
- 253 0098 00E100E0 		.word	-536813312
- 254 009c FCEC00E0 		.word	-536810244
- 255              		.cfi_endproc
- 256              	.LFE145:
- 258              		.align	1
- 259              		.p2align 2,,3
- 260              		.global	HAL_NVIC_EnableIRQ
- 261              		.syntax unified
- 262              		.thumb
- 263              		.thumb_func
- 264              		.fpu fpv5-d16
- 266              	HAL_NVIC_EnableIRQ:
- 267              	.LVL24:
- 268              	.LFB146:
+ 247              		.loc 2 2040 47 view .LVU72
+ 248              	.LBE55:
+ 249              	.LBE54:
+ 250              	.LBE58:
+ 251              	.LBE64:
+ 252              		.loc 1 176 1 view .LVU73
+ 253 008a 5DF804FB 		ldr	pc, [sp], #4
+ 254              	.L12:
+ 255 008e 00BF     		.align	2
+ 256              	.L11:
+ 257 0090 00ED00E0 		.word	-536810240
+ 258 0094 00E400E0 		.word	-536812544
+ 259 0098 14ED00E0 		.word	-536810220
+ 260              		.cfi_endproc
+ 261              	.LFE145:
+ 263              		.align	1
+ 264              		.p2align 2,,3
+ 265              		.global	HAL_NVIC_EnableIRQ
+ 266              		.syntax unified
+ 267              		.thumb
+ 268              		.thumb_func
+ 270              	HAL_NVIC_EnableIRQ:
+ 271              	.LVL21:
+ 272              	.LFB146:
  177:./src/stm32f7xx_hal_cortex.c **** 
  178:./src/stm32f7xx_hal_cortex.c **** /**
  179:./src/stm32f7xx_hal_cortex.c ****   * @brief  Enables a device specific interrupt in the NVIC interrupt controller.
@@ -2576,81 +2578,80 @@
  186:./src/stm32f7xx_hal_cortex.c ****   */
  187:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_EnableIRQ(IRQn_Type IRQn)
  188:./src/stm32f7xx_hal_cortex.c **** {
- 269              		.loc 1 188 1 is_stmt 1 view -0
- 270              		.cfi_startproc
- 271              		@ args = 0, pretend = 0, frame = 0
- 272              		@ frame_needed = 0, uses_anonymous_args = 0
- 273              		@ link register save eliminated.
+ 273              		.loc 1 188 1 is_stmt 1 view -0
+ 274              		.cfi_startproc
+ 275              		@ args = 0, pretend = 0, frame = 0
+ 276              		@ frame_needed = 0, uses_anonymous_args = 0
+ 277              		@ link register save eliminated.
  189:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  190:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 274              		.loc 1 190 3 view .LVU75
+ 278              		.loc 1 190 3 view .LVU75
  191:./src/stm32f7xx_hal_cortex.c ****   
  192:./src/stm32f7xx_hal_cortex.c ****   /* Enable interrupt */
  193:./src/stm32f7xx_hal_cortex.c ****   NVIC_EnableIRQ(IRQn);
- 275              		.loc 1 193 3 view .LVU76
- 276              	.LBB63:
- 277              	.LBI63:
+ 279              		.loc 1 193 3 view .LVU76
+ 280              	.LBB67:
+ 281              	.LBI67:
 1902:./inc/core_cm7.h **** {
- 278              		.loc 2 1902 22 view .LVU77
- 279              	.LBB64:
+ 282              		.loc 2 1902 22 view .LVU77
+ 283              	.LBB68:
 1904:./inc/core_cm7.h ****   {
- 280              		.loc 2 1904 3 view .LVU78
+ 284              		.loc 2 1904 3 view .LVU78
 1904:./inc/core_cm7.h ****   {
- 281              		.loc 2 1904 6 is_stmt 0 view .LVU79
- 282 00a0 0028     		cmp	r0, #0
- 283              	.LVL25:
+ 285              		.loc 2 1904 6 is_stmt 0 view .LVU79
+ 286 009c 0028     		cmp	r0, #0
 1904:./inc/core_cm7.h ****   {
- 284              		.loc 2 1904 6 view .LVU80
- 285 00a2 07DB     		blt	.L13
+ 287              		.loc 2 1904 6 view .LVU80
+ 288 009e 07DB     		blt	.L13
 1906:./inc/core_cm7.h ****     NVIC->ISER[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
- 286              		.loc 2 1906 5 is_stmt 1 view .LVU81
+ 289              		.loc 2 1906 5 is_stmt 1 view .LVU81
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 287              		.loc 2 1907 5 view .LVU82
+ 290              		.loc 2 1907 5 view .LVU82
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 288              		.loc 2 1907 45 is_stmt 0 view .LVU83
- 289 00a4 0123     		movs	r3, #1
+ 291              		.loc 2 1907 45 is_stmt 0 view .LVU83
+ 292 00a0 0123     		movs	r3, #1
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 290              		.loc 2 1907 81 view .LVU84
- 291 00a6 00F01F01 		and	r1, r0, #31
+ 293              		.loc 2 1907 81 view .LVU84
+ 294 00a2 00F01F01 		and	r1, r0, #31
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 292              		.loc 2 1907 43 view .LVU85
- 293 00aa 034A     		ldr	r2, .L15
+ 295              		.loc 2 1907 43 view .LVU85
+ 296 00a6 034A     		ldr	r2, .L15
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 294              		.loc 2 1907 34 view .LVU86
- 295 00ac 4009     		lsrs	r0, r0, #5
+ 297              		.loc 2 1907 34 view .LVU86
+ 298 00a8 4009     		lsrs	r0, r0, #5
+ 299              	.LVL22:
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 296              		.loc 2 1907 45 view .LVU87
- 297 00ae 8B40     		lsls	r3, r3, r1
+ 300              		.loc 2 1907 45 view .LVU87
+ 301 00aa 8B40     		lsls	r3, r3, r1
 1907:./inc/core_cm7.h ****     __COMPILER_BARRIER();
- 298              		.loc 2 1907 43 view .LVU88
- 299 00b0 42F82030 		str	r3, [r2, r0, lsl #2]
+ 302              		.loc 2 1907 43 view .LVU88
+ 303 00ac 42F82030 		str	r3, [r2, r0, lsl #2]
 1908:./inc/core_cm7.h ****   }
- 300              		.loc 2 1908 5 is_stmt 1 view .LVU89
- 301              	.LVL26:
- 302              	.L13:
+ 304              		.loc 2 1908 5 is_stmt 1 view .LVU89
+ 305              	.LVL23:
+ 306              	.L13:
 1908:./inc/core_cm7.h ****   }
- 303              		.loc 2 1908 5 is_stmt 0 view .LVU90
- 304              	.LBE64:
- 305              	.LBE63:
+ 307              		.loc 2 1908 5 is_stmt 0 view .LVU90
+ 308              	.LBE68:
+ 309              	.LBE67:
  194:./src/stm32f7xx_hal_cortex.c **** }
- 306              		.loc 1 194 1 view .LVU91
- 307 00b4 7047     		bx	lr
- 308              	.L16:
- 309 00b6 00BF     		.align	2
- 310              	.L15:
- 311 00b8 00E100E0 		.word	-536813312
- 312              		.cfi_endproc
- 313              	.LFE146:
- 315              		.align	1
- 316              		.p2align 2,,3
- 317              		.global	HAL_NVIC_DisableIRQ
- 318              		.syntax unified
- 319              		.thumb
- 320              		.thumb_func
- 321              		.fpu fpv5-d16
- 323              	HAL_NVIC_DisableIRQ:
- 324              	.LVL27:
- 325              	.LFB147:
+ 310              		.loc 1 194 1 view .LVU91
+ 311 00b0 7047     		bx	lr
+ 312              	.L16:
+ 313 00b2 00BF     		.align	2
+ 314              	.L15:
+ 315 00b4 00E100E0 		.word	-536813312
+ 316              		.cfi_endproc
+ 317              	.LFE146:
+ 319              		.align	1
+ 320              		.p2align 2,,3
+ 321              		.global	HAL_NVIC_DisableIRQ
+ 322              		.syntax unified
+ 323              		.thumb
+ 324              		.thumb_func
+ 326              	HAL_NVIC_DisableIRQ:
+ 327              	.LVL24:
+ 328              	.LFB147:
  195:./src/stm32f7xx_hal_cortex.c **** 
  196:./src/stm32f7xx_hal_cortex.c **** /**
  197:./src/stm32f7xx_hal_cortex.c ****   * @brief  Disables a device specific interrupt in the NVIC interrupt controller.
@@ -2661,58 +2662,58 @@
  202:./src/stm32f7xx_hal_cortex.c ****   */
  203:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_DisableIRQ(IRQn_Type IRQn)
  204:./src/stm32f7xx_hal_cortex.c **** {
- 326              		.loc 1 204 1 is_stmt 1 view -0
- 327              		.cfi_startproc
- 328              		@ args = 0, pretend = 0, frame = 0
- 329              		@ frame_needed = 0, uses_anonymous_args = 0
- 330              		@ link register save eliminated.
+ 329              		.loc 1 204 1 is_stmt 1 view -0
+ 330              		.cfi_startproc
+ 331              		@ args = 0, pretend = 0, frame = 0
+ 332              		@ frame_needed = 0, uses_anonymous_args = 0
+ 333              		@ link register save eliminated.
  205:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  206:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 331              		.loc 1 206 3 view .LVU93
+ 334              		.loc 1 206 3 view .LVU93
  207:./src/stm32f7xx_hal_cortex.c ****   
  208:./src/stm32f7xx_hal_cortex.c ****   /* Disable interrupt */
  209:./src/stm32f7xx_hal_cortex.c ****   NVIC_DisableIRQ(IRQn);
- 332              		.loc 1 209 3 view .LVU94
- 333              	.LBB71:
- 334              	.LBI71:
+ 335              		.loc 1 209 3 view .LVU94
+ 336              	.LBB75:
+ 337              	.LBI75:
 1940:./inc/core_cm7.h **** {
- 335              		.loc 2 1940 22 view .LVU95
- 336              	.LBB72:
+ 338              		.loc 2 1940 22 view .LVU95
+ 339              	.LBB76:
 1942:./inc/core_cm7.h ****   {
- 337              		.loc 2 1942 3 view .LVU96
+ 340              		.loc 2 1942 3 view .LVU96
 1942:./inc/core_cm7.h ****   {
- 338              		.loc 2 1942 6 is_stmt 0 view .LVU97
- 339 00bc 0028     		cmp	r0, #0
- 340              	.LVL28:
+ 341              		.loc 2 1942 6 is_stmt 0 view .LVU97
+ 342 00b8 0028     		cmp	r0, #0
 1942:./inc/core_cm7.h ****   {
- 341              		.loc 2 1942 6 view .LVU98
- 342 00be 0DDB     		blt	.L17
+ 343              		.loc 2 1942 6 view .LVU98
+ 344 00ba 0CDB     		blt	.L17
 1944:./inc/core_cm7.h ****     __DSB();
- 343              		.loc 2 1944 5 is_stmt 1 view .LVU99
+ 345              		.loc 2 1944 5 is_stmt 1 view .LVU99
 1944:./inc/core_cm7.h ****     __DSB();
- 344              		.loc 2 1944 34 is_stmt 0 view .LVU100
- 345 00c0 4309     		lsrs	r3, r0, #5
+ 346              		.loc 2 1944 34 is_stmt 0 view .LVU100
+ 347 00bc 4309     		lsrs	r3, r0, #5
 1944:./inc/core_cm7.h ****     __DSB();
- 346              		.loc 2 1944 45 view .LVU101
- 347 00c2 0122     		movs	r2, #1
+ 348              		.loc 2 1944 45 view .LVU101
+ 349 00be 0122     		movs	r2, #1
 1944:./inc/core_cm7.h ****     __DSB();
- 348              		.loc 2 1944 81 view .LVU102
- 349 00c4 00F01F00 		and	r0, r0, #31
+ 350              		.loc 2 1944 81 view .LVU102
+ 351 00c0 00F01F00 		and	r0, r0, #31
+ 352              	.LVL25:
 1944:./inc/core_cm7.h ****     __DSB();
- 350              		.loc 2 1944 43 view .LVU103
- 351 00c8 0549     		ldr	r1, .L19
- 352 00ca 2033     		adds	r3, r3, #32
+ 353              		.loc 2 1944 43 view .LVU103
+ 354 00c4 0449     		ldr	r1, .L19
+ 355 00c6 2033     		adds	r3, r3, #32
 1944:./inc/core_cm7.h ****     __DSB();
- 353              		.loc 2 1944 45 view .LVU104
- 354 00cc 02FA00F0 		lsl	r0, r2, r0
+ 356              		.loc 2 1944 45 view .LVU104
+ 357 00c8 8240     		lsls	r2, r2, r0
 1944:./inc/core_cm7.h ****     __DSB();
- 355              		.loc 2 1944 43 view .LVU105
- 356 00d0 41F82300 		str	r0, [r1, r3, lsl #2]
+ 358              		.loc 2 1944 43 view .LVU105
+ 359 00ca 41F82320 		str	r2, [r1, r3, lsl #2]
 1945:./inc/core_cm7.h ****     __ISB();
- 357              		.loc 2 1945 5 is_stmt 1 view .LVU106
- 358              	.LBB73:
- 359              	.LBI73:
- 360              		.file 3 "./inc/cmsis_gcc.h"
+ 360              		.loc 2 1945 5 is_stmt 1 view .LVU106
+ 361              	.LBB77:
+ 362              	.LBI77:
+ 363              		.file 3 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:./inc/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -3657,60 +3658,59 @@
  942:./inc/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
- 361              		.loc 3 944 27 view .LVU107
- 362              	.LBB74:
+ 364              		.loc 3 944 27 view .LVU107
+ 365              	.LBB78:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 363              		.loc 3 946 3 view .LVU108
- 364              		.syntax unified
- 365              	@ 946 "./inc/cmsis_gcc.h" 1
- 366 00d4 BFF34F8F 		dsb 0xF
- 367              	@ 0 "" 2
- 368              		.thumb
- 369              		.syntax unified
- 370              	.LBE74:
- 371              	.LBE73:
+ 366              		.loc 3 946 3 view .LVU108
+ 367              		.syntax unified
+ 368              	@ 946 "./inc/cmsis_gcc.h" 1
+ 369 00ce BFF34F8F 		dsb 0xF
+ 370              	@ 0 "" 2
+ 371              		.thumb
+ 372              		.syntax unified
+ 373              	.LBE78:
+ 374              	.LBE77:
 1946:./inc/core_cm7.h ****   }
- 372              		.loc 2 1946 5 view .LVU109
- 373              	.LBB75:
- 374              	.LBI75:
+ 375              		.loc 2 1946 5 view .LVU109
+ 376              	.LBB79:
+ 377              	.LBI79:
  933:./inc/cmsis_gcc.h **** {
- 375              		.loc 3 933 27 view .LVU110
- 376              	.LBB76:
+ 378              		.loc 3 933 27 view .LVU110
+ 379              	.LBB80:
  935:./inc/cmsis_gcc.h **** }
- 377              		.loc 3 935 3 view .LVU111
- 378              		.syntax unified
- 379              	@ 935 "./inc/cmsis_gcc.h" 1
- 380 00d8 BFF36F8F 		isb 0xF
- 381              	@ 0 "" 2
- 382              	.LVL29:
- 383              		.thumb
- 384              		.syntax unified
- 385              	.L17:
+ 380              		.loc 3 935 3 view .LVU111
+ 381              		.syntax unified
+ 382              	@ 935 "./inc/cmsis_gcc.h" 1
+ 383 00d2 BFF36F8F 		isb 0xF
+ 384              	@ 0 "" 2
+ 385              	.LVL26:
+ 386              		.thumb
+ 387              		.syntax unified
+ 388              	.L17:
  935:./inc/cmsis_gcc.h **** }
- 386              		.loc 3 935 3 is_stmt 0 view .LVU112
- 387              	.LBE76:
- 388              	.LBE75:
- 389              	.LBE72:
- 390              	.LBE71:
+ 389              		.loc 3 935 3 is_stmt 0 view .LVU112
+ 390              	.LBE80:
+ 391              	.LBE79:
+ 392              	.LBE76:
+ 393              	.LBE75:
  210:./src/stm32f7xx_hal_cortex.c **** }
- 391              		.loc 1 210 1 view .LVU113
- 392 00dc 7047     		bx	lr
- 393              	.L20:
- 394 00de 00BF     		.align	2
- 395              	.L19:
- 396 00e0 00E100E0 		.word	-536813312
- 397              		.cfi_endproc
- 398              	.LFE147:
- 400              		.align	1
- 401              		.p2align 2,,3
- 402              		.global	HAL_NVIC_SystemReset
- 403              		.syntax unified
- 404              		.thumb
- 405              		.thumb_func
- 406              		.fpu fpv5-d16
- 408              	HAL_NVIC_SystemReset:
- 409              	.LFB148:
+ 394              		.loc 1 210 1 view .LVU113
+ 395 00d6 7047     		bx	lr
+ 396              	.L20:
+ 397              		.align	2
+ 398              	.L19:
+ 399 00d8 00E100E0 		.word	-536813312
+ 400              		.cfi_endproc
+ 401              	.LFE147:
+ 403              		.align	1
+ 404              		.p2align 2,,3
+ 405              		.global	HAL_NVIC_SystemReset
+ 406              		.syntax unified
+ 407              		.thumb
+ 408              		.thumb_func
+ 410              	HAL_NVIC_SystemReset:
+ 411              	.LFB148:
  211:./src/stm32f7xx_hal_cortex.c **** 
  212:./src/stm32f7xx_hal_cortex.c **** /**
  213:./src/stm32f7xx_hal_cortex.c ****   * @brief  Initiates a system reset request to reset the MCU.
@@ -3718,17 +3718,17 @@
  215:./src/stm32f7xx_hal_cortex.c ****   */
  216:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_SystemReset(void)
  217:./src/stm32f7xx_hal_cortex.c **** {
- 410              		.loc 1 217 1 is_stmt 1 view -0
- 411              		.cfi_startproc
- 412              		@ Volatile: function does not return.
- 413              		@ args = 0, pretend = 0, frame = 0
- 414              		@ frame_needed = 0, uses_anonymous_args = 0
- 415              		@ link register save eliminated.
+ 412              		.loc 1 217 1 is_stmt 1 view -0
+ 413              		.cfi_startproc
+ 414              		@ Volatile: function does not return.
+ 415              		@ args = 0, pretend = 0, frame = 0
+ 416              		@ frame_needed = 0, uses_anonymous_args = 0
+ 417              		@ link register save eliminated.
  218:./src/stm32f7xx_hal_cortex.c ****   /* System Reset */
  219:./src/stm32f7xx_hal_cortex.c ****   NVIC_SystemReset();
- 416              		.loc 1 219 3 view .LVU115
- 417              	.LBB83:
- 418              	.LBI83:
+ 418              		.loc 1 219 3 view .LVU115
+ 419              	.LBB87:
+ 420              	.LBI87:
 2091:./inc/core_cm7.h ****          );
 2092:./inc/core_cm7.h **** }
 2093:./inc/core_cm7.h **** 
@@ -3795,96 +3795,95 @@
 2154:./inc/core_cm7.h ****   \details Initiates a system reset request to reset the MCU.
 2155:./inc/core_cm7.h ****  */
 2156:./inc/core_cm7.h **** __NO_RETURN __STATIC_INLINE void __NVIC_SystemReset(void)
- 419              		.loc 2 2156 34 view .LVU116
- 420              	.LBB84:
+ 421              		.loc 2 2156 34 view .LVU116
+ 422              	.LBB88:
 2157:./inc/core_cm7.h **** {
 2158:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure all outstanding memor
- 421              		.loc 2 2158 3 view .LVU117
- 422              	.LBB85:
- 423              	.LBI85:
+ 423              		.loc 2 2158 3 view .LVU117
+ 424              	.LBB89:
+ 425              	.LBI89:
  944:./inc/cmsis_gcc.h **** {
- 424              		.loc 3 944 27 view .LVU118
- 425              	.LBB86:
- 426              		.loc 3 946 3 view .LVU119
- 427              		.syntax unified
- 428              	@ 946 "./inc/cmsis_gcc.h" 1
- 429 00e4 BFF34F8F 		dsb 0xF
- 430              	@ 0 "" 2
- 431              		.thumb
- 432              		.syntax unified
- 433              	.LBE86:
- 434              	.LBE85:
+ 426              		.loc 3 944 27 view .LVU118
+ 427              	.LBB90:
+ 428              		.loc 3 946 3 view .LVU119
+ 429              		.syntax unified
+ 430              	@ 946 "./inc/cmsis_gcc.h" 1
+ 431 00dc BFF34F8F 		dsb 0xF
+ 432              	@ 0 "" 2
+ 433              		.thumb
+ 434              		.syntax unified
+ 435              	.LBE90:
+ 436              	.LBE89:
 2159:./inc/core_cm7.h ****                                                                        buffered write are completed
 2160:./inc/core_cm7.h ****   SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
- 435              		.loc 2 2160 3 view .LVU120
+ 437              		.loc 2 2160 3 view .LVU120
 2161:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 436              		.loc 2 2161 32 is_stmt 0 view .LVU121
- 437 00e8 0549     		ldr	r1, .L23
+ 438              		.loc 2 2161 32 is_stmt 0 view .LVU121
+ 439 00e0 0549     		ldr	r1, .L23
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 438              		.loc 2 2160 17 view .LVU122
- 439 00ea 064B     		ldr	r3, .L23+4
- 440              		.loc 2 2161 32 view .LVU123
- 441 00ec CA68     		ldr	r2, [r1, #12]
- 442              		.loc 2 2161 40 view .LVU124
- 443 00ee 02F4E062 		and	r2, r2, #1792
+ 440              		.loc 2 2160 17 view .LVU122
+ 441 00e2 064B     		ldr	r3, .L23+4
+ 442              		.loc 2 2161 32 view .LVU123
+ 443 00e4 CA68     		ldr	r2, [r1, #12]
+ 444              		.loc 2 2161 40 view .LVU124
+ 445 00e6 02F4E062 		and	r2, r2, #1792
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 444              		.loc 2 2160 17 view .LVU125
- 445 00f2 1343     		orrs	r3, r3, r2
+ 446              		.loc 2 2160 17 view .LVU125
+ 447 00ea 1343     		orrs	r3, r3, r2
 2160:./inc/core_cm7.h ****                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
- 446              		.loc 2 2160 15 view .LVU126
- 447 00f4 CB60     		str	r3, [r1, #12]
+ 448              		.loc 2 2160 15 view .LVU126
+ 449 00ec CB60     		str	r3, [r1, #12]
 2162:./inc/core_cm7.h ****                             SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchange
 2163:./inc/core_cm7.h ****   __DSB();                                                          /* Ensure completion of memory 
- 448              		.loc 2 2163 3 is_stmt 1 view .LVU127
- 449              	.LBB87:
- 450              	.LBI87:
+ 450              		.loc 2 2163 3 is_stmt 1 view .LVU127
+ 451              	.LBB91:
+ 452              	.LBI91:
  944:./inc/cmsis_gcc.h **** {
- 451              		.loc 3 944 27 view .LVU128
- 452              	.LBB88:
- 453              		.loc 3 946 3 view .LVU129
- 454              		.syntax unified
- 455              	@ 946 "./inc/cmsis_gcc.h" 1
- 456 00f6 BFF34F8F 		dsb 0xF
- 457              	@ 0 "" 2
- 458              		.thumb
- 459              		.syntax unified
- 460              	.L22:
- 461              	.LBE88:
- 462              	.LBE87:
+ 453              		.loc 3 944 27 view .LVU128
+ 454              	.LBB92:
+ 455              		.loc 3 946 3 view .LVU129
+ 456              		.syntax unified
+ 457              	@ 946 "./inc/cmsis_gcc.h" 1
+ 458 00ee BFF34F8F 		dsb 0xF
+ 459              	@ 0 "" 2
+ 460              		.thumb
+ 461              		.syntax unified
+ 462              	.L22:
+ 463              	.LBE92:
+ 464              	.LBE91:
 2164:./inc/core_cm7.h **** 
 2165:./inc/core_cm7.h ****   for(;;)                                                           /* wait until reset */
- 463              		.loc 2 2165 3 view .LVU130
+ 465              		.loc 2 2165 3 view .LVU130
 2166:./inc/core_cm7.h ****   {
 2167:./inc/core_cm7.h ****     __NOP();
- 464              		.loc 2 2167 5 view .LVU131
- 465              		.syntax unified
- 466              	@ 2167 "./inc/core_cm7.h" 1
- 467 00fa 00BF     		nop
- 468              	@ 0 "" 2
+ 466              		.loc 2 2167 5 discriminator 1 view .LVU131
+ 467              		.syntax unified
+ 468              	@ 2167 "./inc/core_cm7.h" 1
+ 469 00f2 00BF     		nop
+ 470              	@ 0 "" 2
 2165:./inc/core_cm7.h ****   {
- 469              		.loc 2 2165 8 view .LVU132
- 470              		.thumb
- 471              		.syntax unified
- 472 00fc FDE7     		b	.L22
- 473              	.L24:
- 474 00fe 00BF     		.align	2
- 475              	.L23:
- 476 0100 00ED00E0 		.word	-536810240
- 477 0104 0400FA05 		.word	100270084
- 478              	.LBE84:
- 479              	.LBE83:
- 480              		.cfi_endproc
- 481              	.LFE148:
- 483              		.align	1
- 484              		.p2align 2,,3
- 485              		.global	HAL_SYSTICK_Config
- 486              		.syntax unified
- 487              		.thumb
- 488              		.thumb_func
- 489              		.fpu fpv5-d16
- 491              	HAL_SYSTICK_Config:
- 492              	.LVL30:
- 493              	.LFB149:
+ 471              		.loc 2 2165 3 view .LVU132
+ 472              		.thumb
+ 473              		.syntax unified
+ 474 00f4 FDE7     		b	.L22
+ 475              	.L24:
+ 476 00f6 00BF     		.align	2
+ 477              	.L23:
+ 478 00f8 00ED00E0 		.word	-536810240
+ 479 00fc 0400FA05 		.word	100270084
+ 480              	.LBE88:
+ 481              	.LBE87:
+ 482              		.cfi_endproc
+ 483              	.LFE148:
+ 485              		.align	1
+ 486              		.p2align 2,,3
+ 487              		.global	HAL_SYSTICK_Config
+ 488              		.syntax unified
+ 489              		.thumb
+ 490              		.thumb_func
+ 492              	HAL_SYSTICK_Config:
+ 493              	.LVL27:
+ 494              	.LFB149:
  220:./src/stm32f7xx_hal_cortex.c **** }
  221:./src/stm32f7xx_hal_cortex.c **** 
  222:./src/stm32f7xx_hal_cortex.c **** /**
@@ -3896,15 +3895,15 @@
  228:./src/stm32f7xx_hal_cortex.c ****   */
  229:./src/stm32f7xx_hal_cortex.c **** uint32_t HAL_SYSTICK_Config(uint32_t TicksNumb)
  230:./src/stm32f7xx_hal_cortex.c **** {
- 494              		.loc 1 230 1 view -0
- 495              		.cfi_startproc
- 496              		@ args = 0, pretend = 0, frame = 0
- 497              		@ frame_needed = 0, uses_anonymous_args = 0
- 498              		@ link register save eliminated.
+ 495              		.loc 1 230 1 view -0
+ 496              		.cfi_startproc
+ 497              		@ args = 0, pretend = 0, frame = 0
+ 498              		@ frame_needed = 0, uses_anonymous_args = 0
+ 499              		@ link register save eliminated.
  231:./src/stm32f7xx_hal_cortex.c ****    return SysTick_Config(TicksNumb);
- 499              		.loc 1 231 4 view .LVU134
- 500              	.LBB89:
- 501              	.LBI89:
+ 500              		.loc 1 231 4 view .LVU134
+ 501              	.LBB99:
+ 502              	.LBI99:
 2168:./inc/core_cm7.h ****   }
 2169:./inc/core_cm7.h **** }
 2170:./inc/core_cm7.h **** 
@@ -4356,110 +4355,120 @@
 2616:./inc/core_cm7.h ****            must contain a vendor-specific implementation of this function.
 2617:./inc/core_cm7.h ****  */
 2618:./inc/core_cm7.h **** __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
- 502              		.loc 2 2618 26 view .LVU135
- 503              	.LBB90:
+ 503              		.loc 2 2618 26 view .LVU135
+ 504              	.LBB100:
 2619:./inc/core_cm7.h **** {
 2620:./inc/core_cm7.h ****   if ((ticks - 1UL) > SysTick_LOAD_RELOAD_Msk)
- 504              		.loc 2 2620 3 view .LVU136
- 505              		.loc 2 2620 14 is_stmt 0 view .LVU137
- 506 0108 431E     		subs	r3, r0, #1
- 507              		.loc 2 2620 6 view .LVU138
- 508 010a B3F1807F 		cmp	r3, #16777216
- 509 010e 0CD2     		bcs	.L27
+ 505              		.loc 2 2620 3 view .LVU136
+ 506              		.loc 2 2620 14 is_stmt 0 view .LVU137
+ 507 0100 431E     		subs	r3, r0, #1
+ 508              		.loc 2 2620 6 view .LVU138
+ 509 0102 B3F1807F 		cmp	r3, #16777216
+ 510 0106 01D3     		bcc	.L28
 2621:./inc/core_cm7.h ****   {
 2622:./inc/core_cm7.h ****     return (1UL);                                                   /* Reload value impossible */
+ 511              		.loc 2 2622 12 view .LVU139
+ 512 0108 0120     		movs	r0, #1
+ 513              	.LVL28:
+ 514              		.loc 2 2622 12 view .LVU140
+ 515              	.LBE100:
+ 516              	.LBE99:
+ 232:./src/stm32f7xx_hal_cortex.c **** }
+ 517              		.loc 1 232 1 view .LVU141
+ 518 010a 7047     		bx	lr
+ 519              	.LVL29:
+ 520              	.L28:
+ 521              	.LBB111:
+ 522              	.LBB110:
 2623:./inc/core_cm7.h ****   }
 2624:./inc/core_cm7.h **** 
 2625:./inc/core_cm7.h ****   SysTick->LOAD  = (uint32_t)(ticks - 1UL);                         /* set reload register */
- 510              		.loc 2 2625 3 is_stmt 1 view .LVU139
- 511              		.loc 2 2625 18 is_stmt 0 view .LVU140
- 512 0110 4FF0E022 		mov	r2, #-536813568
+ 523              		.loc 2 2625 3 is_stmt 1 view .LVU142
+ 524              		.loc 2 2625 18 is_stmt 0 view .LVU143
+ 525 010c 4FF0E022 		mov	r2, #-536813568
 2626:./inc/core_cm7.h ****   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Int
 2627:./inc/core_cm7.h ****   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Val
- 513              		.loc 2 2627 18 view .LVU141
- 514 0114 0020     		movs	r0, #0
- 515              	.LVL31:
- 516              	.LBB91:
- 517              	.LBB92:
+ 526              		.loc 2 2627 18 view .LVU144
+ 527 0110 0020     		movs	r0, #0
+ 528              	.LVL30:
+ 529              	.LBB101:
+ 530              	.LBB102:
+ 531              	.LBB103:
 2040:./inc/core_cm7.h ****   }
- 518              		.loc 2 2040 47 view .LVU142
- 519 0116 0649     		ldr	r1, .L28
- 520 0118 4FF0F00C 		mov	ip, #240
- 521              	.LBE92:
- 522              	.LBE91:
+ 532              		.loc 2 2040 47 view .LVU145
+ 533 0112 0549     		ldr	r1, .L29
+ 534 0114 4FF0F00C 		mov	ip, #240
+ 535              	.LBE103:
+ 536              	.LBE102:
+ 537              	.LBE101:
 2625:./inc/core_cm7.h ****   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Int
- 523              		.loc 2 2625 18 view .LVU143
- 524 011c 5361     		str	r3, [r2, #20]
+ 538              		.loc 2 2625 18 view .LVU146
+ 539 0118 5361     		str	r3, [r2, #20]
 2626:./inc/core_cm7.h ****   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Int
- 525              		.loc 2 2626 3 is_stmt 1 view .LVU144
- 526              	.LVL32:
- 527              	.LBB95:
- 528              	.LBI91:
+ 540              		.loc 2 2626 3 is_stmt 1 view .LVU147
+ 541              	.LVL31:
+ 542              	.LBB108:
+ 543              	.LBI101:
 2032:./inc/core_cm7.h **** {
- 529              		.loc 2 2032 22 view .LVU145
- 530              	.LBB93:
+ 544              		.loc 2 2032 22 view .LVU148
 2034:./inc/core_cm7.h ****   {
- 531              		.loc 2 2034 3 view .LVU146
+ 545              		.loc 2 2034 3 view .LVU149
+ 546              	.LBB106:
+ 547              	.LBI102:
+2032:./inc/core_cm7.h **** {
+ 548              		.loc 2 2032 22 view .LVU150
+ 549              	.LBB104:
 2040:./inc/core_cm7.h ****   }
- 532              		.loc 2 2040 5 view .LVU147
- 533              	.LBE93:
- 534              	.LBE95:
+ 550              		.loc 2 2040 5 view .LVU151
+ 551              	.LBE104:
+ 552              	.LBE106:
+ 553              	.LBE108:
 2628:./inc/core_cm7.h ****   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
- 535              		.loc 2 2628 18 is_stmt 0 view .LVU148
- 536 011e 0723     		movs	r3, #7
- 537              	.LVL33:
- 538              	.LBB96:
- 539              	.LBB94:
+ 554              		.loc 2 2628 18 is_stmt 0 view .LVU152
+ 555 011a 0723     		movs	r3, #7
+ 556              	.LVL32:
+ 557              	.LBB109:
+ 558              	.LBB107:
+ 559              	.LBB105:
 2040:./inc/core_cm7.h ****   }
- 540              		.loc 2 2040 47 view .LVU149
- 541 0120 81F823C0 		strb	ip, [r1, #35]
- 542              	.LVL34:
+ 560              		.loc 2 2040 47 view .LVU153
+ 561 011c 81F823C0 		strb	ip, [r1, #35]
+ 562              	.LVL33:
 2040:./inc/core_cm7.h ****   }
- 543              		.loc 2 2040 47 view .LVU150
- 544              	.LBE94:
- 545              	.LBE96:
+ 563              		.loc 2 2040 47 view .LVU154
+ 564              	.LBE105:
+ 565              	.LBE107:
+ 566              	.LBE109:
 2627:./inc/core_cm7.h ****   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
- 546              		.loc 2 2627 3 is_stmt 1 view .LVU151
+ 567              		.loc 2 2627 3 is_stmt 1 view .LVU155
 2627:./inc/core_cm7.h ****   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
- 547              		.loc 2 2627 18 is_stmt 0 view .LVU152
- 548 0124 9061     		str	r0, [r2, #24]
- 549              		.loc 2 2628 3 is_stmt 1 view .LVU153
- 550              		.loc 2 2628 18 is_stmt 0 view .LVU154
- 551 0126 1361     		str	r3, [r2, #16]
+ 568              		.loc 2 2627 18 is_stmt 0 view .LVU156
+ 569 0120 9061     		str	r0, [r2, #24]
+ 570              		.loc 2 2628 3 is_stmt 1 view .LVU157
+ 571              		.loc 2 2628 18 is_stmt 0 view .LVU158
+ 572 0122 1361     		str	r3, [r2, #16]
 2629:./inc/core_cm7.h ****                    SysTick_CTRL_TICKINT_Msk   |
 2630:./inc/core_cm7.h ****                    SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTi
 2631:./inc/core_cm7.h ****   return (0UL);                                                     /* Function successful */
- 552              		.loc 2 2631 3 is_stmt 1 view .LVU155
- 553              		.loc 2 2631 10 is_stmt 0 view .LVU156
- 554 0128 7047     		bx	lr
- 555              	.LVL35:
- 556              	.L27:
-2622:./inc/core_cm7.h ****   }
- 557              		.loc 2 2622 12 view .LVU157
- 558 012a 0120     		movs	r0, #1
- 559              	.LVL36:
-2622:./inc/core_cm7.h ****   }
- 560              		.loc 2 2622 12 view .LVU158
- 561              	.LBE90:
- 562              	.LBE89:
- 232:./src/stm32f7xx_hal_cortex.c **** }
- 563              		.loc 1 232 1 view .LVU159
- 564 012c 7047     		bx	lr
- 565              	.L29:
- 566 012e 00BF     		.align	2
- 567              	.L28:
- 568 0130 00ED00E0 		.word	-536810240
- 569              		.cfi_endproc
- 570              	.LFE149:
- 572              		.align	1
- 573              		.p2align 2,,3
- 574              		.global	HAL_MPU_Disable
- 575              		.syntax unified
- 576              		.thumb
- 577              		.thumb_func
- 578              		.fpu fpv5-d16
- 580              	HAL_MPU_Disable:
- 581              	.LFB150:
+ 573              		.loc 2 2631 3 is_stmt 1 view .LVU159
+ 574              		.loc 2 2631 10 is_stmt 0 view .LVU160
+ 575 0124 7047     		bx	lr
+ 576              	.L30:
+ 577 0126 00BF     		.align	2
+ 578              	.L29:
+ 579 0128 00ED00E0 		.word	-536810240
+ 580              	.LBE110:
+ 581              	.LBE111:
+ 582              		.cfi_endproc
+ 583              	.LFE149:
+ 585              		.align	1
+ 586              		.p2align 2,,3
+ 587              		.global	HAL_MPU_Disable
+ 588              		.syntax unified
+ 589              		.thumb
+ 590              		.thumb_func
+ 592              	HAL_MPU_Disable:
+ 593              	.LFB150:
  233:./src/stm32f7xx_hal_cortex.c **** /**
  234:./src/stm32f7xx_hal_cortex.c ****   * @}
  235:./src/stm32f7xx_hal_cortex.c ****   */
@@ -4487,16 +4496,16 @@
  257:./src/stm32f7xx_hal_cortex.c ****   */
  258:./src/stm32f7xx_hal_cortex.c **** void HAL_MPU_Disable(void)
  259:./src/stm32f7xx_hal_cortex.c **** {
- 582              		.loc 1 259 1 is_stmt 1 view -0
- 583              		.cfi_startproc
- 584              		@ args = 0, pretend = 0, frame = 0
- 585              		@ frame_needed = 0, uses_anonymous_args = 0
- 586              		@ link register save eliminated.
+ 594              		.loc 1 259 1 is_stmt 1 view -0
+ 595              		.cfi_startproc
+ 596              		@ args = 0, pretend = 0, frame = 0
+ 597              		@ frame_needed = 0, uses_anonymous_args = 0
+ 598              		@ link register save eliminated.
  260:./src/stm32f7xx_hal_cortex.c ****   /* Make sure outstanding transfers are done */
  261:./src/stm32f7xx_hal_cortex.c ****   __DMB();
- 587              		.loc 1 261 3 view .LVU161
- 588              	.LBB97:
- 589              	.LBI97:
+ 599              		.loc 1 261 3 view .LVU162
+ 600              	.LBB112:
+ 601              	.LBI112:
  947:./inc/cmsis_gcc.h **** }
  948:./inc/cmsis_gcc.h **** 
  949:./inc/cmsis_gcc.h **** 
@@ -4506,57 +4515,58 @@
  953:./inc/cmsis_gcc.h ****            and after the instruction, without ensuring their completion.
  954:./inc/cmsis_gcc.h ****  */
  955:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DMB(void)
- 590              		.loc 3 955 27 view .LVU162
- 591              	.LBB98:
+ 602              		.loc 3 955 27 view .LVU163
+ 603              	.LBB113:
  956:./inc/cmsis_gcc.h **** {
  957:./inc/cmsis_gcc.h ****   __ASM volatile ("dmb 0xF":::"memory");
- 592              		.loc 3 957 3 view .LVU163
- 593              		.syntax unified
- 594              	@ 957 "./inc/cmsis_gcc.h" 1
- 595 0134 BFF35F8F 		dmb 0xF
- 596              	@ 0 "" 2
- 597              		.thumb
- 598              		.syntax unified
- 599              	.LBE98:
- 600              	.LBE97:
+ 604              		.loc 3 957 3 view .LVU164
+ 605              		.syntax unified
+ 606              	@ 957 "./inc/cmsis_gcc.h" 1
+ 607 012c BFF35F8F 		dmb 0xF
+ 608              	@ 0 "" 2
+ 609              		.thumb
+ 610              		.syntax unified
+ 611              	.LBE113:
+ 612              	.LBE112:
  262:./src/stm32f7xx_hal_cortex.c **** 
  263:./src/stm32f7xx_hal_cortex.c ****   /* Disable fault exceptions */
  264:./src/stm32f7xx_hal_cortex.c ****   SCB->SHCSR &= ~SCB_SHCSR_MEMFAULTENA_Msk;
- 601              		.loc 1 264 3 view .LVU164
- 602              		.loc 1 264 14 is_stmt 0 view .LVU165
- 603 0138 044B     		ldr	r3, .L31
+ 613              		.loc 1 264 3 view .LVU165
+ 614              		.loc 1 264 6 is_stmt 0 view .LVU166
+ 615 0130 044B     		ldr	r3, .L32
  265:./src/stm32f7xx_hal_cortex.c ****   
  266:./src/stm32f7xx_hal_cortex.c ****   /* Disable the MPU and clear the control register*/
  267:./src/stm32f7xx_hal_cortex.c ****   MPU->CTRL = 0;
- 604              		.loc 1 267 13 view .LVU166
- 605 013a 0021     		movs	r1, #0
+ 616              		.loc 1 267 13 view .LVU167
+ 617 0132 0021     		movs	r1, #0
  264:./src/stm32f7xx_hal_cortex.c ****   
- 606              		.loc 1 264 14 view .LVU167
- 607 013c 5A6A     		ldr	r2, [r3, #36]
- 608 013e 22F48032 		bic	r2, r2, #65536
- 609 0142 5A62     		str	r2, [r3, #36]
- 610              		.loc 1 267 3 is_stmt 1 view .LVU168
- 611              		.loc 1 267 13 is_stmt 0 view .LVU169
- 612 0144 C3F89410 		str	r1, [r3, #148]
+ 618              		.loc 1 264 6 view .LVU168
+ 619 0134 5A6A     		ldr	r2, [r3, #36]
+ 264:./src/stm32f7xx_hal_cortex.c ****   
+ 620              		.loc 1 264 14 view .LVU169
+ 621 0136 22F48032 		bic	r2, r2, #65536
+ 622 013a 5A62     		str	r2, [r3, #36]
+ 623              		.loc 1 267 3 is_stmt 1 view .LVU170
+ 624              		.loc 1 267 13 is_stmt 0 view .LVU171
+ 625 013c C3F89410 		str	r1, [r3, #148]
  268:./src/stm32f7xx_hal_cortex.c **** }
- 613              		.loc 1 268 1 view .LVU170
- 614 0148 7047     		bx	lr
- 615              	.L32:
- 616 014a 00BF     		.align	2
- 617              	.L31:
- 618 014c 00ED00E0 		.word	-536810240
- 619              		.cfi_endproc
- 620              	.LFE150:
- 622              		.align	1
- 623              		.p2align 2,,3
- 624              		.global	HAL_MPU_Enable
- 625              		.syntax unified
- 626              		.thumb
- 627              		.thumb_func
- 628              		.fpu fpv5-d16
- 630              	HAL_MPU_Enable:
- 631              	.LVL37:
- 632              	.LFB151:
+ 626              		.loc 1 268 1 view .LVU172
+ 627 0140 7047     		bx	lr
+ 628              	.L33:
+ 629 0142 00BF     		.align	2
+ 630              	.L32:
+ 631 0144 00ED00E0 		.word	-536810240
+ 632              		.cfi_endproc
+ 633              	.LFE150:
+ 635              		.align	1
+ 636              		.p2align 2,,3
+ 637              		.global	HAL_MPU_Enable
+ 638              		.syntax unified
+ 639              		.thumb
+ 640              		.thumb_func
+ 642              	HAL_MPU_Enable:
+ 643              	.LVL34:
+ 644              	.LFB151:
  269:./src/stm32f7xx_hal_cortex.c **** 
  270:./src/stm32f7xx_hal_cortex.c **** /**
  271:./src/stm32f7xx_hal_cortex.c ****   * @brief  Enables the MPU
@@ -4571,84 +4581,84 @@
  280:./src/stm32f7xx_hal_cortex.c ****   */
  281:./src/stm32f7xx_hal_cortex.c **** void HAL_MPU_Enable(uint32_t MPU_Control)
  282:./src/stm32f7xx_hal_cortex.c **** {
- 633              		.loc 1 282 1 is_stmt 1 view -0
- 634              		.cfi_startproc
- 635              		@ args = 0, pretend = 0, frame = 0
- 636              		@ frame_needed = 0, uses_anonymous_args = 0
- 637              		@ link register save eliminated.
+ 645              		.loc 1 282 1 is_stmt 1 view -0
+ 646              		.cfi_startproc
+ 647              		@ args = 0, pretend = 0, frame = 0
+ 648              		@ frame_needed = 0, uses_anonymous_args = 0
+ 649              		@ link register save eliminated.
  283:./src/stm32f7xx_hal_cortex.c ****   /* Enable the MPU */
  284:./src/stm32f7xx_hal_cortex.c ****   MPU->CTRL = MPU_Control | MPU_CTRL_ENABLE_Msk;
- 638              		.loc 1 284 3 view .LVU172
- 639              		.loc 1 284 13 is_stmt 0 view .LVU173
- 640 0150 064B     		ldr	r3, .L34
- 641              		.loc 1 284 27 view .LVU174
- 642 0152 40F00100 		orr	r0, r0, #1
- 643              	.LVL38:
- 644              		.loc 1 284 13 view .LVU175
- 645 0156 C3F89400 		str	r0, [r3, #148]
+ 650              		.loc 1 284 3 view .LVU174
+ 651              		.loc 1 284 13 is_stmt 0 view .LVU175
+ 652 0148 064B     		ldr	r3, .L35
+ 653              		.loc 1 284 27 view .LVU176
+ 654 014a 40F00100 		orr	r0, r0, #1
+ 655              	.LVL35:
+ 656              		.loc 1 284 13 view .LVU177
+ 657 014e C3F89400 		str	r0, [r3, #148]
  285:./src/stm32f7xx_hal_cortex.c ****   
  286:./src/stm32f7xx_hal_cortex.c ****   /* Enable fault exceptions */
  287:./src/stm32f7xx_hal_cortex.c ****   SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk;
- 646              		.loc 1 287 3 is_stmt 1 view .LVU176
- 647              		.loc 1 287 14 is_stmt 0 view .LVU177
- 648 015a 5A6A     		ldr	r2, [r3, #36]
- 649 015c 42F48032 		orr	r2, r2, #65536
- 650 0160 5A62     		str	r2, [r3, #36]
+ 658              		.loc 1 287 3 is_stmt 1 view .LVU178
+ 659              		.loc 1 287 6 is_stmt 0 view .LVU179
+ 660 0152 5A6A     		ldr	r2, [r3, #36]
+ 661              		.loc 1 287 14 view .LVU180
+ 662 0154 42F48032 		orr	r2, r2, #65536
+ 663 0158 5A62     		str	r2, [r3, #36]
  288:./src/stm32f7xx_hal_cortex.c ****   
  289:./src/stm32f7xx_hal_cortex.c ****   /* Ensure MPU setting take effects */
  290:./src/stm32f7xx_hal_cortex.c ****   __DSB();
- 651              		.loc 1 290 3 is_stmt 1 view .LVU178
- 652              	.LBB99:
- 653              	.LBI99:
+ 664              		.loc 1 290 3 is_stmt 1 view .LVU181
+ 665              	.LBB114:
+ 666              	.LBI114:
  944:./inc/cmsis_gcc.h **** {
- 654              		.loc 3 944 27 view .LVU179
- 655              	.LBB100:
+ 667              		.loc 3 944 27 view .LVU182
+ 668              	.LBB115:
  946:./inc/cmsis_gcc.h **** }
- 656              		.loc 3 946 3 view .LVU180
- 657              		.syntax unified
- 658              	@ 946 "./inc/cmsis_gcc.h" 1
- 659 0162 BFF34F8F 		dsb 0xF
- 660              	@ 0 "" 2
- 661              		.thumb
- 662              		.syntax unified
- 663              	.LBE100:
- 664              	.LBE99:
+ 669              		.loc 3 946 3 view .LVU183
+ 670              		.syntax unified
+ 671              	@ 946 "./inc/cmsis_gcc.h" 1
+ 672 015a BFF34F8F 		dsb 0xF
+ 673              	@ 0 "" 2
+ 674              		.thumb
+ 675              		.syntax unified
+ 676              	.LBE115:
+ 677              	.LBE114:
  291:./src/stm32f7xx_hal_cortex.c ****   __ISB();
- 665              		.loc 1 291 3 view .LVU181
- 666              	.LBB101:
- 667              	.LBI101:
+ 678              		.loc 1 291 3 view .LVU184
+ 679              	.LBB116:
+ 680              	.LBI116:
  933:./inc/cmsis_gcc.h **** {
- 668              		.loc 3 933 27 view .LVU182
- 669              	.LBB102:
+ 681              		.loc 3 933 27 view .LVU185
+ 682              	.LBB117:
  935:./inc/cmsis_gcc.h **** }
- 670              		.loc 3 935 3 view .LVU183
- 671              		.syntax unified
- 672              	@ 935 "./inc/cmsis_gcc.h" 1
- 673 0166 BFF36F8F 		isb 0xF
- 674              	@ 0 "" 2
- 675              		.thumb
- 676              		.syntax unified
- 677              	.LBE102:
- 678              	.LBE101:
+ 683              		.loc 3 935 3 view .LVU186
+ 684              		.syntax unified
+ 685              	@ 935 "./inc/cmsis_gcc.h" 1
+ 686 015e BFF36F8F 		isb 0xF
+ 687              	@ 0 "" 2
+ 688              		.thumb
+ 689              		.syntax unified
+ 690              	.LBE117:
+ 691              	.LBE116:
  292:./src/stm32f7xx_hal_cortex.c **** }
- 679              		.loc 1 292 1 is_stmt 0 view .LVU184
- 680 016a 7047     		bx	lr
- 681              	.L35:
- 682              		.align	2
- 683              	.L34:
- 684 016c 00ED00E0 		.word	-536810240
- 685              		.cfi_endproc
- 686              	.LFE151:
- 688              		.align	1
- 689              		.p2align 2,,3
- 690              		.global	HAL_MPU_ConfigRegion
- 691              		.syntax unified
- 692              		.thumb
- 693              		.thumb_func
- 694              		.fpu fpv5-d16
- 696              	HAL_MPU_ConfigRegion:
- 697              	.LVL39:
- 698              	.LFB152:
+ 692              		.loc 1 292 1 is_stmt 0 view .LVU187
+ 693 0162 7047     		bx	lr
+ 694              	.L36:
+ 695              		.align	2
+ 696              	.L35:
+ 697 0164 00ED00E0 		.word	-536810240
+ 698              		.cfi_endproc
+ 699              	.LFE151:
+ 701              		.align	1
+ 702              		.p2align 2,,3
+ 703              		.global	HAL_MPU_ConfigRegion
+ 704              		.syntax unified
+ 705              		.thumb
+ 706              		.thumb_func
+ 708              	HAL_MPU_ConfigRegion:
+ 709              	.LVL36:
+ 710              	.LFB152:
  293:./src/stm32f7xx_hal_cortex.c **** 
  294:./src/stm32f7xx_hal_cortex.c **** /**
  295:./src/stm32f7xx_hal_cortex.c ****   * @brief  Initializes and configures the Region and the memory to be protected.
@@ -4658,113 +4668,113 @@
  299:./src/stm32f7xx_hal_cortex.c ****   */
  300:./src/stm32f7xx_hal_cortex.c **** void HAL_MPU_ConfigRegion(MPU_Region_InitTypeDef *MPU_Init)
  301:./src/stm32f7xx_hal_cortex.c **** {
- 699              		.loc 1 301 1 is_stmt 1 view -0
- 700              		.cfi_startproc
- 701              		@ args = 0, pretend = 0, frame = 0
- 702              		@ frame_needed = 0, uses_anonymous_args = 0
+ 711              		.loc 1 301 1 is_stmt 1 view -0
+ 712              		.cfi_startproc
+ 713              		@ args = 0, pretend = 0, frame = 0
+ 714              		@ frame_needed = 0, uses_anonymous_args = 0
  302:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  303:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_MPU_REGION_NUMBER(MPU_Init->Number));
- 703              		.loc 1 303 3 view .LVU186
+ 715              		.loc 1 303 3 view .LVU189
  304:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_MPU_REGION_ENABLE(MPU_Init->Enable));
- 704              		.loc 1 304 3 view .LVU187
+ 716              		.loc 1 304 3 view .LVU190
  305:./src/stm32f7xx_hal_cortex.c **** 
  306:./src/stm32f7xx_hal_cortex.c ****   /* Set the Region number */
  307:./src/stm32f7xx_hal_cortex.c ****   MPU->RNR = MPU_Init->Number;
- 705              		.loc 1 307 3 view .LVU188
- 706              		.loc 1 307 12 is_stmt 0 view .LVU189
- 707 0170 174A     		ldr	r2, .L43
- 708              		.loc 1 307 22 view .LVU190
- 709 0172 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
- 710              		.loc 1 307 12 view .LVU191
- 711 0174 C2F89830 		str	r3, [r2, #152]
+ 717              		.loc 1 307 3 view .LVU191
+ 718              		.loc 1 307 12 is_stmt 0 view .LVU192
+ 719 0168 174A     		ldr	r2, .L44
+ 720              		.loc 1 307 22 view .LVU193
+ 721 016a 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 722              		.loc 1 307 12 view .LVU194
+ 723 016c C2F89830 		str	r3, [r2, #152]
  308:./src/stm32f7xx_hal_cortex.c **** 
  309:./src/stm32f7xx_hal_cortex.c ****   if ((MPU_Init->Enable) != RESET)
- 712              		.loc 1 309 3 is_stmt 1 view .LVU192
- 713              		.loc 1 309 16 is_stmt 0 view .LVU193
- 714 0178 0178     		ldrb	r1, [r0]	@ zero_extendqisi2
- 715              		.loc 1 309 6 view .LVU194
- 716 017a 21B3     		cbz	r1, .L37
+ 724              		.loc 1 309 3 is_stmt 1 view .LVU195
+ 725              		.loc 1 309 16 is_stmt 0 view .LVU196
+ 726 0170 0178     		ldrb	r1, [r0]	@ zero_extendqisi2
+ 727              		.loc 1 309 6 view .LVU197
+ 728 0172 21B3     		cbz	r1, .L38
  310:./src/stm32f7xx_hal_cortex.c ****   {
  311:./src/stm32f7xx_hal_cortex.c ****     /* Check the parameters */
  312:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_INSTRUCTION_ACCESS(MPU_Init->DisableExec));
- 717              		.loc 1 312 5 is_stmt 1 view .LVU195
+ 729              		.loc 1 312 5 is_stmt 1 view .LVU198
  313:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_REGION_PERMISSION_ATTRIBUTE(MPU_Init->AccessPermission));
- 718              		.loc 1 313 5 view .LVU196
+ 730              		.loc 1 313 5 view .LVU199
  314:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_TEX_LEVEL(MPU_Init->TypeExtField));
- 719              		.loc 1 314 5 view .LVU197
+ 731              		.loc 1 314 5 view .LVU200
  315:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_ACCESS_SHAREABLE(MPU_Init->IsShareable));
- 720              		.loc 1 315 5 view .LVU198
+ 732              		.loc 1 315 5 view .LVU201
  316:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_ACCESS_CACHEABLE(MPU_Init->IsCacheable));
- 721              		.loc 1 316 5 view .LVU199
+ 733              		.loc 1 316 5 view .LVU202
  317:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_ACCESS_BUFFERABLE(MPU_Init->IsBufferable));
- 722              		.loc 1 317 5 view .LVU200
+ 734              		.loc 1 317 5 view .LVU203
  318:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_SUB_REGION_DISABLE(MPU_Init->SubRegionDisable));
- 723              		.loc 1 318 5 view .LVU201
+ 735              		.loc 1 318 5 view .LVU204
  319:./src/stm32f7xx_hal_cortex.c ****     assert_param(IS_MPU_REGION_SIZE(MPU_Init->Size));
- 724              		.loc 1 319 5 view .LVU202
+ 736              		.loc 1 319 5 view .LVU205
  320:./src/stm32f7xx_hal_cortex.c ****     
  321:./src/stm32f7xx_hal_cortex.c ****     MPU->RBAR = MPU_Init->BaseAddress;
- 725              		.loc 1 321 5 view .LVU203
- 726              		.loc 1 321 25 is_stmt 0 view .LVU204
- 727 017c 4368     		ldr	r3, [r0, #4]
+ 737              		.loc 1 321 5 view .LVU206
+ 738              		.loc 1 321 25 is_stmt 0 view .LVU207
+ 739 0174 4368     		ldr	r3, [r0, #4]
  301:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
- 728              		.loc 1 301 1 view .LVU205
- 729 017e 00B5     		push	{lr}
- 730              	.LCFI1:
- 731              		.cfi_def_cfa_offset 4
- 732              		.cfi_offset 14, -4
- 733              		.loc 1 321 15 view .LVU206
- 734 0180 C2F89C30 		str	r3, [r2, #156]
+ 740              		.loc 1 301 1 view .LVU208
+ 741 0176 00B5     		push	{lr}
+ 742              	.LCFI1:
+ 743              		.cfi_def_cfa_offset 4
+ 744              		.cfi_offset 14, -4
+ 745              		.loc 1 321 15 view .LVU209
+ 746 0178 C2F89C30 		str	r3, [r2, #156]
  322:./src/stm32f7xx_hal_cortex.c ****     MPU->RASR = ((uint32_t)MPU_Init->DisableExec             << MPU_RASR_XN_Pos)   |
- 735              		.loc 1 322 5 is_stmt 1 view .LVU207
+ 747              		.loc 1 322 5 is_stmt 1 view .LVU210
  323:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->AccessPermission        << MPU_RASR_AP_Pos)   |
- 736              		.loc 1 323 18 is_stmt 0 view .LVU208
- 737 0184 C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 748              		.loc 1 323 18 is_stmt 0 view .LVU211
+ 749 017c C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
  322:./src/stm32f7xx_hal_cortex.c ****     MPU->RASR = ((uint32_t)MPU_Init->DisableExec             << MPU_RASR_XN_Pos)   |
- 738              		.loc 1 322 18 view .LVU209
- 739 0186 90F80CC0 		ldrb	ip, [r0, #12]	@ zero_extendqisi2
- 740              		.loc 1 323 62 view .LVU210
- 741 018a 1B06     		lsls	r3, r3, #24
+ 750              		.loc 1 322 18 view .LVU212
+ 751 017e 90F80CC0 		ldrb	ip, [r0, #12]	@ zero_extendqisi2
+ 752              		.loc 1 323 62 view .LVU213
+ 753 0182 1B06     		lsls	r3, r3, #24
  324:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->TypeExtField            << MPU_RASR_TEX_Pos)  |
  325:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->IsShareable             << MPU_RASR_S_Pos)    |
  326:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->IsCacheable             << MPU_RASR_C_Pos)    |
  327:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->IsBufferable            << MPU_RASR_B_Pos)    |
- 742              		.loc 1 327 18 view .LVU211
- 743 018c 90F80FE0 		ldrb	lr, [r0, #15]	@ zero_extendqisi2
+ 754              		.loc 1 327 18 view .LVU214
+ 755 0184 90F80FE0 		ldrb	lr, [r0, #15]	@ zero_extendqisi2
  322:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->AccessPermission        << MPU_RASR_AP_Pos)   |
- 744              		.loc 1 322 84 view .LVU212
- 745 0190 43EA0C73 		orr	r3, r3, ip, lsl #28
+ 756              		.loc 1 322 84 view .LVU215
+ 757 0188 43EA0C73 		orr	r3, r3, ip, lsl #28
  324:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->TypeExtField            << MPU_RASR_TEX_Pos)  |
- 746              		.loc 1 324 18 view .LVU213
- 747 0194 90F80AC0 		ldrb	ip, [r0, #10]	@ zero_extendqisi2
+ 758              		.loc 1 324 18 view .LVU216
+ 759 018c 90F80AC0 		ldrb	ip, [r0, #10]	@ zero_extendqisi2
  328:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->SubRegionDisable        << MPU_RASR_SRD_Pos)  |
  329:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->Size                    << MPU_RASR_SIZE_Pos) |
- 748              		.loc 1 329 84 view .LVU214
- 749 0198 0B43     		orrs	r3, r3, r1
+ 760              		.loc 1 329 84 view .LVU217
+ 761 0190 0B43     		orrs	r3, r3, r1
  326:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->IsBufferable            << MPU_RASR_B_Pos)    |
- 750              		.loc 1 326 18 view .LVU215
- 751 019a 817B     		ldrb	r1, [r0, #14]	@ zero_extendqisi2
- 752              		.loc 1 329 84 view .LVU216
- 753 019c 43EACC43 		orr	r3, r3, ip, lsl #19
+ 762              		.loc 1 326 18 view .LVU218
+ 763 0192 817B     		ldrb	r1, [r0, #14]	@ zero_extendqisi2
+ 764              		.loc 1 329 84 view .LVU219
+ 765 0194 43EACC43 		orr	r3, r3, ip, lsl #19
  325:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->IsCacheable             << MPU_RASR_C_Pos)    |
- 754              		.loc 1 325 18 view .LVU217
- 755 01a0 90F80DC0 		ldrb	ip, [r0, #13]	@ zero_extendqisi2
- 756              		.loc 1 329 84 view .LVU218
- 757 01a4 43EA8C43 		orr	r3, r3, ip, lsl #18
+ 766              		.loc 1 325 18 view .LVU220
+ 767 0198 90F80DC0 		ldrb	ip, [r0, #13]	@ zero_extendqisi2
+ 768              		.loc 1 329 84 view .LVU221
+ 769 019c 43EA8C43 		orr	r3, r3, ip, lsl #18
  328:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->SubRegionDisable        << MPU_RASR_SRD_Pos)  |
- 758              		.loc 1 328 18 view .LVU219
- 759 01a8 90F809C0 		ldrb	ip, [r0, #9]	@ zero_extendqisi2
- 760              		.loc 1 329 84 view .LVU220
- 761 01ac 43EA4143 		orr	r3, r3, r1, lsl #17
- 762              		.loc 1 329 18 view .LVU221
- 763 01b0 017A     		ldrb	r1, [r0, #8]	@ zero_extendqisi2
- 764              		.loc 1 329 84 view .LVU222
- 765 01b2 43EA0E43 		orr	r3, r3, lr, lsl #16
- 766 01b6 43EA0C23 		orr	r3, r3, ip, lsl #8
- 767 01ba 43EA4103 		orr	r3, r3, r1, lsl #1
+ 770              		.loc 1 328 18 view .LVU222
+ 771 01a0 90F809C0 		ldrb	ip, [r0, #9]	@ zero_extendqisi2
+ 772              		.loc 1 329 84 view .LVU223
+ 773 01a4 43EA4143 		orr	r3, r3, r1, lsl #17
+ 774              		.loc 1 329 18 view .LVU224
+ 775 01a8 017A     		ldrb	r1, [r0, #8]	@ zero_extendqisi2
+ 776              		.loc 1 329 84 view .LVU225
+ 777 01aa 43EA0E43 		orr	r3, r3, lr, lsl #16
+ 778 01ae 43EA0C23 		orr	r3, r3, ip, lsl #8
+ 779 01b2 43EA4103 		orr	r3, r3, r1, lsl #1
  322:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->AccessPermission        << MPU_RASR_AP_Pos)   |
- 768              		.loc 1 322 15 view .LVU223
- 769 01be C2F8A030 		str	r3, [r2, #160]
+ 780              		.loc 1 322 15 view .LVU226
+ 781 01b6 C2F8A030 		str	r3, [r2, #160]
  330:./src/stm32f7xx_hal_cortex.c ****                 ((uint32_t)MPU_Init->Enable                  << MPU_RASR_ENABLE_Pos);
  331:./src/stm32f7xx_hal_cortex.c ****   }
  332:./src/stm32f7xx_hal_cortex.c ****   else
@@ -4773,38 +4783,37 @@
  335:./src/stm32f7xx_hal_cortex.c ****     MPU->RASR = 0x00;
  336:./src/stm32f7xx_hal_cortex.c ****   }
  337:./src/stm32f7xx_hal_cortex.c **** }
- 770              		.loc 1 337 1 view .LVU224
- 771 01c2 5DF804FB 		ldr	pc, [sp], #4
- 772              	.L37:
- 773              	.LCFI2:
- 774              		.cfi_def_cfa_offset 0
- 775              		.cfi_restore 14
+ 782              		.loc 1 337 1 view .LVU227
+ 783 01ba 5DF804FB 		ldr	pc, [sp], #4
+ 784              	.L38:
+ 785              	.LCFI2:
+ 786              		.cfi_def_cfa_offset 0
+ 787              		.cfi_restore 14
  334:./src/stm32f7xx_hal_cortex.c ****     MPU->RASR = 0x00;
- 776              		.loc 1 334 5 is_stmt 1 view .LVU225
+ 788              		.loc 1 334 5 is_stmt 1 view .LVU228
  334:./src/stm32f7xx_hal_cortex.c ****     MPU->RASR = 0x00;
- 777              		.loc 1 334 15 is_stmt 0 view .LVU226
- 778 01c6 C2F89C10 		str	r1, [r2, #156]
+ 789              		.loc 1 334 15 is_stmt 0 view .LVU229
+ 790 01be C2F89C10 		str	r1, [r2, #156]
  335:./src/stm32f7xx_hal_cortex.c ****   }
- 779              		.loc 1 335 5 is_stmt 1 view .LVU227
+ 791              		.loc 1 335 5 is_stmt 1 view .LVU230
  335:./src/stm32f7xx_hal_cortex.c ****   }
- 780              		.loc 1 335 15 is_stmt 0 view .LVU228
- 781 01ca C2F8A010 		str	r1, [r2, #160]
- 782 01ce 7047     		bx	lr
- 783              	.L44:
- 784              		.align	2
- 785              	.L43:
- 786 01d0 00ED00E0 		.word	-536810240
- 787              		.cfi_endproc
- 788              	.LFE152:
- 790              		.align	1
- 791              		.p2align 2,,3
- 792              		.global	HAL_NVIC_GetPriorityGrouping
- 793              		.syntax unified
- 794              		.thumb
- 795              		.thumb_func
- 796              		.fpu fpv5-d16
- 798              	HAL_NVIC_GetPriorityGrouping:
- 799              	.LFB153:
+ 792              		.loc 1 335 15 is_stmt 0 view .LVU231
+ 793 01c2 C2F8A010 		str	r1, [r2, #160]
+ 794 01c6 7047     		bx	lr
+ 795              	.L45:
+ 796              		.align	2
+ 797              	.L44:
+ 798 01c8 00ED00E0 		.word	-536810240
+ 799              		.cfi_endproc
+ 800              	.LFE152:
+ 802              		.align	1
+ 803              		.p2align 2,,3
+ 804              		.global	HAL_NVIC_GetPriorityGrouping
+ 805              		.syntax unified
+ 806              		.thumb
+ 807              		.thumb_func
+ 809              	HAL_NVIC_GetPriorityGrouping:
+ 810              	.LFB153:
  338:./src/stm32f7xx_hal_cortex.c **** #endif /* __MPU_PRESENT */
  339:./src/stm32f7xx_hal_cortex.c **** 
  340:./src/stm32f7xx_hal_cortex.c **** /**
@@ -4813,47 +4822,46 @@
  343:./src/stm32f7xx_hal_cortex.c ****   */
  344:./src/stm32f7xx_hal_cortex.c **** uint32_t HAL_NVIC_GetPriorityGrouping(void)
  345:./src/stm32f7xx_hal_cortex.c **** {
- 800              		.loc 1 345 1 is_stmt 1 view -0
- 801              		.cfi_startproc
- 802              		@ args = 0, pretend = 0, frame = 0
- 803              		@ frame_needed = 0, uses_anonymous_args = 0
- 804              		@ link register save eliminated.
+ 811              		.loc 1 345 1 is_stmt 1 view -0
+ 812              		.cfi_startproc
+ 813              		@ args = 0, pretend = 0, frame = 0
+ 814              		@ frame_needed = 0, uses_anonymous_args = 0
+ 815              		@ link register save eliminated.
  346:./src/stm32f7xx_hal_cortex.c ****   /* Get the PRIGROUP[10:8] field value */
  347:./src/stm32f7xx_hal_cortex.c ****   return NVIC_GetPriorityGrouping();
- 805              		.loc 1 347 3 view .LVU230
- 806              	.LBB103:
- 807              	.LBI103:
+ 816              		.loc 1 347 3 view .LVU233
+ 817              	.LBB118:
+ 818              	.LBI118:
 1890:./inc/core_cm7.h **** {
- 808              		.loc 2 1890 26 view .LVU231
- 809              	.LBB104:
+ 819              		.loc 2 1890 26 view .LVU234
+ 820              	.LBB119:
 1892:./inc/core_cm7.h **** }
- 810              		.loc 2 1892 3 view .LVU232
+ 821              		.loc 2 1892 3 view .LVU235
 1892:./inc/core_cm7.h **** }
- 811              		.loc 2 1892 26 is_stmt 0 view .LVU233
- 812 01d4 024B     		ldr	r3, .L46
- 813 01d6 D868     		ldr	r0, [r3, #12]
- 814              	.LBE104:
- 815              	.LBE103:
+ 822              		.loc 2 1892 26 is_stmt 0 view .LVU236
+ 823 01cc 024B     		ldr	r3, .L47
+ 824 01ce D868     		ldr	r0, [r3, #12]
+ 825              	.LBE119:
+ 826              	.LBE118:
  348:./src/stm32f7xx_hal_cortex.c **** }
- 816              		.loc 1 348 1 view .LVU234
- 817 01d8 C0F30220 		ubfx	r0, r0, #8, #3
- 818 01dc 7047     		bx	lr
- 819              	.L47:
- 820 01de 00BF     		.align	2
- 821              	.L46:
- 822 01e0 00ED00E0 		.word	-536810240
- 823              		.cfi_endproc
- 824              	.LFE153:
- 826              		.align	1
- 827              		.p2align 2,,3
- 828              		.global	HAL_NVIC_GetPriority
- 829              		.syntax unified
- 830              		.thumb
- 831              		.thumb_func
- 832              		.fpu fpv5-d16
- 834              	HAL_NVIC_GetPriority:
- 835              	.LVL40:
- 836              	.LFB154:
+ 827              		.loc 1 348 1 view .LVU237
+ 828 01d0 C0F30220 		ubfx	r0, r0, #8, #3
+ 829 01d4 7047     		bx	lr
+ 830              	.L48:
+ 831 01d6 00BF     		.align	2
+ 832              	.L47:
+ 833 01d8 00ED00E0 		.word	-536810240
+ 834              		.cfi_endproc
+ 835              	.LFE153:
+ 837              		.align	1
+ 838              		.p2align 2,,3
+ 839              		.global	HAL_NVIC_GetPriority
+ 840              		.syntax unified
+ 841              		.thumb
+ 842              		.thumb_func
+ 844              	HAL_NVIC_GetPriority:
+ 845              	.LVL37:
+ 846              	.LFB154:
  349:./src/stm32f7xx_hal_cortex.c **** 
  350:./src/stm32f7xx_hal_cortex.c **** /**
  351:./src/stm32f7xx_hal_cortex.c ****   * @brief  Gets the priority of an interrupt.
@@ -4878,179 +4886,180 @@
  370:./src/stm32f7xx_hal_cortex.c ****   */
  371:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_GetPriority(IRQn_Type IRQn, uint32_t PriorityGroup, uint32_t *pPreemptPriority, uint3
  372:./src/stm32f7xx_hal_cortex.c **** {
- 837              		.loc 1 372 1 is_stmt 1 view -0
- 838              		.cfi_startproc
- 839              		@ args = 0, pretend = 0, frame = 0
- 840              		@ frame_needed = 0, uses_anonymous_args = 0
- 841              		@ link register save eliminated.
+ 847              		.loc 1 372 1 is_stmt 1 view -0
+ 848              		.cfi_startproc
+ 849              		@ args = 0, pretend = 0, frame = 0
+ 850              		@ frame_needed = 0, uses_anonymous_args = 0
+ 851              		@ link register save eliminated.
  373:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  374:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));
- 842              		.loc 1 374 3 view .LVU236
+ 852              		.loc 1 374 3 view .LVU239
  375:./src/stm32f7xx_hal_cortex.c ****  /* Get priority for Cortex-M system or device specific interrupts */
  376:./src/stm32f7xx_hal_cortex.c ****   NVIC_DecodePriority(NVIC_GetPriority(IRQn), PriorityGroup, pPreemptPriority, pSubPriority);
- 843              		.loc 1 376 3 view .LVU237
- 844              	.LBB109:
- 845              	.LBI109:
+ 853              		.loc 1 376 3 view .LVU240
+ 854              	.LBB124:
+ 855              	.LBI124:
 2054:./inc/core_cm7.h **** {
- 846              		.loc 2 2054 26 view .LVU238
- 847              	.LBB110:
+ 856              		.loc 2 2054 26 view .LVU241
+ 857              	.LBB125:
 2057:./inc/core_cm7.h ****   {
- 848              		.loc 2 2057 3 view .LVU239
+ 858              		.loc 2 2057 3 view .LVU242
 2057:./inc/core_cm7.h ****   {
- 849              		.loc 2 2057 6 is_stmt 0 view .LVU240
- 850 01e4 0028     		cmp	r0, #0
- 851              	.LVL41:
+ 859              		.loc 2 2057 6 is_stmt 0 view .LVU243
+ 860 01dc 0028     		cmp	r0, #0
 2057:./inc/core_cm7.h ****   {
- 852              		.loc 2 2057 6 view .LVU241
- 853              	.LBE110:
- 854              	.LBE109:
+ 861              		.loc 2 2057 6 view .LVU244
+ 862              	.LBE125:
+ 863              	.LBE124:
  372:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
- 855              		.loc 1 372 1 view .LVU242
- 856 01e6 10B4     		push	{r4}
- 857              	.LCFI3:
- 858              		.cfi_def_cfa_offset 4
- 859              		.cfi_offset 4, -4
- 860              	.LBB113:
- 861              	.LBB111:
+ 864              		.loc 1 372 1 view .LVU245
+ 865 01de 10B4     		push	{r4}
+ 866              	.LCFI3:
+ 867              		.cfi_def_cfa_offset 4
+ 868              		.cfi_offset 4, -4
+ 869              	.LBB128:
+ 870              	.LBB126:
 2057:./inc/core_cm7.h ****   {
- 862              		.loc 2 2057 6 view .LVU243
- 863 01e8 22DB     		blt	.L49
+ 871              		.loc 2 2057 6 view .LVU246
+ 872 01e0 22DB     		blt	.L50
 2059:./inc/core_cm7.h ****   }
- 864              		.loc 2 2059 5 is_stmt 1 view .LVU244
+ 873              		.loc 2 2059 5 is_stmt 1 view .LVU247
 2059:./inc/core_cm7.h ****   }
- 865              		.loc 2 2059 31 is_stmt 0 view .LVU245
- 866 01ea 144C     		ldr	r4, .L54
- 867 01ec 205C     		ldrb	r0, [r4, r0]	@ zero_extendqisi2
+ 874              		.loc 2 2059 31 is_stmt 0 view .LVU248
+ 875 01e2 144C     		ldr	r4, .L55
+ 876 01e4 205C     		ldrb	r0, [r4, r0]	@ zero_extendqisi2
+ 877              	.LVL38:
 2059:./inc/core_cm7.h ****   }
- 868              		.loc 2 2059 65 view .LVU246
- 869 01ee 0009     		lsrs	r0, r0, #4
- 870              	.L50:
- 871              	.LVL42:
+ 878              		.loc 2 2059 65 view .LVU249
+ 879 01e6 0009     		lsrs	r0, r0, #4
+ 880              	.L51:
+ 881              	.LVL39:
 2059:./inc/core_cm7.h ****   }
- 872              		.loc 2 2059 65 view .LVU247
- 873              	.LBE111:
- 874              	.LBE113:
- 875              	.LBB114:
- 876              	.LBI114:
+ 882              		.loc 2 2059 65 view .LVU250
+ 883              	.LBE126:
+ 884              	.LBE128:
+ 885              	.LBB129:
+ 886              	.LBI129:
 2106:./inc/core_cm7.h **** {
- 877              		.loc 2 2106 22 is_stmt 1 view .LVU248
- 878              	.LBB115:
+ 887              		.loc 2 2106 22 is_stmt 1 view .LVU251
+ 888              	.LBB130:
 2108:./inc/core_cm7.h ****   uint32_t PreemptPriorityBits;
- 879              		.loc 2 2108 3 view .LVU249
+ 889              		.loc 2 2108 3 view .LVU252
 2108:./inc/core_cm7.h ****   uint32_t PreemptPriorityBits;
- 880              		.loc 2 2108 12 is_stmt 0 view .LVU250
- 881 01f0 01F00701 		and	r1, r1, #7
- 882              	.LVL43:
+ 890              		.loc 2 2108 12 is_stmt 0 view .LVU253
+ 891 01e8 01F00701 		and	r1, r1, #7
+ 892              	.LVL40:
 2109:./inc/core_cm7.h ****   uint32_t SubPriorityBits;
- 883              		.loc 2 2109 3 is_stmt 1 view .LVU251
+ 893              		.loc 2 2109 3 is_stmt 1 view .LVU254
 2110:./inc/core_cm7.h **** 
- 884              		.loc 2 2110 3 view .LVU252
+ 894              		.loc 2 2110 3 view .LVU255
 2112:./inc/core_cm7.h ****   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint
- 885              		.loc 2 2112 3 view .LVU253
+ 895              		.loc 2 2112 3 view .LVU256
 2112:./inc/core_cm7.h ****   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint
- 886              		.loc 2 2112 31 is_stmt 0 view .LVU254
- 887 01f4 C1F1070C 		rsb	ip, r1, #7
+ 896              		.loc 2 2112 31 is_stmt 0 view .LVU257
+ 897 01ec C1F1070C 		rsb	ip, r1, #7
 2113:./inc/core_cm7.h **** 
- 888              		.loc 2 2113 44 view .LVU255
- 889 01f8 0C1D     		adds	r4, r1, #4
+ 898              		.loc 2 2113 44 view .LVU258
+ 899 01f0 0C1D     		adds	r4, r1, #4
 2112:./inc/core_cm7.h ****   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint
- 890              		.loc 2 2112 23 view .LVU256
- 891 01fa BCF1040F 		cmp	ip, #4
- 892 01fe 28BF     		it	cs
- 893 0200 4FF0040C 		movcs	ip, #4
- 894              	.LVL44:
+ 900              		.loc 2 2112 23 view .LVU259
+ 901 01f2 BCF1040F 		cmp	ip, #4
+ 902 01f6 28BF     		it	cs
+ 903 01f8 4FF0040C 		movcs	ip, #4
+ 904              	.LVL41:
 2113:./inc/core_cm7.h **** 
- 895              		.loc 2 2113 3 is_stmt 1 view .LVU257
+ 905              		.loc 2 2113 3 is_stmt 1 view .LVU260
 2113:./inc/core_cm7.h **** 
- 896              		.loc 2 2113 109 is_stmt 0 view .LVU258
- 897 0204 062C     		cmp	r4, #6
- 898 0206 11D9     		bls	.L52
- 899 0208 0339     		subs	r1, r1, #3
- 900              	.LVL45:
+ 906              		.loc 2 2113 109 is_stmt 0 view .LVU261
+ 907 01fc 062C     		cmp	r4, #6
+ 908 01fe 11D9     		bls	.L53
+2113:./inc/core_cm7.h **** 
+ 909              		.loc 2 2113 109 discriminator 1 view .LVU262
+ 910 0200 0339     		subs	r1, r1, #3
+ 911              	.LVL42:
 2116:./inc/core_cm7.h **** }
- 901              		.loc 2 2116 53 view .LVU259
- 902 020a 4FF0FF34 		mov	r4, #-1
- 903 020e 8C40     		lsls	r4, r4, r1
- 904 0210 20EA0404 		bic	r4, r0, r4
- 905 0214 C840     		lsrs	r0, r0, r1
- 906              	.LVL46:
- 907              	.L51:
+ 912              		.loc 2 2116 53 view .LVU263
+ 913 0202 4FF0FF34 		mov	r4, #-1
+ 914 0206 8C40     		lsls	r4, r4, r1
+ 915 0208 20EA0404 		bic	r4, r0, r4
+ 916 020c C840     		lsrs	r0, r0, r1
+ 917              	.LVL43:
+ 918              	.L52:
 2115:./inc/core_cm7.h ****   *pSubPriority     = (Priority                   ) & (uint32_t)((1UL << (SubPriorityBits    )) - 1
- 908              		.loc 2 2115 3 is_stmt 1 view .LVU260
+ 919              		.loc 2 2115 3 is_stmt 1 view .LVU264
 2115:./inc/core_cm7.h ****   *pSubPriority     = (Priority                   ) & (uint32_t)((1UL << (SubPriorityBits    )) - 1
- 909              		.loc 2 2115 53 is_stmt 0 view .LVU261
- 910 0216 4FF0FF31 		mov	r1, #-1
- 911 021a 01FA0CF1 		lsl	r1, r1, ip
- 912 021e 20EA0100 		bic	r0, r0, r1
+ 920              		.loc 2 2115 53 is_stmt 0 view .LVU265
+ 921 020e 4FF0FF31 		mov	r1, #-1
+ 922 0212 01FA0CF1 		lsl	r1, r1, ip
+ 923 0216 20EA0100 		bic	r0, r0, r1
 2115:./inc/core_cm7.h ****   *pSubPriority     = (Priority                   ) & (uint32_t)((1UL << (SubPriorityBits    )) - 1
- 913              		.loc 2 2115 21 view .LVU262
- 914 0222 1060     		str	r0, [r2]
+ 924              		.loc 2 2115 21 view .LVU266
+ 925 021a 1060     		str	r0, [r2]
 2116:./inc/core_cm7.h **** }
- 915              		.loc 2 2116 3 is_stmt 1 view .LVU263
+ 926              		.loc 2 2116 3 is_stmt 1 view .LVU267
 2116:./inc/core_cm7.h **** }
- 916              		.loc 2 2116 21 is_stmt 0 view .LVU264
- 917 0224 1C60     		str	r4, [r3]
- 918              	.LVL47:
+ 927              		.loc 2 2116 21 is_stmt 0 view .LVU268
+ 928 021c 1C60     		str	r4, [r3]
+ 929              	.LVL44:
 2116:./inc/core_cm7.h **** }
- 919              		.loc 2 2116 21 view .LVU265
- 920              	.LBE115:
- 921              	.LBE114:
+ 930              		.loc 2 2116 21 view .LVU269
+ 931              	.LBE130:
+ 932              	.LBE129:
  377:./src/stm32f7xx_hal_cortex.c **** }
- 922              		.loc 1 377 1 view .LVU266
- 923 0226 5DF8044B 		ldr	r4, [sp], #4
- 924              	.LCFI4:
- 925              		.cfi_remember_state
- 926              		.cfi_restore 4
- 927              		.cfi_def_cfa_offset 0
- 928 022a 7047     		bx	lr
- 929              	.LVL48:
- 930              	.L52:
- 931              	.LCFI5:
- 932              		.cfi_restore_state
- 933              	.LBB117:
- 934              	.LBB116:
- 935              		.loc 1 377 1 view .LVU267
- 936 022c 0024     		movs	r4, #0
- 937 022e F2E7     		b	.L51
- 938              	.LVL49:
- 939              	.L49:
- 940              		.loc 1 377 1 view .LVU268
- 941              	.LBE116:
- 942              	.LBE117:
- 943              	.LBB118:
- 944              	.LBB112:
+ 933              		.loc 1 377 1 view .LVU270
+ 934 021e 5DF8044B 		ldr	r4, [sp], #4
+ 935              	.LCFI4:
+ 936              		.cfi_remember_state
+ 937              		.cfi_restore 4
+ 938              		.cfi_def_cfa_offset 0
+ 939 0222 7047     		bx	lr
+ 940              	.LVL45:
+ 941              	.L53:
+ 942              	.LCFI5:
+ 943              		.cfi_restore_state
+ 944              	.LBB132:
+ 945              	.LBB131:
+ 946              		.loc 1 377 1 view .LVU271
+ 947 0224 0024     		movs	r4, #0
+ 948 0226 F2E7     		b	.L52
+ 949              	.LVL46:
+ 950              	.L50:
+ 951              		.loc 1 377 1 view .LVU272
+ 952              	.LBE131:
+ 953              	.LBE132:
+ 954              	.LBB133:
+ 955              	.LBB127:
 2063:./inc/core_cm7.h ****   }
- 945              		.loc 2 2063 5 is_stmt 1 view .LVU269
+ 956              		.loc 2 2063 5 is_stmt 1 view .LVU273
 2063:./inc/core_cm7.h ****   }
- 946              		.loc 2 2063 51 is_stmt 0 view .LVU270
- 947 0230 00F00F00 		and	r0, r0, #15
+ 957              		.loc 2 2063 51 is_stmt 0 view .LVU274
+ 958 0228 00F00F00 		and	r0, r0, #15
 2063:./inc/core_cm7.h ****   }
- 948              		.loc 2 2063 32 view .LVU271
- 949 0234 024C     		ldr	r4, .L54+4
- 950 0236 205C     		ldrb	r0, [r4, r0]	@ zero_extendqisi2
+ 959              		.loc 2 2063 32 view .LVU275
+ 960 022c 024C     		ldr	r4, .L55+4
+ 961 022e 205C     		ldrb	r0, [r4, r0]	@ zero_extendqisi2
 2063:./inc/core_cm7.h ****   }
- 951              		.loc 2 2063 65 view .LVU272
- 952 0238 0009     		lsrs	r0, r0, #4
- 953 023a D9E7     		b	.L50
- 954              	.L55:
- 955              		.align	2
- 956              	.L54:
- 957 023c 00E400E0 		.word	-536812544
- 958 0240 14ED00E0 		.word	-536810220
- 959              	.LBE112:
- 960              	.LBE118:
- 961              		.cfi_endproc
- 962              	.LFE154:
- 964              		.align	1
- 965              		.p2align 2,,3
- 966              		.global	HAL_NVIC_SetPendingIRQ
- 967              		.syntax unified
- 968              		.thumb
- 969              		.thumb_func
- 970              		.fpu fpv5-d16
- 972              	HAL_NVIC_SetPendingIRQ:
- 973              	.LVL50:
- 974              	.LFB155:
+ 962              		.loc 2 2063 65 view .LVU276
+ 963 0230 0009     		lsrs	r0, r0, #4
+ 964 0232 D9E7     		b	.L51
+ 965              	.L56:
+ 966              		.align	2
+ 967              	.L55:
+ 968 0234 00E400E0 		.word	-536812544
+ 969 0238 14ED00E0 		.word	-536810220
+ 970              	.LBE127:
+ 971              	.LBE133:
+ 972              		.cfi_endproc
+ 973              	.LFE154:
+ 975              		.align	1
+ 976              		.p2align 2,,3
+ 977              		.global	HAL_NVIC_SetPendingIRQ
+ 978              		.syntax unified
+ 979              		.thumb
+ 980              		.thumb_func
+ 982              	HAL_NVIC_SetPendingIRQ:
+ 983              	.LVL47:
+ 984              	.LFB155:
  378:./src/stm32f7xx_hal_cortex.c **** 
  379:./src/stm32f7xx_hal_cortex.c **** /**
  380:./src/stm32f7xx_hal_cortex.c ****   * @brief  Sets Pending bit of an external interrupt.
@@ -5061,78 +5070,77 @@
  385:./src/stm32f7xx_hal_cortex.c ****   */
  386:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_SetPendingIRQ(IRQn_Type IRQn)
  387:./src/stm32f7xx_hal_cortex.c **** {
- 975              		.loc 1 387 1 is_stmt 1 view -0
- 976              		.cfi_startproc
- 977              		@ args = 0, pretend = 0, frame = 0
- 978              		@ frame_needed = 0, uses_anonymous_args = 0
- 979              		@ link register save eliminated.
+ 985              		.loc 1 387 1 is_stmt 1 view -0
+ 986              		.cfi_startproc
+ 987              		@ args = 0, pretend = 0, frame = 0
+ 988              		@ frame_needed = 0, uses_anonymous_args = 0
+ 989              		@ link register save eliminated.
  388:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  389:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 980              		.loc 1 389 3 view .LVU274
+ 990              		.loc 1 389 3 view .LVU278
  390:./src/stm32f7xx_hal_cortex.c ****   
  391:./src/stm32f7xx_hal_cortex.c ****   /* Set interrupt pending */
  392:./src/stm32f7xx_hal_cortex.c ****   NVIC_SetPendingIRQ(IRQn);
- 981              		.loc 1 392 3 view .LVU275
- 982              	.LBB119:
- 983              	.LBI119:
+ 991              		.loc 1 392 3 view .LVU279
+ 992              	.LBB134:
+ 993              	.LBI134:
 1978:./inc/core_cm7.h **** {
- 984              		.loc 2 1978 22 view .LVU276
- 985              	.LBB120:
+ 994              		.loc 2 1978 22 view .LVU280
+ 995              	.LBB135:
 1980:./inc/core_cm7.h ****   {
- 986              		.loc 2 1980 3 view .LVU277
+ 996              		.loc 2 1980 3 view .LVU281
 1980:./inc/core_cm7.h ****   {
- 987              		.loc 2 1980 6 is_stmt 0 view .LVU278
- 988 0244 0028     		cmp	r0, #0
- 989              	.LVL51:
+ 997              		.loc 2 1980 6 is_stmt 0 view .LVU282
+ 998 023c 0028     		cmp	r0, #0
 1980:./inc/core_cm7.h ****   {
- 990              		.loc 2 1980 6 view .LVU279
- 991 0246 09DB     		blt	.L56
+ 999              		.loc 2 1980 6 view .LVU283
+ 1000 023e 08DB     		blt	.L57
 1982:./inc/core_cm7.h ****   }
- 992              		.loc 2 1982 5 is_stmt 1 view .LVU280
+ 1001              		.loc 2 1982 5 is_stmt 1 view .LVU284
 1982:./inc/core_cm7.h ****   }
- 993              		.loc 2 1982 34 is_stmt 0 view .LVU281
- 994 0248 4309     		lsrs	r3, r0, #5
+ 1002              		.loc 2 1982 34 is_stmt 0 view .LVU285
+ 1003 0240 4309     		lsrs	r3, r0, #5
 1982:./inc/core_cm7.h ****   }
- 995              		.loc 2 1982 45 view .LVU282
- 996 024a 0122     		movs	r2, #1
+ 1004              		.loc 2 1982 45 view .LVU286
+ 1005 0242 0122     		movs	r2, #1
 1982:./inc/core_cm7.h ****   }
- 997              		.loc 2 1982 81 view .LVU283
- 998 024c 00F01F00 		and	r0, r0, #31
+ 1006              		.loc 2 1982 81 view .LVU287
+ 1007 0244 00F01F00 		and	r0, r0, #31
+ 1008              	.LVL48:
 1982:./inc/core_cm7.h ****   }
- 999              		.loc 2 1982 43 view .LVU284
- 1000 0250 0349     		ldr	r1, .L58
- 1001 0252 4033     		adds	r3, r3, #64
+ 1009              		.loc 2 1982 43 view .LVU288
+ 1010 0248 0249     		ldr	r1, .L59
+ 1011 024a 4033     		adds	r3, r3, #64
 1982:./inc/core_cm7.h ****   }
- 1002              		.loc 2 1982 45 view .LVU285
- 1003 0254 02FA00F0 		lsl	r0, r2, r0
+ 1012              		.loc 2 1982 45 view .LVU289
+ 1013 024c 8240     		lsls	r2, r2, r0
 1982:./inc/core_cm7.h ****   }
- 1004              		.loc 2 1982 43 view .LVU286
- 1005 0258 41F82300 		str	r0, [r1, r3, lsl #2]
- 1006              	.LVL52:
- 1007              	.L56:
+ 1014              		.loc 2 1982 43 view .LVU290
+ 1015 024e 41F82320 		str	r2, [r1, r3, lsl #2]
+ 1016              	.LVL49:
+ 1017              	.L57:
 1982:./inc/core_cm7.h ****   }
- 1008              		.loc 2 1982 43 view .LVU287
- 1009              	.LBE120:
- 1010              	.LBE119:
+ 1018              		.loc 2 1982 43 view .LVU291
+ 1019              	.LBE135:
+ 1020              	.LBE134:
  393:./src/stm32f7xx_hal_cortex.c **** }
- 1011              		.loc 1 393 1 view .LVU288
- 1012 025c 7047     		bx	lr
- 1013              	.L59:
- 1014 025e 00BF     		.align	2
- 1015              	.L58:
- 1016 0260 00E100E0 		.word	-536813312
- 1017              		.cfi_endproc
- 1018              	.LFE155:
- 1020              		.align	1
- 1021              		.p2align 2,,3
- 1022              		.global	HAL_NVIC_GetPendingIRQ
- 1023              		.syntax unified
- 1024              		.thumb
- 1025              		.thumb_func
- 1026              		.fpu fpv5-d16
- 1028              	HAL_NVIC_GetPendingIRQ:
- 1029              	.LVL53:
- 1030              	.LFB156:
+ 1021              		.loc 1 393 1 view .LVU292
+ 1022 0252 7047     		bx	lr
+ 1023              	.L60:
+ 1024              		.align	2
+ 1025              	.L59:
+ 1026 0254 00E100E0 		.word	-536813312
+ 1027              		.cfi_endproc
+ 1028              	.LFE155:
+ 1030              		.align	1
+ 1031              		.p2align 2,,3
+ 1032              		.global	HAL_NVIC_GetPendingIRQ
+ 1033              		.syntax unified
+ 1034              		.thumb
+ 1035              		.thumb_func
+ 1037              	HAL_NVIC_GetPendingIRQ:
+ 1038              	.LVL50:
+ 1039              	.LFB156:
  394:./src/stm32f7xx_hal_cortex.c **** 
  395:./src/stm32f7xx_hal_cortex.c **** /**
  396:./src/stm32f7xx_hal_cortex.c ****   * @brief  Gets Pending Interrupt (reads the pending register in the NVIC 
@@ -5145,82 +5153,81 @@
  403:./src/stm32f7xx_hal_cortex.c ****   */
  404:./src/stm32f7xx_hal_cortex.c **** uint32_t HAL_NVIC_GetPendingIRQ(IRQn_Type IRQn)
  405:./src/stm32f7xx_hal_cortex.c **** {
- 1031              		.loc 1 405 1 is_stmt 1 view -0
- 1032              		.cfi_startproc
- 1033              		@ args = 0, pretend = 0, frame = 0
- 1034              		@ frame_needed = 0, uses_anonymous_args = 0
- 1035              		@ link register save eliminated.
+ 1040              		.loc 1 405 1 is_stmt 1 view -0
+ 1041              		.cfi_startproc
+ 1042              		@ args = 0, pretend = 0, frame = 0
+ 1043              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1044              		@ link register save eliminated.
  406:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  407:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 1036              		.loc 1 407 3 view .LVU290
+ 1045              		.loc 1 407 3 view .LVU294
  408:./src/stm32f7xx_hal_cortex.c ****   
  409:./src/stm32f7xx_hal_cortex.c ****   /* Return 1 if pending else 0 */
  410:./src/stm32f7xx_hal_cortex.c ****   return NVIC_GetPendingIRQ(IRQn);
- 1037              		.loc 1 410 3 view .LVU291
- 1038              	.LBB121:
- 1039              	.LBI121:
+ 1046              		.loc 1 410 3 view .LVU295
+ 1047              	.LBB136:
+ 1048              	.LBI136:
 1959:./inc/core_cm7.h **** {
- 1040              		.loc 2 1959 26 view .LVU292
- 1041              	.LBB122:
+ 1049              		.loc 2 1959 26 view .LVU296
+ 1050              	.LBB137:
 1961:./inc/core_cm7.h ****   {
- 1042              		.loc 2 1961 3 view .LVU293
+ 1051              		.loc 2 1961 3 view .LVU297
 1961:./inc/core_cm7.h ****   {
- 1043              		.loc 2 1961 6 is_stmt 0 view .LVU294
- 1044 0264 0028     		cmp	r0, #0
- 1045              	.LVL54:
+ 1052              		.loc 2 1961 6 is_stmt 0 view .LVU298
+ 1053 0258 0028     		cmp	r0, #0
 1961:./inc/core_cm7.h ****   {
- 1046              		.loc 2 1961 6 view .LVU295
- 1047 0266 0BDB     		blt	.L62
+ 1054              		.loc 2 1961 6 view .LVU299
+ 1055 025a 0BDB     		blt	.L63
 1963:./inc/core_cm7.h ****   }
- 1048              		.loc 2 1963 5 is_stmt 1 view .LVU296
+ 1056              		.loc 2 1963 5 is_stmt 1 view .LVU300
 1963:./inc/core_cm7.h ****   }
- 1049              		.loc 2 1963 54 is_stmt 0 view .LVU297
- 1050 0268 4309     		lsrs	r3, r0, #5
+ 1057              		.loc 2 1963 54 is_stmt 0 view .LVU301
+ 1058 025c 4309     		lsrs	r3, r0, #5
 1963:./inc/core_cm7.h ****   }
- 1051              		.loc 2 1963 35 view .LVU298
- 1052 026a 064A     		ldr	r2, .L63
+ 1059              		.loc 2 1963 35 view .LVU302
+ 1060 025e 064A     		ldr	r2, .L64
 1963:./inc/core_cm7.h ****   }
- 1053              		.loc 2 1963 91 view .LVU299
- 1054 026c 00F01F00 		and	r0, r0, #31
+ 1061              		.loc 2 1963 91 view .LVU303
+ 1062 0260 00F01F00 		and	r0, r0, #31
+ 1063              	.LVL51:
 1963:./inc/core_cm7.h ****   }
- 1055              		.loc 2 1963 35 view .LVU300
- 1056 0270 4033     		adds	r3, r3, #64
- 1057 0272 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 1064              		.loc 2 1963 35 view .LVU304
+ 1065 0264 4033     		adds	r3, r3, #64
+ 1066 0266 52F82330 		ldr	r3, [r2, r3, lsl #2]
 1963:./inc/core_cm7.h ****   }
- 1058              		.loc 2 1963 103 view .LVU301
- 1059 0276 23FA00F0 		lsr	r0, r3, r0
+ 1067              		.loc 2 1963 103 view .LVU305
+ 1068 026a 23FA00F0 		lsr	r0, r3, r0
 1963:./inc/core_cm7.h ****   }
- 1060              		.loc 2 1963 12 view .LVU302
- 1061 027a 00F00100 		and	r0, r0, #1
- 1062 027e 7047     		bx	lr
- 1063              	.L62:
+ 1069              		.loc 2 1963 12 view .LVU306
+ 1070 026e 00F00100 		and	r0, r0, #1
+ 1071 0272 7047     		bx	lr
+ 1072              	.L63:
 1967:./inc/core_cm7.h ****   }
- 1064              		.loc 2 1967 11 view .LVU303
- 1065 0280 0020     		movs	r0, #0
- 1066              	.LVL55:
+ 1073              		.loc 2 1967 11 view .LVU307
+ 1074 0274 0020     		movs	r0, #0
+ 1075              	.LVL52:
 1967:./inc/core_cm7.h ****   }
- 1067              		.loc 2 1967 11 view .LVU304
- 1068              	.LBE122:
- 1069              	.LBE121:
+ 1076              		.loc 2 1967 11 view .LVU308
+ 1077              	.LBE137:
+ 1078              	.LBE136:
  411:./src/stm32f7xx_hal_cortex.c **** }
- 1070              		.loc 1 411 1 view .LVU305
- 1071 0282 7047     		bx	lr
- 1072              	.L64:
- 1073              		.align	2
- 1074              	.L63:
- 1075 0284 00E100E0 		.word	-536813312
- 1076              		.cfi_endproc
- 1077              	.LFE156:
- 1079              		.align	1
- 1080              		.p2align 2,,3
- 1081              		.global	HAL_NVIC_ClearPendingIRQ
- 1082              		.syntax unified
- 1083              		.thumb
- 1084              		.thumb_func
- 1085              		.fpu fpv5-d16
- 1087              	HAL_NVIC_ClearPendingIRQ:
- 1088              	.LVL56:
- 1089              	.LFB157:
+ 1079              		.loc 1 411 1 view .LVU309
+ 1080 0276 7047     		bx	lr
+ 1081              	.L65:
+ 1082              		.align	2
+ 1083              	.L64:
+ 1084 0278 00E100E0 		.word	-536813312
+ 1085              		.cfi_endproc
+ 1086              	.LFE156:
+ 1088              		.align	1
+ 1089              		.p2align 2,,3
+ 1090              		.global	HAL_NVIC_ClearPendingIRQ
+ 1091              		.syntax unified
+ 1092              		.thumb
+ 1093              		.thumb_func
+ 1095              	HAL_NVIC_ClearPendingIRQ:
+ 1096              	.LVL53:
+ 1097              	.LFB157:
  412:./src/stm32f7xx_hal_cortex.c **** 
  413:./src/stm32f7xx_hal_cortex.c **** /**
  414:./src/stm32f7xx_hal_cortex.c ****   * @brief  Clears the pending bit of an external interrupt.
@@ -5231,78 +5238,77 @@
  419:./src/stm32f7xx_hal_cortex.c ****   */
  420:./src/stm32f7xx_hal_cortex.c **** void HAL_NVIC_ClearPendingIRQ(IRQn_Type IRQn)
  421:./src/stm32f7xx_hal_cortex.c **** {
- 1090              		.loc 1 421 1 is_stmt 1 view -0
- 1091              		.cfi_startproc
- 1092              		@ args = 0, pretend = 0, frame = 0
- 1093              		@ frame_needed = 0, uses_anonymous_args = 0
- 1094              		@ link register save eliminated.
+ 1098              		.loc 1 421 1 is_stmt 1 view -0
+ 1099              		.cfi_startproc
+ 1100              		@ args = 0, pretend = 0, frame = 0
+ 1101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1102              		@ link register save eliminated.
  422:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  423:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 1095              		.loc 1 423 3 view .LVU307
+ 1103              		.loc 1 423 3 view .LVU311
  424:./src/stm32f7xx_hal_cortex.c ****   
  425:./src/stm32f7xx_hal_cortex.c ****   /* Clear pending interrupt */
  426:./src/stm32f7xx_hal_cortex.c ****   NVIC_ClearPendingIRQ(IRQn);
- 1096              		.loc 1 426 3 view .LVU308
- 1097              	.LBB123:
- 1098              	.LBI123:
+ 1104              		.loc 1 426 3 view .LVU312
+ 1105              	.LBB138:
+ 1106              	.LBI138:
 1993:./inc/core_cm7.h **** {
- 1099              		.loc 2 1993 22 view .LVU309
- 1100              	.LBB124:
+ 1107              		.loc 2 1993 22 view .LVU313
+ 1108              	.LBB139:
 1995:./inc/core_cm7.h ****   {
- 1101              		.loc 2 1995 3 view .LVU310
+ 1109              		.loc 2 1995 3 view .LVU314
 1995:./inc/core_cm7.h ****   {
- 1102              		.loc 2 1995 6 is_stmt 0 view .LVU311
- 1103 0288 0028     		cmp	r0, #0
- 1104              	.LVL57:
+ 1110              		.loc 2 1995 6 is_stmt 0 view .LVU315
+ 1111 027c 0028     		cmp	r0, #0
 1995:./inc/core_cm7.h ****   {
- 1105              		.loc 2 1995 6 view .LVU312
- 1106 028a 09DB     		blt	.L65
+ 1112              		.loc 2 1995 6 view .LVU316
+ 1113 027e 08DB     		blt	.L66
 1997:./inc/core_cm7.h ****   }
- 1107              		.loc 2 1997 5 is_stmt 1 view .LVU313
+ 1114              		.loc 2 1997 5 is_stmt 1 view .LVU317
 1997:./inc/core_cm7.h ****   }
- 1108              		.loc 2 1997 34 is_stmt 0 view .LVU314
- 1109 028c 4309     		lsrs	r3, r0, #5
+ 1115              		.loc 2 1997 34 is_stmt 0 view .LVU318
+ 1116 0280 4309     		lsrs	r3, r0, #5
 1997:./inc/core_cm7.h ****   }
- 1110              		.loc 2 1997 45 view .LVU315
- 1111 028e 0122     		movs	r2, #1
+ 1117              		.loc 2 1997 45 view .LVU319
+ 1118 0282 0122     		movs	r2, #1
 1997:./inc/core_cm7.h ****   }
- 1112              		.loc 2 1997 81 view .LVU316
- 1113 0290 00F01F00 		and	r0, r0, #31
+ 1119              		.loc 2 1997 81 view .LVU320
+ 1120 0284 00F01F00 		and	r0, r0, #31
+ 1121              	.LVL54:
 1997:./inc/core_cm7.h ****   }
- 1114              		.loc 2 1997 43 view .LVU317
- 1115 0294 0349     		ldr	r1, .L67
- 1116 0296 6033     		adds	r3, r3, #96
+ 1122              		.loc 2 1997 43 view .LVU321
+ 1123 0288 0249     		ldr	r1, .L68
+ 1124 028a 6033     		adds	r3, r3, #96
 1997:./inc/core_cm7.h ****   }
- 1117              		.loc 2 1997 45 view .LVU318
- 1118 0298 02FA00F0 		lsl	r0, r2, r0
+ 1125              		.loc 2 1997 45 view .LVU322
+ 1126 028c 8240     		lsls	r2, r2, r0
 1997:./inc/core_cm7.h ****   }
- 1119              		.loc 2 1997 43 view .LVU319
- 1120 029c 41F82300 		str	r0, [r1, r3, lsl #2]
- 1121              	.LVL58:
- 1122              	.L65:
+ 1127              		.loc 2 1997 43 view .LVU323
+ 1128 028e 41F82320 		str	r2, [r1, r3, lsl #2]
+ 1129              	.LVL55:
+ 1130              	.L66:
 1997:./inc/core_cm7.h ****   }
- 1123              		.loc 2 1997 43 view .LVU320
- 1124              	.LBE124:
- 1125              	.LBE123:
+ 1131              		.loc 2 1997 43 view .LVU324
+ 1132              	.LBE139:
+ 1133              	.LBE138:
  427:./src/stm32f7xx_hal_cortex.c **** }
- 1126              		.loc 1 427 1 view .LVU321
- 1127 02a0 7047     		bx	lr
- 1128              	.L68:
- 1129 02a2 00BF     		.align	2
- 1130              	.L67:
- 1131 02a4 00E100E0 		.word	-536813312
- 1132              		.cfi_endproc
- 1133              	.LFE157:
- 1135              		.align	1
- 1136              		.p2align 2,,3
- 1137              		.global	HAL_NVIC_GetActive
- 1138              		.syntax unified
- 1139              		.thumb
- 1140              		.thumb_func
- 1141              		.fpu fpv5-d16
- 1143              	HAL_NVIC_GetActive:
- 1144              	.LVL59:
- 1145              	.LFB158:
+ 1134              		.loc 1 427 1 view .LVU325
+ 1135 0292 7047     		bx	lr
+ 1136              	.L69:
+ 1137              		.align	2
+ 1138              	.L68:
+ 1139 0294 00E100E0 		.word	-536813312
+ 1140              		.cfi_endproc
+ 1141              	.LFE157:
+ 1143              		.align	1
+ 1144              		.p2align 2,,3
+ 1145              		.global	HAL_NVIC_GetActive
+ 1146              		.syntax unified
+ 1147              		.thumb
+ 1148              		.thumb_func
+ 1150              	HAL_NVIC_GetActive:
+ 1151              	.LVL56:
+ 1152              	.LFB158:
  428:./src/stm32f7xx_hal_cortex.c **** 
  429:./src/stm32f7xx_hal_cortex.c **** /**
  430:./src/stm32f7xx_hal_cortex.c ****   * @brief Gets active interrupt ( reads the active register in NVIC and returns the active bit).
@@ -5314,82 +5320,81 @@
  436:./src/stm32f7xx_hal_cortex.c ****   */
  437:./src/stm32f7xx_hal_cortex.c **** uint32_t HAL_NVIC_GetActive(IRQn_Type IRQn)
  438:./src/stm32f7xx_hal_cortex.c **** {
- 1146              		.loc 1 438 1 is_stmt 1 view -0
- 1147              		.cfi_startproc
- 1148              		@ args = 0, pretend = 0, frame = 0
- 1149              		@ frame_needed = 0, uses_anonymous_args = 0
- 1150              		@ link register save eliminated.
+ 1153              		.loc 1 438 1 is_stmt 1 view -0
+ 1154              		.cfi_startproc
+ 1155              		@ args = 0, pretend = 0, frame = 0
+ 1156              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1157              		@ link register save eliminated.
  439:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  440:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_NVIC_DEVICE_IRQ(IRQn));
- 1151              		.loc 1 440 3 view .LVU323
+ 1158              		.loc 1 440 3 view .LVU327
  441:./src/stm32f7xx_hal_cortex.c ****   
  442:./src/stm32f7xx_hal_cortex.c ****   /* Return 1 if active else 0 */
  443:./src/stm32f7xx_hal_cortex.c ****   return NVIC_GetActive(IRQn);
- 1152              		.loc 1 443 3 view .LVU324
- 1153              	.LBB125:
- 1154              	.LBI125:
+ 1159              		.loc 1 443 3 view .LVU328
+ 1160              	.LBB140:
+ 1161              	.LBI140:
 2010:./inc/core_cm7.h **** {
- 1155              		.loc 2 2010 26 view .LVU325
- 1156              	.LBB126:
+ 1162              		.loc 2 2010 26 view .LVU329
+ 1163              	.LBB141:
 2012:./inc/core_cm7.h ****   {
- 1157              		.loc 2 2012 3 view .LVU326
+ 1164              		.loc 2 2012 3 view .LVU330
 2012:./inc/core_cm7.h ****   {
- 1158              		.loc 2 2012 6 is_stmt 0 view .LVU327
- 1159 02a8 0028     		cmp	r0, #0
- 1160              	.LVL60:
+ 1165              		.loc 2 2012 6 is_stmt 0 view .LVU331
+ 1166 0298 0028     		cmp	r0, #0
 2012:./inc/core_cm7.h ****   {
- 1161              		.loc 2 2012 6 view .LVU328
- 1162 02aa 0BDB     		blt	.L71
+ 1167              		.loc 2 2012 6 view .LVU332
+ 1168 029a 0BDB     		blt	.L72
 2014:./inc/core_cm7.h ****   }
- 1163              		.loc 2 2014 5 is_stmt 1 view .LVU329
+ 1169              		.loc 2 2014 5 is_stmt 1 view .LVU333
 2014:./inc/core_cm7.h ****   }
- 1164              		.loc 2 2014 54 is_stmt 0 view .LVU330
- 1165 02ac 4309     		lsrs	r3, r0, #5
+ 1170              		.loc 2 2014 54 is_stmt 0 view .LVU334
+ 1171 029c 4309     		lsrs	r3, r0, #5
 2014:./inc/core_cm7.h ****   }
- 1166              		.loc 2 2014 35 view .LVU331
- 1167 02ae 064A     		ldr	r2, .L72
+ 1172              		.loc 2 2014 35 view .LVU335
+ 1173 029e 064A     		ldr	r2, .L73
 2014:./inc/core_cm7.h ****   }
- 1168              		.loc 2 2014 91 view .LVU332
- 1169 02b0 00F01F00 		and	r0, r0, #31
+ 1174              		.loc 2 2014 91 view .LVU336
+ 1175 02a0 00F01F00 		and	r0, r0, #31
+ 1176              	.LVL57:
 2014:./inc/core_cm7.h ****   }
- 1170              		.loc 2 2014 35 view .LVU333
- 1171 02b4 8033     		adds	r3, r3, #128
- 1172 02b6 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 1177              		.loc 2 2014 35 view .LVU337
+ 1178 02a4 8033     		adds	r3, r3, #128
+ 1179 02a6 52F82330 		ldr	r3, [r2, r3, lsl #2]
 2014:./inc/core_cm7.h ****   }
- 1173              		.loc 2 2014 103 view .LVU334
- 1174 02ba 23FA00F0 		lsr	r0, r3, r0
+ 1180              		.loc 2 2014 103 view .LVU338
+ 1181 02aa 23FA00F0 		lsr	r0, r3, r0
 2014:./inc/core_cm7.h ****   }
- 1175              		.loc 2 2014 12 view .LVU335
- 1176 02be 00F00100 		and	r0, r0, #1
- 1177 02c2 7047     		bx	lr
- 1178              	.L71:
+ 1182              		.loc 2 2014 12 view .LVU339
+ 1183 02ae 00F00100 		and	r0, r0, #1
+ 1184 02b2 7047     		bx	lr
+ 1185              	.L72:
 2018:./inc/core_cm7.h ****   }
- 1179              		.loc 2 2018 11 view .LVU336
- 1180 02c4 0020     		movs	r0, #0
- 1181              	.LVL61:
+ 1186              		.loc 2 2018 11 view .LVU340
+ 1187 02b4 0020     		movs	r0, #0
+ 1188              	.LVL58:
 2018:./inc/core_cm7.h ****   }
- 1182              		.loc 2 2018 11 view .LVU337
- 1183              	.LBE126:
- 1184              	.LBE125:
+ 1189              		.loc 2 2018 11 view .LVU341
+ 1190              	.LBE141:
+ 1191              	.LBE140:
  444:./src/stm32f7xx_hal_cortex.c **** }
- 1185              		.loc 1 444 1 view .LVU338
- 1186 02c6 7047     		bx	lr
- 1187              	.L73:
- 1188              		.align	2
- 1189              	.L72:
- 1190 02c8 00E100E0 		.word	-536813312
- 1191              		.cfi_endproc
- 1192              	.LFE158:
- 1194              		.align	1
- 1195              		.p2align 2,,3
- 1196              		.global	HAL_SYSTICK_CLKSourceConfig
- 1197              		.syntax unified
- 1198              		.thumb
- 1199              		.thumb_func
- 1200              		.fpu fpv5-d16
- 1202              	HAL_SYSTICK_CLKSourceConfig:
- 1203              	.LVL62:
- 1204              	.LFB159:
+ 1192              		.loc 1 444 1 view .LVU342
+ 1193 02b6 7047     		bx	lr
+ 1194              	.L74:
+ 1195              		.align	2
+ 1196              	.L73:
+ 1197 02b8 00E100E0 		.word	-536813312
+ 1198              		.cfi_endproc
+ 1199              	.LFE158:
+ 1201              		.align	1
+ 1202              		.p2align 2,,3
+ 1203              		.global	HAL_SYSTICK_CLKSourceConfig
+ 1204              		.syntax unified
+ 1205              		.thumb
+ 1206              		.thumb_func
+ 1208              	HAL_SYSTICK_CLKSourceConfig:
+ 1209              	.LVL59:
+ 1210              	.LFB159:
  445:./src/stm32f7xx_hal_cortex.c **** 
  446:./src/stm32f7xx_hal_cortex.c **** /**
  447:./src/stm32f7xx_hal_cortex.c ****   * @brief  Configures the SysTick clock source.
@@ -5401,51 +5406,51 @@
  453:./src/stm32f7xx_hal_cortex.c ****   */
  454:./src/stm32f7xx_hal_cortex.c **** void HAL_SYSTICK_CLKSourceConfig(uint32_t CLKSource)
  455:./src/stm32f7xx_hal_cortex.c **** {
- 1205              		.loc 1 455 1 is_stmt 1 view -0
- 1206              		.cfi_startproc
- 1207              		@ args = 0, pretend = 0, frame = 0
- 1208              		@ frame_needed = 0, uses_anonymous_args = 0
- 1209              		@ link register save eliminated.
+ 1211              		.loc 1 455 1 is_stmt 1 view -0
+ 1212              		.cfi_startproc
+ 1213              		@ args = 0, pretend = 0, frame = 0
+ 1214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1215              		@ link register save eliminated.
  456:./src/stm32f7xx_hal_cortex.c ****   /* Check the parameters */
  457:./src/stm32f7xx_hal_cortex.c ****   assert_param(IS_SYSTICK_CLK_SOURCE(CLKSource));
- 1210              		.loc 1 457 3 view .LVU340
+ 1216              		.loc 1 457 3 view .LVU344
  458:./src/stm32f7xx_hal_cortex.c ****   if (CLKSource == SYSTICK_CLKSOURCE_HCLK)
- 1211              		.loc 1 458 3 view .LVU341
+ 1217              		.loc 1 458 3 view .LVU345
  459:./src/stm32f7xx_hal_cortex.c ****   {
  460:./src/stm32f7xx_hal_cortex.c ****     SysTick->CTRL |= SYSTICK_CLKSOURCE_HCLK;
- 1212              		.loc 1 460 19 is_stmt 0 view .LVU342
- 1213 02cc 4FF0E022 		mov	r2, #-536813568
+ 1218              		.loc 1 460 12 is_stmt 0 view .LVU346
+ 1219 02bc 4FF0E022 		mov	r2, #-536813568
  458:./src/stm32f7xx_hal_cortex.c ****   if (CLKSource == SYSTICK_CLKSOURCE_HCLK)
- 1214              		.loc 1 458 6 view .LVU343
- 1215 02d0 0428     		cmp	r0, #4
- 1216              		.loc 1 460 5 is_stmt 1 view .LVU344
- 1217              		.loc 1 460 19 is_stmt 0 view .LVU345
- 1218 02d2 1369     		ldr	r3, [r2, #16]
- 1219 02d4 0CBF     		ite	eq
- 1220 02d6 43F00403 		orreq	r3, r3, #4
+ 1220              		.loc 1 458 6 view .LVU347
+ 1221 02c0 0428     		cmp	r0, #4
+ 1222              		.loc 1 460 5 is_stmt 1 view .LVU348
+ 1223              		.loc 1 460 12 is_stmt 0 view .LVU349
+ 1224 02c2 1369     		ldr	r3, [r2, #16]
+ 1225              		.loc 1 460 19 view .LVU350
+ 1226 02c4 0CBF     		ite	eq
+ 1227 02c6 43F00403 		orreq	r3, r3, #4
  461:./src/stm32f7xx_hal_cortex.c ****   }
  462:./src/stm32f7xx_hal_cortex.c ****   else
  463:./src/stm32f7xx_hal_cortex.c ****   {
  464:./src/stm32f7xx_hal_cortex.c ****     SysTick->CTRL &= ~SYSTICK_CLKSOURCE_HCLK;
- 1221              		.loc 1 464 5 is_stmt 1 view .LVU346
- 1222              		.loc 1 464 19 is_stmt 0 view .LVU347
- 1223 02da 23F00403 		bicne	r3, r3, #4
- 1224 02de 1361     		str	r3, [r2, #16]
+ 1228              		.loc 1 464 5 is_stmt 1 view .LVU351
+ 1229              		.loc 1 464 19 is_stmt 0 view .LVU352
+ 1230 02ca 23F00403 		bicne	r3, r3, #4
+ 1231 02ce 1361     		str	r3, [r2, #16]
  465:./src/stm32f7xx_hal_cortex.c ****   }
  466:./src/stm32f7xx_hal_cortex.c **** }
- 1225              		.loc 1 466 1 view .LVU348
- 1226 02e0 7047     		bx	lr
- 1227              		.cfi_endproc
- 1228              	.LFE159:
- 1230              		.align	1
- 1231 02e2 00BF     		.p2align 2,,3
- 1232              		.weak	HAL_SYSTICK_Callback
- 1233              		.syntax unified
- 1234              		.thumb
- 1235              		.thumb_func
- 1236              		.fpu fpv5-d16
- 1238              	HAL_SYSTICK_Callback:
- 1239              	.LFB161:
+ 1232              		.loc 1 466 1 view .LVU353
+ 1233 02d0 7047     		bx	lr
+ 1234              		.cfi_endproc
+ 1235              	.LFE159:
+ 1237              		.align	1
+ 1238 02d2 00BF     		.p2align 2,,3
+ 1239              		.weak	HAL_SYSTICK_Callback
+ 1240              		.syntax unified
+ 1241              		.thumb
+ 1242              		.thumb_func
+ 1244              	HAL_SYSTICK_Callback:
+ 1245              	.LFB161:
  467:./src/stm32f7xx_hal_cortex.c **** 
  468:./src/stm32f7xx_hal_cortex.c **** /**
  469:./src/stm32f7xx_hal_cortex.c ****   * @brief  This function handles SYSTICK interrupt request.
@@ -5462,107 +5467,106 @@
  480:./src/stm32f7xx_hal_cortex.c ****   */
  481:./src/stm32f7xx_hal_cortex.c **** __weak void HAL_SYSTICK_Callback(void)
  482:./src/stm32f7xx_hal_cortex.c **** {
- 1240              		.loc 1 482 1 is_stmt 1 view -0
- 1241              		.cfi_startproc
- 1242              		@ args = 0, pretend = 0, frame = 0
- 1243              		@ frame_needed = 0, uses_anonymous_args = 0
- 1244              		@ link register save eliminated.
+ 1246              		.loc 1 482 1 is_stmt 1 view -0
+ 1247              		.cfi_startproc
+ 1248              		@ args = 0, pretend = 0, frame = 0
+ 1249              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1250              		@ link register save eliminated.
  483:./src/stm32f7xx_hal_cortex.c ****   /* NOTE : This function Should not be modified, when the callback is needed,
  484:./src/stm32f7xx_hal_cortex.c ****             the HAL_SYSTICK_Callback could be implemented in the user file
  485:./src/stm32f7xx_hal_cortex.c ****    */
  486:./src/stm32f7xx_hal_cortex.c **** }
- 1245              		.loc 1 486 1 view .LVU350
- 1246 02e4 7047     		bx	lr
- 1247              		.cfi_endproc
- 1248              	.LFE161:
- 1250              		.align	1
- 1251 02e6 00BF     		.p2align 2,,3
- 1252              		.global	HAL_SYSTICK_IRQHandler
- 1253              		.syntax unified
- 1254              		.thumb
- 1255              		.thumb_func
- 1256              		.fpu fpv5-d16
- 1258              	HAL_SYSTICK_IRQHandler:
- 1259              	.LFB160:
+ 1251              		.loc 1 486 1 view .LVU355
+ 1252 02d4 7047     		bx	lr
+ 1253              		.cfi_endproc
+ 1254              	.LFE161:
+ 1256              		.align	1
+ 1257 02d6 00BF     		.p2align 2,,3
+ 1258              		.global	HAL_SYSTICK_IRQHandler
+ 1259              		.syntax unified
+ 1260              		.thumb
+ 1261              		.thumb_func
+ 1263              	HAL_SYSTICK_IRQHandler:
+ 1264              	.LFB160:
  473:./src/stm32f7xx_hal_cortex.c ****   HAL_SYSTICK_Callback();
- 1260              		.loc 1 473 1 view -0
- 1261              		.cfi_startproc
- 1262              		@ args = 0, pretend = 0, frame = 0
- 1263              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1265              		.loc 1 473 1 view -0
+ 1266              		.cfi_startproc
+ 1267              		@ args = 0, pretend = 0, frame = 0
+ 1268              		@ frame_needed = 0, uses_anonymous_args = 0
  474:./src/stm32f7xx_hal_cortex.c **** }
- 1264              		.loc 1 474 3 view .LVU352
+ 1269              		.loc 1 474 3 view .LVU357
  473:./src/stm32f7xx_hal_cortex.c ****   HAL_SYSTICK_Callback();
- 1265              		.loc 1 473 1 is_stmt 0 view .LVU353
- 1266 02e8 08B5     		push	{r3, lr}
- 1267              	.LCFI6:
- 1268              		.cfi_def_cfa_offset 8
- 1269              		.cfi_offset 3, -8
- 1270              		.cfi_offset 14, -4
+ 1270              		.loc 1 473 1 is_stmt 0 view .LVU358
+ 1271 02d8 08B5     		push	{r3, lr}
+ 1272              	.LCFI6:
+ 1273              		.cfi_def_cfa_offset 8
+ 1274              		.cfi_offset 3, -8
+ 1275              		.cfi_offset 14, -4
  474:./src/stm32f7xx_hal_cortex.c **** }
- 1271              		.loc 1 474 3 view .LVU354
- 1272 02ea FFF7FEFF 		bl	HAL_SYSTICK_Callback
- 1273              	.LVL63:
+ 1276              		.loc 1 474 3 view .LVU359
+ 1277 02da FFF7FEFF 		bl	HAL_SYSTICK_Callback
+ 1278              	.LVL60:
  475:./src/stm32f7xx_hal_cortex.c **** 
- 1274              		.loc 1 475 1 view .LVU355
- 1275 02ee 08BD     		pop	{r3, pc}
- 1276              		.cfi_endproc
- 1277              	.LFE160:
- 1279              	.Letext0:
- 1280              		.file 4 "./inc/ARMCM7_DP.h"
- 1281              		.file 5 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1282              		.file 6 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1283              		.file 7 "./inc/stm32f7xx_hal_cortex.h"
- 1284              		.file 8 "./inc/stm32f7xx.h"
+ 1279              		.loc 1 475 1 view .LVU360
+ 1280 02de 08BD     		pop	{r3, pc}
+ 1281              		.cfi_endproc
+ 1282              	.LFE160:
+ 1284              	.Letext0:
+ 1285              		.file 4 "./inc/ARMCM7_DP.h"
+ 1286              		.file 5 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1287              		.file 6 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1288              		.file 7 "./inc/stm32f7xx_hal_cortex.h"
+ 1289              		.file 8 "./inc/stm32f7xx.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f7xx_hal_cortex.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:25     .text:00000000 HAL_NVIC_SetPriorityGrouping
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:84     .text:0000001c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:89     .text:00000024 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:97     .text:00000024 HAL_NVIC_SetPriority
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:252    .text:00000094 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:258    .text:000000a0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:266    .text:000000a0 HAL_NVIC_EnableIRQ
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:311    .text:000000b8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:315    .text:000000bc $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:323    .text:000000bc HAL_NVIC_DisableIRQ
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:396    .text:000000e0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:400    .text:000000e4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:408    .text:000000e4 HAL_NVIC_SystemReset
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:476    .text:00000100 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:483    .text:00000108 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:491    .text:00000108 HAL_SYSTICK_Config
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:568    .text:00000130 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:572    .text:00000134 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:580    .text:00000134 HAL_MPU_Disable
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:618    .text:0000014c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:622    .text:00000150 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:630    .text:00000150 HAL_MPU_Enable
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:684    .text:0000016c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:688    .text:00000170 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:696    .text:00000170 HAL_MPU_ConfigRegion
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:786    .text:000001d0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:790    .text:000001d4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:798    .text:000001d4 HAL_NVIC_GetPriorityGrouping
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:822    .text:000001e0 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:826    .text:000001e4 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:834    .text:000001e4 HAL_NVIC_GetPriority
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:957    .text:0000023c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:964    .text:00000244 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:972    .text:00000244 HAL_NVIC_SetPendingIRQ
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1016   .text:00000260 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1020   .text:00000264 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1028   .text:00000264 HAL_NVIC_GetPendingIRQ
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1075   .text:00000284 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1079   .text:00000288 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1087   .text:00000288 HAL_NVIC_ClearPendingIRQ
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1131   .text:000002a4 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1135   .text:000002a8 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1143   .text:000002a8 HAL_NVIC_GetActive
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1190   .text:000002c8 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1194   .text:000002cc $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1202   .text:000002cc HAL_SYSTICK_CLKSourceConfig
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1238   .text:000002e4 HAL_SYSTICK_Callback
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccxwNfBc.s:1258   .text:000002e8 HAL_SYSTICK_IRQHandler
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:26     .text:00000000 HAL_NVIC_SetPriorityGrouping
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:84     .text:0000001c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:89     .text:00000024 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:96     .text:00000024 HAL_NVIC_SetPriority
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:257    .text:00000090 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:263    .text:0000009c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:270    .text:0000009c HAL_NVIC_EnableIRQ
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:315    .text:000000b4 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:319    .text:000000b8 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:326    .text:000000b8 HAL_NVIC_DisableIRQ
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:399    .text:000000d8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:403    .text:000000dc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:410    .text:000000dc HAL_NVIC_SystemReset
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:478    .text:000000f8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:485    .text:00000100 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:492    .text:00000100 HAL_SYSTICK_Config
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:579    .text:00000128 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:585    .text:0000012c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:592    .text:0000012c HAL_MPU_Disable
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:631    .text:00000144 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:635    .text:00000148 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:642    .text:00000148 HAL_MPU_Enable
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:697    .text:00000164 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:701    .text:00000168 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:708    .text:00000168 HAL_MPU_ConfigRegion
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:798    .text:000001c8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:802    .text:000001cc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:809    .text:000001cc HAL_NVIC_GetPriorityGrouping
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:833    .text:000001d8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:837    .text:000001dc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:844    .text:000001dc HAL_NVIC_GetPriority
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:968    .text:00000234 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:975    .text:0000023c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:982    .text:0000023c HAL_NVIC_SetPendingIRQ
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1026   .text:00000254 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1030   .text:00000258 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1037   .text:00000258 HAL_NVIC_GetPendingIRQ
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1084   .text:00000278 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1088   .text:0000027c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1095   .text:0000027c HAL_NVIC_ClearPendingIRQ
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1139   .text:00000294 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1143   .text:00000298 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1150   .text:00000298 HAL_NVIC_GetActive
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1197   .text:000002b8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1201   .text:000002bc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1208   .text:000002bc HAL_SYSTICK_CLKSourceConfig
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1244   .text:000002d4 HAL_SYSTICK_Callback
+C:\Users\JAEJUN~1\AppData\Local\Temp\cchfFtAh.s:1263   .text:000002d8 HAL_SYSTICK_IRQHandler
 
 NO UNDEFINED SYMBOLS

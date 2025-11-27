@@ -1,28 +1,28 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"eeprom.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	ackpoll:
-  25              	.LFB144:
-  26              		.file 1 "./src/eeprom.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"eeprom.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/eeprom.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	ackpoll:
+  26              	.LFB144:
    1:./src/eeprom.c **** 
    2:./src/eeprom.c **** #include <stdint.h>
    3:./src/eeprom.c **** #include <stdlib.h>
@@ -97,11 +97,11 @@
   63:./src/eeprom.c **** 
   64:./src/eeprom.c **** 	while ( I2C1->ISR & ( 3 << 4))
   36              		.loc 1 64 2 view .LVU4
-  37              		.loc 1 64 8 view .LVU5
+  37              		.loc 1 64 10 view .LVU5
   38              		.loc 1 64 14 is_stmt 0 view .LVU6
   39 0000 1A4B     		ldr	r3, .L29
   40 0002 9A69     		ldr	r2, [r3, #24]
-  41              		.loc 1 64 8 view .LVU7
+  41              		.loc 1 64 10 view .LVU7
   42 0004 12F0300F 		tst	r2, #48
   43 0008 05D0     		beq	.L2
   65:./src/eeprom.c **** 	 { I2C1->ICR = 3 << 4;}
@@ -112,12 +112,12 @@
   48              		.loc 1 65 15 is_stmt 0 view .LVU10
   49 000c D961     		str	r1, [r3, #28]
   64:./src/eeprom.c **** 	 { I2C1->ICR = 3 << 4;}
-  50              		.loc 1 64 8 is_stmt 1 view .LVU11
+  50              		.loc 1 64 10 is_stmt 1 view .LVU11
   64:./src/eeprom.c **** 	 { I2C1->ICR = 3 << 4;}
   51              		.loc 1 64 14 is_stmt 0 view .LVU12
   52 000e 9A69     		ldr	r2, [r3, #24]
   64:./src/eeprom.c **** 	 { I2C1->ICR = 3 << 4;}
-  53              		.loc 1 64 8 view .LVU13
+  53              		.loc 1 64 10 view .LVU13
   54 0010 12F0300F 		tst	r2, #48
   55 0014 FAD1     		bne	.L3
   56              	.L2:
@@ -137,8 +137,8 @@
   66 0020 4B60     		str	r3, [r1, #4]
   70:./src/eeprom.c **** 	__DSB();
   67              		.loc 1 70 2 is_stmt 1 view .LVU19
-  68              	.LBB26:
-  69              	.LBI26:
+  68              	.LBB19:
+  69              	.LBI19:
   70              		.file 2 "./inc/cmsis_gcc.h"
    1:./inc/cmsis_gcc.h **** /**************************************************************************//**
    2:./inc/cmsis_gcc.h ****  * @file     cmsis_gcc.h
@@ -1085,7 +1085,7 @@
  943:./inc/cmsis_gcc.h ****  */
  944:./inc/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
   71              		.loc 2 944 27 view .LVU20
-  72              	.LBB27:
+  72              	.LBB20:
  945:./inc/cmsis_gcc.h **** {
  946:./inc/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
   73              		.loc 2 946 3 view .LVU21
@@ -1095,11 +1095,11 @@
   77              	@ 0 "" 2
   78              		.thumb
   79              		.syntax unified
-  80              	.LBE27:
-  81              	.LBE26:
+  80              	.LBE20:
+  81              	.LBE19:
   71:./src/eeprom.c **** 	I2C1->CR2 |= 1 << 13;
   82              		.loc 1 71 2 view .LVU22
-  83              		.loc 1 71 12 is_stmt 0 view .LVU23
+  83              		.loc 1 71 6 is_stmt 0 view .LVU23
   84 0026 4A68     		ldr	r2, [r1, #4]
   61:./src/eeprom.c **** 	
   85              		.loc 1 61 7 view .LVU24
@@ -1140,153 +1140,146 @@
   94:./src/eeprom.c **** 
   95:./src/eeprom.c **** 		if (--timeout == 0) {
   98              		.loc 1 95 3 view .LVU31
-  88:./src/eeprom.c **** 
-  99              		.loc 1 88 7 is_stmt 0 view .LVU32
- 100 0032 8A69     		ldr	r2, [r1, #24]
- 101              	.LVL2:
-  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
- 102              		.loc 1 90 3 is_stmt 1 view .LVU33
-  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
- 103              		.loc 1 90 6 is_stmt 0 view .LVU34
- 104 0034 12F0100F 		tst	r2, #16
- 105 0038 0DD0     		beq	.L28
-  56:./src/eeprom.c **** 	EEPROMResult_t  stat;
- 106              		.loc 1 56 1 view .LVU35
- 107 003a 10B4     		push	{r4}
- 108              	.LCFI0:
- 109              		.cfi_def_cfa_offset 4
- 110              		.cfi_offset 4, -4
- 111              	.LVL3:
- 112              	.L20:
-  92:./src/eeprom.c **** 		}
- 113              		.loc 1 92 14 view .LVU36
- 114 003c 4C68     		ldr	r4, [r1, #4]
-  91:./src/eeprom.c **** 			I2C1->CR2 |= I2C_CR2_STOP;
- 115              		.loc 1 91 9 view .LVU37
- 116 003e 0120     		movs	r0, #1
-  92:./src/eeprom.c **** 		}
- 117              		.loc 1 92 14 view .LVU38
- 118 0040 44F48044 		orr	r4, r4, #16384
- 119 0044 4C60     		str	r4, [r1, #4]
- 120              	.L4:
- 121              		.loc 1 95 6 view .LVU39
- 122 0046 013B     		subs	r3, r3, #1
- 123              	.LVL4:
   96:./src/eeprom.c **** 			stat = EEPROM_ERR_TIMEOUT;
   97:./src/eeprom.c **** 			break;
   98:./src/eeprom.c **** 		}
   99:./src/eeprom.c **** 
  100:./src/eeprom.c **** 	} while (!(isr & (1 << 5)));  // STOPF
- 124              		.loc 1 100 10 is_stmt 1 view .LVU40
-  95:./src/eeprom.c **** 			stat = EEPROM_ERR_TIMEOUT;
- 125              		.loc 1 95 6 is_stmt 0 view .LVU41
- 126 0048 0AD0     		beq	.L7
- 127              		.loc 1 100 2 view .LVU42
- 128 004a 9206     		lsls	r2, r2, #26
- 129              	.LVL5:
- 130              		.loc 1 100 2 view .LVU43
- 131 004c 09D4     		bmi	.L1
- 132              	.LVL6:
-  87:./src/eeprom.c **** 		isr = I2C1->ISR;
- 133              		.loc 1 87 2 is_stmt 1 view .LVU44
+  99              		.loc 1 100 11 view .LVU32
   88:./src/eeprom.c **** 
- 134              		.loc 1 88 3 view .LVU45
-  91:./src/eeprom.c **** 			I2C1->CR2 |= I2C_CR2_STOP;
- 135              		.loc 1 91 4 view .LVU46
+ 100              		.loc 1 88 7 is_stmt 0 view .LVU33
+ 101 0032 8A69     		ldr	r2, [r1, #24]
+ 102              	.LVL2:
+  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
+ 103              		.loc 1 90 3 is_stmt 1 view .LVU34
+  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
+ 104              		.loc 1 90 6 is_stmt 0 view .LVU35
+ 105 0034 12F0100F 		tst	r2, #16
+ 106 0038 0DD0     		beq	.L28
+  56:./src/eeprom.c **** 	EEPROMResult_t  stat;
+ 107              		.loc 1 56 1 view .LVU36
+ 108 003a 10B4     		push	{r4}
+ 109              	.LCFI0:
+ 110              		.cfi_def_cfa_offset 4
+ 111              		.cfi_offset 4, -4
+ 112              	.L20:
   92:./src/eeprom.c **** 		}
- 136              		.loc 1 92 4 view .LVU47
+ 113              		.loc 1 92 8 view .LVU37
+ 114 003c 4C68     		ldr	r4, [r1, #4]
+  91:./src/eeprom.c **** 			I2C1->CR2 |= I2C_CR2_STOP;
+ 115              		.loc 1 91 9 view .LVU38
+ 116 003e 0120     		movs	r0, #1
+  92:./src/eeprom.c **** 		}
+ 117              		.loc 1 92 14 view .LVU39
+ 118 0040 44F48044 		orr	r4, r4, #16384
+ 119 0044 4C60     		str	r4, [r1, #4]
+ 120              	.L4:
   95:./src/eeprom.c **** 			stat = EEPROM_ERR_TIMEOUT;
- 137              		.loc 1 95 3 view .LVU48
+ 121              		.loc 1 95 6 view .LVU40
+ 122 0046 013B     		subs	r3, r3, #1
+ 123 0048 0AD0     		beq	.L7
+ 124              		.loc 1 100 11 view .LVU41
+ 125 004a 9206     		lsls	r2, r2, #26
+ 126              	.LVL3:
+ 127              		.loc 1 100 11 view .LVU42
+ 128 004c 09D4     		bmi	.L1
+ 129              	.LVL4:
+  87:./src/eeprom.c **** 		isr = I2C1->ISR;
+ 130              		.loc 1 87 2 is_stmt 1 view .LVU43
   88:./src/eeprom.c **** 
- 138              		.loc 1 88 7 is_stmt 0 view .LVU49
- 139 004e 8A69     		ldr	r2, [r1, #24]
- 140              	.LVL7:
-  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
- 141              		.loc 1 90 3 is_stmt 1 view .LVU50
-  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
- 142              		.loc 1 90 6 is_stmt 0 view .LVU51
- 143 0050 D406     		lsls	r4, r2, #27
- 144 0052 F8D5     		bpl	.L4
- 145 0054 F2E7     		b	.L20
- 146              	.L28:
- 147              	.LCFI1:
- 148              		.cfi_def_cfa_offset 0
- 149              		.cfi_restore 4
+ 131              		.loc 1 88 3 view .LVU44
+  91:./src/eeprom.c **** 			I2C1->CR2 |= I2C_CR2_STOP;
+ 132              		.loc 1 91 4 view .LVU45
+  92:./src/eeprom.c **** 		}
+ 133              		.loc 1 92 4 view .LVU46
   95:./src/eeprom.c **** 			stat = EEPROM_ERR_TIMEOUT;
- 150              		.loc 1 95 6 view .LVU52
- 151 0056 013B     		subs	r3, r3, #1
- 152              	.LVL8:
- 153              		.loc 1 100 10 is_stmt 1 view .LVU53
+ 134              		.loc 1 95 3 view .LVU47
+ 135              		.loc 1 100 11 view .LVU48
+  88:./src/eeprom.c **** 
+ 136              		.loc 1 88 7 is_stmt 0 view .LVU49
+ 137 004e 8A69     		ldr	r2, [r1, #24]
+ 138              	.LVL5:
+  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
+ 139              		.loc 1 90 3 is_stmt 1 view .LVU50
+  90:./src/eeprom.c **** 			stat = EEPROM_ERR_ILLDEVICE;
+ 140              		.loc 1 90 6 is_stmt 0 view .LVU51
+ 141 0050 D406     		lsls	r4, r2, #27
+ 142 0052 F8D5     		bpl	.L4
+ 143 0054 F2E7     		b	.L20
+ 144              	.L28:
+ 145              	.LCFI1:
+ 146              		.cfi_def_cfa_offset 0
+ 147              		.cfi_restore 4
   95:./src/eeprom.c **** 			stat = EEPROM_ERR_TIMEOUT;
- 154              		.loc 1 95 6 is_stmt 0 view .LVU54
- 155 0058 06D0     		beq	.L22
- 156              		.loc 1 100 2 view .LVU55
- 157 005a 9206     		lsls	r2, r2, #26
- 158              	.LVL9:
- 159              		.loc 1 100 2 view .LVU56
- 160 005c E9D5     		bpl	.L19
- 161 005e 7047     		bx	lr
- 162              	.LVL10:
- 163              	.L7:
- 164              	.LCFI2:
- 165              		.cfi_def_cfa_offset 4
- 166              		.cfi_offset 4, -4
+ 148              		.loc 1 95 6 view .LVU52
+ 149 0056 013B     		subs	r3, r3, #1
+ 150 0058 06D0     		beq	.L22
+ 151              		.loc 1 100 11 view .LVU53
+ 152 005a 9206     		lsls	r2, r2, #26
+ 153              	.LVL6:
+ 154              		.loc 1 100 11 view .LVU54
+ 155 005c E9D5     		bpl	.L19
+ 156 005e 7047     		bx	lr
+ 157              	.LVL7:
+ 158              	.L7:
+ 159              	.LCFI2:
+ 160              		.cfi_def_cfa_offset 4
+ 161              		.cfi_offset 4, -4
   96:./src/eeprom.c **** 			break;
- 167              		.loc 1 96 9 view .LVU57
- 168 0060 0420     		movs	r0, #4
- 169              	.LVL11:
+ 162              		.loc 1 96 9 view .LVU55
+ 163 0060 0420     		movs	r0, #4
+ 164              	.LVL8:
  101:./src/eeprom.c **** 
  102:./src/eeprom.c **** 	return stat;
- 170              		.loc 1 102 2 is_stmt 1 view .LVU58
- 171              	.L1:
+ 165              		.loc 1 102 2 is_stmt 1 view .LVU56
+ 166              	.L1:
  103:./src/eeprom.c **** }
- 172              		.loc 1 103 1 is_stmt 0 view .LVU59
- 173 0062 5DF8044B 		ldr	r4, [sp], #4
- 174              	.LCFI3:
- 175              		.cfi_restore 4
- 176              		.cfi_def_cfa_offset 0
- 177 0066 7047     		bx	lr
- 178              	.LVL12:
- 179              	.L22:
+ 167              		.loc 1 103 1 is_stmt 0 view .LVU57
+ 168 0062 5DF8044B 		ldr	r4, [sp], #4
+ 169              	.LCFI3:
+ 170              		.cfi_restore 4
+ 171              		.cfi_def_cfa_offset 0
+ 172 0066 7047     		bx	lr
+ 173              	.LVL9:
+ 174              	.L22:
   96:./src/eeprom.c **** 			break;
- 180              		.loc 1 96 9 view .LVU60
- 181 0068 0420     		movs	r0, #4
- 182              	.LVL13:
+ 175              		.loc 1 96 9 view .LVU58
+ 176 0068 0420     		movs	r0, #4
+ 177              	.LVL10:
  102:./src/eeprom.c **** }
- 183              		.loc 1 102 2 is_stmt 1 view .LVU61
- 184              		.loc 1 103 1 is_stmt 0 view .LVU62
- 185 006a 7047     		bx	lr
- 186              	.L30:
- 187              		.align	2
- 188              	.L29:
- 189 006c 00540040 		.word	1073763328
- 190 0070 00000000 		.word	.LANCHOR0
- 191 0074 A0860100 		.word	100000
- 192              		.cfi_endproc
- 193              	.LFE144:
- 195              		.align	1
- 196              		.p2align 2,,3
- 197              		.syntax unified
- 198              		.thumb
- 199              		.thumb_func
- 200              		.fpu fpv5-d16
- 202              	writecachepage.part.0:
- 203              	.LFB151:
+ 178              		.loc 1 102 2 is_stmt 1 view .LVU59
+ 179              		.loc 1 103 1 is_stmt 0 view .LVU60
+ 180 006a 7047     		bx	lr
+ 181              	.L30:
+ 182              		.align	2
+ 183              	.L29:
+ 184 006c 00540040 		.word	1073763328
+ 185 0070 00000000 		.word	.LANCHOR0
+ 186 0074 A0860100 		.word	100000
+ 187              		.cfi_endproc
+ 188              	.LFE144:
+ 190              		.align	1
+ 191              		.p2align 2,,3
+ 192              		.syntax unified
+ 193              		.thumb
+ 194              		.thumb_func
+ 196              	writecachepage.part.0:
+ 197              	.LFB151:
  104:./src/eeprom.c **** 
  105:./src/eeprom.c **** 
  106:./src/eeprom.c **** 
  107:./src/eeprom.c **** //! @brief      write cachepage back to eeprom
  108:./src/eeprom.c **** static EEPROMResult_t writecachepage ( void)
- 204              		.loc 1 108 23 is_stmt 1 view -0
- 205              		.cfi_startproc
- 206              		@ args = 0, pretend = 0, frame = 0
- 207              		@ frame_needed = 0, uses_anonymous_args = 0
- 208 0078 10B5     		push	{r4, lr}
- 209              	.LCFI4:
- 210              		.cfi_def_cfa_offset 8
- 211              		.cfi_offset 4, -8
- 212              		.cfi_offset 14, -4
- 213              	.L32:
+ 198              		.loc 1 108 23 is_stmt 1 view -0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202 0078 10B5     		push	{r4, lr}
+ 203              	.LCFI4:
+ 204              		.cfi_def_cfa_offset 8
+ 205              		.cfi_offset 4, -8
+ 206              		.cfi_offset 14, -4
+ 207              	.L32:
  109:./src/eeprom.c **** {
  110:./src/eeprom.c **** 	EEPROMResult_t  ret;
  111:./src/eeprom.c **** 	uint32_t  i;
@@ -1307,305 +1300,302 @@
  126:./src/eeprom.c **** 	// wait until eeprom ready
  127:./src/eeprom.c **** 	while ( ackpoll() != EEPROM_ERR_OK)
  128:./src/eeprom.c **** 	 {}
- 214              		.loc 1 128 4 view .LVU64
+ 208              		.loc 1 128 4 view .LVU62
  127:./src/eeprom.c **** 	 {}
- 215              		.loc 1 127 8 view .LVU65
+ 209              		.loc 1 127 20 discriminator 1 view .LVU63
  127:./src/eeprom.c **** 	 {}
- 216              		.loc 1 127 10 is_stmt 0 view .LVU66
- 217 007a FFF7C1FF 		bl	ackpoll
- 218              	.LVL14:
+ 210              		.loc 1 127 10 is_stmt 0 discriminator 1 view .LVU64
+ 211 007a FFF7C1FF 		bl	ackpoll
+ 212              	.LVL11:
  127:./src/eeprom.c **** 	 {}
- 219              		.loc 1 127 8 view .LVU67
- 220 007e 0028     		cmp	r0, #0
- 221 0080 FBD1     		bne	.L32
+ 213              		.loc 1 127 20 discriminator 1 view .LVU65
+ 214 007e 0028     		cmp	r0, #0
+ 215 0080 FBD1     		bne	.L32
  129:./src/eeprom.c **** 
  130:./src/eeprom.c **** 
  131:./src/eeprom.c **** 
  132:./src/eeprom.c **** 	while ( I2C1->ISR & ( 1 << 5 | 1 << 1))
- 222              		.loc 1 132 8 is_stmt 1 view .LVU68
- 223              		.loc 1 132 14 is_stmt 0 view .LVU69
- 224 0082 274B     		ldr	r3, .L62
- 225 0084 9A69     		ldr	r2, [r3, #24]
- 226              		.loc 1 132 8 view .LVU70
- 227 0086 12F0220F 		tst	r2, #34
- 228 008a 05D0     		beq	.L33
+ 216              		.loc 1 132 10 is_stmt 1 view .LVU66
+ 217              		.loc 1 132 14 is_stmt 0 view .LVU67
+ 218 0082 274B     		ldr	r3, .L62
+ 219 0084 9A69     		ldr	r2, [r3, #24]
+ 220              		.loc 1 132 10 view .LVU68
+ 221 0086 12F0220F 		tst	r2, #34
+ 222 008a 05D0     		beq	.L33
  133:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 5 | 1 << 1;}
- 229              		.loc 1 133 15 view .LVU71
- 230 008c 2221     		movs	r1, #34
- 231              	.L34:
- 232              		.loc 1 133 5 is_stmt 1 view .LVU72
- 233              		.loc 1 133 15 is_stmt 0 view .LVU73
- 234 008e D961     		str	r1, [r3, #28]
+ 223              		.loc 1 133 15 view .LVU69
+ 224 008c 2221     		movs	r1, #34
+ 225              	.L34:
+ 226              		.loc 1 133 5 is_stmt 1 view .LVU70
+ 227              		.loc 1 133 15 is_stmt 0 view .LVU71
+ 228 008e D961     		str	r1, [r3, #28]
  132:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 5 | 1 << 1;}
- 235              		.loc 1 132 8 is_stmt 1 view .LVU74
+ 229              		.loc 1 132 10 is_stmt 1 view .LVU72
  132:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 5 | 1 << 1;}
- 236              		.loc 1 132 14 is_stmt 0 view .LVU75
- 237 0090 9A69     		ldr	r2, [r3, #24]
+ 230              		.loc 1 132 14 is_stmt 0 view .LVU73
+ 231 0090 9A69     		ldr	r2, [r3, #24]
  132:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 5 | 1 << 1;}
- 238              		.loc 1 132 8 view .LVU76
- 239 0092 12F0220F 		tst	r2, #34
- 240 0096 FAD1     		bne	.L34
- 241              	.L33:
+ 232              		.loc 1 132 10 view .LVU74
+ 233 0092 12F0220F 		tst	r2, #34
+ 234 0096 FAD1     		bne	.L34
+ 235              	.L33:
  134:./src/eeprom.c **** 	
  135:./src/eeprom.c **** 
  136:./src/eeprom.c **** 
  137:./src/eeprom.c **** 	// start
  138:./src/eeprom.c **** 	LastCntlByte = EEPROM_DEV_ADDR | (( Cache.startaddr >> 15) & 0x0E);
- 242              		.loc 1 138 2 is_stmt 1 view .LVU77
- 243              		.loc 1 138 43 is_stmt 0 view .LVU78
- 244 0098 224C     		ldr	r4, .L62+4
+ 236              		.loc 1 138 2 is_stmt 1 view .LVU75
+ 237              		.loc 1 138 43 is_stmt 0 view .LVU76
+ 238 0098 224C     		ldr	r4, .L62+4
  139:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | ( 2 + Cache.count) << 16 | 0 << 10 | LastCntlByte;
- 245              		.loc 1 139 12 view .LVU79
- 246 009a 214A     		ldr	r2, .L62
- 247              		.loc 1 139 28 view .LVU80
- 248 009c D4E90131 		ldrd	r3, r1, [r4, #4]
+ 239              		.loc 1 139 12 view .LVU77
+ 240 009a 214A     		ldr	r2, .L62
+ 241              		.loc 1 139 28 view .LVU78
+ 242 009c D4E90131 		ldrd	r3, r1, [r4, #4]
  138:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | ( 2 + Cache.count) << 16 | 0 << 10 | LastCntlByte;
- 249              		.loc 1 138 54 view .LVU81
- 250 00a0 DB0B     		lsrs	r3, r3, #15
- 251              		.loc 1 139 28 view .LVU82
- 252 00a2 0231     		adds	r1, r1, #2
+ 243              		.loc 1 138 54 view .LVU79
+ 244 00a0 DB0B     		lsrs	r3, r3, #15
+ 245              		.loc 1 139 28 view .LVU80
+ 246 00a2 0231     		adds	r1, r1, #2
  138:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | ( 2 + Cache.count) << 16 | 0 << 10 | LastCntlByte;
- 253              		.loc 1 138 61 view .LVU83
- 254 00a4 03F00E03 		and	r3, r3, #14
+ 247              		.loc 1 138 61 view .LVU81
+ 248 00a4 03F00E03 		and	r3, r3, #14
  138:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | ( 2 + Cache.count) << 16 | 0 << 10 | LastCntlByte;
- 255              		.loc 1 138 33 view .LVU84
- 256 00a8 43F0A003 		orr	r3, r3, #160
- 257              		.loc 1 139 59 view .LVU85
- 258 00ac 43EA0141 		orr	r1, r3, r1, lsl #16
+ 249              		.loc 1 138 33 view .LVU82
+ 250 00a8 43F0A003 		orr	r3, r3, #160
+ 251              		.loc 1 139 59 view .LVU83
+ 252 00ac 43EA0141 		orr	r1, r3, r1, lsl #16
  138:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | ( 2 + Cache.count) << 16 | 0 << 10 | LastCntlByte;
- 259              		.loc 1 138 15 view .LVU86
- 260 00b0 2370     		strb	r3, [r4]
- 261              		.loc 1 139 2 is_stmt 1 view .LVU87
- 262              		.loc 1 139 12 is_stmt 0 view .LVU88
- 263 00b2 5160     		str	r1, [r2, #4]
+ 253              		.loc 1 138 15 view .LVU84
+ 254 00b0 2370     		strb	r3, [r4]
+ 255              		.loc 1 139 2 is_stmt 1 view .LVU85
+ 256              		.loc 1 139 12 is_stmt 0 view .LVU86
+ 257 00b2 5160     		str	r1, [r2, #4]
  140:./src/eeprom.c **** 	__DSB();
- 264              		.loc 1 140 2 is_stmt 1 view .LVU89
- 265              	.LBB28:
- 266              	.LBI28:
+ 258              		.loc 1 140 2 is_stmt 1 view .LVU87
+ 259              	.LBB21:
+ 260              	.LBI21:
  944:./inc/cmsis_gcc.h **** {
- 267              		.loc 2 944 27 view .LVU90
- 268              	.LBB29:
- 269              		.loc 2 946 3 view .LVU91
- 270              		.syntax unified
- 271              	@ 946 "./inc/cmsis_gcc.h" 1
- 272 00b4 BFF34F8F 		dsb 0xF
- 273              	@ 0 "" 2
- 274              		.thumb
- 275              		.syntax unified
- 276              	.LBE29:
- 277              	.LBE28:
+ 261              		.loc 2 944 27 view .LVU88
+ 262              	.LBB22:
+ 263              		.loc 2 946 3 view .LVU89
+ 264              		.syntax unified
+ 265              	@ 946 "./inc/cmsis_gcc.h" 1
+ 266 00b4 BFF34F8F 		dsb 0xF
+ 267              	@ 0 "" 2
+ 268              		.thumb
+ 269              		.syntax unified
+ 270              	.LBE22:
+ 271              	.LBE21:
  141:./src/eeprom.c **** 	I2C1->CR2 |= 1 << 13;
- 278              		.loc 1 141 2 view .LVU92
- 279              		.loc 1 141 12 is_stmt 0 view .LVU93
- 280 00b8 5368     		ldr	r3, [r2, #4]
- 281 00ba 43F40053 		orr	r3, r3, #8192
- 282 00be 5360     		str	r3, [r2, #4]
+ 272              		.loc 1 141 2 view .LVU90
+ 273              		.loc 1 141 6 is_stmt 0 view .LVU91
+ 274 00b8 5368     		ldr	r3, [r2, #4]
+ 275              		.loc 1 141 12 view .LVU92
+ 276 00ba 43F40053 		orr	r3, r3, #8192
+ 277 00be 5360     		str	r3, [r2, #4]
  142:./src/eeprom.c **** 
  143:./src/eeprom.c **** 
  144:./src/eeprom.c **** 	while ( !( I2C1->ISR & ( 1 << 1)))
- 283              		.loc 1 144 2 is_stmt 1 view .LVU94
- 284              	.L35:
+ 278              		.loc 1 144 2 is_stmt 1 view .LVU93
+ 279              	.L35:
  145:./src/eeprom.c **** 	 {}
- 285              		.loc 1 145 4 view .LVU95
+ 280              		.loc 1 145 4 view .LVU94
  144:./src/eeprom.c **** 	 {}
- 286              		.loc 1 144 8 view .LVU96
+ 281              		.loc 1 144 10 discriminator 1 view .LVU95
  144:./src/eeprom.c **** 	 {}
- 287              		.loc 1 144 17 is_stmt 0 view .LVU97
- 288 00c0 9369     		ldr	r3, [r2, #24]
+ 282              		.loc 1 144 17 is_stmt 0 discriminator 1 view .LVU96
+ 283 00c0 9369     		ldr	r3, [r2, #24]
  144:./src/eeprom.c **** 	 {}
- 289              		.loc 1 144 8 view .LVU98
- 290 00c2 9907     		lsls	r1, r3, #30
- 291 00c4 FCD5     		bpl	.L35
+ 284              		.loc 1 144 10 discriminator 1 view .LVU97
+ 285 00c2 9907     		lsls	r1, r3, #30
+ 286 00c4 FCD5     		bpl	.L35
  146:./src/eeprom.c **** 
  147:./src/eeprom.c **** 	I2C1->TXDR = ( Cache.startaddr >> 8) & 0xFF;
- 292              		.loc 1 147 2 is_stmt 1 view .LVU99
- 293              		.loc 1 147 22 is_stmt 0 view .LVU100
- 294 00c6 6068     		ldr	r0, [r4, #4]
+ 287              		.loc 1 147 2 is_stmt 1 view .LVU98
+ 288              		.loc 1 147 22 is_stmt 0 view .LVU99
+ 289 00c6 6068     		ldr	r0, [r4, #4]
  148:./src/eeprom.c **** 
  149:./src/eeprom.c **** 
  150:./src/eeprom.c **** 	while ( !( I2C1->ISR & ( 1 << 1)))
- 295              		.loc 1 150 17 view .LVU101
- 296 00c8 1549     		ldr	r1, .L62
+ 290              		.loc 1 150 17 discriminator 1 view .LVU100
+ 291 00c8 1549     		ldr	r1, .L62
  147:./src/eeprom.c **** 
- 297              		.loc 1 147 39 view .LVU102
- 298 00ca C0F30723 		ubfx	r3, r0, #8, #8
+ 292              		.loc 1 147 39 view .LVU101
+ 293 00ca C0F30723 		ubfx	r3, r0, #8, #8
  147:./src/eeprom.c **** 
- 299              		.loc 1 147 13 view .LVU103
- 300 00ce 9362     		str	r3, [r2, #40]
- 301              		.loc 1 150 2 is_stmt 1 view .LVU104
- 302              	.L36:
+ 294              		.loc 1 147 13 view .LVU102
+ 295 00ce 9362     		str	r3, [r2, #40]
+ 296              		.loc 1 150 2 is_stmt 1 view .LVU103
+ 297              	.L36:
  151:./src/eeprom.c **** 	 {}
- 303              		.loc 1 151 4 view .LVU105
+ 298              		.loc 1 151 4 view .LVU104
  150:./src/eeprom.c **** 	 {}
- 304              		.loc 1 150 8 view .LVU106
+ 299              		.loc 1 150 10 discriminator 1 view .LVU105
  150:./src/eeprom.c **** 	 {}
- 305              		.loc 1 150 17 is_stmt 0 view .LVU107
- 306 00d0 8B69     		ldr	r3, [r1, #24]
+ 300              		.loc 1 150 17 is_stmt 0 discriminator 1 view .LVU106
+ 301 00d0 8B69     		ldr	r3, [r1, #24]
  150:./src/eeprom.c **** 	 {}
- 307              		.loc 1 150 8 view .LVU108
- 308 00d2 9A07     		lsls	r2, r3, #30
- 309 00d4 FCD5     		bpl	.L36
+ 302              		.loc 1 150 10 discriminator 1 view .LVU107
+ 303 00d2 9A07     		lsls	r2, r3, #30
+ 304 00d4 FCD5     		bpl	.L36
  152:./src/eeprom.c **** 
  153:./src/eeprom.c **** 	I2C1->TXDR = ( Cache.startaddr >> 0) & 0xFF;
- 310              		.loc 1 153 2 is_stmt 1 view .LVU109
- 311              		.loc 1 153 39 is_stmt 0 view .LVU110
- 312 00d6 C0B2     		uxtb	r0, r0
+ 305              		.loc 1 153 2 is_stmt 1 view .LVU108
+ 306              		.loc 1 153 39 is_stmt 0 view .LVU109
+ 307 00d6 C0B2     		uxtb	r0, r0
  154:./src/eeprom.c **** 
  155:./src/eeprom.c **** 
  156:./src/eeprom.c **** 	// send data bytes
  157:./src/eeprom.c **** 	for ( i = 0; i < Cache.count; i++)
- 313              		.loc 1 157 24 view .LVU111
- 314 00d8 A368     		ldr	r3, [r4, #8]
+ 308              		.loc 1 157 24 discriminator 1 view .LVU110
+ 309 00d8 A368     		ldr	r3, [r4, #8]
  153:./src/eeprom.c **** 
- 315              		.loc 1 153 13 view .LVU112
- 316 00da 8862     		str	r0, [r1, #40]
- 317              		.loc 1 157 2 is_stmt 1 view .LVU113
- 318              	.LVL15:
- 319              		.loc 1 157 15 view .LVU114
- 320              		.loc 1 157 2 is_stmt 0 view .LVU115
- 321 00dc 6BB1     		cbz	r3, .L37
- 322 00de 1249     		ldr	r1, .L62+8
+ 310              		.loc 1 153 13 view .LVU111
+ 311 00da 8862     		str	r0, [r1, #40]
+ 312              		.loc 1 157 2 is_stmt 1 view .LVU112
+ 313              	.LVL12:
+ 314              		.loc 1 157 17 discriminator 1 view .LVU113
+ 315 00dc 6BB1     		cbz	r3, .L37
+ 316 00de 1249     		ldr	r1, .L62+8
  158:./src/eeprom.c **** 	{
  159:./src/eeprom.c **** 		while ( !( I2C1->ISR & ( 1 << 1)))
- 323              		.loc 1 159 18 view .LVU116
- 324 00e0 0F4A     		ldr	r2, .L62
- 325 00e2 0B44     		add	r3, r3, r1
- 326 00e4 0831     		adds	r1, r1, #8
- 327 00e6 03F10800 		add	r0, r3, #8
- 328              	.LVL16:
- 329              	.L38:
+ 317              		.loc 1 159 18 is_stmt 0 discriminator 1 view .LVU114
+ 318 00e0 0F4A     		ldr	r2, .L62
+ 319 00e2 0B44     		add	r3, r3, r1
+ 320 00e4 0831     		adds	r1, r1, #8
+ 321 00e6 03F10800 		add	r0, r3, #8
+ 322              	.LVL13:
+ 323              	.L38:
  160:./src/eeprom.c **** 		 {}
- 330              		.loc 1 160 5 is_stmt 1 view .LVU117
+ 324              		.loc 1 160 5 is_stmt 1 view .LVU115
  159:./src/eeprom.c **** 		 {}
- 331              		.loc 1 159 9 view .LVU118
+ 325              		.loc 1 159 11 discriminator 1 view .LVU116
  159:./src/eeprom.c **** 		 {}
- 332              		.loc 1 159 18 is_stmt 0 view .LVU119
- 333 00ea 9369     		ldr	r3, [r2, #24]
+ 326              		.loc 1 159 18 is_stmt 0 discriminator 1 view .LVU117
+ 327 00ea 9369     		ldr	r3, [r2, #24]
  159:./src/eeprom.c **** 		 {}
- 334              		.loc 1 159 9 view .LVU120
- 335 00ec 9B07     		lsls	r3, r3, #30
- 336 00ee FCD5     		bpl	.L38
+ 328              		.loc 1 159 11 discriminator 1 view .LVU118
+ 329 00ec 9B07     		lsls	r3, r3, #30
+ 330 00ee FCD5     		bpl	.L38
  161:./src/eeprom.c **** 
  162:./src/eeprom.c **** 		I2C1->TXDR = Cache.data[i];
- 337              		.loc 1 162 3 is_stmt 1 view .LVU121
- 338              		.loc 1 162 26 is_stmt 0 view .LVU122
- 339 00f0 11F8013F 		ldrb	r3, [r1, #1]!	@ zero_extendqisi2
+ 331              		.loc 1 162 3 is_stmt 1 view .LVU119
+ 332              		.loc 1 162 26 is_stmt 0 view .LVU120
+ 333 00f0 11F8013F 		ldrb	r3, [r1, #1]!	@ zero_extendqisi2
  157:./src/eeprom.c **** 	{
- 340              		.loc 1 157 2 view .LVU123
- 341 00f4 8142     		cmp	r1, r0
- 342              		.loc 1 162 14 view .LVU124
- 343 00f6 9362     		str	r3, [r2, #40]
+ 334              		.loc 1 157 17 discriminator 1 view .LVU121
+ 335 00f4 8842     		cmp	r0, r1
+ 336              		.loc 1 162 14 view .LVU122
+ 337 00f6 9362     		str	r3, [r2, #40]
  157:./src/eeprom.c **** 	{
- 344              		.loc 1 157 32 is_stmt 1 view .LVU125
- 345              	.LVL17:
+ 338              		.loc 1 157 33 is_stmt 1 discriminator 2 view .LVU123
+ 339              	.LVL14:
  157:./src/eeprom.c **** 	{
- 346              		.loc 1 157 15 view .LVU126
- 157:./src/eeprom.c **** 	{
- 347              		.loc 1 157 2 is_stmt 0 view .LVU127
- 348 00f8 F7D1     		bne	.L38
- 349              	.LVL18:
- 350              	.L37:
+ 340              		.loc 1 157 17 discriminator 1 view .LVU124
+ 341 00f8 F7D1     		bne	.L38
+ 342              	.LVL15:
+ 343              	.L37:
  163:./src/eeprom.c **** 	}
  164:./src/eeprom.c **** 
  165:./src/eeprom.c **** 
  166:./src/eeprom.c **** 	// wait for last byte
  167:./src/eeprom.c **** 	while ( !( I2C1->ISR & ( 1 << 6)))
- 351              		.loc 1 167 17 view .LVU128
- 352 00fa 094A     		ldr	r2, .L62
- 353              	.L40:
+ 344              		.loc 1 167 17 is_stmt 0 discriminator 1 view .LVU125
+ 345 00fa 094A     		ldr	r2, .L62
+ 346              	.L40:
  168:./src/eeprom.c **** 	 {}
- 354              		.loc 1 168 4 is_stmt 1 view .LVU129
+ 347              		.loc 1 168 4 is_stmt 1 view .LVU126
  167:./src/eeprom.c **** 	 {}
- 355              		.loc 1 167 8 view .LVU130
+ 348              		.loc 1 167 10 discriminator 1 view .LVU127
  167:./src/eeprom.c **** 	 {}
- 356              		.loc 1 167 17 is_stmt 0 view .LVU131
- 357 00fc 9369     		ldr	r3, [r2, #24]
+ 349              		.loc 1 167 17 is_stmt 0 discriminator 1 view .LVU128
+ 350 00fc 9369     		ldr	r3, [r2, #24]
  167:./src/eeprom.c **** 	 {}
- 358              		.loc 1 167 8 view .LVU132
- 359 00fe 5906     		lsls	r1, r3, #25
- 360 0100 FCD5     		bpl	.L40
+ 351              		.loc 1 167 10 discriminator 1 view .LVU129
+ 352 00fe 5906     		lsls	r1, r3, #25
+ 353 0100 FCD5     		bpl	.L40
  169:./src/eeprom.c **** 
  170:./src/eeprom.c **** 	// initiate STOP
  171:./src/eeprom.c **** 	I2C1->CR2 = 0;
- 361              		.loc 1 171 2 is_stmt 1 view .LVU133
- 362              		.loc 1 171 12 is_stmt 0 view .LVU134
- 363 0102 0023     		movs	r3, #0
- 364 0104 5360     		str	r3, [r2, #4]
+ 354              		.loc 1 171 2 is_stmt 1 view .LVU130
+ 355              		.loc 1 171 12 is_stmt 0 view .LVU131
+ 356 0102 0023     		movs	r3, #0
+ 357 0104 5360     		str	r3, [r2, #4]
  172:./src/eeprom.c **** 	__DSB();
- 365              		.loc 1 172 2 is_stmt 1 view .LVU135
- 366              	.LBB30:
- 367              	.LBI30:
+ 358              		.loc 1 172 2 is_stmt 1 view .LVU132
+ 359              	.LBB23:
+ 360              	.LBI23:
  944:./inc/cmsis_gcc.h **** {
- 368              		.loc 2 944 27 view .LVU136
- 369              	.LBB31:
- 370              		.loc 2 946 3 view .LVU137
- 371              		.syntax unified
- 372              	@ 946 "./inc/cmsis_gcc.h" 1
- 373 0106 BFF34F8F 		dsb 0xF
- 374              	@ 0 "" 2
- 375              		.thumb
- 376              		.syntax unified
- 377              	.LBE31:
- 378              	.LBE30:
+ 361              		.loc 2 944 27 view .LVU133
+ 362              	.LBB24:
+ 363              		.loc 2 946 3 view .LVU134
+ 364              		.syntax unified
+ 365              	@ 946 "./inc/cmsis_gcc.h" 1
+ 366 0106 BFF34F8F 		dsb 0xF
+ 367              	@ 0 "" 2
+ 368              		.thumb
+ 369              		.syntax unified
+ 370              	.LBE24:
+ 371              	.LBE23:
  173:./src/eeprom.c **** 	I2C1->CR2 = 1 << 14;
- 379              		.loc 1 173 2 view .LVU138
- 380              		.loc 1 173 12 is_stmt 0 view .LVU139
- 381 010a 4FF48043 		mov	r3, #16384
+ 372              		.loc 1 173 2 view .LVU135
+ 373              		.loc 1 173 12 is_stmt 0 view .LVU136
+ 374 010a 4FF48043 		mov	r3, #16384
  174:./src/eeprom.c **** 
  175:./src/eeprom.c **** 	// wait for STOP
  176:./src/eeprom.c **** 	while ( !( I2C1->ISR & ( 1 << 5)))
- 382              		.loc 1 176 17 view .LVU140
- 383 010e 0449     		ldr	r1, .L62
+ 375              		.loc 1 176 17 discriminator 1 view .LVU137
+ 376 010e 0449     		ldr	r1, .L62
  173:./src/eeprom.c **** 	I2C1->CR2 = 1 << 14;
- 384              		.loc 1 173 12 view .LVU141
- 385 0110 5360     		str	r3, [r2, #4]
- 386              		.loc 1 176 2 is_stmt 1 view .LVU142
- 387              	.L41:
+ 377              		.loc 1 173 12 view .LVU138
+ 378 0110 5360     		str	r3, [r2, #4]
+ 379              		.loc 1 176 2 is_stmt 1 view .LVU139
+ 380              	.L41:
  177:./src/eeprom.c **** 	 {}
- 388              		.loc 1 177 4 view .LVU143
+ 381              		.loc 1 177 4 view .LVU140
  176:./src/eeprom.c **** 	 {}
- 389              		.loc 1 176 8 view .LVU144
+ 382              		.loc 1 176 10 discriminator 1 view .LVU141
  176:./src/eeprom.c **** 	 {}
- 390              		.loc 1 176 17 is_stmt 0 view .LVU145
- 391 0112 8B69     		ldr	r3, [r1, #24]
+ 383              		.loc 1 176 17 is_stmt 0 discriminator 1 view .LVU142
+ 384 0112 8B69     		ldr	r3, [r1, #24]
  176:./src/eeprom.c **** 	 {}
- 392              		.loc 1 176 8 view .LVU146
- 393 0114 9B06     		lsls	r3, r3, #26
- 394 0116 FCD5     		bpl	.L41
+ 385              		.loc 1 176 10 discriminator 1 view .LVU143
+ 386 0114 9B06     		lsls	r3, r3, #26
+ 387 0116 FCD5     		bpl	.L41
  178:./src/eeprom.c **** 
  179:./src/eeprom.c **** 
  180:./src/eeprom.c **** 	if ( ret == EEPROM_ERR_OK)
- 395              		.loc 1 180 2 is_stmt 1 view .LVU147
+ 388              		.loc 1 180 2 is_stmt 1 view .LVU144
  181:./src/eeprom.c **** 	 { Cache.dirty = 0;}		// cache written
- 396              		.loc 1 181 5 view .LVU148
- 397              		.loc 1 181 17 is_stmt 0 view .LVU149
- 398 0118 0023     		movs	r3, #0
- 399 011a 2373     		strb	r3, [r4, #12]
+ 389              		.loc 1 181 5 view .LVU145
+ 390              		.loc 1 181 17 is_stmt 0 view .LVU146
+ 391 0118 0023     		movs	r3, #0
+ 392 011a 2373     		strb	r3, [r4, #12]
  182:./src/eeprom.c **** 
  183:./src/eeprom.c **** 
  184:./src/eeprom.c **** 	return ret;
- 400              		.loc 1 184 2 is_stmt 1 view .LVU150
+ 393              		.loc 1 184 2 is_stmt 1 view .LVU147
  185:./src/eeprom.c **** }
- 401              		.loc 1 185 1 is_stmt 0 view .LVU151
- 402 011c 10BD     		pop	{r4, pc}
- 403              	.L63:
- 404 011e 00BF     		.align	2
- 405              	.L62:
- 406 0120 00540040 		.word	1073763328
- 407 0124 00000000 		.word	.LANCHOR0
- 408 0128 04000000 		.word	.LANCHOR0+4
- 409              		.cfi_endproc
- 410              	.LFE151:
- 412              		.align	1
- 413              		.p2align 2,,3
- 414              		.global	EEPROM_Read
- 415              		.syntax unified
- 416              		.thumb
- 417              		.thumb_func
- 418              		.fpu fpv5-d16
- 420              	EEPROM_Read:
- 421              	.LVL19:
- 422              	.LFB147:
+ 394              		.loc 1 185 1 is_stmt 0 view .LVU148
+ 395 011c 10BD     		pop	{r4, pc}
+ 396              	.L63:
+ 397 011e 00BF     		.align	2
+ 398              	.L62:
+ 399 0120 00540040 		.word	1073763328
+ 400 0124 00000000 		.word	.LANCHOR0
+ 401 0128 04000000 		.word	.LANCHOR0+4
+ 402              		.cfi_endproc
+ 403              	.LFE151:
+ 405              		.align	1
+ 406              		.p2align 2,,3
+ 407              		.global	EEPROM_Read
+ 408              		.syntax unified
+ 409              		.thumb
+ 410              		.thumb_func
+ 412              	EEPROM_Read:
+ 413              	.LVL16:
+ 414              	.LFB147:
  186:./src/eeprom.c **** 
  187:./src/eeprom.c **** 
  188:./src/eeprom.c **** 
@@ -1715,24 +1705,24 @@
  292:./src/eeprom.c **** //! @param[in]  length  number of bytes read from eeprom
  293:./src/eeprom.c **** EEPROMResult_t  EEPROM_Read ( uint32_t addr, void * buffer, uint32_t length)
  294:./src/eeprom.c **** {
- 423              		.loc 1 294 1 is_stmt 1 view -0
- 424              		.cfi_startproc
- 425              		@ args = 0, pretend = 0, frame = 0
- 426              		@ frame_needed = 0, uses_anonymous_args = 0
+ 415              		.loc 1 294 1 is_stmt 1 view -0
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 0
+ 418              		@ frame_needed = 0, uses_anonymous_args = 0
  295:./src/eeprom.c **** 	EEPROMResult_t ret;
- 427              		.loc 1 295 2 view .LVU153
+ 419              		.loc 1 295 2 view .LVU150
  296:./src/eeprom.c **** 	uint8_t  *pBuff;
- 428              		.loc 1 296 2 view .LVU154
+ 420              		.loc 1 296 2 view .LVU151
  297:./src/eeprom.c **** 
  298:./src/eeprom.c **** 
  299:./src/eeprom.c **** 	ret = EEPROM_ERR_OK;
- 429              		.loc 1 299 2 view .LVU155
+ 421              		.loc 1 299 2 view .LVU152
  300:./src/eeprom.c **** 
  301:./src/eeprom.c **** 	pBuff = buffer;
- 430              		.loc 1 301 2 view .LVU156
+ 422              		.loc 1 301 2 view .LVU153
  302:./src/eeprom.c **** 
  303:./src/eeprom.c **** 	if ( addr >= EEPROM_MEM_SIZE)
- 431              		.loc 1 303 2 view .LVU157
+ 423              		.loc 1 303 2 view .LVU154
  304:./src/eeprom.c **** 	{
  305:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  306:./src/eeprom.c **** 		goto exit;
@@ -1740,27 +1730,27 @@
  308:./src/eeprom.c **** 
  309:./src/eeprom.c **** 
  310:./src/eeprom.c **** 	if ( length == 0)
- 432              		.loc 1 310 2 view .LVU158
- 433              		.loc 1 310 5 is_stmt 0 view .LVU159
- 434 012c 002A     		cmp	r2, #0
- 435 012e 00F09A80 		beq	.L108
- 436 0132 B0F5002F 		cmp	r0, #524288
+ 424              		.loc 1 310 2 view .LVU155
+ 425              		.loc 1 310 5 is_stmt 0 view .LVU156
+ 426 012c 002A     		cmp	r2, #0
+ 427 012e 00F09980 		beq	.L108
+ 428 0132 B0F5002F 		cmp	r0, #524288
  294:./src/eeprom.c **** 	EEPROMResult_t ret;
- 437              		.loc 1 294 1 view .LVU160
- 438 0136 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
- 439              	.LCFI5:
- 440              		.cfi_def_cfa_offset 32
- 441              		.cfi_offset 4, -32
- 442              		.cfi_offset 5, -28
- 443              		.cfi_offset 6, -24
- 444              		.cfi_offset 7, -20
- 445              		.cfi_offset 8, -16
- 446              		.cfi_offset 9, -12
- 447              		.cfi_offset 10, -8
- 448              		.cfi_offset 14, -4
- 449 013a 0646     		mov	r6, r0
- 450              		.loc 1 310 5 view .LVU161
- 451 013c 80F08280 		bcs	.L85
+ 429              		.loc 1 294 1 view .LVU157
+ 430 0136 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 431              	.LCFI5:
+ 432              		.cfi_def_cfa_offset 32
+ 433              		.cfi_offset 4, -32
+ 434              		.cfi_offset 5, -28
+ 435              		.cfi_offset 6, -24
+ 436              		.cfi_offset 7, -20
+ 437              		.cfi_offset 8, -16
+ 438              		.cfi_offset 9, -12
+ 439              		.cfi_offset 10, -8
+ 440              		.cfi_offset 14, -4
+ 441 013a 0646     		mov	r6, r0
+ 442              		.loc 1 310 5 view .LVU158
+ 443 013c 80F08180 		bcs	.L85
  311:./src/eeprom.c **** 	{
  312:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  313:./src/eeprom.c **** 		goto exit;
@@ -1768,7 +1758,7 @@
  315:./src/eeprom.c **** 
  316:./src/eeprom.c **** 
  317:./src/eeprom.c **** 	if (( addr + length) > EEPROM_MEM_SIZE)
- 452              		.loc 1 317 2 is_stmt 1 view .LVU162
+ 444              		.loc 1 317 2 is_stmt 1 view .LVU159
  318:./src/eeprom.c **** 	{
  319:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  320:./src/eeprom.c **** 		goto exit;
@@ -1776,17 +1766,17 @@
  322:./src/eeprom.c **** 
  323:./src/eeprom.c **** 
  324:./src/eeprom.c **** 	if ( buffer == NULL)
- 453              		.loc 1 324 2 view .LVU163
+ 445              		.loc 1 324 2 view .LVU160
  317:./src/eeprom.c **** 	{
- 454              		.loc 1 317 13 is_stmt 0 view .LVU164
- 455 0140 8318     		adds	r3, r0, r2
- 456 0142 9146     		mov	r9, r2
- 457              		.loc 1 324 5 view .LVU165
- 458 0144 B3F5002F 		cmp	r3, #524288
- 459 0148 7CD8     		bhi	.L85
- 460 014a 0C46     		mov	r4, r1
- 461 014c 0029     		cmp	r1, #0
- 462 014e 79D0     		beq	.L85
+ 446              		.loc 1 317 13 is_stmt 0 view .LVU161
+ 447 0140 8318     		adds	r3, r0, r2
+ 448 0142 9146     		mov	r9, r2
+ 449              		.loc 1 324 5 view .LVU162
+ 450 0144 B3F5002F 		cmp	r3, #524288
+ 451 0148 7BD8     		bhi	.L85
+ 452 014a 8846     		mov	r8, r1
+ 453 014c 0029     		cmp	r1, #0
+ 454 014e 78D0     		beq	.L85
  325:./src/eeprom.c **** 	{
  326:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  327:./src/eeprom.c **** 		goto exit;
@@ -1794,36 +1784,15 @@
  329:./src/eeprom.c **** 
  330:./src/eeprom.c **** 	
  331:./src/eeprom.c **** 	if ( Cache.dirty)
- 463              		.loc 1 331 2 is_stmt 1 view .LVU166
- 464              		.loc 1 331 12 is_stmt 0 view .LVU167
- 465 0150 464D     		ldr	r5, .L117
- 466              		.loc 1 331 5 view .LVU168
- 467 0152 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
- 468 0154 002B     		cmp	r3, #0
- 469 0156 7FD1     		bne	.L112
- 470              	.LVL20:
- 471              	.L66:
- 294:./src/eeprom.c **** 	EEPROMResult_t ret;
- 472              		.loc 1 294 1 view .LVU169
- 473 0158 A046     		mov	r8, r4
- 474              	.LBB45:
- 475              	.LBB46:
- 218:./src/eeprom.c **** 	
- 476              		.loc 1 218 15 view .LVU170
- 477 015a 6627     		movs	r7, #102
- 217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 478              		.loc 1 217 14 view .LVU171
- 479 015c 444C     		ldr	r4, .L117+4
- 480              	.LVL21:
- 217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 481              		.loc 1 217 14 view .LVU172
- 482 015e C144     		add	r9, r9, r8
- 483              	.LVL22:
- 484              	.L83:
- 217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 485              		.loc 1 217 14 view .LVU173
- 486              	.LBE46:
- 487              	.LBE45:
+ 455              		.loc 1 331 2 is_stmt 1 view .LVU163
+ 456              		.loc 1 331 12 is_stmt 0 view .LVU164
+ 457 0150 454D     		ldr	r5, .L117
+ 458              		.loc 1 331 5 view .LVU165
+ 459 0152 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
+ 460 0154 002B     		cmp	r3, #0
+ 461 0156 7ED1     		bne	.L112
+ 462              	.LVL17:
+ 463              	.L66:
  332:./src/eeprom.c **** 	{
  333:./src/eeprom.c **** 		ret = writecachepage();
  334:./src/eeprom.c **** 		
@@ -1835,352 +1804,369 @@
  340:./src/eeprom.c **** 	
  341:./src/eeprom.c **** 
  342:./src/eeprom.c **** 	while ( length)
+ 464              		.loc 1 342 10 is_stmt 1 view .LVU166
+ 465 0158 C144     		add	r9, r9, r8
+ 466              	.LVL18:
+ 467              	.LBB45:
+ 468              	.LBB46:
+ 217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
+ 469              		.loc 1 217 14 is_stmt 0 view .LVU167
+ 470 015a 444C     		ldr	r4, .L117+4
+ 218:./src/eeprom.c **** 	
+ 471              		.loc 1 218 15 view .LVU168
+ 472 015c 6627     		movs	r7, #102
+ 473              	.LVL19:
+ 474              	.L83:
+ 218:./src/eeprom.c **** 	
+ 475              		.loc 1 218 15 view .LVU169
+ 476              	.LBE46:
+ 477              	.LBE45:
  343:./src/eeprom.c **** 	{
  344:./src/eeprom.c **** 		if (( addr < Cache.startaddr) || ( addr - Cache.startaddr >= Cache.count))
- 488              		.loc 1 344 3 is_stmt 1 view .LVU174
- 489              		.loc 1 344 21 is_stmt 0 view .LVU175
- 490 0160 6B68     		ldr	r3, [r5, #4]
- 491              		.loc 1 344 6 view .LVU176
- 492 0162 B342     		cmp	r3, r6
- 493 0164 03D8     		bhi	.L68
- 494              		.loc 1 344 43 discriminator 1 view .LVU177
- 495 0166 F31A     		subs	r3, r6, r3
- 496              		.loc 1 344 33 discriminator 1 view .LVU178
- 497 0168 AA68     		ldr	r2, [r5, #8]
- 498 016a 9342     		cmp	r3, r2
- 499 016c 60D3     		bcc	.L69
- 500              	.L68:
+ 478              		.loc 1 344 3 is_stmt 1 view .LVU170
+ 479              		.loc 1 344 21 is_stmt 0 view .LVU171
+ 480 015e 6B68     		ldr	r3, [r5, #4]
+ 481              		.loc 1 344 6 view .LVU172
+ 482 0160 B342     		cmp	r3, r6
+ 483 0162 03D8     		bhi	.L68
+ 484              		.loc 1 344 43 discriminator 1 view .LVU173
+ 485 0164 F31A     		subs	r3, r6, r3
+ 486              		.loc 1 344 33 discriminator 1 view .LVU174
+ 487 0166 AA68     		ldr	r2, [r5, #8]
+ 488 0168 9342     		cmp	r3, r2
+ 489 016a 60D3     		bcc	.L69
+ 490              	.L68:
  345:./src/eeprom.c **** 		{
  346:./src/eeprom.c **** 			ret = readcachepage ( addr & ~( EEPROM_CACHE_SIZE - 1), EEPROM_CACHE_SIZE);
- 501              		.loc 1 346 4 is_stmt 1 view .LVU179
- 502              	.LBB61:
- 503              	.LBB56:
+ 491              		.loc 1 346 4 is_stmt 1 view .LVU175
+ 492              	.LBB61:
+ 493              	.LBB56:
  198:./src/eeprom.c **** 	{
- 504              		.loc 1 198 5 is_stmt 0 view .LVU180
- 505 016e 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
- 506              	.LBE56:
- 507              	.LBE61:
- 508              		.loc 1 346 10 view .LVU181
- 509 0170 26F07F0A 		bic	r10, r6, #127
- 510              	.LVL23:
- 511              	.LBB62:
- 512              	.LBI45:
+ 494              		.loc 1 198 5 is_stmt 0 view .LVU176
+ 495 016c 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
+ 496              	.LBE56:
+ 497              	.LBE61:
+ 498              		.loc 1 346 10 view .LVU177
+ 499 016e 26F07F0A 		bic	r10, r6, #127
+ 500              	.LVL20:
+ 501              	.LBB62:
+ 502              	.LBI45:
  190:./src/eeprom.c **** {
- 513              		.loc 1 190 24 is_stmt 1 view .LVU182
- 514              	.LBB57:
+ 503              		.loc 1 190 24 is_stmt 1 view .LVU178
+ 504              	.LBB57:
  192:./src/eeprom.c **** 
- 515              		.loc 1 192 2 view .LVU183
+ 505              		.loc 1 192 2 view .LVU179
  195:./src/eeprom.c **** 	
- 516              		.loc 1 195 2 view .LVU184
+ 506              		.loc 1 195 2 view .LVU180
  198:./src/eeprom.c **** 	{
- 517              		.loc 1 198 2 view .LVU185
+ 507              		.loc 1 198 2 view .LVU181
  198:./src/eeprom.c **** 	{
- 518              		.loc 1 198 5 is_stmt 0 view .LVU186
- 519 0174 002B     		cmp	r3, #0
- 520 0176 68D1     		bne	.L113
- 521              	.L70:
+ 508              		.loc 1 198 5 is_stmt 0 view .LVU182
+ 509 0172 002B     		cmp	r3, #0
+ 510 0174 68D1     		bne	.L113
+ 511              	.L70:
  209:./src/eeprom.c **** 	Cache.count = count;
- 522              		.loc 1 209 2 is_stmt 1 view .LVU187
+ 512              		.loc 1 209 2 is_stmt 1 view .LVU183
  210:./src/eeprom.c **** 	
- 523              		.loc 1 210 14 is_stmt 0 view .LVU188
- 524 0178 8023     		movs	r3, #128
- 525 017a C5E901A3 		strd	r10, r3, [r5, #4]
+ 513              		.loc 1 210 14 is_stmt 0 view .LVU184
+ 514 0176 8023     		movs	r3, #128
+ 515 0178 C5E901A3 		strd	r10, r3, [r5, #4]
  213:./src/eeprom.c **** 	 {}
- 526              		.loc 1 213 2 is_stmt 1 view .LVU189
- 527              	.L72:
+ 516              		.loc 1 213 2 is_stmt 1 view .LVU185
+ 517              	.L72:
  214:./src/eeprom.c **** 
- 528              		.loc 1 214 4 view .LVU190
+ 518              		.loc 1 214 4 view .LVU186
  213:./src/eeprom.c **** 	 {}
- 529              		.loc 1 213 8 view .LVU191
+ 519              		.loc 1 213 20 discriminator 1 view .LVU187
  213:./src/eeprom.c **** 	 {}
- 530              		.loc 1 213 10 is_stmt 0 view .LVU192
- 531 017e FFF73FFF 		bl	ackpoll
- 532              	.LVL24:
+ 520              		.loc 1 213 10 is_stmt 0 discriminator 1 view .LVU188
+ 521 017c FFF740FF 		bl	ackpoll
+ 522              	.LVL21:
  213:./src/eeprom.c **** 	 {}
- 533              		.loc 1 213 8 view .LVU193
- 534 0182 0028     		cmp	r0, #0
- 535 0184 FBD1     		bne	.L72
+ 523              		.loc 1 213 20 discriminator 1 view .LVU189
+ 524 0180 0028     		cmp	r0, #0
+ 525 0182 FBD1     		bne	.L72
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 536              		.loc 1 217 8 is_stmt 1 view .LVU194
+ 526              		.loc 1 217 10 is_stmt 1 view .LVU190
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 537              		.loc 1 217 14 is_stmt 0 view .LVU195
- 538 0186 A369     		ldr	r3, [r4, #24]
+ 527              		.loc 1 217 14 is_stmt 0 view .LVU191
+ 528 0184 A369     		ldr	r3, [r4, #24]
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 539              		.loc 1 217 8 view .LVU196
- 540 0188 13F0660F 		tst	r3, #102
- 541 018c 04D0     		beq	.L114
- 542              	.L73:
+ 529              		.loc 1 217 10 view .LVU192
+ 530 0186 13F0660F 		tst	r3, #102
+ 531 018a 04D0     		beq	.L114
+ 532              	.L73:
  218:./src/eeprom.c **** 	
- 543              		.loc 1 218 5 is_stmt 1 view .LVU197
+ 533              		.loc 1 218 5 is_stmt 1 view .LVU193
  218:./src/eeprom.c **** 	
- 544              		.loc 1 218 15 is_stmt 0 view .LVU198
- 545 018e E761     		str	r7, [r4, #28]
+ 534              		.loc 1 218 15 is_stmt 0 view .LVU194
+ 535 018c E761     		str	r7, [r4, #28]
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 546              		.loc 1 217 8 is_stmt 1 view .LVU199
+ 536              		.loc 1 217 10 is_stmt 1 view .LVU195
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 547              		.loc 1 217 14 is_stmt 0 view .LVU200
- 548 0190 A369     		ldr	r3, [r4, #24]
+ 537              		.loc 1 217 14 is_stmt 0 view .LVU196
+ 538 018e A369     		ldr	r3, [r4, #24]
  217:./src/eeprom.c **** 	 { I2C1->ICR = 1 << 6 | 1 << 5 | 1 << 2 | 1 << 1;}
- 549              		.loc 1 217 8 view .LVU201
- 550 0192 13F0660F 		tst	r3, #102
- 551 0196 FAD1     		bne	.L73
- 552              	.L114:
+ 539              		.loc 1 217 10 view .LVU197
+ 540 0190 13F0660F 		tst	r3, #102
+ 541 0194 FAD1     		bne	.L73
+ 542              	.L114:
  223:./src/eeprom.c **** 	I2C1->CR2 = 2 << 16 | 0 << 10 | LastCntlByte;
- 553              		.loc 1 223 2 is_stmt 1 view .LVU202
+ 543              		.loc 1 223 2 is_stmt 1 view .LVU198
  223:./src/eeprom.c **** 	I2C1->CR2 = 2 << 16 | 0 << 10 | LastCntlByte;
- 554              		.loc 1 223 54 is_stmt 0 view .LVU203
- 555 0198 4FEADA33 		lsr	r3, r10, #15
+ 544              		.loc 1 223 54 is_stmt 0 view .LVU199
+ 545 0196 4FEADA33 		lsr	r3, r10, #15
  223:./src/eeprom.c **** 	I2C1->CR2 = 2 << 16 | 0 << 10 | LastCntlByte;
- 556              		.loc 1 223 61 view .LVU204
- 557 019c 03F00E03 		and	r3, r3, #14
+ 546              		.loc 1 223 61 view .LVU200
+ 547 019a 03F00E03 		and	r3, r3, #14
  223:./src/eeprom.c **** 	I2C1->CR2 = 2 << 16 | 0 << 10 | LastCntlByte;
- 558              		.loc 1 223 33 view .LVU205
- 559 01a0 43F0A003 		orr	r3, r3, #160
+ 548              		.loc 1 223 33 view .LVU201
+ 549 019e 43F0A003 		orr	r3, r3, #160
  224:./src/eeprom.c **** 	__DSB();
- 560              		.loc 1 224 32 view .LVU206
- 561 01a4 43F40032 		orr	r2, r3, #131072
+ 550              		.loc 1 224 32 view .LVU202
+ 551 01a2 43F40032 		orr	r2, r3, #131072
  223:./src/eeprom.c **** 	I2C1->CR2 = 2 << 16 | 0 << 10 | LastCntlByte;
- 562              		.loc 1 223 15 view .LVU207
- 563 01a8 2B70     		strb	r3, [r5]
+ 552              		.loc 1 223 15 view .LVU203
+ 553 01a6 2B70     		strb	r3, [r5]
  224:./src/eeprom.c **** 	__DSB();
- 564              		.loc 1 224 2 is_stmt 1 view .LVU208
+ 554              		.loc 1 224 2 is_stmt 1 view .LVU204
  224:./src/eeprom.c **** 	__DSB();
- 565              		.loc 1 224 12 is_stmt 0 view .LVU209
- 566 01aa 6260     		str	r2, [r4, #4]
+ 555              		.loc 1 224 12 is_stmt 0 view .LVU205
+ 556 01a8 6260     		str	r2, [r4, #4]
  225:./src/eeprom.c **** 	I2C1->CR2 |= 1 << 13;
- 567              		.loc 1 225 2 is_stmt 1 view .LVU210
- 568              	.LBB47:
- 569              	.LBI47:
+ 557              		.loc 1 225 2 is_stmt 1 view .LVU206
+ 558              	.LBB47:
+ 559              	.LBI47:
  944:./inc/cmsis_gcc.h **** {
- 570              		.loc 2 944 27 view .LVU211
- 571              	.LBB48:
- 572              		.loc 2 946 3 view .LVU212
- 573              		.syntax unified
- 574              	@ 946 "./inc/cmsis_gcc.h" 1
- 575 01ac BFF34F8F 		dsb 0xF
- 576              	@ 0 "" 2
- 577              		.thumb
- 578              		.syntax unified
- 579              	.LBE48:
- 580              	.LBE47:
+ 560              		.loc 2 944 27 view .LVU207
+ 561              	.LBB48:
+ 562              		.loc 2 946 3 view .LVU208
+ 563              		.syntax unified
+ 564              	@ 946 "./inc/cmsis_gcc.h" 1
+ 565 01aa BFF34F8F 		dsb 0xF
+ 566              	@ 0 "" 2
+ 567              		.thumb
+ 568              		.syntax unified
+ 569              	.LBE48:
+ 570              	.LBE47:
  226:./src/eeprom.c **** 
- 581              		.loc 1 226 2 view .LVU213
+ 571              		.loc 1 226 2 view .LVU209
  226:./src/eeprom.c **** 
- 582              		.loc 1 226 12 is_stmt 0 view .LVU214
- 583 01b0 6368     		ldr	r3, [r4, #4]
- 584 01b2 43F40053 		orr	r3, r3, #8192
- 585 01b6 6360     		str	r3, [r4, #4]
+ 572              		.loc 1 226 6 is_stmt 0 view .LVU210
+ 573 01ae 6368     		ldr	r3, [r4, #4]
+ 226:./src/eeprom.c **** 
+ 574              		.loc 1 226 12 view .LVU211
+ 575 01b0 43F40053 		orr	r3, r3, #8192
+ 576 01b4 6360     		str	r3, [r4, #4]
  229:./src/eeprom.c **** 	 {}
- 586              		.loc 1 229 2 is_stmt 1 view .LVU215
- 587              	.L74:
+ 577              		.loc 1 229 2 is_stmt 1 view .LVU212
+ 578              	.L74:
  230:./src/eeprom.c **** 
- 588              		.loc 1 230 4 view .LVU216
+ 579              		.loc 1 230 4 view .LVU213
  229:./src/eeprom.c **** 	 {}
- 589              		.loc 1 229 8 view .LVU217
+ 580              		.loc 1 229 10 discriminator 1 view .LVU214
  229:./src/eeprom.c **** 	 {}
- 590              		.loc 1 229 17 is_stmt 0 view .LVU218
- 591 01b8 A369     		ldr	r3, [r4, #24]
+ 581              		.loc 1 229 17 is_stmt 0 discriminator 1 view .LVU215
+ 582 01b6 A369     		ldr	r3, [r4, #24]
  229:./src/eeprom.c **** 	 {}
- 592              		.loc 1 229 8 view .LVU219
- 593 01ba 9807     		lsls	r0, r3, #30
- 594 01bc FCD5     		bpl	.L74
+ 583              		.loc 1 229 10 discriminator 1 view .LVU216
+ 584 01b8 9807     		lsls	r0, r3, #30
+ 585 01ba FCD5     		bpl	.L74
  232:./src/eeprom.c **** 
- 595              		.loc 1 232 2 is_stmt 1 view .LVU220
+ 586              		.loc 1 232 2 is_stmt 1 view .LVU217
  232:./src/eeprom.c **** 
- 596              		.loc 1 232 22 is_stmt 0 view .LVU221
- 597 01be 6A68     		ldr	r2, [r5, #4]
+ 587              		.loc 1 232 22 is_stmt 0 view .LVU218
+ 588 01bc 6A68     		ldr	r2, [r5, #4]
  232:./src/eeprom.c **** 
- 598              		.loc 1 232 39 view .LVU222
- 599 01c0 C2F30723 		ubfx	r3, r2, #8, #8
+ 589              		.loc 1 232 39 view .LVU219
+ 590 01be C2F30723 		ubfx	r3, r2, #8, #8
  232:./src/eeprom.c **** 
- 600              		.loc 1 232 13 view .LVU223
- 601 01c4 A362     		str	r3, [r4, #40]
+ 591              		.loc 1 232 13 view .LVU220
+ 592 01c2 A362     		str	r3, [r4, #40]
  235:./src/eeprom.c **** 	 {}
- 602              		.loc 1 235 2 is_stmt 1 view .LVU224
- 603              	.L76:
+ 593              		.loc 1 235 2 is_stmt 1 view .LVU221
+ 594              	.L76:
  236:./src/eeprom.c **** 
- 604              		.loc 1 236 4 view .LVU225
+ 595              		.loc 1 236 4 view .LVU222
  235:./src/eeprom.c **** 	 {}
- 605              		.loc 1 235 8 view .LVU226
+ 596              		.loc 1 235 10 discriminator 1 view .LVU223
  235:./src/eeprom.c **** 	 {}
- 606              		.loc 1 235 17 is_stmt 0 view .LVU227
- 607 01c6 A369     		ldr	r3, [r4, #24]
+ 597              		.loc 1 235 17 is_stmt 0 discriminator 1 view .LVU224
+ 598 01c4 A369     		ldr	r3, [r4, #24]
  235:./src/eeprom.c **** 	 {}
- 608              		.loc 1 235 8 view .LVU228
- 609 01c8 9907     		lsls	r1, r3, #30
- 610 01ca FCD5     		bpl	.L76
+ 599              		.loc 1 235 10 discriminator 1 view .LVU225
+ 600 01c6 9907     		lsls	r1, r3, #30
+ 601 01c8 FCD5     		bpl	.L76
  238:./src/eeprom.c **** 
- 611              		.loc 1 238 2 is_stmt 1 view .LVU229
+ 602              		.loc 1 238 2 is_stmt 1 view .LVU226
  238:./src/eeprom.c **** 
- 612              		.loc 1 238 39 is_stmt 0 view .LVU230
- 613 01cc D3B2     		uxtb	r3, r2
+ 603              		.loc 1 238 39 is_stmt 0 view .LVU227
+ 604 01ca D3B2     		uxtb	r3, r2
  238:./src/eeprom.c **** 
- 614              		.loc 1 238 13 view .LVU231
- 615 01ce A362     		str	r3, [r4, #40]
+ 605              		.loc 1 238 13 view .LVU228
+ 606 01cc A362     		str	r3, [r4, #40]
  241:./src/eeprom.c **** 	 {}
- 616              		.loc 1 241 2 is_stmt 1 view .LVU232
- 617              	.L77:
+ 607              		.loc 1 241 2 is_stmt 1 view .LVU229
+ 608              	.L77:
  242:./src/eeprom.c **** 
- 618              		.loc 1 242 4 view .LVU233
+ 609              		.loc 1 242 4 view .LVU230
  241:./src/eeprom.c **** 	 {}
- 619              		.loc 1 241 8 view .LVU234
+ 610              		.loc 1 241 10 discriminator 1 view .LVU231
  241:./src/eeprom.c **** 	 {}
- 620              		.loc 1 241 17 is_stmt 0 view .LVU235
- 621 01d0 A369     		ldr	r3, [r4, #24]
+ 611              		.loc 1 241 17 is_stmt 0 discriminator 1 view .LVU232
+ 612 01ce A369     		ldr	r3, [r4, #24]
  241:./src/eeprom.c **** 	 {}
- 622              		.loc 1 241 8 view .LVU236
- 623 01d2 5B06     		lsls	r3, r3, #25
- 624 01d4 FCD5     		bpl	.L77
+ 613              		.loc 1 241 10 discriminator 1 view .LVU233
+ 614 01d0 5B06     		lsls	r3, r3, #25
+ 615 01d2 FCD5     		bpl	.L77
  247:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | count << 16 | 1 << 10 | LastCntlByte;
- 625              		.loc 1 247 2 is_stmt 1 view .LVU237
+ 616              		.loc 1 247 2 is_stmt 1 view .LVU234
  247:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | count << 16 | 1 << 10 | LastCntlByte;
- 626              		.loc 1 247 54 is_stmt 0 view .LVU238
- 627 01d6 D30B     		lsrs	r3, r2, #15
+ 617              		.loc 1 247 54 is_stmt 0 view .LVU235
+ 618 01d4 D30B     		lsrs	r3, r2, #15
  248:./src/eeprom.c **** 	__DSB();
- 628              		.loc 1 248 46 view .LVU239
- 629 01d8 264A     		ldr	r2, .L117+8
+ 619              		.loc 1 248 46 view .LVU236
+ 620 01d6 264A     		ldr	r2, .L117+8
  247:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | count << 16 | 1 << 10 | LastCntlByte;
- 630              		.loc 1 247 61 view .LVU240
- 631 01da 03F00E03 		and	r3, r3, #14
+ 621              		.loc 1 247 61 view .LVU237
+ 622 01d8 03F00E03 		and	r3, r3, #14
  247:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | count << 16 | 1 << 10 | LastCntlByte;
- 632              		.loc 1 247 33 view .LVU241
- 633 01de 43F0A003 		orr	r3, r3, #160
+ 623              		.loc 1 247 33 view .LVU238
+ 624 01dc 43F0A003 		orr	r3, r3, #160
  248:./src/eeprom.c **** 	__DSB();
- 634              		.loc 1 248 46 view .LVU242
- 635 01e2 1A43     		orrs	r2, r2, r3
+ 625              		.loc 1 248 46 view .LVU239
+ 626 01e0 1A43     		orrs	r2, r2, r3
  247:./src/eeprom.c **** 	I2C1->CR2 = 0 << 25 | count << 16 | 1 << 10 | LastCntlByte;
- 636              		.loc 1 247 15 view .LVU243
- 637 01e4 2B70     		strb	r3, [r5]
+ 627              		.loc 1 247 15 view .LVU240
+ 628 01e2 2B70     		strb	r3, [r5]
  248:./src/eeprom.c **** 	__DSB();
- 638              		.loc 1 248 2 is_stmt 1 view .LVU244
+ 629              		.loc 1 248 2 is_stmt 1 view .LVU241
  248:./src/eeprom.c **** 	__DSB();
- 639              		.loc 1 248 12 is_stmt 0 view .LVU245
- 640 01e6 6260     		str	r2, [r4, #4]
+ 630              		.loc 1 248 12 is_stmt 0 view .LVU242
+ 631 01e4 6260     		str	r2, [r4, #4]
  249:./src/eeprom.c **** 	I2C1->CR2 |= 1 << 13;
- 641              		.loc 1 249 2 is_stmt 1 view .LVU246
- 642              	.LBB49:
- 643              	.LBI49:
+ 632              		.loc 1 249 2 is_stmt 1 view .LVU243
+ 633              	.LBB49:
+ 634              	.LBI49:
  944:./inc/cmsis_gcc.h **** {
- 644              		.loc 2 944 27 view .LVU247
- 645              	.LBB50:
- 646              		.loc 2 946 3 view .LVU248
- 647              		.syntax unified
- 648              	@ 946 "./inc/cmsis_gcc.h" 1
- 649 01e8 BFF34F8F 		dsb 0xF
- 650              	@ 0 "" 2
- 651              		.thumb
- 652              		.syntax unified
- 653              	.LBE50:
- 654              	.LBE49:
+ 635              		.loc 2 944 27 view .LVU244
+ 636              	.LBB50:
+ 637              		.loc 2 946 3 view .LVU245
+ 638              		.syntax unified
+ 639              	@ 946 "./inc/cmsis_gcc.h" 1
+ 640 01e6 BFF34F8F 		dsb 0xF
+ 641              	@ 0 "" 2
+ 642              		.thumb
+ 643              		.syntax unified
+ 644              	.LBE50:
+ 645              	.LBE49:
  250:./src/eeprom.c **** 
- 655              		.loc 1 250 2 view .LVU249
+ 646              		.loc 1 250 2 view .LVU246
  250:./src/eeprom.c **** 
- 656              		.loc 1 250 12 is_stmt 0 view .LVU250
- 657 01ec 6268     		ldr	r2, [r4, #4]
+ 647              		.loc 1 250 6 is_stmt 0 view .LVU247
+ 648 01ea 6268     		ldr	r2, [r4, #4]
  254:./src/eeprom.c **** 	{
- 658              		.loc 1 254 12 view .LVU251
- 659 01ee AB68     		ldr	r3, [r5, #8]
+ 649              		.loc 1 254 12 view .LVU248
+ 650 01ec AB68     		ldr	r3, [r5, #8]
  250:./src/eeprom.c **** 
- 660              		.loc 1 250 12 view .LVU252
- 661 01f0 42F40052 		orr	r2, r2, #8192
+ 651              		.loc 1 250 12 view .LVU249
+ 652 01ee 42F40052 		orr	r2, r2, #8192
  254:./src/eeprom.c **** 	{
- 662              		.loc 1 254 5 view .LVU253
- 663 01f4 012B     		cmp	r3, #1
+ 653              		.loc 1 254 5 view .LVU250
+ 654 01f2 012B     		cmp	r3, #1
  250:./src/eeprom.c **** 
- 664              		.loc 1 250 12 view .LVU254
- 665 01f6 6260     		str	r2, [r4, #4]
+ 655              		.loc 1 250 12 view .LVU251
+ 656 01f4 6260     		str	r2, [r4, #4]
  254:./src/eeprom.c **** 	{
- 666              		.loc 1 254 2 is_stmt 1 view .LVU255
+ 657              		.loc 1 254 2 is_stmt 1 view .LVU252
  254:./src/eeprom.c **** 	{
- 667              		.loc 1 254 5 is_stmt 0 view .LVU256
- 668 01f8 0CD9     		bls	.L82
- 669 01fa 1F4A     		ldr	r2, .L117+12
- 670 01fc 1344     		add	r3, r3, r2
- 671 01fe 0832     		adds	r2, r2, #8
- 672 0200 03F10801 		add	r1, r3, #8
- 673              	.L80:
- 674              	.LBB51:
+ 658              		.loc 1 254 5 is_stmt 0 view .LVU253
+ 659 01f6 0CD9     		bls	.L82
+ 660 01f8 1E4A     		ldr	r2, .L117+12
+ 661 01fa 1344     		add	r3, r3, r2
+ 662 01fc 0832     		adds	r2, r2, #8
+ 663 01fe 03F10801 		add	r1, r3, #8
+ 664              	.L80:
+ 665              	.LBB51:
  262:./src/eeprom.c **** 
- 675              		.loc 1 262 6 is_stmt 1 view .LVU257
+ 666              		.loc 1 262 6 is_stmt 1 view .LVU254
  261:./src/eeprom.c **** 			 {}
- 676              		.loc 1 261 10 view .LVU258
+ 667              		.loc 1 261 12 discriminator 1 view .LVU255
  261:./src/eeprom.c **** 			 {}
- 677              		.loc 1 261 19 is_stmt 0 view .LVU259
- 678 0204 A369     		ldr	r3, [r4, #24]
+ 668              		.loc 1 261 19 is_stmt 0 discriminator 1 view .LVU256
+ 669 0202 A369     		ldr	r3, [r4, #24]
  261:./src/eeprom.c **** 			 {}
- 679              		.loc 1 261 10 view .LVU260
- 680 0206 5807     		lsls	r0, r3, #29
- 681 0208 FCD5     		bpl	.L80
+ 670              		.loc 1 261 12 discriminator 1 view .LVU257
+ 671 0204 5807     		lsls	r0, r3, #29
+ 672 0206 FCD5     		bpl	.L80
  264:./src/eeprom.c **** 		}
- 682              		.loc 1 264 4 is_stmt 1 view .LVU261
+ 673              		.loc 1 264 4 is_stmt 1 view .LVU258
  264:./src/eeprom.c **** 		}
- 683              		.loc 1 264 24 is_stmt 0 view .LVU262
- 684 020a 636A     		ldr	r3, [r4, #36]
+ 674              		.loc 1 264 24 is_stmt 0 view .LVU259
+ 675 0208 636A     		ldr	r3, [r4, #36]
  264:./src/eeprom.c **** 		}
- 685              		.loc 1 264 18 view .LVU263
- 686 020c 02F8013F 		strb	r3, [r2, #1]!
+ 676              		.loc 1 264 18 view .LVU260
+ 677 020a 02F8013F 		strb	r3, [r2, #1]!
  259:./src/eeprom.c **** 		{
- 687              		.loc 1 259 33 is_stmt 1 view .LVU264
- 688              	.LVL25:
+ 678              		.loc 1 259 34 is_stmt 1 discriminator 2 view .LVU261
+ 679              	.LVL22:
  259:./src/eeprom.c **** 		{
- 689              		.loc 1 259 16 view .LVU265
+ 680              		.loc 1 259 18 discriminator 1 view .LVU262
+ 681 020e 8A42     		cmp	r2, r1
+ 682 0210 F7D1     		bne	.L80
+ 683              	.LVL23:
+ 684              	.L82:
  259:./src/eeprom.c **** 		{
- 690              		.loc 1 259 3 is_stmt 0 view .LVU266
- 691 0210 8A42     		cmp	r2, r1
- 692 0212 F7D1     		bne	.L80
- 693              	.LVL26:
- 694              	.L82:
- 259:./src/eeprom.c **** 		{
- 695              		.loc 1 259 3 view .LVU267
- 696              	.LBE51:
+ 685              		.loc 1 259 18 is_stmt 0 discriminator 1 view .LVU263
+ 686              	.LBE51:
  270:./src/eeprom.c **** 	__DSB();
- 697              		.loc 1 270 2 is_stmt 1 view .LVU268
+ 687              		.loc 1 270 2 is_stmt 1 view .LVU264
  270:./src/eeprom.c **** 	__DSB();
- 698              		.loc 1 270 12 is_stmt 0 view .LVU269
- 699 0214 0023     		movs	r3, #0
- 700 0216 6360     		str	r3, [r4, #4]
+ 688              		.loc 1 270 12 is_stmt 0 view .LVU265
+ 689 0212 0023     		movs	r3, #0
+ 690 0214 6360     		str	r3, [r4, #4]
  271:./src/eeprom.c **** 	I2C1->CR2 = 1 << 14;
- 701              		.loc 1 271 2 is_stmt 1 view .LVU270
- 702              	.LBB52:
- 703              	.LBI52:
+ 691              		.loc 1 271 2 is_stmt 1 view .LVU266
+ 692              	.LBB52:
+ 693              	.LBI52:
  944:./inc/cmsis_gcc.h **** {
- 704              		.loc 2 944 27 view .LVU271
- 705              	.LBB53:
- 706              		.loc 2 946 3 view .LVU272
- 707              		.syntax unified
- 708              	@ 946 "./inc/cmsis_gcc.h" 1
- 709 0218 BFF34F8F 		dsb 0xF
- 710              	@ 0 "" 2
- 711              		.thumb
- 712              		.syntax unified
- 713              	.LBE53:
- 714              	.LBE52:
+ 694              		.loc 2 944 27 view .LVU267
+ 695              	.LBB53:
+ 696              		.loc 2 946 3 view .LVU268
+ 697              		.syntax unified
+ 698              	@ 946 "./inc/cmsis_gcc.h" 1
+ 699 0216 BFF34F8F 		dsb 0xF
+ 700              	@ 0 "" 2
+ 701              		.thumb
+ 702              		.syntax unified
+ 703              	.LBE53:
+ 704              	.LBE52:
  272:./src/eeprom.c **** 
- 715              		.loc 1 272 2 view .LVU273
+ 705              		.loc 1 272 2 view .LVU269
  272:./src/eeprom.c **** 
- 716              		.loc 1 272 12 is_stmt 0 view .LVU274
- 717 021c 4FF48043 		mov	r3, #16384
- 718 0220 6360     		str	r3, [r4, #4]
+ 706              		.loc 1 272 12 is_stmt 0 view .LVU270
+ 707 021a 4FF48043 		mov	r3, #16384
+ 708 021e 6360     		str	r3, [r4, #4]
  276:./src/eeprom.c **** 	 {}
- 719              		.loc 1 276 2 is_stmt 1 view .LVU275
- 720              	.L79:
+ 709              		.loc 1 276 2 is_stmt 1 view .LVU271
+ 710              	.L79:
  277:./src/eeprom.c **** 
- 721              		.loc 1 277 4 view .LVU276
+ 711              		.loc 1 277 4 view .LVU272
  276:./src/eeprom.c **** 	 {}
- 722              		.loc 1 276 8 view .LVU277
+ 712              		.loc 1 276 10 discriminator 1 view .LVU273
  276:./src/eeprom.c **** 	 {}
- 723              		.loc 1 276 17 is_stmt 0 view .LVU278
- 724 0222 A369     		ldr	r3, [r4, #24]
+ 713              		.loc 1 276 17 is_stmt 0 discriminator 1 view .LVU274
+ 714 0220 A369     		ldr	r3, [r4, #24]
  276:./src/eeprom.c **** 	 {}
- 725              		.loc 1 276 8 view .LVU279
- 726 0224 9B06     		lsls	r3, r3, #26
- 727 0226 FCD5     		bpl	.L79
+ 715              		.loc 1 276 10 discriminator 1 view .LVU275
+ 716 0222 9B06     		lsls	r3, r3, #26
+ 717 0224 FCD5     		bpl	.L79
  280:./src/eeprom.c **** 	 { Cache.dirty = 0;} // data read to cache
- 728              		.loc 1 280 2 is_stmt 1 view .LVU280
+ 718              		.loc 1 280 2 is_stmt 1 view .LVU276
  281:./src/eeprom.c **** 
- 729              		.loc 1 281 5 view .LVU281
- 730              	.LBE57:
- 731              	.LBE62:
+ 719              		.loc 1 281 5 view .LVU277
+ 720              	.LBE57:
+ 721              	.LBE62:
  347:./src/eeprom.c **** 				
  348:./src/eeprom.c ****             if ( ret != EEPROM_ERR_OK)
  349:./src/eeprom.c ****             {
@@ -2189,193 +2175,194 @@
  352:./src/eeprom.c **** 		}
  353:./src/eeprom.c **** 
  354:./src/eeprom.c **** 		*pBuff++ = Cache.data[addr - Cache.startaddr];
- 732              		.loc 1 354 30 is_stmt 0 view .LVU282
- 733 0228 6B68     		ldr	r3, [r5, #4]
- 734              	.LBB63:
- 735              	.LBB58:
+ 722              		.loc 1 354 30 is_stmt 0 view .LVU278
+ 723 0226 6B68     		ldr	r3, [r5, #4]
+ 724              	.LBB63:
+ 725              	.LBB58:
  281:./src/eeprom.c **** 
- 736              		.loc 1 281 17 view .LVU283
- 737 022a 0022     		movs	r2, #0
- 738              	.LBE58:
- 739              	.LBE63:
- 740              		.loc 1 354 30 view .LVU284
- 741 022c F31A     		subs	r3, r6, r3
- 742              	.LBB64:
- 743              	.LBB59:
+ 726              		.loc 1 281 17 view .LVU279
+ 727 0228 0022     		movs	r2, #0
+ 728              	.LBE58:
+ 729              	.LBE63:
+ 730              		.loc 1 354 30 view .LVU280
+ 731 022a F31A     		subs	r3, r6, r3
+ 732              	.LBB64:
+ 733              	.LBB59:
  281:./src/eeprom.c **** 
- 744              		.loc 1 281 17 view .LVU285
- 745 022e 2A73     		strb	r2, [r5, #12]
- 746              	.LVL27:
- 281:./src/eeprom.c **** 
- 747              		.loc 1 281 17 view .LVU286
- 748              	.LBE59:
- 749              	.LBE64:
+ 734              		.loc 1 281 17 view .LVU281
+ 735 022c 2A73     		strb	r2, [r5, #12]
+ 284:./src/eeprom.c **** }
+ 736              		.loc 1 284 2 is_stmt 1 view .LVU282
+ 737              	.LVL24:
+ 284:./src/eeprom.c **** }
+ 738              		.loc 1 284 2 is_stmt 0 view .LVU283
+ 739              	.LBE59:
+ 740              	.LBE64:
  348:./src/eeprom.c ****             {
- 750              		.loc 1 348 13 is_stmt 1 view .LVU287
- 751              	.L69:
- 752              		.loc 1 354 3 view .LVU288
- 753              		.loc 1 354 24 is_stmt 0 view .LVU289
- 754 0230 2B44     		add	r3, r3, r5
+ 741              		.loc 1 348 13 is_stmt 1 view .LVU284
+ 742              	.L69:
+ 743              		.loc 1 354 3 view .LVU285
+ 744              		.loc 1 354 24 is_stmt 0 view .LVU286
+ 745 022e 2B44     		add	r3, r3, r5
  355:./src/eeprom.c **** 		addr++;
- 755              		.loc 1 355 7 view .LVU290
- 756 0232 0136     		adds	r6, r6, #1
- 757              	.LVL28:
+ 746              		.loc 1 355 7 view .LVU287
+ 747 0230 0136     		adds	r6, r6, #1
+ 748              	.LVL25:
  354:./src/eeprom.c **** 		addr++;
- 758              		.loc 1 354 24 view .LVU291
- 759 0234 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 749              		.loc 1 354 24 view .LVU288
+ 750 0232 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
  354:./src/eeprom.c **** 		addr++;
- 760              		.loc 1 354 12 view .LVU292
- 761 0236 08F8013B 		strb	r3, [r8], #1
- 762              	.LVL29:
- 763              		.loc 1 355 3 is_stmt 1 view .LVU293
+ 751              		.loc 1 354 12 view .LVU289
+ 752 0234 08F8013B 		strb	r3, [r8], #1
+ 753              	.LVL26:
+ 754              		.loc 1 355 3 is_stmt 1 view .LVU290
  356:./src/eeprom.c **** 		length--;
- 764              		.loc 1 356 3 view .LVU294
+ 755              		.loc 1 356 3 view .LVU291
  342:./src/eeprom.c **** 	{
- 765              		.loc 1 342 8 view .LVU295
- 766 023a C845     		cmp	r8, r9
- 767 023c 90D1     		bne	.L83
+ 756              		.loc 1 342 10 view .LVU292
+ 757 0238 C845     		cmp	r8, r9
+ 758 023a 90D1     		bne	.L83
  357:./src/eeprom.c **** 	}
  358:./src/eeprom.c **** 
  359:./src/eeprom.c **** 	exit:
- 768              		.loc 1 359 2 is_stmt 0 view .LVU296
- 769 023e 0020     		movs	r0, #0
+ 759              		.loc 1 359 2 is_stmt 0 view .LVU293
+ 760 023c 0020     		movs	r0, #0
  360:./src/eeprom.c **** 	return ret;
  361:./src/eeprom.c **** }
- 770              		.loc 1 361 1 view .LVU297
- 771 0240 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 772              	.LVL30:
- 773              	.L85:
- 774              	.L65:
- 312:./src/eeprom.c **** 		goto exit;
- 775              		.loc 1 312 7 view .LVU298
- 776 0244 0220     		movs	r0, #2
- 777              	.LVL31:
+ 761              		.loc 1 361 1 view .LVU294
+ 762 023e BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 763              	.LVL27:
+ 764              	.L85:
+ 765              	.L65:
+ 305:./src/eeprom.c **** 		goto exit;
+ 766              		.loc 1 305 7 view .LVU295
+ 767 0242 0220     		movs	r0, #2
+ 768              	.LVL28:
  360:./src/eeprom.c **** 	return ret;
- 778              		.loc 1 360 2 is_stmt 1 view .LVU299
- 779              		.loc 1 361 1 is_stmt 0 view .LVU300
- 780 0246 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 781              	.LVL32:
- 782              	.L113:
- 783              	.LBB65:
- 784              	.LBB60:
+ 769              		.loc 1 360 2 is_stmt 1 view .LVU296
+ 770              		.loc 1 361 1 is_stmt 0 view .LVU297
+ 771 0244 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 772              	.LVL29:
+ 773              	.L113:
+ 774              	.LBB65:
+ 775              	.LBB60:
  200:./src/eeprom.c **** 		
- 785              		.loc 1 200 3 is_stmt 1 view .LVU301
- 786              	.LBB54:
- 787              	.LBI54:
+ 776              		.loc 1 200 3 is_stmt 1 view .LVU298
+ 777              	.LBB54:
+ 778              	.LBI54:
  108:./src/eeprom.c **** {
- 788              		.loc 1 108 23 view .LVU302
- 789              	.LBB55:
+ 779              		.loc 1 108 23 view .LVU299
+ 780              	.LBB55:
  110:./src/eeprom.c **** 	uint32_t  i;
- 790              		.loc 1 110 2 view .LVU303
+ 781              		.loc 1 110 2 view .LVU300
  111:./src/eeprom.c **** 
- 791              		.loc 1 111 2 view .LVU304
+ 782              		.loc 1 111 2 view .LVU301
  114:./src/eeprom.c **** 
- 792              		.loc 1 114 2 view .LVU305
+ 783              		.loc 1 114 2 view .LVU302
  117:./src/eeprom.c **** 	{
- 793              		.loc 1 117 2 view .LVU306
+ 784              		.loc 1 117 2 view .LVU303
  117:./src/eeprom.c **** 	{
- 794              		.loc 1 117 20 is_stmt 0 view .LVU307
- 795 024a AB68     		ldr	r3, [r5, #8]
- 796 024c 13B1     		cbz	r3, .L115
- 797 024e FFF713FF 		bl	writecachepage.part.0
- 798              	.LVL33:
- 799 0252 91E7     		b	.L70
- 800              	.L115:
+ 785              		.loc 1 117 20 is_stmt 0 discriminator 1 view .LVU304
+ 786 0248 AB68     		ldr	r3, [r5, #8]
+ 787 024a 13B1     		cbz	r3, .L115
+ 788 024c FFF714FF 		bl	writecachepage.part.0
+ 789              	.LVL30:
+ 790 0250 91E7     		b	.L70
+ 791              	.L115:
  120:./src/eeprom.c **** 
- 801              		.loc 1 120 3 is_stmt 1 view .LVU308
+ 792              		.loc 1 120 3 is_stmt 1 view .LVU305
  120:./src/eeprom.c **** 
- 802              		.loc 1 120 15 is_stmt 0 view .LVU309
- 803 0254 2B73     		strb	r3, [r5, #12]
+ 793              		.loc 1 120 15 is_stmt 0 view .LVU306
+ 794 0252 2B73     		strb	r3, [r5, #12]
  122:./src/eeprom.c **** 	}
- 804              		.loc 1 122 3 is_stmt 1 view .LVU310
+ 795              		.loc 1 122 3 is_stmt 1 view .LVU307
  122:./src/eeprom.c **** 	}
- 805              		.loc 1 122 10 is_stmt 0 view .LVU311
- 806 0256 8FE7     		b	.L70
- 807              	.LVL34:
- 808              	.L112:
+ 796              		.loc 1 122 10 is_stmt 0 view .LVU308
+ 797 0254 8FE7     		b	.L70
+ 798              	.LVL31:
+ 799              	.L112:
  122:./src/eeprom.c **** 	}
- 809              		.loc 1 122 10 view .LVU312
- 810              	.LBE55:
- 811              	.LBE54:
- 812              	.LBE60:
- 813              	.LBE65:
+ 800              		.loc 1 122 10 view .LVU309
+ 801              	.LBE55:
+ 802              	.LBE54:
+ 803              	.LBE60:
+ 804              	.LBE65:
  333:./src/eeprom.c **** 		
- 814              		.loc 1 333 3 is_stmt 1 view .LVU313
- 815              	.LBB66:
- 816              	.LBI66:
+ 805              		.loc 1 333 3 is_stmt 1 view .LVU310
+ 806              	.LBB66:
+ 807              	.LBI66:
  108:./src/eeprom.c **** {
- 817              		.loc 1 108 23 view .LVU314
- 818              	.LBB67:
+ 808              		.loc 1 108 23 view .LVU311
+ 809              	.LBB67:
  110:./src/eeprom.c **** 	uint32_t  i;
- 819              		.loc 1 110 2 view .LVU315
+ 810              		.loc 1 110 2 view .LVU312
  111:./src/eeprom.c **** 
- 820              		.loc 1 111 2 view .LVU316
+ 811              		.loc 1 111 2 view .LVU313
  114:./src/eeprom.c **** 
- 821              		.loc 1 114 2 view .LVU317
+ 812              		.loc 1 114 2 view .LVU314
  117:./src/eeprom.c **** 	{
- 822              		.loc 1 117 2 view .LVU318
+ 813              		.loc 1 117 2 view .LVU315
  117:./src/eeprom.c **** 	{
- 823              		.loc 1 117 20 is_stmt 0 view .LVU319
- 824 0258 AB68     		ldr	r3, [r5, #8]
- 825 025a 13B1     		cbz	r3, .L116
- 826 025c FFF70CFF 		bl	writecachepage.part.0
- 827              	.LVL35:
+ 814              		.loc 1 117 20 is_stmt 0 discriminator 1 view .LVU316
+ 815 0256 AB68     		ldr	r3, [r5, #8]
+ 816 0258 13B1     		cbz	r3, .L116
+ 817 025a FFF70DFF 		bl	writecachepage.part.0
+ 818              	.LVL32:
  117:./src/eeprom.c **** 	{
- 828              		.loc 1 117 20 view .LVU320
- 829 0260 7AE7     		b	.L66
- 830              	.LVL36:
- 831              	.L116:
+ 819              		.loc 1 117 20 discriminator 1 view .LVU317
+ 820 025e 7BE7     		b	.L66
+ 821              	.LVL33:
+ 822              	.L116:
  120:./src/eeprom.c **** 
- 832              		.loc 1 120 3 is_stmt 1 view .LVU321
+ 823              		.loc 1 120 3 is_stmt 1 view .LVU318
  120:./src/eeprom.c **** 
- 833              		.loc 1 120 15 is_stmt 0 view .LVU322
- 834 0262 2B73     		strb	r3, [r5, #12]
+ 824              		.loc 1 120 15 is_stmt 0 view .LVU319
+ 825 0260 2B73     		strb	r3, [r5, #12]
  122:./src/eeprom.c **** 	}
- 835              		.loc 1 122 3 is_stmt 1 view .LVU323
+ 826              		.loc 1 122 3 is_stmt 1 view .LVU320
  122:./src/eeprom.c **** 	}
- 836              		.loc 1 122 10 is_stmt 0 view .LVU324
- 837 0264 78E7     		b	.L66
- 838              	.LVL37:
- 839              	.L108:
- 840              	.LCFI6:
- 841              		.cfi_def_cfa_offset 0
- 842              		.cfi_restore 4
- 843              		.cfi_restore 5
- 844              		.cfi_restore 6
- 845              		.cfi_restore 7
- 846              		.cfi_restore 8
- 847              		.cfi_restore 9
- 848              		.cfi_restore 10
- 849              		.cfi_restore 14
+ 827              		.loc 1 122 10 is_stmt 0 view .LVU321
+ 828 0262 79E7     		b	.L66
+ 829              	.LVL34:
+ 830              	.L108:
+ 831              	.LCFI6:
+ 832              		.cfi_def_cfa_offset 0
+ 833              		.cfi_restore 4
+ 834              		.cfi_restore 5
+ 835              		.cfi_restore 6
+ 836              		.cfi_restore 7
+ 837              		.cfi_restore 8
+ 838              		.cfi_restore 9
+ 839              		.cfi_restore 10
+ 840              		.cfi_restore 14
  122:./src/eeprom.c **** 	}
- 850              		.loc 1 122 10 view .LVU325
- 851              	.LBE67:
- 852              	.LBE66:
- 312:./src/eeprom.c **** 		goto exit;
- 853              		.loc 1 312 7 view .LVU326
- 854 0266 0220     		movs	r0, #2
- 855              	.LVL38:
- 856              		.loc 1 361 1 view .LVU327
- 857 0268 7047     		bx	lr
- 858              	.L118:
- 859 026a 00BF     		.align	2
- 860              	.L117:
- 861 026c 00000000 		.word	.LANCHOR0
- 862 0270 00540040 		.word	1073763328
- 863 0274 00048000 		.word	8389632
- 864 0278 04000000 		.word	.LANCHOR0+4
- 865              		.cfi_endproc
- 866              	.LFE147:
- 868              		.align	1
- 869              		.p2align 2,,3
- 870              		.global	EEPROM_Write
- 871              		.syntax unified
- 872              		.thumb
- 873              		.thumb_func
- 874              		.fpu fpv5-d16
- 876              	EEPROM_Write:
- 877              	.LVL39:
- 878              	.LFB148:
+ 841              		.loc 1 122 10 view .LVU322
+ 842              	.LBE67:
+ 843              	.LBE66:
+ 305:./src/eeprom.c **** 		goto exit;
+ 844              		.loc 1 305 7 view .LVU323
+ 845 0264 0220     		movs	r0, #2
+ 846              	.LVL35:
+ 847              		.loc 1 361 1 view .LVU324
+ 848 0266 7047     		bx	lr
+ 849              	.L118:
+ 850              		.align	2
+ 851              	.L117:
+ 852 0268 00000000 		.word	.LANCHOR0
+ 853 026c 00540040 		.word	1073763328
+ 854 0270 00048000 		.word	8389632
+ 855 0274 04000000 		.word	.LANCHOR0+4
+ 856              		.cfi_endproc
+ 857              	.LFE147:
+ 859              		.align	1
+ 860              		.p2align 2,,3
+ 861              		.global	EEPROM_Write
+ 862              		.syntax unified
+ 863              		.thumb
+ 864              		.thumb_func
+ 866              	EEPROM_Write:
+ 867              	.LVL36:
+ 868              	.LFB148:
  362:./src/eeprom.c **** 
  363:./src/eeprom.c **** 
  364:./src/eeprom.c **** 
@@ -2385,25 +2372,25 @@
  368:./src/eeprom.c **** //! @param[in]  length  number of bytes to write to eeprom
  369:./src/eeprom.c **** EEPROMResult_t  EEPROM_Write ( uint32_t addr, void * buffer, uint32_t length)
  370:./src/eeprom.c **** {
- 879              		.loc 1 370 1 is_stmt 1 view -0
- 880              		.cfi_startproc
- 881              		@ args = 0, pretend = 0, frame = 0
- 882              		@ frame_needed = 0, uses_anonymous_args = 0
+ 869              		.loc 1 370 1 is_stmt 1 view -0
+ 870              		.cfi_startproc
+ 871              		@ args = 0, pretend = 0, frame = 0
+ 872              		@ frame_needed = 0, uses_anonymous_args = 0
  371:./src/eeprom.c **** 	EEPROMResult_t ret;
- 883              		.loc 1 371 2 view .LVU329
+ 873              		.loc 1 371 2 view .LVU326
  372:./src/eeprom.c **** 	uint8_t  *pBuff;
- 884              		.loc 1 372 2 view .LVU330
+ 874              		.loc 1 372 2 view .LVU327
  373:./src/eeprom.c **** 
  374:./src/eeprom.c **** 
  375:./src/eeprom.c **** 	ret = EEPROM_ERR_OK;
- 885              		.loc 1 375 2 view .LVU331
+ 875              		.loc 1 375 2 view .LVU328
  376:./src/eeprom.c **** 
  377:./src/eeprom.c **** 	pBuff = buffer;
- 886              		.loc 1 377 2 view .LVU332
+ 876              		.loc 1 377 2 view .LVU329
  378:./src/eeprom.c **** 
  379:./src/eeprom.c **** 	
  380:./src/eeprom.c **** 	if ( addr >= EEPROM_MEM_SIZE)
- 887              		.loc 1 380 2 view .LVU333
+ 877              		.loc 1 380 2 view .LVU330
  381:./src/eeprom.c **** 	{
  382:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  383:./src/eeprom.c **** 		goto exit;
@@ -2411,25 +2398,12 @@
  385:./src/eeprom.c **** 
  386:./src/eeprom.c **** 
  387:./src/eeprom.c **** 	if ( length == 0)
- 888              		.loc 1 387 2 view .LVU334
- 889              		.loc 1 387 5 is_stmt 0 view .LVU335
- 890 027c 002A     		cmp	r2, #0
- 891 027e 40D0     		beq	.L138
- 892 0280 B0F5002F 		cmp	r0, #524288
- 370:./src/eeprom.c **** 	EEPROMResult_t ret;
- 893              		.loc 1 370 1 view .LVU336
- 894 0284 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 895              	.LCFI7:
- 896              		.cfi_def_cfa_offset 24
- 897              		.cfi_offset 4, -24
- 898              		.cfi_offset 5, -20
- 899              		.cfi_offset 6, -16
- 900              		.cfi_offset 7, -12
- 901              		.cfi_offset 8, -8
- 902              		.cfi_offset 14, -4
- 903 0288 0446     		mov	r4, r0
- 904              		.loc 1 387 5 view .LVU337
- 905 028a 32D2     		bcs	.L129
+ 878              		.loc 1 387 2 view .LVU331
+ 879              		.loc 1 387 5 is_stmt 0 view .LVU332
+ 880 0278 B0F5002F 		cmp	r0, #524288
+ 881 027c 3CD2     		bcs	.L128
+ 882 027e 002A     		cmp	r2, #0
+ 883 0280 3AD0     		beq	.L128
  388:./src/eeprom.c **** 	{
  389:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  390:./src/eeprom.c **** 		goto exit;
@@ -2437,9 +2411,20 @@
  392:./src/eeprom.c **** 
  393:./src/eeprom.c **** 
  394:./src/eeprom.c **** 	if (( addr + length) > EEPROM_MEM_SIZE)
- 906              		.loc 1 394 2 is_stmt 1 view .LVU338
- 907              		.loc 1 394 13 is_stmt 0 view .LVU339
- 908 028c 00EB0208 		add	r8, r0, r2
+ 884              		.loc 1 394 2 is_stmt 1 view .LVU333
+ 370:./src/eeprom.c **** 	EEPROMResult_t ret;
+ 885              		.loc 1 370 1 is_stmt 0 view .LVU334
+ 886 0282 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 887              	.LCFI7:
+ 888              		.cfi_def_cfa_offset 24
+ 889              		.cfi_offset 4, -24
+ 890              		.cfi_offset 5, -20
+ 891              		.cfi_offset 6, -16
+ 892              		.cfi_offset 7, -12
+ 893              		.cfi_offset 8, -8
+ 894              		.cfi_offset 14, -4
+ 895              		.loc 1 394 13 view .LVU335
+ 896 0286 00EB0208 		add	r8, r0, r2
  395:./src/eeprom.c **** 	{
  396:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  397:./src/eeprom.c **** 		goto exit;
@@ -2447,13 +2432,14 @@
  399:./src/eeprom.c **** 
  400:./src/eeprom.c **** 
  401:./src/eeprom.c **** 	if ( buffer == NULL)
- 909              		.loc 1 401 2 is_stmt 1 view .LVU340
- 910              		.loc 1 401 5 is_stmt 0 view .LVU341
- 911 0290 B8F5002F 		cmp	r8, #524288
- 912 0294 2DD8     		bhi	.L129
- 913 0296 0E46     		mov	r6, r1
- 914 0298 59B3     		cbz	r1, .L129
- 915 029a 1C4D     		ldr	r5, .L145
+ 897              		.loc 1 401 2 is_stmt 1 view .LVU336
+ 898 028a 0446     		mov	r4, r0
+ 899              		.loc 1 401 5 is_stmt 0 view .LVU337
+ 900 028c B8F5002F 		cmp	r8, #524288
+ 901 0290 34D8     		bhi	.L129
+ 902 0292 0E46     		mov	r6, r1
+ 903 0294 91B3     		cbz	r1, .L129
+ 904 0296 1C4D     		ldr	r5, .L145
  402:./src/eeprom.c **** 	{
  403:./src/eeprom.c **** 		ret = EEPROM_ERR_ILLPARAMVAL;
  404:./src/eeprom.c **** 		goto exit;
@@ -2478,286 +2464,285 @@
  423:./src/eeprom.c **** 			// remember new write page
  424:./src/eeprom.c **** 			Cache.startaddr = addr;
  425:./src/eeprom.c **** 			Cache.dirty = 1;
- 916              		.loc 1 425 16 view .LVU342
- 917 029c 0127     		movs	r7, #1
- 918 029e 0DE0     		b	.L127
- 919              	.LVL40:
- 920              	.L144:
- 921              	.LBB70:
- 922              	.LBB71:
+ 905              		.loc 1 425 16 view .LVU338
+ 906 0298 0127     		movs	r7, #1
+ 907 029a 0DE0     		b	.L127
+ 908              	.LVL37:
+ 909              	.L144:
+ 910              	.LBB70:
+ 911              	.LBB71:
  117:./src/eeprom.c **** 	{
- 923              		.loc 1 117 20 view .LVU343
- 924 02a0 AB68     		ldr	r3, [r5, #8]
- 925 02a2 BBB1     		cbz	r3, .L123
- 926 02a4 FFF7E8FE 		bl	writecachepage.part.0
- 927              	.LVL41:
- 928              	.L122:
+ 912              		.loc 1 117 20 discriminator 1 view .LVU339
+ 913 029c AB68     		ldr	r3, [r5, #8]
+ 914 029e BBB1     		cbz	r3, .L123
+ 915 02a0 FFF7EAFE 		bl	writecachepage.part.0
+ 916              	.LVL38:
+ 917              	.L122:
  117:./src/eeprom.c **** 	{
- 929              		.loc 1 117 20 view .LVU344
- 930              	.LBE71:
- 931              	.LBE70:
+ 918              		.loc 1 117 20 discriminator 1 view .LVU340
+ 919              	.LBE71:
+ 920              	.LBE70:
  421:./src/eeprom.c **** 		{
- 932              		.loc 1 421 3 is_stmt 1 view .LVU345
+ 921              		.loc 1 421 3 is_stmt 1 view .LVU341
  421:./src/eeprom.c **** 		{
- 933              		.loc 1 421 6 is_stmt 0 view .LVU346
- 934 02a8 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
- 935 02aa 9BB1     		cbz	r3, .L123
+ 922              		.loc 1 421 6 is_stmt 0 view .LVU342
+ 923 02a4 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
+ 924 02a6 9BB1     		cbz	r3, .L123
  426:./src/eeprom.c **** 			Cache.count = 0;
  427:./src/eeprom.c **** 		}
  428:./src/eeprom.c **** 
  429:./src/eeprom.c **** 		// extend cache if addr at this boundary
  430:./src/eeprom.c **** 		if ( addr == Cache.startaddr + Cache.count)
- 936              		.loc 1 430 3 is_stmt 1 view .LVU347
- 937              		.loc 1 430 32 is_stmt 0 view .LVU348
- 938 02ac D5E90123 		ldrd	r2, r3, [r5, #4]
- 939 02b0 1A44     		add	r2, r2, r3
- 940              		.loc 1 430 6 view .LVU349
- 941 02b2 A242     		cmp	r2, r4
- 942 02b4 27D0     		beq	.L141
+ 925              		.loc 1 430 3 is_stmt 1 view .LVU343
+ 926              		.loc 1 430 32 is_stmt 0 view .LVU344
+ 927 02a8 D5E90123 		ldrd	r2, r3, [r5, #4]
+ 928 02ac 1A44     		add	r2, r2, r3
+ 929              		.loc 1 430 6 view .LVU345
+ 930 02ae A242     		cmp	r2, r4
+ 931 02b0 27D0     		beq	.L141
  431:./src/eeprom.c **** 		 { Cache.data[Cache.count++] = *pBuff++;}
  432:./src/eeprom.c **** 
  433:./src/eeprom.c **** 
  434:./src/eeprom.c **** 		length--;
- 943              		.loc 1 434 3 is_stmt 1 view .LVU350
- 944              	.LVL42:
+ 932              		.loc 1 434 3 is_stmt 1 view .LVU346
+ 933              	.LVL39:
  435:./src/eeprom.c **** 		addr++;
- 945              		.loc 1 435 3 view .LVU351
- 946              		.loc 1 435 7 is_stmt 0 view .LVU352
- 947 02b6 0134     		adds	r4, r4, #1
- 948              	.LVL43:
+ 934              		.loc 1 435 3 view .LVU347
+ 935              		.loc 1 435 7 is_stmt 0 view .LVU348
+ 936 02b2 0134     		adds	r4, r4, #1
+ 937              	.LVL40:
  408:./src/eeprom.c **** 	{
- 949              		.loc 1 408 8 is_stmt 1 view .LVU353
- 950 02b8 A045     		cmp	r8, r4
- 951 02ba 17D0     		beq	.L142
- 952              	.LVL44:
- 953              	.L127:
+ 938              		.loc 1 408 10 is_stmt 1 view .LVU349
+ 939 02b4 A045     		cmp	r8, r4
+ 940 02b6 17D0     		beq	.L142
+ 941              	.LVL41:
+ 942              	.L127:
  410:./src/eeprom.c **** 		{
- 954              		.loc 1 410 3 view .LVU354
+ 943              		.loc 1 410 3 view .LVU350
  410:./src/eeprom.c **** 		{
- 955              		.loc 1 410 9 is_stmt 0 view .LVU355
- 956 02bc 6A68     		ldr	r2, [r5, #4]
- 957 02be 44F07F03 		orr	r3, r4, #127
- 958 02c2 42F07F01 		orr	r1, r2, #127
+ 944              		.loc 1 410 9 is_stmt 0 view .LVU351
+ 945 02b8 6A68     		ldr	r2, [r5, #4]
+ 946 02ba 44F07F03 		orr	r3, r4, #127
+ 947 02be 42F07F01 		orr	r1, r2, #127
  410:./src/eeprom.c **** 		{
- 959              		.loc 1 410 43 view .LVU356
- 960 02c6 8B42     		cmp	r3, r1
- 961 02c8 01D1     		bne	.L121
+ 948              		.loc 1 410 43 discriminator 1 view .LVU352
+ 949 02c2 8B42     		cmp	r3, r1
+ 950 02c4 01D1     		bne	.L121
  410:./src/eeprom.c **** 		{
- 962              		.loc 1 410 43 view .LVU357
- 963 02ca A242     		cmp	r2, r4
- 964 02cc 14D9     		bls	.L143
- 965              	.L121:
+ 951              		.loc 1 410 43 discriminator 1 view .LVU353
+ 952 02c6 A242     		cmp	r2, r4
+ 953 02c8 11D9     		bls	.L143
+ 954              	.L121:
  412:./src/eeprom.c **** 			
- 966              		.loc 1 412 4 is_stmt 1 view .LVU358
- 967              	.LBB73:
- 968              	.LBI70:
+ 955              		.loc 1 412 4 is_stmt 1 view .LVU354
+ 956              	.LBB73:
+ 957              	.LBI70:
  108:./src/eeprom.c **** {
- 969              		.loc 1 108 23 view .LVU359
- 970              	.LBB72:
+ 958              		.loc 1 108 23 view .LVU355
+ 959              	.LBB72:
  110:./src/eeprom.c **** 	uint32_t  i;
- 971              		.loc 1 110 2 view .LVU360
+ 960              		.loc 1 110 2 view .LVU356
  111:./src/eeprom.c **** 
- 972              		.loc 1 111 2 view .LVU361
+ 961              		.loc 1 111 2 view .LVU357
  114:./src/eeprom.c **** 
- 973              		.loc 1 114 2 view .LVU362
- 974              	.LVL45:
+ 962              		.loc 1 114 2 view .LVU358
+ 963              	.LVL42:
  117:./src/eeprom.c **** 	{
- 975              		.loc 1 117 2 view .LVU363
+ 964              		.loc 1 117 2 view .LVU359
  117:./src/eeprom.c **** 	{
- 976              		.loc 1 117 5 is_stmt 0 view .LVU364
- 977 02ce 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
- 978 02d0 002B     		cmp	r3, #0
- 979 02d2 E5D1     		bne	.L144
- 980              	.LVL46:
- 981              	.L123:
+ 965              		.loc 1 117 5 is_stmt 0 view .LVU360
+ 966 02ca 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
+ 967 02cc 002B     		cmp	r3, #0
+ 968 02ce E5D1     		bne	.L144
+ 969              	.LVL43:
+ 970              	.L123:
  117:./src/eeprom.c **** 	{
- 982              		.loc 1 117 5 view .LVU365
- 983              	.LBE72:
- 984              	.LBE73:
+ 971              		.loc 1 117 5 view .LVU361
+ 972              	.LBE72:
+ 973              	.LBE73:
  424:./src/eeprom.c **** 			Cache.dirty = 1;
- 985              		.loc 1 424 4 is_stmt 1 view .LVU366
+ 974              		.loc 1 424 4 is_stmt 1 view .LVU362
  425:./src/eeprom.c **** 			Cache.count = 0;
- 986              		.loc 1 425 16 is_stmt 0 view .LVU367
- 987 02d4 0122     		movs	r2, #1
+ 975              		.loc 1 425 16 is_stmt 0 view .LVU363
+ 976 02d0 0122     		movs	r2, #1
  430:./src/eeprom.c **** 		 { Cache.data[Cache.count++] = *pBuff++;}
- 988              		.loc 1 430 39 view .LVU368
- 989 02d6 0023     		movs	r3, #0
+ 977              		.loc 1 430 39 view .LVU364
+ 978 02d2 0023     		movs	r3, #0
  424:./src/eeprom.c **** 			Cache.dirty = 1;
- 990              		.loc 1 424 20 view .LVU369
- 991 02d8 6C60     		str	r4, [r5, #4]
+ 979              		.loc 1 424 20 view .LVU365
+ 980 02d4 6C60     		str	r4, [r5, #4]
  425:./src/eeprom.c **** 			Cache.count = 0;
- 992              		.loc 1 425 4 is_stmt 1 view .LVU370
+ 981              		.loc 1 425 4 is_stmt 1 view .LVU366
  425:./src/eeprom.c **** 			Cache.count = 0;
- 993              		.loc 1 425 16 is_stmt 0 view .LVU371
- 994 02da 2F73     		strb	r7, [r5, #12]
+ 982              		.loc 1 425 16 is_stmt 0 view .LVU367
+ 983 02d6 2F73     		strb	r7, [r5, #12]
  426:./src/eeprom.c **** 		}
- 995              		.loc 1 426 4 is_stmt 1 view .LVU372
+ 984              		.loc 1 426 4 is_stmt 1 view .LVU368
  430:./src/eeprom.c **** 		 { Cache.data[Cache.count++] = *pBuff++;}
- 996              		.loc 1 430 3 view .LVU373
- 997              	.L125:
+ 985              		.loc 1 430 3 view .LVU369
+ 986              	.L125:
  431:./src/eeprom.c **** 
- 998              		.loc 1 431 6 view .LVU374
- 999              	.LVL47:
- 1000              		.loc 1 435 7 is_stmt 0 view .LVU375
- 1001 02dc 0134     		adds	r4, r4, #1
- 1002              	.LVL48:
+ 987              		.loc 1 431 6 view .LVU370
+ 988              	.LVL44:
+ 989              		.loc 1 435 7 is_stmt 0 view .LVU371
+ 990 02d8 0134     		adds	r4, r4, #1
+ 991              	.LVL45:
  431:./src/eeprom.c **** 
- 1003              		.loc 1 431 32 view .LVU376
- 1004 02de 2B44     		add	r3, r3, r5
+ 992              		.loc 1 431 32 view .LVU372
+ 993 02da 2B44     		add	r3, r3, r5
  431:./src/eeprom.c **** 
- 1005              		.loc 1 431 28 view .LVU377
- 1006 02e0 AA60     		str	r2, [r5, #8]
+ 994              		.loc 1 431 28 view .LVU373
+ 995 02dc AA60     		str	r2, [r5, #8]
  408:./src/eeprom.c **** 	{
- 1007              		.loc 1 408 8 view .LVU378
- 1008 02e2 A045     		cmp	r8, r4
+ 996              		.loc 1 408 10 view .LVU374
+ 997 02de A045     		cmp	r8, r4
  431:./src/eeprom.c **** 
- 1009              		.loc 1 431 34 view .LVU379
- 1010 02e4 16F8012B 		ldrb	r2, [r6], #1	@ zero_extendqisi2
- 1011              	.LVL49:
+ 998              		.loc 1 431 34 view .LVU375
+ 999 02e0 16F8012B 		ldrb	r2, [r6], #1	@ zero_extendqisi2
+ 1000              	.LVL46:
  431:./src/eeprom.c **** 
- 1012              		.loc 1 431 32 view .LVU380
- 1013 02e8 5A73     		strb	r2, [r3, #13]
+ 1001              		.loc 1 431 32 view .LVU376
+ 1002 02e4 5A73     		strb	r2, [r3, #13]
  434:./src/eeprom.c **** 		addr++;
- 1014              		.loc 1 434 3 is_stmt 1 view .LVU381
- 1015              	.LVL50:
- 1016              		.loc 1 435 3 view .LVU382
+ 1003              		.loc 1 434 3 is_stmt 1 view .LVU377
+ 1004              	.LVL47:
+ 1005              		.loc 1 435 3 view .LVU378
  408:./src/eeprom.c **** 	{
- 1017              		.loc 1 408 8 view .LVU383
- 1018 02ea E7D1     		bne	.L127
- 1019              	.LVL51:
- 1020              	.L142:
+ 1006              		.loc 1 408 10 view .LVU379
+ 1007 02e6 E7D1     		bne	.L127
+ 1008              	.LVL48:
+ 1009              	.L142:
  436:./src/eeprom.c **** 	}
  437:./src/eeprom.c **** 
  438:./src/eeprom.c **** 	exit:
- 1021              		.loc 1 438 2 is_stmt 0 view .LVU384
- 1022 02ec 0020     		movs	r0, #0
+ 1010              		.loc 1 438 2 is_stmt 0 view .LVU380
+ 1011 02e8 0020     		movs	r0, #0
  439:./src/eeprom.c **** 	return ret;
  440:./src/eeprom.c **** }
- 1023              		.loc 1 440 1 view .LVU385
- 1024 02ee BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 1025              	.LVL52:
- 1026              	.L129:
- 1027              	.L120:
- 389:./src/eeprom.c **** 		goto exit;
- 1028              		.loc 1 389 7 view .LVU386
- 1029 02f2 0220     		movs	r0, #2
- 1030              	.LVL53:
+ 1012              		.loc 1 440 1 view .LVU381
+ 1013 02ea BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1014              	.LVL49:
+ 1015              	.L143:
+ 410:./src/eeprom.c **** 		{
+ 1016              		.loc 1 410 100 discriminator 2 view .LVU382
+ 1017 02ee AB68     		ldr	r3, [r5, #8]
+ 1018 02f0 1A44     		add	r2, r2, r3
+ 410:./src/eeprom.c **** 		{
+ 1019              		.loc 1 410 72 discriminator 2 view .LVU383
+ 1020 02f2 A242     		cmp	r2, r4
+ 1021 02f4 D6D2     		bcs	.L122
+ 1022 02f6 E8E7     		b	.L121
+ 1023              	.LVL50:
+ 1024              	.L128:
+ 1025              	.LCFI8:
+ 1026              		.cfi_def_cfa_offset 0
+ 1027              		.cfi_restore 4
+ 1028              		.cfi_restore 5
+ 1029              		.cfi_restore 6
+ 1030              		.cfi_restore 7
+ 1031              		.cfi_restore 8
+ 1032              		.cfi_restore 14
+ 382:./src/eeprom.c **** 		goto exit;
+ 1033              		.loc 1 382 7 view .LVU384
+ 1034 02f8 0220     		movs	r0, #2
+ 1035              	.LVL51:
+ 1036              		.loc 1 440 1 view .LVU385
+ 1037 02fa 7047     		bx	lr
+ 1038              	.LVL52:
+ 1039              	.L129:
+ 1040              	.LCFI9:
+ 1041              		.cfi_def_cfa_offset 24
+ 1042              		.cfi_offset 4, -24
+ 1043              		.cfi_offset 5, -20
+ 1044              		.cfi_offset 6, -16
+ 1045              		.cfi_offset 7, -12
+ 1046              		.cfi_offset 8, -8
+ 1047              		.cfi_offset 14, -4
+ 1048              	.L120:
+ 382:./src/eeprom.c **** 		goto exit;
+ 1049              		.loc 1 382 7 view .LVU386
+ 1050 02fc 0220     		movs	r0, #2
+ 1051              	.LVL53:
  439:./src/eeprom.c **** 	return ret;
- 1031              		.loc 1 439 2 is_stmt 1 view .LVU387
- 1032              		.loc 1 440 1 is_stmt 0 view .LVU388
- 1033 02f4 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
- 1034              	.LVL54:
- 1035              	.L143:
- 410:./src/eeprom.c **** 		{
- 1036              		.loc 1 410 100 discriminator 2 view .LVU389
- 1037 02f8 AB68     		ldr	r3, [r5, #8]
- 1038 02fa 1A44     		add	r2, r2, r3
- 410:./src/eeprom.c **** 		{
- 1039              		.loc 1 410 72 discriminator 2 view .LVU390
- 1040 02fc A242     		cmp	r2, r4
- 1041 02fe D3D2     		bcs	.L122
- 1042 0300 E5E7     		b	.L121
- 1043              	.LVL55:
- 1044              	.L138:
- 1045              	.LCFI8:
- 1046              		.cfi_def_cfa_offset 0
- 1047              		.cfi_restore 4
- 1048              		.cfi_restore 5
- 1049              		.cfi_restore 6
- 1050              		.cfi_restore 7
- 1051              		.cfi_restore 8
- 1052              		.cfi_restore 14
- 389:./src/eeprom.c **** 		goto exit;
- 1053              		.loc 1 389 7 view .LVU391
- 1054 0302 0220     		movs	r0, #2
- 1055              	.LVL56:
- 1056              		.loc 1 440 1 view .LVU392
- 1057 0304 7047     		bx	lr
- 1058              	.LVL57:
- 1059              	.L141:
- 1060              	.LCFI9:
- 1061              		.cfi_def_cfa_offset 24
- 1062              		.cfi_offset 4, -24
- 1063              		.cfi_offset 5, -20
- 1064              		.cfi_offset 6, -16
- 1065              		.cfi_offset 7, -12
- 1066              		.cfi_offset 8, -8
- 1067              		.cfi_offset 14, -4
+ 1052              		.loc 1 439 2 is_stmt 1 view .LVU387
+ 1053              		.loc 1 440 1 is_stmt 0 view .LVU388
+ 1054 02fe BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1055              	.LVL54:
+ 1056              	.L141:
  431:./src/eeprom.c **** 
- 1068              		.loc 1 431 28 view .LVU393
- 1069 0306 5A1C     		adds	r2, r3, #1
- 1070 0308 E8E7     		b	.L125
- 1071              	.L146:
- 1072 030a 00BF     		.align	2
- 1073              	.L145:
- 1074 030c 00000000 		.word	.LANCHOR0
- 1075              		.cfi_endproc
- 1076              	.LFE148:
- 1078              		.align	1
- 1079              		.p2align 2,,3
- 1080              		.global	EEPROM_FlushCache
- 1081              		.syntax unified
- 1082              		.thumb
- 1083              		.thumb_func
- 1084              		.fpu fpv5-d16
- 1086              	EEPROM_FlushCache:
- 1087              	.LFB149:
+ 1057              		.loc 1 431 28 view .LVU389
+ 1058 0302 5A1C     		adds	r2, r3, #1
+ 1059 0304 E8E7     		b	.L125
+ 1060              	.L146:
+ 1061 0306 00BF     		.align	2
+ 1062              	.L145:
+ 1063 0308 00000000 		.word	.LANCHOR0
+ 1064              		.cfi_endproc
+ 1065              	.LFE148:
+ 1067              		.align	1
+ 1068              		.p2align 2,,3
+ 1069              		.global	EEPROM_FlushCache
+ 1070              		.syntax unified
+ 1071              		.thumb
+ 1072              		.thumb_func
+ 1074              	EEPROM_FlushCache:
+ 1075              	.LFB149:
  441:./src/eeprom.c **** 
  442:./src/eeprom.c **** 
  443:./src/eeprom.c **** 
  444:./src/eeprom.c **** //! @brief      flush data from cache into eeprom
  445:./src/eeprom.c **** EEPROMResult_t  EEPROM_FlushCache ( void)
  446:./src/eeprom.c **** {
- 1088              		.loc 1 446 1 is_stmt 1 view -0
- 1089              		.cfi_startproc
- 1090              		@ args = 0, pretend = 0, frame = 0
- 1091              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1076              		.loc 1 446 1 is_stmt 1 view -0
+ 1077              		.cfi_startproc
+ 1078              		@ args = 0, pretend = 0, frame = 0
+ 1079              		@ frame_needed = 0, uses_anonymous_args = 0
  447:./src/eeprom.c **** 	EEPROMResult_t ret;
- 1092              		.loc 1 447 2 view .LVU395
+ 1080              		.loc 1 447 2 view .LVU391
  448:./src/eeprom.c **** 
  449:./src/eeprom.c **** 
  450:./src/eeprom.c **** 	ret = writecachepage();
- 1093              		.loc 1 450 2 view .LVU396
- 1094              	.LBB76:
- 1095              	.LBI76:
+ 1081              		.loc 1 450 2 view .LVU392
+ 1082              	.LBB76:
+ 1083              	.LBI76:
  108:./src/eeprom.c **** {
- 1096              		.loc 1 108 23 view .LVU397
- 1097              	.LBB77:
+ 1084              		.loc 1 108 23 view .LVU393
+ 1085              	.LBB77:
  110:./src/eeprom.c **** 	uint32_t  i;
- 1098              		.loc 1 110 2 view .LVU398
+ 1086              		.loc 1 110 2 view .LVU394
  111:./src/eeprom.c **** 
- 1099              		.loc 1 111 2 view .LVU399
+ 1087              		.loc 1 111 2 view .LVU395
  114:./src/eeprom.c **** 
- 1100              		.loc 1 114 2 view .LVU400
- 1101              	.LVL58:
+ 1088              		.loc 1 114 2 view .LVU396
+ 1089              	.LVL55:
  117:./src/eeprom.c **** 	{
- 1102              		.loc 1 117 2 view .LVU401
- 1103              	.LBE77:
- 1104              	.LBE76:
+ 1090              		.loc 1 117 2 view .LVU397
+ 1091              	.LBE77:
+ 1092              	.LBE76:
  446:./src/eeprom.c **** 	EEPROMResult_t ret;
- 1105              		.loc 1 446 1 is_stmt 0 view .LVU402
- 1106 0310 10B5     		push	{r4, lr}
- 1107              	.LCFI10:
- 1108              		.cfi_def_cfa_offset 8
- 1109              		.cfi_offset 4, -8
- 1110              		.cfi_offset 14, -4
- 1111              	.LBB80:
- 1112              	.LBB78:
+ 1093              		.loc 1 446 1 is_stmt 0 view .LVU398
+ 1094 030c 10B5     		push	{r4, lr}
+ 1095              	.LCFI10:
+ 1096              		.cfi_def_cfa_offset 8
+ 1097              		.cfi_offset 4, -8
+ 1098              		.cfi_offset 14, -4
+ 1099              	.LBB80:
+ 1100              	.LBB78:
  117:./src/eeprom.c **** 	{
- 1113              		.loc 1 117 13 view .LVU403
- 1114 0312 0A4C     		ldr	r4, .L157
+ 1101              		.loc 1 117 13 view .LVU399
+ 1102 030e 0A4C     		ldr	r4, .L157
  117:./src/eeprom.c **** 	{
- 1115              		.loc 1 117 5 view .LVU404
- 1116 0314 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
- 1117 0316 43B1     		cbz	r3, .L148
+ 1103              		.loc 1 117 5 view .LVU400
+ 1104 0310 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 1105 0312 43B1     		cbz	r3, .L148
  117:./src/eeprom.c **** 	{
- 1118              		.loc 1 117 20 view .LVU405
- 1119 0318 A368     		ldr	r3, [r4, #8]
- 1120 031a 33B1     		cbz	r3, .L148
- 1121 031c FFF7ACFE 		bl	writecachepage.part.0
- 1122              	.LVL59:
- 1123              	.LBE78:
- 1124              	.LBE80:
+ 1106              		.loc 1 117 20 discriminator 1 view .LVU401
+ 1107 0314 A368     		ldr	r3, [r4, #8]
+ 1108 0316 33B1     		cbz	r3, .L148
+ 1109 0318 FFF7AEFE 		bl	writecachepage.part.0
+ 1110              	.LVL56:
+ 1111              	.LBE78:
+ 1112              	.LBE80:
  451:./src/eeprom.c **** 	
  452:./src/eeprom.c **** 	if ( ret != EEPROM_ERR_OK)
  453:./src/eeprom.c **** 	{
@@ -2767,165 +2752,166 @@
  457:./src/eeprom.c **** 	// wait until all data written
  458:./src/eeprom.c **** 	while ( ackpoll() != EEPROM_ERR_OK)
  459:./src/eeprom.c **** 	 {}
- 1125              		.loc 1 459 4 is_stmt 1 view .LVU406
+ 1113              		.loc 1 459 4 is_stmt 1 view .LVU402
  458:./src/eeprom.c **** 	 {}
- 1126              		.loc 1 458 8 view .LVU407
+ 1114              		.loc 1 458 20 discriminator 1 view .LVU403
  458:./src/eeprom.c **** 	 {}
- 1127              		.loc 1 458 10 is_stmt 0 view .LVU408
- 1128 0320 FFF76EFE 		bl	ackpoll
- 1129              	.LVL60:
+ 1115              		.loc 1 458 10 is_stmt 0 discriminator 1 view .LVU404
+ 1116 031c FFF770FE 		bl	ackpoll
+ 1117              	.LVL57:
  458:./src/eeprom.c **** 	 {}
- 1130              		.loc 1 458 8 view .LVU409
- 1131 0324 18B9     		cbnz	r0, .L151
+ 1118              		.loc 1 458 20 discriminator 1 view .LVU405
+ 1119 0320 18B9     		cbnz	r0, .L151
  460:./src/eeprom.c **** 
  461:./src/eeprom.c **** 	Cache.count = 0;
- 1132              		.loc 1 461 2 is_stmt 1 view .LVU410
- 1133              		.loc 1 461 14 is_stmt 0 view .LVU411
- 1134 0326 A060     		str	r0, [r4, #8]
- 1135              	.LDL1:
+ 1120              		.loc 1 461 2 is_stmt 1 view .LVU406
+ 1121              		.loc 1 461 14 is_stmt 0 view .LVU407
+ 1122 0322 A060     		str	r0, [r4, #8]
+ 1123              	.LDL1:
  462:./src/eeprom.c **** 
  463:./src/eeprom.c **** 	exit:
  464:./src/eeprom.c **** 	return ret;
- 1136              		.loc 1 464 2 is_stmt 1 view .LVU412
+ 1124              		.loc 1 464 2 is_stmt 1 view .LVU408
  465:./src/eeprom.c **** }
- 1137              		.loc 1 465 1 is_stmt 0 view .LVU413
- 1138 0328 10BD     		pop	{r4, pc}
- 1139              	.L148:
- 1140              	.LBB81:
- 1141              	.LBB79:
+ 1125              		.loc 1 465 1 is_stmt 0 view .LVU409
+ 1126 0324 10BD     		pop	{r4, pc}
+ 1127              	.L148:
+ 1128              	.LBB81:
+ 1129              	.LBB79:
  120:./src/eeprom.c **** 
- 1142              		.loc 1 120 3 is_stmt 1 view .LVU414
+ 1130              		.loc 1 120 3 is_stmt 1 view .LVU410
  120:./src/eeprom.c **** 
- 1143              		.loc 1 120 15 is_stmt 0 view .LVU415
- 1144 032a 0023     		movs	r3, #0
- 1145 032c 2373     		strb	r3, [r4, #12]
+ 1131              		.loc 1 120 15 is_stmt 0 view .LVU411
+ 1132 0326 0023     		movs	r3, #0
+ 1133 0328 2373     		strb	r3, [r4, #12]
  122:./src/eeprom.c **** 	}
- 1146              		.loc 1 122 3 is_stmt 1 view .LVU416
- 1147              	.L151:
- 1148              	.LBE79:
- 1149              	.LBE81:
+ 1134              		.loc 1 122 3 is_stmt 1 view .LVU412
+ 1135              	.L151:
+ 1136              	.LBE79:
+ 1137              	.LBE81:
  459:./src/eeprom.c **** 
- 1150              		.loc 1 459 4 discriminator 1 view .LVU417
+ 1138              		.loc 1 459 4 view .LVU413
  458:./src/eeprom.c **** 	 {}
- 1151              		.loc 1 458 8 discriminator 1 view .LVU418
+ 1139              		.loc 1 458 20 discriminator 1 view .LVU414
  458:./src/eeprom.c **** 	 {}
- 1152              		.loc 1 458 10 is_stmt 0 discriminator 1 view .LVU419
- 1153 032e FFF767FE 		bl	ackpoll
- 1154              	.LVL61:
+ 1140              		.loc 1 458 10 is_stmt 0 discriminator 1 view .LVU415
+ 1141 032a FFF769FE 		bl	ackpoll
+ 1142              	.LVL58:
  458:./src/eeprom.c **** 	 {}
- 1155              		.loc 1 458 8 discriminator 1 view .LVU420
- 1156 0332 0028     		cmp	r0, #0
- 1157 0334 FBD1     		bne	.L151
+ 1143              		.loc 1 458 20 discriminator 1 view .LVU416
+ 1144 032e 0028     		cmp	r0, #0
+ 1145 0330 FBD1     		bne	.L151
  461:./src/eeprom.c **** 
- 1158              		.loc 1 461 2 is_stmt 1 view .LVU421
+ 1146              		.loc 1 461 2 is_stmt 1 view .LVU417
  461:./src/eeprom.c **** 
- 1159              		.loc 1 461 14 is_stmt 0 view .LVU422
- 1160 0336 A060     		str	r0, [r4, #8]
+ 1147              		.loc 1 461 14 is_stmt 0 view .LVU418
+ 1148 0332 A060     		str	r0, [r4, #8]
  464:./src/eeprom.c **** }
- 1161              		.loc 1 464 2 is_stmt 1 view .LVU423
- 1162              		.loc 1 465 1 is_stmt 0 view .LVU424
- 1163 0338 10BD     		pop	{r4, pc}
- 1164              	.L158:
- 1165 033a 00BF     		.align	2
- 1166              	.L157:
- 1167 033c 00000000 		.word	.LANCHOR0
- 1168              		.cfi_endproc
- 1169              	.LFE149:
- 1171              		.align	1
- 1172              		.p2align 2,,3
- 1173              		.global	EEPROM_Init
- 1174              		.syntax unified
- 1175              		.thumb
- 1176              		.thumb_func
- 1177              		.fpu fpv5-d16
- 1179              	EEPROM_Init:
- 1180              	.LFB150:
+ 1149              		.loc 1 464 2 is_stmt 1 view .LVU419
+ 1150              		.loc 1 465 1 is_stmt 0 view .LVU420
+ 1151 0334 10BD     		pop	{r4, pc}
+ 1152              	.L158:
+ 1153 0336 00BF     		.align	2
+ 1154              	.L157:
+ 1155 0338 00000000 		.word	.LANCHOR0
+ 1156              		.cfi_endproc
+ 1157              	.LFE149:
+ 1159              		.align	1
+ 1160              		.p2align 2,,3
+ 1161              		.global	EEPROM_Init
+ 1162              		.syntax unified
+ 1163              		.thumb
+ 1164              		.thumb_func
+ 1166              	EEPROM_Init:
+ 1167              	.LFB150:
  466:./src/eeprom.c **** 
  467:./src/eeprom.c **** 
  468:./src/eeprom.c **** 
  469:./src/eeprom.c **** //! @brief      initial at startup. Called from HW_Init()
  470:./src/eeprom.c **** void  EEPROM_Init ( void)
  471:./src/eeprom.c **** {
- 1181              		.loc 1 471 1 is_stmt 1 view -0
- 1182              		.cfi_startproc
- 1183              		@ args = 0, pretend = 0, frame = 0
- 1184              		@ frame_needed = 0, uses_anonymous_args = 0
- 1185              		@ link register save eliminated.
+ 1168              		.loc 1 471 1 is_stmt 1 view -0
+ 1169              		.cfi_startproc
+ 1170              		@ args = 0, pretend = 0, frame = 0
+ 1171              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1172              		@ link register save eliminated.
  472:./src/eeprom.c **** 
  473:./src/eeprom.c **** 	Cache.dirty = 0;
- 1186              		.loc 1 473 2 view .LVU426
- 1187              		.loc 1 473 14 is_stmt 0 view .LVU427
- 1188 0340 044B     		ldr	r3, .L160
- 1189 0342 0022     		movs	r2, #0
+ 1173              		.loc 1 473 2 view .LVU422
+ 1174              		.loc 1 473 14 is_stmt 0 view .LVU423
+ 1175 033c 044B     		ldr	r3, .L160
+ 1176 033e 0022     		movs	r2, #0
  474:./src/eeprom.c **** 	Cache.count = 0;
  475:./src/eeprom.c **** 	Cache.startaddr = 0xFFFFFFFF;
- 1190              		.loc 1 475 18 view .LVU428
- 1191 0344 4FF0FF30 		mov	r0, #-1
+ 1177              		.loc 1 475 18 view .LVU424
+ 1178 0340 4FF0FF30 		mov	r0, #-1
  476:./src/eeprom.c **** 
  477:./src/eeprom.c **** 	LastCntlByte = EEPROM_DEV_ADDR;
- 1192              		.loc 1 477 15 view .LVU429
- 1193 0348 A021     		movs	r1, #160
+ 1179              		.loc 1 477 15 view .LVU425
+ 1180 0344 A021     		movs	r1, #160
  473:./src/eeprom.c **** 	Cache.count = 0;
- 1194              		.loc 1 473 14 view .LVU430
- 1195 034a 1A73     		strb	r2, [r3, #12]
+ 1181              		.loc 1 473 14 view .LVU426
+ 1182 0346 1A73     		strb	r2, [r3, #12]
  474:./src/eeprom.c **** 	Cache.count = 0;
- 1196              		.loc 1 474 2 is_stmt 1 view .LVU431
- 1197              		.loc 1 477 15 is_stmt 0 view .LVU432
- 1198 034c 1970     		strb	r1, [r3]
+ 1183              		.loc 1 474 2 is_stmt 1 view .LVU427
  475:./src/eeprom.c **** 
- 1199              		.loc 1 475 18 view .LVU433
- 1200 034e C3E90102 		strd	r0, r2, [r3, #4]
- 1201              		.loc 1 477 2 is_stmt 1 view .LVU434
+ 1184              		.loc 1 475 2 view .LVU428
+ 1185              		.loc 1 477 15 is_stmt 0 view .LVU429
+ 1186 0348 1970     		strb	r1, [r3]
  478:./src/eeprom.c **** 
  479:./src/eeprom.c **** 	ackpoll();
- 1202              		.loc 1 479 2 view .LVU435
- 1203 0352 55E6     		b	ackpoll
- 1204              	.LVL62:
- 1205              	.L161:
- 1206              		.align	2
- 1207              	.L160:
- 1208 0354 00000000 		.word	.LANCHOR0
- 1209              		.cfi_endproc
- 1210              	.LFE150:
- 1212              		.bss
- 1213              		.align	2
- 1214              		.set	.LANCHOR0,. + 0
- 1217              	LastCntlByte:
- 1218 0000 00       		.space	1
- 1219 0001 000000   		.space	3
- 1222              	Cache:
- 1223 0004 00000000 		.space	140
- 1223      00000000 
- 1223      00000000 
- 1223      00000000 
- 1223      00000000 
- 1224              		.text
- 1225              	.Letext0:
- 1226              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1227              		.file 4 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 1228              		.file 5 "./inc/stm32f765xx.h"
+ 1187              		.loc 1 479 2 is_stmt 1 view .LVU430
+ 475:./src/eeprom.c **** 
+ 1188              		.loc 1 475 18 is_stmt 0 view .LVU431
+ 1189 034a C3E90102 		strd	r0, r2, [r3, #4]
+ 1190              		.loc 1 479 2 view .LVU432
+ 1191 034e 57E6     		b	ackpoll
+ 1192              	.LVL59:
+ 1193              	.L161:
+ 1194              		.align	2
+ 1195              	.L160:
+ 1196 0350 00000000 		.word	.LANCHOR0
+ 1197              		.cfi_endproc
+ 1198              	.LFE150:
+ 1200              		.bss
+ 1201              		.align	2
+ 1202              		.set	.LANCHOR0,. + 0
+ 1205              	LastCntlByte:
+ 1206 0000 00       		.space	1
+ 1207 0001 000000   		.space	3
+ 1210              	Cache:
+ 1211 0004 00000000 		.space	140
+ 1211      00000000 
+ 1211      00000000 
+ 1211      00000000 
+ 1211      00000000 
+ 1212              		.text
+ 1213              	.Letext0:
+ 1214              		.file 3 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1215              		.file 4 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 1216              		.file 5 "./inc/stm32f765xx.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 eeprom.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:24     .text:00000000 ackpoll
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:189    .text:0000006c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:195    .text:00000078 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:202    .text:00000078 writecachepage.part.0
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:406    .text:00000120 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:412    .text:0000012c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:420    .text:0000012c EEPROM_Read
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:861    .text:0000026c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:868    .text:0000027c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:876    .text:0000027c EEPROM_Write
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1074   .text:0000030c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1078   .text:00000310 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1086   .text:00000310 EEPROM_FlushCache
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1167   .text:0000033c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1171   .text:00000340 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1179   .text:00000340 EEPROM_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1208   .text:00000354 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1213   .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1217   .bss:00000000 LastCntlByte
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccdhmFNe.s:1222   .bss:00000004 Cache
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:25     .text:00000000 ackpoll
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:184    .text:0000006c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:190    .text:00000078 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:196    .text:00000078 writecachepage.part.0
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:399    .text:00000120 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:405    .text:0000012c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:412    .text:0000012c EEPROM_Read
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:852    .text:00000268 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:859    .text:00000278 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:866    .text:00000278 EEPROM_Write
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1063   .text:00000308 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1067   .text:0000030c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1074   .text:0000030c EEPROM_FlushCache
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1155   .text:00000338 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1159   .text:0000033c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1166   .text:0000033c EEPROM_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1196   .text:00000350 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1201   .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1205   .bss:00000000 LastCntlByte
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccb88cKd.s:1210   .bss:00000004 Cache
 
 NO UNDEFINED SYMBOLS

@@ -1,30 +1,30 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"startDebug.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.global	_write
-  19              		.arch armv7e-m
-  20              		.syntax unified
-  21              		.thumb
-  22              		.thumb_func
-  23              		.fpu fpv5-d16
-  25              	_write:
-  26              	.LVL0:
-  27              	.LFB170:
-  28              		.file 1 "./src/startDebug.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"startDebug.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/startDebug.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.global	_write
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_write:
+  27              	.LVL0:
+  28              	.LFB171:
    1:./src/startDebug.c **** #include "startDebug.h"
    2:./src/startDebug.c **** #include <stdio.h>
    3:./src/startDebug.c **** #include "main.h"
@@ -90,130 +90,118 @@
   39              		.cfi_offset 4, -12
   40              		.cfi_offset 5, -8
   41              		.cfi_offset 14, -4
-  42              		.loc 1 51 10 view .LVU4
-  43 0002 0023     		movs	r3, #0
+  42 0002 ADF5017D 		sub	sp, sp, #516
+  43              	.LCFI1:
+  44              		.cfi_def_cfa_offset 528
   49:./src/startDebug.c ****     (void)file;
-  44              		.loc 1 49 1 view .LVU5
-  45 0004 ADF5017D 		sub	sp, sp, #516
-  46              	.LCFI1:
-  47              		.cfi_def_cfa_offset 528
-  49:./src/startDebug.c ****     (void)file;
-  48              		.loc 1 49 1 view .LVU6
-  49 0008 1446     		mov	r4, r2
-  50 000a 0D46     		mov	r5, r1
-  51              		.loc 1 51 10 view .LVU7
-  52 000c 4FF4FE72 		mov	r2, #508
-  53              	.LVL1:
-  54              		.loc 1 51 10 view .LVU8
-  55 0010 1946     		mov	r1, r3
-  56              	.LVL2:
-  57              		.loc 1 51 10 view .LVU9
-  58 0012 01A8     		add	r0, sp, #4
-  59              	.LVL3:
-  60              		.loc 1 51 10 view .LVU10
-  61 0014 0093     		str	r3, [sp]
-  62 0016 FFF7FEFF 		bl	memset
-  63              	.LVL4:
+  45              		.loc 1 49 1 view .LVU4
+  46 0006 1446     		mov	r4, r2
+  47 0008 0D46     		mov	r5, r1
+  48              		.loc 1 51 10 view .LVU5
+  49 000a 4FF40072 		mov	r2, #512
+  50              	.LVL1:
+  51              		.loc 1 51 10 view .LVU6
+  52 000e 0021     		movs	r1, #0
+  53              	.LVL2:
+  54              		.loc 1 51 10 view .LVU7
+  55 0010 6846     		mov	r0, sp
+  56              	.LVL3:
+  57              		.loc 1 51 10 view .LVU8
+  58 0012 FFF7FEFF 		bl	memset
+  59              	.LVL4:
   52:./src/startDebug.c ****     strncpy(queue_buf, ptr, len);
-  64              		.loc 1 52 5 is_stmt 1 view .LVU11
-  65 001a 2246     		mov	r2, r4
-  66 001c 2946     		mov	r1, r5
-  67 001e 6846     		mov	r0, sp
-  68 0020 FFF7FEFF 		bl	strncpy
-  69              	.LVL5:
+  60              		.loc 1 52 5 is_stmt 1 view .LVU9
+  61 0016 2246     		mov	r2, r4
+  62 0018 2946     		mov	r1, r5
+  63 001a 6846     		mov	r0, sp
+  64 001c FFF7FEFF 		bl	strncpy
+  65              	.LVL5:
   53:./src/startDebug.c ****     queue_buf[len] = '\0';
-  70              		.loc 1 53 5 view .LVU12
+  66              		.loc 1 53 5 view .LVU10
+  67              		.loc 1 53 20 is_stmt 0 view .LVU11
+  68 0020 0023     		movs	r3, #0
   54:./src/startDebug.c ****     osMessageQueuePut(debugQueue, queue_buf, 0, 0);
-  71              		.loc 1 54 5 is_stmt 0 view .LVU13
-  72 0024 0023     		movs	r3, #0
-  73 0026 0648     		ldr	r0, .L4
-  74 0028 6946     		mov	r1, sp
-  75 002a 1A46     		mov	r2, r3
+  69              		.loc 1 54 5 view .LVU12
+  70 0022 0648     		ldr	r0, .L4
+  71 0024 6946     		mov	r1, sp
+  72 0026 1A46     		mov	r2, r3
   53:./src/startDebug.c ****     queue_buf[len] = '\0';
-  76              		.loc 1 53 20 view .LVU14
-  77 002c 0DF80430 		strb	r3, [sp, r4]
-  78              		.loc 1 54 5 is_stmt 1 view .LVU15
-  79 0030 0068     		ldr	r0, [r0]
-  80 0032 FFF7FEFF 		bl	osMessageQueuePut
-  81              	.LVL6:
+  73              		.loc 1 53 20 view .LVU13
+  74 0028 0DF80430 		strb	r3, [sp, r4]
+  75              		.loc 1 54 5 is_stmt 1 view .LVU14
+  76 002c 0068     		ldr	r0, [r0]
+  77 002e FFF7FEFF 		bl	osMessageQueuePut
+  78              	.LVL6:
   55:./src/startDebug.c ****   return len;
-  82              		.loc 1 55 3 view .LVU16
+  79              		.loc 1 55 3 view .LVU15
   56:./src/startDebug.c **** }
-  83              		.loc 1 56 1 is_stmt 0 view .LVU17
-  84 0036 2046     		mov	r0, r4
-  85 0038 0DF5017D 		add	sp, sp, #516
-  86              	.LCFI2:
-  87              		.cfi_def_cfa_offset 12
-  88              		@ sp needed
-  89 003c 30BD     		pop	{r4, r5, pc}
-  90              	.LVL7:
-  91              	.L5:
-  92              		.loc 1 56 1 view .LVU18
-  93 003e 00BF     		.align	2
-  94              	.L4:
-  95 0040 00000000 		.word	.LANCHOR0
-  96              		.cfi_endproc
-  97              	.LFE170:
-  99              		.align	1
- 100              		.p2align 2,,3
- 101              		.global	MX_IWDG_Init
- 102              		.syntax unified
- 103              		.thumb
- 104              		.thumb_func
- 105              		.fpu fpv5-d16
- 107              	MX_IWDG_Init:
- 108              	.LFB171:
+  80              		.loc 1 56 1 is_stmt 0 view .LVU16
+  81 0032 2046     		mov	r0, r4
+  82 0034 0DF5017D 		add	sp, sp, #516
+  83              	.LCFI2:
+  84              		.cfi_def_cfa_offset 12
+  85              		@ sp needed
+  86 0038 30BD     		pop	{r4, r5, pc}
+  87              	.LVL7:
+  88              	.L5:
+  89              		.loc 1 56 1 view .LVU17
+  90 003a 00BF     		.align	2
+  91              	.L4:
+  92 003c 00000000 		.word	.LANCHOR0
+  93              		.cfi_endproc
+  94              	.LFE171:
+  96              		.align	1
+  97              		.p2align 2,,3
+  98              		.global	MX_IWDG_Init
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 103              	MX_IWDG_Init:
+ 104              	.LFB172:
   57:./src/startDebug.c **** 
   58:./src/startDebug.c **** void MX_IWDG_Init(void)
   59:./src/startDebug.c **** {
- 109              		.loc 1 59 1 is_stmt 1 view -0
- 110              		.cfi_startproc
- 111              		@ args = 0, pretend = 0, frame = 0
- 112              		@ frame_needed = 0, uses_anonymous_args = 0
- 113              		@ link register save eliminated.
+ 105              		.loc 1 59 1 is_stmt 1 view -0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		@ link register save eliminated.
   60:./src/startDebug.c ****   hiwdg.Instance = IWDG;
- 114              		.loc 1 60 3 view .LVU20
- 115              		.loc 1 60 18 is_stmt 0 view .LVU21
- 116 0044 044B     		ldr	r3, .L7
+ 110              		.loc 1 60 3 view .LVU19
+ 111              		.loc 1 60 18 is_stmt 0 view .LVU20
+ 112 0040 044B     		ldr	r3, .L7
   61:./src/startDebug.c ****   hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
   62:./src/startDebug.c ****   hiwdg.Init.Window = 4095;
- 117              		.loc 1 62 21 view .LVU22
- 118 0046 40F6FF72 		movw	r2, #4095
+ 113              		.loc 1 62 21 view .LVU21
+ 114 0042 40F6FF72 		movw	r2, #4095
   60:./src/startDebug.c ****   hiwdg.Instance = IWDG;
- 119              		.loc 1 60 18 view .LVU23
- 120 004a 0448     		ldr	r0, .L7+4
+ 115              		.loc 1 60 18 view .LVU22
+ 116 0046 0448     		ldr	r0, .L7+4
   61:./src/startDebug.c ****   hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
- 121              		.loc 1 61 24 view .LVU24
- 122 004c 0321     		movs	r1, #3
+ 117              		.loc 1 61 24 view .LVU23
+ 118 0048 0321     		movs	r1, #3
+ 119 004a C3E90222 		strd	r2, r2, [r3, #8]
+ 120 004e C3E90001 		strd	r0, r1, [r3]
   63:./src/startDebug.c ****   hiwdg.Init.Reload = 4095;
- 123              		.loc 1 63 21 view .LVU25
- 124 004e C3E90222 		strd	r2, r2, [r3, #8]
-  61:./src/startDebug.c ****   hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
- 125              		.loc 1 61 24 view .LVU26
- 126 0052 C3E90001 		strd	r0, r1, [r3]
-  62:./src/startDebug.c ****   hiwdg.Init.Reload = 4095;
- 127              		.loc 1 62 3 is_stmt 1 view .LVU27
- 128              		.loc 1 63 3 view .LVU28
   64:./src/startDebug.c **** }
- 129              		.loc 1 64 1 is_stmt 0 view .LVU29
- 130 0056 7047     		bx	lr
- 131              	.L8:
- 132              		.align	2
- 133              	.L7:
- 134 0058 00000000 		.word	hiwdg
- 135 005c 00300040 		.word	1073754112
- 136              		.cfi_endproc
- 137              	.LFE171:
- 139              		.align	1
- 140              		.p2align 2,,3
- 141              		.global	LWIP_init
- 142              		.syntax unified
- 143              		.thumb
- 144              		.thumb_func
- 145              		.fpu fpv5-d16
- 147              	LWIP_init:
- 148              	.LVL8:
- 149              	.LFB172:
+ 121              		.loc 1 64 1 view .LVU24
+ 122 0052 7047     		bx	lr
+ 123              	.L8:
+ 124              		.align	2
+ 125              	.L7:
+ 126 0054 00000000 		.word	hiwdg
+ 127 0058 00300040 		.word	1073754112
+ 128              		.cfi_endproc
+ 129              	.LFE172:
+ 131              		.align	1
+ 132              		.p2align 2,,3
+ 133              		.global	LWIP_init
+ 134              		.syntax unified
+ 135              		.thumb
+ 136              		.thumb_func
+ 138              	LWIP_init:
+ 139              	.LVL8:
+ 140              	.LFB173:
   65:./src/startDebug.c **** 
   66:./src/startDebug.c **** 
   67:./src/startDebug.c **** //for lwip
@@ -226,37 +214,37 @@
   74:./src/startDebug.c **** uint8_t GATEWAY_ADDRESS[4];
   75:./src/startDebug.c **** 
   76:./src/startDebug.c **** void LWIP_init(void *argument){
- 150              		.loc 1 76 31 is_stmt 1 view -0
- 151              		.cfi_startproc
- 152              		@ args = 0, pretend = 0, frame = 0
- 153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 141              		.loc 1 76 31 is_stmt 1 view -0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 0, uses_anonymous_args = 0
   77:./src/startDebug.c **** 
   78:./src/startDebug.c **** 	// init lwip stack
   79:./src/startDebug.c **** 	tcpip_init( NULL, NULL );
- 154              		.loc 1 79 2 view .LVU31
- 155 0060 0021     		movs	r1, #0
+ 145              		.loc 1 79 2 view .LVU26
+ 146 005c 0021     		movs	r1, #0
   76:./src/startDebug.c **** 
- 156              		.loc 1 76 31 is_stmt 0 view .LVU32
- 157 0062 30B5     		push	{r4, r5, lr}
- 158              	.LCFI3:
- 159              		.cfi_def_cfa_offset 12
- 160              		.cfi_offset 4, -12
- 161              		.cfi_offset 5, -8
- 162              		.cfi_offset 14, -4
+ 147              		.loc 1 76 31 is_stmt 0 view .LVU27
+ 148 005e 30B5     		push	{r4, r5, lr}
+ 149              	.LCFI3:
+ 150              		.cfi_def_cfa_offset 12
+ 151              		.cfi_offset 4, -12
+ 152              		.cfi_offset 5, -8
+ 153              		.cfi_offset 14, -4
   80:./src/startDebug.c **** 
   81:./src/startDebug.c ****   // init ip address, requested later by dhcp
   82:./src/startDebug.c ****   IP_ADDRESS[0] = 192;
- 163              		.loc 1 82 17 view .LVU33
- 164 0064 194C     		ldr	r4, .L12
+ 154              		.loc 1 82 17 view .LVU28
+ 155 0060 194C     		ldr	r4, .L12
   76:./src/startDebug.c **** 
- 165              		.loc 1 76 31 view .LVU34
- 166 0066 85B0     		sub	sp, sp, #20
- 167              	.LCFI4:
- 168              		.cfi_def_cfa_offset 32
+ 156              		.loc 1 76 31 view .LVU29
+ 157 0062 85B0     		sub	sp, sp, #20
+ 158              	.LCFI4:
+ 159              		.cfi_def_cfa_offset 32
   79:./src/startDebug.c **** 
- 169              		.loc 1 79 2 view .LVU35
- 170 0068 0846     		mov	r0, r1
- 171              	.LVL9:
+ 160              		.loc 1 79 2 view .LVU30
+ 161 0064 0846     		mov	r0, r1
+ 162              	.LVL9:
   83:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
   84:./src/startDebug.c ****   IP_ADDRESS[2] = 20;
   85:./src/startDebug.c ****   IP_ADDRESS[3] = 72;
@@ -275,108 +263,107 @@
   98:./src/startDebug.c **** 
   99:./src/startDebug.c **** 	// add the network interface
  100:./src/startDebug.c **** 	netif_add ( &gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
- 172              		.loc 1 100 2 view .LVU36
- 173 006a 194D     		ldr	r5, .L12+4
+ 163              		.loc 1 100 2 view .LVU31
+ 164 0066 194D     		ldr	r5, .L12+4
   79:./src/startDebug.c **** 
- 174              		.loc 1 79 2 view .LVU37
- 175 006c FFF7FEFF 		bl	tcpip_init
- 176              	.LVL10:
+ 165              		.loc 1 79 2 view .LVU32
+ 166 0068 FFF7FEFF 		bl	tcpip_init
+ 167              	.LVL10:
   82:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
- 177              		.loc 1 82 3 is_stmt 1 view .LVU38
+ 168              		.loc 1 82 3 is_stmt 1 view .LVU33
   83:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
- 178              		.loc 1 83 3 view .LVU39
+ 169              		.loc 1 83 3 view .LVU34
   84:./src/startDebug.c ****   IP_ADDRESS[3] = 72;
- 179              		.loc 1 84 3 view .LVU40
+ 170              		.loc 1 84 3 view .LVU35
   85:./src/startDebug.c ****   NETMASK_ADDRESS[0] = 255;
- 180              		.loc 1 85 3 view .LVU41
+ 171              		.loc 1 85 3 view .LVU36
   97:./src/startDebug.c **** 
- 181              		.loc 1 97 3 is_stmt 0 view .LVU42
- 182 0070 2346     		mov	r3, r4
+ 172              		.loc 1 97 3 is_stmt 0 view .LVU37
+ 173 006c 2346     		mov	r3, r4
   90:./src/startDebug.c ****   GATEWAY_ADDRESS[1] = 168;
- 183              		.loc 1 90 22 view .LVU43
- 184 0072 184A     		ldr	r2, .L12+8
- 185              		.loc 1 100 2 view .LVU44
- 186 0074 1848     		ldr	r0, .L12+12
+ 174              		.loc 1 90 22 view .LVU38
+ 175 006e 1849     		ldr	r1, .L12+8
+  82:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
+ 176              		.loc 1 82 17 view .LVU39
+ 177 0070 184A     		ldr	r2, .L12+12
   97:./src/startDebug.c **** 
- 187              		.loc 1 97 3 view .LVU45
- 188 0076 43F8182F 		str	r2, [r3, #24]!
-  82:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
- 189              		.loc 1 82 17 view .LVU46
- 190 007a 1849     		ldr	r1, .L12+16
- 191              		.loc 1 100 2 view .LVU47
- 192 007c 0190     		str	r0, [sp, #4]
- 193 007e 0020     		movs	r0, #0
- 194 0080 0295     		str	r5, [sp, #8]
-  86:./src/startDebug.c ****   NETMASK_ADDRESS[1] = 255;
- 195              		.loc 1 86 22 view .LVU48
- 196 0082 6FF07F45 		mvn	r5, #-16777216
+ 178              		.loc 1 97 3 view .LVU40
+ 179 0072 43F8181F 		str	r1, [r3, #24]!
   90:./src/startDebug.c ****   GATEWAY_ADDRESS[1] = 168;
- 197              		.loc 1 90 22 view .LVU49
- 198 0086 E260     		str	r2, [r4, #12]
- 199              		.loc 1 100 2 view .LVU50
- 200 0088 04F11402 		add	r2, r4, #20
-  82:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
- 201              		.loc 1 82 17 view .LVU51
- 202 008c 6160     		str	r1, [r4, #4]
+ 180              		.loc 1 90 22 view .LVU41
+ 181 0076 E160     		str	r1, [r4, #12]
+ 182              		.loc 1 100 2 view .LVU42
+ 183 0078 0021     		movs	r1, #0
+ 184 007a 0295     		str	r5, [sp, #8]
   86:./src/startDebug.c ****   NETMASK_ADDRESS[1] = 255;
- 203              		.loc 1 86 3 is_stmt 1 view .LVU52
+ 185              		.loc 1 86 22 view .LVU43
+ 186 007c 6FF07F45 		mvn	r5, #-16777216
+ 187              		.loc 1 100 2 view .LVU44
+ 188 0080 1548     		ldr	r0, .L12+16
+ 189 0082 0190     		str	r0, [sp, #4]
+ 190 0084 04F11C00 		add	r0, r4, #28
+  82:./src/startDebug.c ****   IP_ADDRESS[1] = 168;
+ 191              		.loc 1 82 17 view .LVU45
+ 192 0088 6260     		str	r2, [r4, #4]
+  86:./src/startDebug.c ****   NETMASK_ADDRESS[1] = 255;
+ 193              		.loc 1 86 3 is_stmt 1 view .LVU46
   87:./src/startDebug.c ****   NETMASK_ADDRESS[2] = 255;
- 204              		.loc 1 87 3 view .LVU53
+ 194              		.loc 1 87 3 view .LVU47
   88:./src/startDebug.c ****   NETMASK_ADDRESS[3] = 0;
- 205              		.loc 1 88 3 view .LVU54
+ 195              		.loc 1 88 3 view .LVU48
   89:./src/startDebug.c ****   GATEWAY_ADDRESS[0] = 192;
- 206              		.loc 1 89 3 view .LVU55
+ 196              		.loc 1 89 3 view .LVU49
   95:./src/startDebug.c ****   IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3
- 207              		.loc 1 95 3 is_stmt 0 view .LVU56
- 208 008e 2161     		str	r1, [r4, #16]
- 209              		.loc 1 100 2 view .LVU57
- 210 0090 04F11001 		add	r1, r4, #16
- 211 0094 0090     		str	r0, [sp]
- 212 0096 04F11C00 		add	r0, r4, #28
+ 197              		.loc 1 95 3 is_stmt 0 view .LVU50
+ 198 008a 2261     		str	r2, [r4, #16]
+ 199              		.loc 1 100 2 view .LVU51
+ 200 008c 04F11402 		add	r2, r4, #20
+ 201 0090 0091     		str	r1, [sp]
+ 202 0092 04F11001 		add	r1, r4, #16
   86:./src/startDebug.c ****   NETMASK_ADDRESS[1] = 255;
- 213              		.loc 1 86 22 view .LVU58
- 214 009a A560     		str	r5, [r4, #8]
+ 203              		.loc 1 86 22 view .LVU52
+ 204 0096 A560     		str	r5, [r4, #8]
   90:./src/startDebug.c ****   GATEWAY_ADDRESS[1] = 168;
- 215              		.loc 1 90 3 is_stmt 1 view .LVU59
+ 205              		.loc 1 90 3 is_stmt 1 view .LVU53
   91:./src/startDebug.c ****   GATEWAY_ADDRESS[2] = 20;
- 216              		.loc 1 91 3 view .LVU60
+ 206              		.loc 1 91 3 view .LVU54
   92:./src/startDebug.c ****   GATEWAY_ADDRESS[3] = 1;
- 217              		.loc 1 92 3 view .LVU61
+ 207              		.loc 1 92 3 view .LVU55
   93:./src/startDebug.c **** 
- 218              		.loc 1 93 3 view .LVU62
+ 208              		.loc 1 93 3 view .LVU56
   95:./src/startDebug.c ****   IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3
- 219              		.loc 1 95 3 view .LVU63
+ 209              		.loc 1 95 3 view .LVU57
   96:./src/startDebug.c ****   IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
- 220              		.loc 1 96 3 view .LVU64
- 221 009c 6561     		str	r5, [r4, #20]
+ 210              		.loc 1 96 3 view .LVU58
+ 211 0098 6561     		str	r5, [r4, #20]
   97:./src/startDebug.c **** 
- 222              		.loc 1 97 3 view .LVU65
- 223              		.loc 1 100 2 view .LVU66
- 224 009e FFF7FEFF 		bl	netif_add
- 225              	.LVL11:
+ 212              		.loc 1 97 3 view .LVU59
+ 213              		.loc 1 100 2 view .LVU60
+ 214 009a FFF7FEFF 		bl	netif_add
+ 215              	.LVL11:
  101:./src/startDebug.c **** 
  102:./src/startDebug.c **** 
  103:./src/startDebug.c **** 	// set default netif
  104:./src/startDebug.c **** 	netif_set_default ( &gnetif);
- 226              		.loc 1 104 2 view .LVU67
- 227 00a2 04F11C00 		add	r0, r4, #28
- 228 00a6 FFF7FEFF 		bl	netif_set_default
- 229              	.LVL12:
+ 216              		.loc 1 104 2 view .LVU61
+ 217 009e 04F11C00 		add	r0, r4, #28
+ 218 00a2 FFF7FEFF 		bl	netif_set_default
+ 219              	.LVL12:
  105:./src/startDebug.c **** 
  106:./src/startDebug.c **** 	if ( netif_is_link_up ( &gnetif))
- 230              		.loc 1 106 2 view .LVU68
- 231              		.loc 1 106 7 is_stmt 0 view .LVU69
- 232 00aa 94F84930 		ldrb	r3, [r4, #73]	@ zero_extendqisi2
+ 220              		.loc 1 106 2 view .LVU62
+ 221              		.loc 1 106 7 is_stmt 0 view .LVU63
+ 222 00a6 94F84930 		ldrb	r3, [r4, #73]	@ zero_extendqisi2
  107:./src/startDebug.c **** 	{
  108:./src/startDebug.c **** 		/* When the netif is fully configured this function must be called */
  109:./src/startDebug.c **** 		netif_set_up ( &gnetif);
- 233              		.loc 1 109 3 view .LVU70
- 234 00ae 04F11C00 		add	r0, r4, #28
+ 223              		.loc 1 109 3 view .LVU64
+ 224 00aa 04F11C00 		add	r0, r4, #28
  106:./src/startDebug.c **** 	{
- 235              		.loc 1 106 5 view .LVU71
- 236 00b2 5B07     		lsls	r3, r3, #29
- 237 00b4 04D5     		bpl	.L10
- 238              		.loc 1 109 3 is_stmt 1 view .LVU72
+ 225              		.loc 1 106 5 view .LVU65
+ 226 00ae 5B07     		lsls	r3, r3, #29
+ 227 00b0 04D5     		bpl	.L10
+ 228              		.loc 1 109 3 is_stmt 1 view .LVU66
  110:./src/startDebug.c **** 	}
  111:./src/startDebug.c **** 
  112:./src/startDebug.c **** 	else
@@ -385,231 +372,233 @@
  115:./src/startDebug.c **** 		netif_set_down ( &gnetif);
  116:./src/startDebug.c **** 	}
  117:./src/startDebug.c **** }
- 239              		.loc 1 117 1 is_stmt 0 view .LVU73
- 240 00b6 05B0     		add	sp, sp, #20
- 241              	.LCFI5:
- 242              		.cfi_remember_state
- 243              		.cfi_def_cfa_offset 12
- 244              		@ sp needed
- 245 00b8 BDE83040 		pop	{r4, r5, lr}
- 246              	.LCFI6:
- 247              		.cfi_restore 14
- 248              		.cfi_restore 5
- 249              		.cfi_restore 4
- 250              		.cfi_def_cfa_offset 0
+ 229              		.loc 1 117 1 is_stmt 0 view .LVU67
+ 230 00b2 05B0     		add	sp, sp, #20
+ 231              	.LCFI5:
+ 232              		.cfi_remember_state
+ 233              		.cfi_def_cfa_offset 12
+ 234              		@ sp needed
+ 235 00b4 BDE83040 		pop	{r4, r5, lr}
+ 236              	.LCFI6:
+ 237              		.cfi_restore 14
+ 238              		.cfi_restore 5
+ 239              		.cfi_restore 4
+ 240              		.cfi_def_cfa_offset 0
  109:./src/startDebug.c **** 	}
- 251              		.loc 1 109 3 view .LVU74
- 252 00bc FFF7FEBF 		b	netif_set_up
- 253              	.LVL13:
- 254              	.L10:
- 255              	.LCFI7:
- 256              		.cfi_restore_state
+ 241              		.loc 1 109 3 view .LVU68
+ 242 00b8 FFF7FEBF 		b	netif_set_up
+ 243              	.LVL13:
+ 244              	.L10:
+ 245              	.LCFI7:
+ 246              		.cfi_restore_state
  115:./src/startDebug.c **** 	}
- 257              		.loc 1 115 3 is_stmt 1 view .LVU75
- 258              		.loc 1 117 1 is_stmt 0 view .LVU76
- 259 00c0 05B0     		add	sp, sp, #20
- 260              	.LCFI8:
- 261              		.cfi_def_cfa_offset 12
- 262              		@ sp needed
- 263 00c2 BDE83040 		pop	{r4, r5, lr}
- 264              	.LCFI9:
- 265              		.cfi_restore 14
- 266              		.cfi_restore 5
- 267              		.cfi_restore 4
- 268              		.cfi_def_cfa_offset 0
+ 247              		.loc 1 115 3 is_stmt 1 view .LVU69
+ 248              		.loc 1 117 1 is_stmt 0 view .LVU70
+ 249 00bc 05B0     		add	sp, sp, #20
+ 250              	.LCFI8:
+ 251              		.cfi_def_cfa_offset 12
+ 252              		@ sp needed
+ 253 00be BDE83040 		pop	{r4, r5, lr}
+ 254              	.LCFI9:
+ 255              		.cfi_restore 14
+ 256              		.cfi_restore 5
+ 257              		.cfi_restore 4
+ 258              		.cfi_def_cfa_offset 0
  115:./src/startDebug.c **** 	}
- 269              		.loc 1 115 3 view .LVU77
- 270 00c6 FFF7FEBF 		b	netif_set_down
- 271              	.LVL14:
- 272              	.L13:
- 273 00ca 00BF     		.align	2
- 274              	.L12:
- 275 00cc 00000000 		.word	.LANCHOR0
- 276 00d0 00000000 		.word	tcpip_input
- 277 00d4 C0A81401 		.word	18131136
- 278 00d8 00000000 		.word	ethernetif_init
- 279 00dc C0A81448 		.word	1209313472
- 280              		.cfi_endproc
- 281              	.LFE172:
- 283              		.align	1
- 284              		.p2align 2,,3
- 285              		.global	startDebug
- 286              		.syntax unified
- 287              		.thumb
- 288              		.thumb_func
- 289              		.fpu fpv5-d16
- 291              	startDebug:
- 292              	.LVL15:
- 293              	.LFB169:
+ 259              		.loc 1 115 3 view .LVU71
+ 260 00c2 FFF7FEBF 		b	netif_set_down
+ 261              	.LVL14:
+ 262              	.L13:
+ 263 00c6 00BF     		.align	2
+ 264              	.L12:
+ 265 00c8 00000000 		.word	.LANCHOR0
+ 266 00cc 00000000 		.word	tcpip_input
+ 267 00d0 C0A81401 		.word	18131136
+ 268 00d4 C0A81448 		.word	1209313472
+ 269 00d8 00000000 		.word	ethernetif_init
+ 270              		.cfi_endproc
+ 271              	.LFE173:
+ 273              		.align	1
+ 274              		.p2align 2,,3
+ 275              		.global	startDebug
+ 276              		.syntax unified
+ 277              		.thumb
+ 278              		.thumb_func
+ 280              	startDebug:
+ 281              	.LVL15:
+ 282              	.LFB170:
   31:./src/startDebug.c ****     LWIP_init(NULL);
- 294              		.loc 1 31 1 is_stmt 1 view -0
- 295              		.cfi_startproc
- 296              		@ args = 0, pretend = 0, frame = 0
- 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 283              		.loc 1 31 1 is_stmt 1 view -0
+ 284              		.cfi_startproc
+ 285              		@ args = 0, pretend = 0, frame = 0
+ 286              		@ frame_needed = 0, uses_anonymous_args = 0
   32:./src/startDebug.c ****     udp_total_connect();
- 298              		.loc 1 32 5 view .LVU79
+ 287              		.loc 1 32 5 view .LVU73
   31:./src/startDebug.c ****     LWIP_init(NULL);
- 299              		.loc 1 31 1 is_stmt 0 view .LVU80
- 300 00e0 10B5     		push	{r4, lr}
- 301              	.LCFI10:
- 302              		.cfi_def_cfa_offset 8
- 303              		.cfi_offset 4, -8
- 304              		.cfi_offset 14, -4
+ 288              		.loc 1 31 1 is_stmt 0 view .LVU74
+ 289 00dc 10B5     		push	{r4, lr}
+ 290              	.LCFI10:
+ 291              		.cfi_def_cfa_offset 8
+ 292              		.cfi_offset 4, -8
+ 293              		.cfi_offset 14, -4
   32:./src/startDebug.c ****     udp_total_connect();
- 305              		.loc 1 32 5 view .LVU81
- 306 00e2 0020     		movs	r0, #0
- 307              	.LVL16:
+ 294              		.loc 1 32 5 view .LVU75
+ 295 00de 0020     		movs	r0, #0
+ 296              	.LVL16:
   34:./src/startDebug.c ****     canmessageQueue = osMessageQueueNew(10, sizeof(CANRxMsgDMA_t), NULL);
- 308              		.loc 1 34 16 view .LVU82
- 309 00e4 0E4C     		ldr	r4, .L16
+ 297              		.loc 1 34 16 discriminator 1 view .LVU76
+ 298 00e0 0E4C     		ldr	r4, .L16
   32:./src/startDebug.c ****     udp_total_connect();
- 310              		.loc 1 32 5 view .LVU83
- 311 00e6 FFF7FEFF 		bl	LWIP_init
- 312              	.LVL17:
+ 299              		.loc 1 32 5 view .LVU77
+ 300 00e2 FFF7FEFF 		bl	LWIP_init
+ 301              	.LVL17:
   33:./src/startDebug.c ****     debugQueue = osMessageQueueNew(QUEUE_SIZE, ITEM_SIZE, NULL);
- 313              		.loc 1 33 5 is_stmt 1 view .LVU84
- 314 00ea FFF7FEFF 		bl	udp_total_connect
- 315              	.LVL18:
+ 302              		.loc 1 33 5 is_stmt 1 view .LVU78
+ 303 00e6 FFF7FEFF 		bl	udp_total_connect
+ 304              	.LVL18:
   34:./src/startDebug.c ****     canmessageQueue = osMessageQueueNew(10, sizeof(CANRxMsgDMA_t), NULL);
- 316              		.loc 1 34 5 view .LVU85
+ 305              		.loc 1 34 5 view .LVU79
   34:./src/startDebug.c ****     canmessageQueue = osMessageQueueNew(10, sizeof(CANRxMsgDMA_t), NULL);
- 317              		.loc 1 34 18 is_stmt 0 view .LVU86
- 318 00ee 0022     		movs	r2, #0
- 319 00f0 4FF40071 		mov	r1, #512
- 320 00f4 0520     		movs	r0, #5
- 321 00f6 FFF7FEFF 		bl	osMessageQueueNew
- 322              	.LVL19:
- 323 00fa 0346     		mov	r3, r0
+ 306              		.loc 1 34 18 is_stmt 0 view .LVU80
+ 307 00ea 0022     		movs	r2, #0
+ 308 00ec 4FF40071 		mov	r1, #512
+ 309 00f0 0520     		movs	r0, #5
+ 310 00f2 FFF7FEFF 		bl	osMessageQueueNew
+ 311              	.LVL19:
+ 312 00f6 0346     		mov	r3, r0
   35:./src/startDebug.c **** 
- 324              		.loc 1 35 23 view .LVU87
- 325 00fc 0022     		movs	r2, #0
- 326 00fe 6021     		movs	r1, #96
- 327 0100 0A20     		movs	r0, #10
+ 313              		.loc 1 35 23 view .LVU81
+ 314 00f8 0022     		movs	r2, #0
+ 315 00fa 6021     		movs	r1, #96
+ 316 00fc 0A20     		movs	r0, #10
   34:./src/startDebug.c ****     canmessageQueue = osMessageQueueNew(10, sizeof(CANRxMsgDMA_t), NULL);
- 328              		.loc 1 34 16 view .LVU88
- 329 0102 2360     		str	r3, [r4]
+ 317              		.loc 1 34 16 discriminator 1 view .LVU82
+ 318 00fe 2360     		str	r3, [r4]
   35:./src/startDebug.c **** 
- 330              		.loc 1 35 5 is_stmt 1 view .LVU89
+ 319              		.loc 1 35 5 is_stmt 1 view .LVU83
   35:./src/startDebug.c **** 
- 331              		.loc 1 35 23 is_stmt 0 view .LVU90
- 332 0104 FFF7FEFF 		bl	osMessageQueueNew
- 333              	.LVL20:
- 334 0108 0346     		mov	r3, r0
+ 320              		.loc 1 35 23 is_stmt 0 view .LVU84
+ 321 0100 FFF7FEFF 		bl	osMessageQueueNew
+ 322              	.LVL20:
+ 323 0104 0346     		mov	r3, r0
   37:./src/startDebug.c ****     HAL_IWDG_Refresh(&hiwdg);
- 335              		.loc 1 37 5 view .LVU91
- 336 010a 41F28830 		movw	r0, #5000
+ 324              		.loc 1 37 5 view .LVU85
+ 325 0106 41F28830 		movw	r0, #5000
   35:./src/startDebug.c **** 
- 337              		.loc 1 35 21 view .LVU92
- 338 010e 2365     		str	r3, [r4, #80]
+ 326              		.loc 1 35 21 discriminator 1 view .LVU86
+ 327 010a 2365     		str	r3, [r4, #80]
   37:./src/startDebug.c ****     HAL_IWDG_Refresh(&hiwdg);
- 339              		.loc 1 37 5 is_stmt 1 view .LVU93
- 340 0110 FFF7FEFF 		bl	osDelay
- 341              	.LVL21:
+ 328              		.loc 1 37 5 is_stmt 1 view .LVU87
+ 329 010c FFF7FEFF 		bl	osDelay
+ 330              	.LVL21:
   38:./src/startDebug.c **** }
- 342              		.loc 1 38 5 view .LVU94
- 343 0114 0348     		ldr	r0, .L16+4
+ 331              		.loc 1 38 5 view .LVU88
+ 332 0110 0348     		ldr	r0, .L16+4
   39:./src/startDebug.c **** 
- 344              		.loc 1 39 1 is_stmt 0 view .LVU95
- 345 0116 BDE81040 		pop	{r4, lr}
- 346              	.LCFI11:
- 347              		.cfi_restore 14
- 348              		.cfi_restore 4
- 349              		.cfi_def_cfa_offset 0
+ 333              		.loc 1 39 1 is_stmt 0 view .LVU89
+ 334 0112 BDE81040 		pop	{r4, lr}
+ 335              	.LCFI11:
+ 336              		.cfi_restore 14
+ 337              		.cfi_restore 4
+ 338              		.cfi_def_cfa_offset 0
   38:./src/startDebug.c **** }
- 350              		.loc 1 38 5 view .LVU96
- 351 011a FFF7FEBF 		b	HAL_IWDG_Refresh
- 352              	.LVL22:
- 353              	.L17:
- 354 011e 00BF     		.align	2
- 355              	.L16:
- 356 0120 00000000 		.word	.LANCHOR0
- 357 0124 00000000 		.word	hiwdg
- 358              		.cfi_endproc
- 359              	.LFE169:
- 361              		.global	GATEWAY_ADDRESS
- 362              		.global	NETMASK_ADDRESS
- 363              		.global	IP_ADDRESS
- 364              		.global	gw
- 365              		.global	netmask
- 366              		.global	ipaddr
- 367              		.global	gnetif
- 368              		.global	attributes
- 369              		.global	canmessageQueue
- 370              		.global	debugQueue
- 371              		.bss
- 372              		.align	2
- 373              		.set	.LANCHOR0,. + 0
- 376              	debugQueue:
- 377 0000 00000000 		.space	4
- 380              	IP_ADDRESS:
- 381 0004 00000000 		.space	4
- 384              	NETMASK_ADDRESS:
- 385 0008 00000000 		.space	4
- 388              	GATEWAY_ADDRESS:
- 389 000c 00000000 		.space	4
- 392              	ipaddr:
- 393 0010 00000000 		.space	4
- 396              	netmask:
- 397 0014 00000000 		.space	4
- 400              	gw:
- 401 0018 00000000 		.space	4
- 404              	gnetif:
- 405 001c 00000000 		.space	52
- 405      00000000 
- 405      00000000 
- 405      00000000 
- 405      00000000 
- 408              	canmessageQueue:
- 409 0050 00000000 		.space	4
- 412              	attributes:
- 413 0054 00000000 		.space	36
- 413      00000000 
- 413      00000000 
- 413      00000000 
- 413      00000000 
- 414              		.text
- 415              	.Letext0:
- 416              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 417              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 418              		.file 4 "./lwip-2.1.2/src/include/lwip/arch.h"
- 419              		.file 5 "./lwip-2.1.2/src/include/lwip/err.h"
- 420              		.file 6 "./lwip-2.1.2/src/include/lwip/pbuf.h"
- 421              		.file 7 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
- 422              		.file 8 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
- 423              		.file 9 "./lwip-2.1.2/src/include/lwip/netif.h"
- 424              		.file 10 "./lwip-2.1.2/src/include/lwip/memp.h"
- 425              		.file 11 "./inc/cmsis_os2.h"
- 426              		.file 12 "./inc/stm32f765xx.h"
- 427              		.file 13 "./inc/stm32f7xx_hal_iwdg.h"
- 428              		.file 14 "./lwip-2.1.2/src/include/lwip/tcpip.h"
- 429              		.file 15 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi
- 430              		.file 16 "./inc/udp_total.h"
- 431              		.file 17 "<built-in>"
+ 339              		.loc 1 38 5 view .LVU90
+ 340 0116 FFF7FEBF 		b	HAL_IWDG_Refresh
+ 341              	.LVL22:
+ 342              	.L17:
+ 343 011a 00BF     		.align	2
+ 344              	.L16:
+ 345 011c 00000000 		.word	.LANCHOR0
+ 346 0120 00000000 		.word	hiwdg
+ 347              		.cfi_endproc
+ 348              	.LFE170:
+ 350              		.global	GATEWAY_ADDRESS
+ 351              		.global	NETMASK_ADDRESS
+ 352              		.global	IP_ADDRESS
+ 353              		.global	gw
+ 354              		.global	netmask
+ 355              		.global	ipaddr
+ 356              		.global	gnetif
+ 357              		.global	attributes
+ 358              		.global	canmessageQueue
+ 359              		.global	debugQueue
+ 360              		.bss
+ 361              		.align	2
+ 362              		.set	.LANCHOR0,. + 0
+ 365              	debugQueue:
+ 366 0000 00000000 		.space	4
+ 369              	IP_ADDRESS:
+ 370 0004 00000000 		.space	4
+ 373              	NETMASK_ADDRESS:
+ 374 0008 00000000 		.space	4
+ 377              	GATEWAY_ADDRESS:
+ 378 000c 00000000 		.space	4
+ 381              	ipaddr:
+ 382 0010 00000000 		.space	4
+ 385              	netmask:
+ 386 0014 00000000 		.space	4
+ 389              	gw:
+ 390 0018 00000000 		.space	4
+ 393              	gnetif:
+ 394 001c 00000000 		.space	52
+ 394      00000000 
+ 394      00000000 
+ 394      00000000 
+ 394      00000000 
+ 397              	canmessageQueue:
+ 398 0050 00000000 		.space	4
+ 401              	attributes:
+ 402 0054 00000000 		.space	36
+ 402      00000000 
+ 402      00000000 
+ 402      00000000 
+ 402      00000000 
+ 403              		.text
+ 404              	.Letext0:
+ 405              		.file 2 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 406              		.file 3 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/in
+ 407              		.file 4 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 408              		.file 5 "./lwip-2.1.2/src/include/lwip/arch.h"
+ 409              		.file 6 "./lwip-2.1.2/src/include/lwip/err.h"
+ 410              		.file 7 "./lwip-2.1.2/src/include/lwip/pbuf.h"
+ 411              		.file 8 "./lwip-2.1.2/src/include/lwip/ip4_addr.h"
+ 412              		.file 9 "./lwip-2.1.2/src/include/lwip/ip_addr.h"
+ 413              		.file 10 "./lwip-2.1.2/src/include/lwip/netif.h"
+ 414              		.file 11 "./lwip-2.1.2/src/include/lwip/memp.h"
+ 415              		.file 12 "./inc/cmsis_os2.h"
+ 416              		.file 13 "./inc/stm32f765xx.h"
+ 417              		.file 14 "./inc/stm32f7xx_hal_def.h"
+ 418              		.file 15 "./inc/stm32f7xx_hal_iwdg.h"
+ 419              		.file 16 "./lwip-2.1.2/src/include/lwip/tcpip.h"
+ 420              		.file 17 "./inc/ethernetif.h"
+ 421              		.file 18 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/.
+ 422              		.file 19 "./inc/udp_total.h"
+ 423              		.file 20 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 startDebug.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:25     .text:00000000 _write
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:95     .text:00000040 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:99     .text:00000044 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:107    .text:00000044 MX_IWDG_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:134    .text:00000058 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:139    .text:00000060 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:147    .text:00000060 LWIP_init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:275    .text:000000cc $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:283    .text:000000e0 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:291    .text:000000e0 startDebug
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:356    .text:00000120 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:388    .bss:0000000c GATEWAY_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:384    .bss:00000008 NETMASK_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:380    .bss:00000004 IP_ADDRESS
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:400    .bss:00000018 gw
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:396    .bss:00000014 netmask
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:392    .bss:00000010 ipaddr
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:404    .bss:0000001c gnetif
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:412    .bss:00000054 attributes
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:408    .bss:00000050 canmessageQueue
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:376    .bss:00000000 debugQueue
-C:\Users\JAEJUN~1\AppData\Local\Temp\cc26DSHx.s:372    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:26     .text:00000000 _write
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:92     .text:0000003c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:96     .text:00000040 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:103    .text:00000040 MX_IWDG_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:126    .text:00000054 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:131    .text:0000005c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:138    .text:0000005c LWIP_init
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:265    .text:000000c8 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:273    .text:000000dc $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:280    .text:000000dc startDebug
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:345    .text:0000011c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:377    .bss:0000000c GATEWAY_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:373    .bss:00000008 NETMASK_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:369    .bss:00000004 IP_ADDRESS
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:389    .bss:00000018 gw
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:385    .bss:00000014 netmask
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:381    .bss:00000010 ipaddr
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:393    .bss:0000001c gnetif
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:401    .bss:00000054 attributes
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:397    .bss:00000050 canmessageQueue
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:365    .bss:00000000 debugQueue
+C:\Users\JAEJUN~1\AppData\Local\Temp\cckNA1Ch.s:361    .bss:00000000 $d
 
 UNDEFINED SYMBOLS
 memset

@@ -1,29 +1,29 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"main.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.arch armv7e-m
-  19              		.syntax unified
-  20              		.thumb
-  21              		.thumb_func
-  22              		.fpu fpv5-d16
-  24              	thread_milli_timer:
-  25              	.LVL0:
-  26              	.LFB169:
-  27              		.file 1 "./src/main.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"main.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/main.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	thread_milli_timer:
+  26              	.LVL0:
+  27              	.LFB170:
    1:./src/main.c  **** #include <stdint.h>
    2:./src/main.c  **** #include <string.h>
    3:./src/main.c  **** 
@@ -68,7 +68,7 @@
   35              	.LVL1:
   36              		.loc 1 34 2 is_stmt 0 view .LVU2
   37              		.cfi_endproc
-  38              	.LFE169:
+  38              	.LFE170:
   40              		.section	.rodata.str1.4,"aMS",%progbits,1
   41              		.align	2
   42              	.LC0:
@@ -82,112 +82,110 @@
   47              		.syntax unified
   48              		.thumb
   49              		.thumb_func
-  50              		.fpu fpv5-d16
-  52              	thread_main:
-  53              	.LVL2:
-  54              	.LFB170:
+  51              	thread_main:
+  52              	.LVL2:
+  53              	.LFB171:
   35:./src/main.c  **** }
   36:./src/main.c  **** 
   37:./src/main.c  **** 
   38:./src/main.c  **** //! @brief      primary thread
   39:./src/main.c  **** static void  thread_main ( void  *argument)
   40:./src/main.c  **** {
-  55              		.loc 1 40 1 is_stmt 1 view -0
-  56              		.cfi_startproc
-  57              		@ Volatile: function does not return.
-  58              		@ args = 0, pretend = 0, frame = 0
-  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              		.loc 1 40 1 is_stmt 1 view -0
+  55              		.cfi_startproc
+  56              		@ Volatile: function does not return.
+  57              		@ args = 0, pretend = 0, frame = 0
+  58              		@ frame_needed = 0, uses_anonymous_args = 0
   41:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
   42:./src/main.c  **** 	osTimerStart ( thread_milli_timer_id, DLY_MS(1));	
-  60              		.loc 1 42 2 view .LVU4
+  59              		.loc 1 42 2 view .LVU4
   40:./src/main.c  **** 	// start the timer (RTOS based high prio thread)
-  61              		.loc 1 40 1 is_stmt 0 view .LVU5
-  62 0004 08B5     		push	{r3, lr}
-  63              	.LCFI0:
-  64              		.cfi_def_cfa_offset 8
-  65              		.cfi_offset 3, -8
-  66              		.cfi_offset 14, -4
-  67              		.loc 1 42 2 view .LVU6
-  68 0006 104B     		ldr	r3, .L6
-  69 0008 0521     		movs	r1, #5
-  70 000a 1868     		ldr	r0, [r3]
-  71              	.LVL3:
-  72              		.loc 1 42 2 view .LVU7
-  73 000c FFF7FEFF 		bl	osTimerStart
-  74              	.LVL4:
+  60              		.loc 1 40 1 is_stmt 0 view .LVU5
+  61 0004 08B5     		push	{r3, lr}
+  62              	.LCFI0:
+  63              		.cfi_def_cfa_offset 8
+  64              		.cfi_offset 3, -8
+  65              		.cfi_offset 14, -4
+  66              		.loc 1 42 2 view .LVU6
+  67 0006 104B     		ldr	r3, .L6
+  68 0008 0521     		movs	r1, #5
+  69 000a 1868     		ldr	r0, [r3]
+  70              	.LVL3:
+  71              		.loc 1 42 2 view .LVU7
+  72 000c FFF7FEFF 		bl	osTimerStart
+  73              	.LVL4:
   43:./src/main.c  **** 	
   44:./src/main.c  **** 	HW_ENA_ETH_PHY;
-  75              		.loc 1 44 2 is_stmt 1 view .LVU8
-  76 0010 0E4B     		ldr	r3, .L6+4
-  77 0012 4FF44052 		mov	r2, #12288
+  74              		.loc 1 44 2 is_stmt 1 view .LVU8
+  75 0010 0E4B     		ldr	r3, .L6+4
+  76 0012 4FF44052 		mov	r2, #12288
   45:./src/main.c  ****   	osDelay ( DLY_MS(75));	// for 100Base-TX
-  78              		.loc 1 45 4 is_stmt 0 view .LVU9
-  79 0016 40F27710 		movw	r0, #375
+  77              		.loc 1 45 4 is_stmt 0 view .LVU9
+  78 0016 40F27710 		movw	r0, #375
   44:./src/main.c  ****   	osDelay ( DLY_MS(75));	// for 100Base-TX
-  80              		.loc 1 44 2 view .LVU10
-  81 001a 9A61     		str	r2, [r3, #24]
-  82              		.loc 1 45 4 is_stmt 1 view .LVU11
-  83 001c FFF7FEFF 		bl	osDelay
-  84              	.LVL5:
+  79              		.loc 1 44 2 view .LVU10
+  80 001a 9A61     		str	r2, [r3, #24]
+  81              		.loc 1 45 4 is_stmt 1 view .LVU11
+  82 001c FFF7FEFF 		bl	osDelay
+  83              	.LVL5:
   46:./src/main.c  **** 
   47:./src/main.c  **** 	startDebug(NULL);
-  85              		.loc 1 47 2 view .LVU12
-  86 0020 0020     		movs	r0, #0
-  87 0022 FFF7FEFF 		bl	startDebug
-  88              	.LVL6:
+  84              		.loc 1 47 2 view .LVU12
+  85 0020 0020     		movs	r0, #0
+  86 0022 FFF7FEFF 		bl	startDebug
+  87              	.LVL6:
   48:./src/main.c  **** 	printf("[FW]  START FW\n");
-  89              		.loc 1 48 2 view .LVU13
-  90 0026 0A48     		ldr	r0, .L6+8
-  91 0028 FFF7FEFF 		bl	puts
-  92              	.LVL7:
+  88              		.loc 1 48 2 view .LVU13
+  89 0026 0A48     		ldr	r0, .L6+8
+  90 0028 FFF7FEFF 		bl	puts
+  91              	.LVL7:
   49:./src/main.c  **** 	
   50:./src/main.c  **** 	UDP_task(NULL);
-  93              		.loc 1 50 2 view .LVU14
-  94 002c 0020     		movs	r0, #0
-  95 002e FFF7FEFF 		bl	UDP_task
-  96              	.LVL8:
+  92              		.loc 1 50 2 view .LVU14
+  93 002c 0020     		movs	r0, #0
+  94 002e FFF7FEFF 		bl	UDP_task
+  95              	.LVL8:
   51:./src/main.c  **** 	task03_init(NULL);
-  97              		.loc 1 51 2 view .LVU15
-  98 0032 0020     		movs	r0, #0
-  99 0034 FFF7FEFF 		bl	task03_init
- 100              	.LVL9:
+  96              		.loc 1 51 2 view .LVU15
+  97 0032 0020     		movs	r0, #0
+  98 0034 FFF7FEFF 		bl	task03_init
+  99              	.LVL9:
   52:./src/main.c  **** 	task04_init(NULL);
- 101              		.loc 1 52 2 view .LVU16
- 102 0038 0020     		movs	r0, #0
- 103 003a FFF7FEFF 		bl	task04_init
- 104              	.LVL10:
- 105              	.L4:
+ 100              		.loc 1 52 2 view .LVU16
+ 101 0038 0020     		movs	r0, #0
+ 102 003a FFF7FEFF 		bl	task04_init
+ 103              	.LVL10:
+ 104              	.L4:
   53:./src/main.c  **** 	
   54:./src/main.c  **** 	while (1)
- 106              		.loc 1 54 2 discriminator 1 view .LVU17
+ 105              		.loc 1 54 2 view .LVU17
   55:./src/main.c  **** 	{
   56:./src/main.c  **** 		osThreadSuspend(osThreadGetId());
- 107              		.loc 1 56 3 discriminator 1 view .LVU18
- 108 003e FFF7FEFF 		bl	osThreadGetId
- 109              	.LVL11:
- 110 0042 FFF7FEFF 		bl	osThreadSuspend
- 111              	.LVL12:
+ 106              		.loc 1 56 3 discriminator 1 view .LVU18
+ 107 003e FFF7FEFF 		bl	osThreadGetId
+ 108              	.LVL11:
+ 109 0042 FFF7FEFF 		bl	osThreadSuspend
+ 110              	.LVL12:
   54:./src/main.c  **** 	{
- 112              		.loc 1 54 8 discriminator 1 view .LVU19
- 113 0046 FAE7     		b	.L4
- 114              	.L7:
- 115              		.align	2
- 116              	.L6:
- 117 0048 00000000 		.word	.LANCHOR0
- 118 004c 00040240 		.word	1073873920
- 119 0050 00000000 		.word	.LC0
- 120              		.cfi_endproc
- 121              	.LFE170:
- 123              		.section	.text.startup,"ax",%progbits
- 124              		.align	1
- 125              		.p2align 2,,3
- 126              		.global	main
- 127              		.syntax unified
- 128              		.thumb
- 129              		.thumb_func
- 130              		.fpu fpv5-d16
- 132              	main:
- 133              	.LFB171:
+ 111              		.loc 1 54 8 view .LVU19
+ 112 0046 FAE7     		b	.L4
+ 113              	.L7:
+ 114              		.align	2
+ 115              	.L6:
+ 116 0048 00000000 		.word	.LANCHOR0
+ 117 004c 00040240 		.word	1073873920
+ 118 0050 00000000 		.word	.LC0
+ 119              		.cfi_endproc
+ 120              	.LFE171:
+ 122              		.section	.text.startup,"ax",%progbits
+ 123              		.align	1
+ 124              		.p2align 2,,3
+ 125              		.global	main
+ 126              		.syntax unified
+ 127              		.thumb
+ 128              		.thumb_func
+ 130              	main:
+ 131              	.LFB172:
   57:./src/main.c  **** 	}
   58:./src/main.c  **** }
   59:./src/main.c  **** 
@@ -198,174 +196,177 @@
   64:./src/main.c  **** //! @brief      entry point
   65:./src/main.c  **** int  main ( void)
   66:./src/main.c  **** {
- 134              		.loc 1 66 1 view -0
- 135              		.cfi_startproc
- 136              		@ args = 0, pretend = 0, frame = 40
- 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132              		.loc 1 66 1 view -0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 40
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
   67:./src/main.c  **** 	//SCB_DisableDCache();
   68:./src/main.c  **** 
   69:./src/main.c  **** 	//initialization
   70:./src/main.c  **** 	HW_Init();
- 138              		.loc 1 70 2 view .LVU21
+ 136              		.loc 1 70 2 view .LVU21
   66:./src/main.c  **** 	//SCB_DisableDCache();
- 139              		.loc 1 66 1 is_stmt 0 view .LVU22
- 140 0000 10B5     		push	{r4, lr}
- 141              	.LCFI1:
- 142              		.cfi_def_cfa_offset 8
- 143              		.cfi_offset 4, -8
- 144              		.cfi_offset 14, -4
+ 137              		.loc 1 66 1 is_stmt 0 view .LVU22
+ 138 0000 10B5     		push	{r4, lr}
+ 139              	.LCFI1:
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 4, -8
+ 142              		.cfi_offset 14, -4
   71:./src/main.c  **** 	MX_IWDG_Init();
   72:./src/main.c  **** 	
   73:./src/main.c  **** 	HAL_IWDG_Refresh(&hiwdg);
- 145              		.loc 1 73 2 view .LVU23
- 146 0002 114C     		ldr	r4, .L11
+ 143              		.loc 1 73 2 view .LVU23
+ 144 0002 114C     		ldr	r4, .L11
   66:./src/main.c  **** 	//SCB_DisableDCache();
- 147              		.loc 1 66 1 view .LVU24
- 148 0004 8AB0     		sub	sp, sp, #40
- 149              	.LCFI2:
- 150              		.cfi_def_cfa_offset 48
+ 145              		.loc 1 66 1 view .LVU24
+ 146 0004 8AB0     		sub	sp, sp, #40
+ 147              	.LCFI2:
+ 148              		.cfi_def_cfa_offset 48
   70:./src/main.c  **** 	MX_IWDG_Init();
- 151              		.loc 1 70 2 view .LVU25
- 152 0006 FFF7FEFF 		bl	HW_Init
- 153              	.LVL13:
+ 149              		.loc 1 70 2 view .LVU25
+ 150 0006 FFF7FEFF 		bl	HW_Init
+ 151              	.LVL13:
   71:./src/main.c  **** 	MX_IWDG_Init();
- 154              		.loc 1 71 2 is_stmt 1 view .LVU26
- 155 000a FFF7FEFF 		bl	MX_IWDG_Init
- 156              	.LVL14:
- 157              		.loc 1 73 2 view .LVU27
- 158 000e 201D     		adds	r0, r4, #4
- 159 0010 FFF7FEFF 		bl	HAL_IWDG_Refresh
- 160              	.LVL15:
+ 152              		.loc 1 71 2 is_stmt 1 view .LVU26
+ 153 000a FFF7FEFF 		bl	MX_IWDG_Init
+ 154              	.LVL14:
+ 155              		.loc 1 73 2 view .LVU27
+ 156 000e 201D     		adds	r0, r4, #4
+ 157 0010 FFF7FEFF 		bl	HAL_IWDG_Refresh
+ 158              	.LVL15:
   74:./src/main.c  **** 
   75:./src/main.c  **** 	// initialize kernel
   76:./src/main.c  **** 	osKernelInitialize();
- 161              		.loc 1 76 2 view .LVU28
- 162 0014 FFF7FEFF 		bl	osKernelInitialize
- 163              	.LVL16:
- 164              	.LBB2:
+ 159              		.loc 1 76 2 view .LVU28
+ 160 0014 FFF7FEFF 		bl	osKernelInitialize
+ 161              	.LVL16:
+ 162              	.LBB2:
   77:./src/main.c  **** 	
   78:./src/main.c  **** 	// create primary thread
   79:./src/main.c  **** 	{
   80:./src/main.c  **** 		osThreadAttr_t  attr;
- 165              		.loc 1 80 3 view .LVU29
+ 163              		.loc 1 80 3 view .LVU29
   81:./src/main.c  **** 		memset ( &attr, 0, sizeof ( attr));	
- 166              		.loc 1 81 3 view .LVU30
- 167 0018 2422     		movs	r2, #36
- 168 001a 0021     		movs	r1, #0
- 169 001c 01A8     		add	r0, sp, #4
- 170 001e FFF7FEFF 		bl	memset
- 171              	.LVL17:
+ 164              		.loc 1 81 3 view .LVU30
+ 165 0018 2422     		movs	r2, #36
+ 166 001a 0021     		movs	r1, #0
+ 167 001c 01A8     		add	r0, sp, #4
+ 168 001e FFF7FEFF 		bl	memset
+ 169              	.LVL17:
   82:./src/main.c  **** 		attr.stack_size = 4 * 1024;
- 172              		.loc 1 82 3 view .LVU31
- 173              		.loc 1 82 19 is_stmt 0 view .LVU32
- 174 0022 4FF48053 		mov	r3, #4096
+ 170              		.loc 1 82 3 view .LVU31
+ 171              		.loc 1 82 19 is_stmt 0 view .LVU32
+ 172 0022 4FF48053 		mov	r3, #4096
   83:./src/main.c  **** 		osThreadId_t tid = osThreadNew ( thread_main, NULL, &attr);
- 175              		.loc 1 83 22 view .LVU33
- 176 0026 01AA     		add	r2, sp, #4
- 177 0028 0021     		movs	r1, #0
- 178 002a 0848     		ldr	r0, .L11+4
+ 173              		.loc 1 83 22 view .LVU33
+ 174 0026 01AA     		add	r2, sp, #4
+ 175 0028 0021     		movs	r1, #0
+ 176 002a 0848     		ldr	r0, .L11+4
   82:./src/main.c  **** 		attr.stack_size = 4 * 1024;
- 179              		.loc 1 82 19 view .LVU34
- 180 002c 0693     		str	r3, [sp, #24]
- 181              		.loc 1 83 3 is_stmt 1 view .LVU35
- 182              		.loc 1 83 22 is_stmt 0 view .LVU36
- 183 002e FFF7FEFF 		bl	osThreadNew
- 184              	.LVL18:
- 185              	.LBE2:
+ 177              		.loc 1 82 19 view .LVU34
+ 178 002c 0693     		str	r3, [sp, #24]
+ 179              		.loc 1 83 3 is_stmt 1 view .LVU35
+ 180              		.loc 1 83 22 is_stmt 0 view .LVU36
+ 181 002e FFF7FEFF 		bl	osThreadNew
+ 182              	.LVL18:
+ 183              	.LBE2:
   84:./src/main.c  **** 	}
   85:./src/main.c  **** 	
   86:./src/main.c  **** 	// create a timer
   87:./src/main.c  **** 	thread_milli_timer_id = osTimerNew ( thread_milli_timer, osTimerPeriodic, NULL, NULL);
- 186              		.loc 1 87 2 is_stmt 1 view .LVU37
- 187              		.loc 1 87 26 is_stmt 0 view .LVU38
- 188 0032 0023     		movs	r3, #0
- 189 0034 0121     		movs	r1, #1
- 190 0036 0648     		ldr	r0, .L11+8
- 191 0038 1A46     		mov	r2, r3
- 192 003a FFF7FEFF 		bl	osTimerNew
- 193              	.LVL19:
- 194              		.loc 1 87 24 view .LVU39
- 195 003e 2060     		str	r0, [r4]
+ 184              		.loc 1 87 2 is_stmt 1 view .LVU37
+ 185              		.loc 1 87 26 is_stmt 0 view .LVU38
+ 186 0032 0023     		movs	r3, #0
+ 187 0034 0121     		movs	r1, #1
+ 188 0036 0648     		ldr	r0, .L11+8
+ 189 0038 1A46     		mov	r2, r3
+ 190 003a FFF7FEFF 		bl	osTimerNew
+ 191              	.LVL19:
+ 192              		.loc 1 87 24 discriminator 1 view .LVU39
+ 193 003e 2060     		str	r0, [r4]
   88:./src/main.c  **** 	
   89:./src/main.c  **** 	// start thread execution
   90:./src/main.c  **** 	osKernelStart();
- 196              		.loc 1 90 2 is_stmt 1 view .LVU40
- 197 0040 FFF7FEFF 		bl	osKernelStart
- 198              	.LVL20:
- 199              	.L9:
+ 194              		.loc 1 90 2 is_stmt 1 view .LVU40
+ 195 0040 FFF7FEFF 		bl	osKernelStart
+ 196              	.LVL20:
+ 197              	.L9:
   91:./src/main.c  **** 	
   92:./src/main.c  **** 	// should not reach this point !
   93:./src/main.c  **** 	while(1)
- 200              		.loc 1 93 2 discriminator 1 view .LVU41
+ 198              		.loc 1 93 2 view .LVU41
   94:./src/main.c  **** 	 {
   95:./src/main.c  **** 		
   96:./src/main.c  **** 	 }
- 201              		.loc 1 96 3 discriminator 1 view .LVU42
+ 199              		.loc 1 96 3 view .LVU42
   93:./src/main.c  **** 	 {
- 202              		.loc 1 93 7 discriminator 1 view .LVU43
+ 200              		.loc 1 93 7 view .LVU43
   93:./src/main.c  **** 	 {
- 203              		.loc 1 93 2 discriminator 1 view .LVU44
- 204              		.loc 1 96 3 discriminator 1 view .LVU45
+ 201              		.loc 1 93 2 view .LVU44
+ 202              		.loc 1 96 3 view .LVU45
   93:./src/main.c  **** 	 {
- 205              		.loc 1 93 7 discriminator 1 view .LVU46
- 206 0044 FEE7     		b	.L9
- 207              	.L12:
- 208 0046 00BF     		.align	2
- 209              	.L11:
- 210 0048 00000000 		.word	.LANCHOR0
- 211 004c 00000000 		.word	thread_main
- 212 0050 00000000 		.word	thread_milli_timer
- 213              		.cfi_endproc
- 214              	.LFE171:
- 216              		.global	hiwdg
- 217              		.global	Ident
- 218              		.section	.rodata
- 219              		.align	2
- 222              	Ident:
- 223 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
- 223      2D526F75 
- 223      7465725F 
- 223      50726F5F 
- 223      464400
- 224              		.bss
- 225              		.align	2
- 226              		.set	.LANCHOR0,. + 0
- 229              	thread_milli_timer_id:
- 230 0000 00000000 		.space	4
- 233              	hiwdg:
- 234 0004 00000000 		.space	16
- 234      00000000 
- 234      00000000 
- 234      00000000 
- 235              		.text
- 236              	.Letext0:
- 237              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 238              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 239              		.file 4 "./inc/stm32f765xx.h"
- 240              		.file 5 "./inc/stm32f7xx_hal_iwdg.h"
- 241              		.file 6 "./inc/cmsis_os2.h"
- 242              		.file 7 "./inc/task03.h"
- 243              		.file 8 "./inc/hardware.h"
- 244              		.file 9 "./inc/startDebug.h"
- 245              		.file 10 "<built-in>"
- 246              		.file 11 "./inc/udp_total.h"
- 247              		.file 12 "./inc/task04.h"
- 248              		.file 13 "./inc/stm32f7xx_hal.h"
+ 203              		.loc 1 93 7 view .LVU46
+ 204 0044 FEE7     		b	.L9
+ 205              	.L12:
+ 206 0046 00BF     		.align	2
+ 207              	.L11:
+ 208 0048 00000000 		.word	.LANCHOR0
+ 209 004c 00000000 		.word	thread_main
+ 210 0050 00000000 		.word	thread_milli_timer
+ 211              		.cfi_endproc
+ 212              	.LFE172:
+ 214              		.global	hiwdg
+ 215              		.global	Ident
+ 216              		.section	.rodata
+ 217              		.align	2
+ 220              	Ident:
+ 221 0000 5043414E 		.ascii	"PCAN-Router_Pro_FD\000"
+ 221      2D526F75 
+ 221      7465725F 
+ 221      50726F5F 
+ 221      464400
+ 222              		.bss
+ 223              		.align	2
+ 224              		.set	.LANCHOR0,. + 0
+ 227              	thread_milli_timer_id:
+ 228 0000 00000000 		.space	4
+ 231              	hiwdg:
+ 232 0004 00000000 		.space	16
+ 232      00000000 
+ 232      00000000 
+ 232      00000000 
+ 233              		.text
+ 234              	.Letext0:
+ 235              		.file 2 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 236              		.file 3 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 237              		.file 4 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/in
+ 238              		.file 5 "./inc/stm32f765xx.h"
+ 239              		.file 6 "./inc/stm32f7xx_hal_def.h"
+ 240              		.file 7 "./inc/stm32f7xx_hal_iwdg.h"
+ 241              		.file 8 "./inc/cmsis_os2.h"
+ 242              		.file 9 "./inc/task03.h"
+ 243              		.file 10 "./inc/task04.h"
+ 244              		.file 11 "./inc/udp_total.h"
+ 245              		.file 12 "./inc/startDebug.h"
+ 246              		.file 13 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/.
+ 247              		.file 14 "./inc/stm32f7xx_hal.h"
+ 248              		.file 15 "./inc/hardware.h"
+ 249              		.file 16 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:24     .text:00000000 thread_milli_timer
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:41     .rodata.str1.4:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:52     .text:00000004 thread_main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:117    .text:00000048 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:124    .text.startup:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:132    .text.startup:00000000 main
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:210    .text.startup:00000048 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:233    .bss:00000004 hiwdg
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:222    .rodata:00000000 Ident
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:219    .rodata:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:225    .bss:00000000 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\ccTG3ygj.s:229    .bss:00000000 thread_milli_timer_id
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:25     .text:00000000 thread_milli_timer
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:41     .rodata.str1.4:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:51     .text:00000004 thread_main
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:116    .text:00000048 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:123    .text.startup:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:130    .text.startup:00000000 main
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:208    .text.startup:00000048 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:231    .bss:00000004 hiwdg
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:220    .rodata:00000000 Ident
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:217    .rodata:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:223    .bss:00000000 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\ccGfdTEo.s:227    .bss:00000000 thread_milli_timer_id
 
 UNDEFINED SYMBOLS
 HAL_IncTick

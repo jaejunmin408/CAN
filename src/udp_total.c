@@ -39,12 +39,24 @@ struct udp_pcb *udp_can_pcb;
 const char *JUMP_BOOT_STR = "SOFT RESET SSSAAA";
 const char *JUMP_FW_STR = "RESET SSSAAA";
 
+
+
 osThreadId_t UDPHandle;                       //[user custom] RTOS memory setting + osPriority
 const osThreadAttr_t UDP_attributes = {
   .name = "udp_send", 
   .stack_size = 2048, 
   .priority = (osPriority_t) osPriorityBelowNormal,
 };
+
+typedef struct
+{
+    uint32_t id;          // CAN Identifier
+    uint8_t  dlc;         // Data Length Code (0~8 또는 64)
+    uint8_t  is_fd;       // CAN FD 여부 (0=CAN, 1=CAN FD)
+    uint8_t  reserved[2]; // 정렬 맞추기용 padding
+    uint8_t  data[64];    // CAN 데이터
+} UDPCANMsg_t;
+
 
 
 /* Private functions ---------------------------------------------------------*/
@@ -100,55 +112,73 @@ void udp_total_connect(void)
   udp_recv(udp_server_pcb, udp_receive_callback, NULL);
 }
 
+//linux에서 그냥 출력 버전
 void udp_can_send(void)
 {
   struct pbuf *p;
   osStatus_t status;
-  CANRxMsgDMA_t recvMsg;   // 큐에서 꺼낼 CAN 메시지
-  char dataBuf[256];
-  int len = 0;
+  CANRxMsgDMA_t rxMsg;   // 큐에서 꺼낼 CAN 메시지
   
-  status = osMessageQueueGet(canmessageQueue, &recvMsg, NULL, 0);
+  status = osMessageQueueGet(canmessageQueue, &rxMsg, NULL, 0);
+  uint16_t msg_size = sizeof(CANRxMsgDMA_t);    //보내는 메세지 크기를 고정 -> 나중에 간략한 버전으로 업데이트 할것
 
-  uint32_t can_id = recvMsg.id;
-  uint8_t dlc = recvMsg.dlc;
-  uint64_t can_time = ((uint64_t)recvMsg.time[1] << 32) | recvMsg.time[0];
+  // if (msg_size == 0 || msg_size > sizeof(CANRxMsgDMA_t)) {
+  //       msg_size = sizeof(CANRxMsgDMA_t);
+  // }
 
-  if( status == osOK){
-    // 1) TIME,CANID,
-    len = snprintf(dataBuf, sizeof(dataBuf),
-                   "%llu,%08X,",
-                   (unsigned long long)can_time,
-                   can_id);
+    // 큐에 메시지가 있을 때만 전송
+    if (status == osOK)
+    {
+        p = pbuf_alloc(PBUF_TRANSPORT, msg_size, PBUF_POOL);
+        if (p != NULL)
+        {
+            // 구조체 메모리 그대로 복사
+            pbuf_take(p, &rxMsg, msg_size);
 
-    // 2) DATA (FD: 최대 64바이트)
-    for (int i = 0; i < dlc; i++) {
-        len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "%02X", recvMsg.data8[i]);
+            // UDP 전송
+            udp_send(udp_can_pcb, p);
+
+            // pbuf 해제
+            pbuf_free(p);
+        }
     }
+    // 큐가 비어있으면 아무 동작도 하지 않음
+}
 
-    // 3) 줄바꿈
-    len += snprintf(&dataBuf[len], sizeof(dataBuf) - len, "\n");
+//savvy can 버전
+void udp_can_QT_send(void)
+{
+  struct pbuf *p;
+    osStatus_t status;
+    CANRxMsgDMA_t rxMsg;
+    UDPCANMsg_t udpMsg;
 
+    // 1️⃣ CAN 메시지 큐에서 수신
+    status = osMessageQueueGet(canmessageQueue, &rxMsg, NULL, 0);
+    if (status != osOK)
+        return;
 
-    /* allocate pbuf from pool*/
-    p = pbuf_alloc(PBUF_TRANSPORT,strlen((char*)data), PBUF_POOL);
-    
+    // 2️⃣ 필요한 필드만 추출
+    udpMsg.id  = rxMsg.id;
+    udpMsg.dlc = rxMsg.dlc;
+    udpMsg.is_fd = (rxMsg.msgtype & 0x01) ? 1 : 0; // 필요 시 FD 여부 판단
+
+    // DLC 길이만큼 데이터 복사 (64바이트 넘으면 64로 제한)
+    uint8_t len = (udpMsg.dlc > 64) ? 64 : udpMsg.dlc;
+    memcpy(udpMsg.data, rxMsg.data8, len);
+
+    // 나머지 데이터는 0으로 초기화
+    if (len < 64)
+        memset(&udpMsg.data[len], 0, 64 - len);
+
+    // 3️⃣ UDP로 전송
+    p = pbuf_alloc(PBUF_TRANSPORT, sizeof(UDPCANMsg_t), PBUF_POOL);
     if (p != NULL)
     {
-      /* copy data to pbuf */
-      pbuf_take(p, dataBuf, len);
-      
-      /* send udp data */
-      udp_send(udp_can_pcb, p); 
-      
-      /* free pbuf */
-      pbuf_free(p);
+        pbuf_take(p, &udpMsg, sizeof(UDPCANMsg_t));
+        udp_send(udp_can_pcb, p);
+        pbuf_free(p);
     }
-  }
-
-  else if( status == osErrorResource){
-    
-  }
 }
 
 void udp_echoclient_send(void)
@@ -191,6 +221,7 @@ void UDP_thread(void *argument)
   {
     udp_echoclient_send();
     udp_can_send();
+    //udp_can_QT_send();
     HAL_IWDG_Refresh(&hiwdg);
     osDelay(DLY_MS(20));                      //[user custom] : osDelay setting , now we send UDP message in 1ms
   }

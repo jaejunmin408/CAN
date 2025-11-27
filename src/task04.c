@@ -9,7 +9,6 @@
 #include "task04.h"
 
 
-
 extern osMessageQueueId_t debugQueue;
 extern osMessageQueueId_t canmessageQueue;
 extern IWDG_HandleTypeDef hiwdg;
@@ -22,6 +21,25 @@ const osThreadAttr_t Task04_attributes = {
   .priority = (osPriority_t) osPriorityLow1,
 };
 
+void printCanMsg(const CANRxMsgDMA_t* msg)
+{
+    // CAN BUS 번호
+    printf("%7d | ", msg->hBus);
+
+    // CAN FD ID
+    printf("0x%08X | ", msg->id);
+
+    // DLC
+    printf("%3d | ", msg->dlc);
+
+    // DATA
+    for (int i = 0; i < msg->dlc; i++) {
+        printf("%02X ", msg->data8[i]);
+    }
+
+    printf("\n");
+}
+
 
 void task04_thread(void *argument)
 {
@@ -29,6 +47,7 @@ void task04_thread(void *argument)
 
   for(;;)
   {
+
     HAL_IWDG_Refresh(&hiwdg);
 
     static CANRxMsgDMA_t  RxMsg  __attribute__((section(".bss.dtcm")));
@@ -36,7 +55,7 @@ void task04_thread(void *argument)
 		{
 			switch ( RxMsg.hBus)
 			{
-				char buf[128]; 
+				char buf[512]; 
 				case CAN_BUS1:
 					
 					LED_toggleCAN1 ^= 1;
@@ -79,17 +98,17 @@ void task04_thread(void *argument)
 						HW_SetLED ( HW_LED_CAN2, HW_LED_GREEN);
 					}
 
-					DEBUG("CAN2 \n");
-					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
+					// printf("CAN2 \n");
+					// printf("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
 				
 				
-					snprintf(buf, sizeof(buf), "");
+					// snprintf(buf, sizeof(buf), "");
 
-					for (int i = 0; i < RxMsg.dlc; i++)
-					{
-						snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
-					}
-					DEBUG("%s\n", buf);
+					// for (int i = 0; i < RxMsg.dlc; i++)
+					// {
+					// 	snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " 0x%02X", RxMsg.data8[i]);
+					// }
+					// printf("%s\n", buf);
 
 				break;
 
@@ -108,9 +127,7 @@ void task04_thread(void *argument)
 					}
 
 					osMessageQueuePut(canmessageQueue, &RxMsg, 0, 0);
-
-
-
+			
 					 
 					// DEBUG("CAN3 \n");
 					// DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
@@ -159,8 +176,13 @@ void task04_thread(void *argument)
 
 
 				case CAN_BUS5:
+					//여기에 꽂아서 테스트 진행
+					//CAN FD extended 형식에 속도도 맞는듯 싶은데..?
+					//pc ip: 192.168.20.69 , router ip : 192.168.20.72 
+					//pc로 받는 port(pc 서버 port) : 6010(시스템 메세지), 5010(can 메세지) -> server는 이 2개로 키고
+					//roouter가 받는 port : 8080 -> client는 192.168.20.72 8080으로 접속
 					
-					printf("TEST!!!\n");
+					
 					LED_toggleCAN5 ^= 1;
 
 					if ( LED_toggleCAN5)
@@ -173,9 +195,9 @@ void task04_thread(void *argument)
 						HW_SetLED ( HW_LED_CAN5, HW_LED_GREEN);
 					}
 
+
 					DEBUG("CAN5 \n");
-					DEBUG("ID : 0x%03X,  DLC : %d\n", RxMsg.id, RxMsg.dlc);
-				
+					DEBUG("ID : 0x%08X, DLC : %d\n", RxMsg.id, RxMsg.dlc);
 				 
 					snprintf(buf, sizeof(buf), "");
 

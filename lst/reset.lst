@@ -1,29 +1,29 @@
    1              		.cpu cortex-m7
-   2              		.eabi_attribute 28, 1
-   3              		.eabi_attribute 20, 1
-   4              		.eabi_attribute 21, 1
-   5              		.eabi_attribute 23, 3
-   6              		.eabi_attribute 24, 1
-   7              		.eabi_attribute 25, 1
-   8              		.eabi_attribute 26, 1
-   9              		.eabi_attribute 30, 2
-  10              		.eabi_attribute 34, 1
-  11              		.eabi_attribute 18, 4
-  12              		.file	"reset.c"
-  13              		.text
-  14              	.Ltext0:
-  15              		.cfi_sections	.debug_frame
-  16              		.align	1
-  17              		.p2align 2,,3
-  18              		.global	write_boot_flag_soft_reset
-  19              		.arch armv7e-m
-  20              		.syntax unified
-  21              		.thumb
-  22              		.thumb_func
-  23              		.fpu fpv5-d16
-  25              	write_boot_flag_soft_reset:
-  26              	.LFB144:
-  27              		.file 1 "./src/reset.c"
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 2
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"reset.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "./src/reset.c"
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.global	write_boot_flag_soft_reset
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	write_boot_flag_soft_reset:
+  27              	.LFB144:
    1:./src/reset.c **** #include "ARMCM7_DP.h"
    2:./src/reset.c **** #include "reset.h"
    3:./src/reset.c **** #include "main.h"
@@ -62,120 +62,121 @@
   50              		.syntax unified
   51              		.thumb
   52              		.thumb_func
-  53              		.fpu fpv5-d16
-  55              	clear_boot_flag:
-  56              	.LFB145:
+  54              	clear_boot_flag:
+  55              	.LFB145:
   15:./src/reset.c **** 
   16:./src/reset.c **** void clear_boot_flag(void)
   17:./src/reset.c **** {
-  57              		.loc 1 17 1 is_stmt 1 view -0
-  58              		.cfi_startproc
-  59              		@ args = 0, pretend = 0, frame = 0
-  60              		@ frame_needed = 0, uses_anonymous_args = 0
-  61              		@ link register save eliminated.
+  56              		.loc 1 17 1 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              		@ link register save eliminated.
   18:./src/reset.c ****     RTC->BKP1R = 0;
-  62              		.loc 1 18 5 view .LVU5
-  63              		.loc 1 18 16 is_stmt 0 view .LVU6
-  64 0010 014B     		ldr	r3, .L6
-  65 0012 0022     		movs	r2, #0
-  66 0014 5A65     		str	r2, [r3, #84]
+  61              		.loc 1 18 5 view .LVU5
+  62              		.loc 1 18 16 is_stmt 0 view .LVU6
+  63 0010 014B     		ldr	r3, .L6
+  64 0012 0022     		movs	r2, #0
+  65 0014 5A65     		str	r2, [r3, #84]
   19:./src/reset.c **** }
-  67              		.loc 1 19 1 view .LVU7
-  68 0016 7047     		bx	lr
-  69              	.L7:
-  70              		.align	2
-  71              	.L6:
-  72 0018 00280040 		.word	1073752064
-  73              		.cfi_endproc
-  74              	.LFE145:
-  76              		.align	1
-  77              		.p2align 2,,3
-  78              		.global	is_soft_reset
-  79              		.syntax unified
-  80              		.thumb
-  81              		.thumb_func
-  82              		.fpu fpv5-d16
-  84              	is_soft_reset:
-  85              	.LFB146:
+  66              		.loc 1 19 1 view .LVU7
+  67 0016 7047     		bx	lr
+  68              	.L7:
+  69              		.align	2
+  70              	.L6:
+  71 0018 00280040 		.word	1073752064
+  72              		.cfi_endproc
+  73              	.LFE145:
+  75              		.align	1
+  76              		.p2align 2,,3
+  77              		.global	is_soft_reset
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  82              	is_soft_reset:
+  83              	.LFB146:
   20:./src/reset.c **** 
   21:./src/reset.c **** uint8_t is_soft_reset(void)
   22:./src/reset.c **** {
-  86              		.loc 1 22 1 is_stmt 1 view -0
-  87              		.cfi_startproc
-  88              		@ args = 0, pretend = 0, frame = 0
-  89              		@ frame_needed = 0, uses_anonymous_args = 0
-  90              		@ link register save eliminated.
+  84              		.loc 1 22 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
   23:./src/reset.c ****     uint32_t val = RTC->BKP1R;
-  91              		.loc 1 23 5 view .LVU9
-  92              		.loc 1 23 14 is_stmt 0 view .LVU10
-  93 001c 044A     		ldr	r2, .L9
+  89              		.loc 1 23 5 view .LVU9
+  90              		.loc 1 23 14 is_stmt 0 view .LVU10
+  91 001c 044A     		ldr	r2, .L9
   24:./src/reset.c ****     return (val == BOOT_FLAG_SOFT_RESET);
-  94              		.loc 1 24 17 view .LVU11
-  95 001e 4AF2A553 		movw	r3, #42405
+  92              		.loc 1 24 17 view .LVU11
+  93 001e 4AF2A553 		movw	r3, #42405
   23:./src/reset.c ****     uint32_t val = RTC->BKP1R;
-  96              		.loc 1 23 14 view .LVU12
-  97 0022 506D     		ldr	r0, [r2, #84]
-  98              	.LVL0:
-  99              		.loc 1 24 5 is_stmt 1 view .LVU13
+  94              		.loc 1 23 14 view .LVU12
+  95 0022 506D     		ldr	r0, [r2, #84]
+  96              	.LVL0:
+  97              		.loc 1 24 5 is_stmt 1 view .LVU13
   25:./src/reset.c **** }
- 100              		.loc 1 25 1 is_stmt 0 view .LVU14
- 101 0024 C01A     		subs	r0, r0, r3
- 102              	.LVL1:
- 103              		.loc 1 25 1 view .LVU15
- 104 0026 B0FA80F0 		clz	r0, r0
- 105              	.LVL2:
- 106              		.loc 1 25 1 view .LVU16
- 107 002a 4009     		lsrs	r0, r0, #5
- 108 002c 7047     		bx	lr
- 109              	.L10:
- 110 002e 00BF     		.align	2
- 111              	.L9:
- 112 0030 00280040 		.word	1073752064
- 113              		.cfi_endproc
- 114              	.LFE146:
- 116              		.align	1
- 117              		.p2align 2,,3
- 118              		.global	MX_RTC_Init
- 119              		.syntax unified
- 120              		.thumb
- 121              		.thumb_func
- 122              		.fpu fpv5-d16
- 124              	MX_RTC_Init:
- 125              	.LFB147:
+  98              		.loc 1 25 1 is_stmt 0 view .LVU14
+  99 0024 C01A     		subs	r0, r0, r3
+ 100              	.LVL1:
+ 101              		.loc 1 25 1 view .LVU15
+ 102 0026 B0FA80F0 		clz	r0, r0
+ 103              	.LVL2:
+ 104              		.loc 1 25 1 view .LVU16
+ 105 002a 4009     		lsrs	r0, r0, #5
+ 106 002c 7047     		bx	lr
+ 107              	.L10:
+ 108 002e 00BF     		.align	2
+ 109              	.L9:
+ 110 0030 00280040 		.word	1073752064
+ 111              		.cfi_endproc
+ 112              	.LFE146:
+ 114              		.align	1
+ 115              		.p2align 2,,3
+ 116              		.global	MX_RTC_Init
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	MX_RTC_Init:
+ 122              	.LFB147:
   26:./src/reset.c **** 
   27:./src/reset.c **** 
   28:./src/reset.c **** void MX_RTC_Init(void)
   29:./src/reset.c **** {
- 126              		.loc 1 29 1 is_stmt 1 view -0
- 127              		.cfi_startproc
- 128              		@ args = 0, pretend = 0, frame = 0
- 129              		@ frame_needed = 0, uses_anonymous_args = 0
- 130              		@ link register save eliminated.
+ 123              		.loc 1 29 1 is_stmt 1 view -0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127              		@ link register save eliminated.
   30:./src/reset.c ****     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
- 131              		.loc 1 30 5 view .LVU18
- 132              		.loc 1 30 18 is_stmt 0 view .LVU19
- 133 0034 074B     		ldr	r3, .L12
+ 128              		.loc 1 30 5 view .LVU18
+ 129              		.loc 1 30 8 is_stmt 0 view .LVU19
+ 130 0034 074B     		ldr	r3, .L12
   31:./src/reset.c ****     PWR->CR1 |= PWR_CR1_DBP; 
- 134              		.loc 1 31 14 view .LVU20
- 135 0036 0849     		ldr	r1, .L12+4
+ 131              		.loc 1 31 8 view .LVU20
+ 132 0036 0849     		ldr	r1, .L12+4
   30:./src/reset.c ****     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
- 136              		.loc 1 30 18 view .LVU21
- 137 0038 1A6C     		ldr	r2, [r3, #64]
- 138 003a 42F08052 		orr	r2, r2, #268435456
- 139 003e 1A64     		str	r2, [r3, #64]
- 140              		.loc 1 31 5 is_stmt 1 view .LVU22
- 141              		.loc 1 31 14 is_stmt 0 view .LVU23
- 142 0040 0A68     		ldr	r2, [r1]
- 143 0042 42F48072 		orr	r2, r2, #256
- 144 0046 0A60     		str	r2, [r1]
+ 133              		.loc 1 30 8 view .LVU21
+ 134 0038 1A6C     		ldr	r2, [r3, #64]
+  30:./src/reset.c ****     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+ 135              		.loc 1 30 18 view .LVU22
+ 136 003a 42F08052 		orr	r2, r2, #268435456
+ 137 003e 1A64     		str	r2, [r3, #64]
+ 138              		.loc 1 31 5 is_stmt 1 view .LVU23
+ 139              		.loc 1 31 8 is_stmt 0 view .LVU24
+ 140 0040 0A68     		ldr	r2, [r1]
+ 141              		.loc 1 31 14 view .LVU25
+ 142 0042 42F48072 		orr	r2, r2, #256
+ 143 0046 0A60     		str	r2, [r1]
   32:./src/reset.c ****     RCC->BDCR |= RCC_BDCR_RTCEN;           // RTC 클럭 Enabl
- 145              		.loc 1 32 5 is_stmt 1 view .LVU24
- 146              		.loc 1 32 15 is_stmt 0 view .LVU25
- 147 0048 1A6F     		ldr	r2, [r3, #112]
+ 144              		.loc 1 32 5 is_stmt 1 view .LVU26
+ 145              		.loc 1 32 8 is_stmt 0 view .LVU27
+ 146 0048 1A6F     		ldr	r2, [r3, #112]
+ 147              		.loc 1 32 15 view .LVU28
  148 004a 42F40042 		orr	r2, r2, #32768
  149 004e 1A67     		str	r2, [r3, #112]
   33:./src/reset.c **** }...
- 150              		.loc 1 33 1 view .LVU26
+ 150              		.loc 1 33 1 view .LVU29
  151 0050 7047     		bx	lr
  152              	.L13:
  153 0052 00BF     		.align	2
@@ -185,22 +186,22 @@
  157              		.cfi_endproc
  158              	.LFE147:
  160              	.Letext0:
- 161              		.file 2 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
- 162              		.file 3 "c:\\users\\jaejunmin\\downloads\\peak-devpack\\compiler\\10 2020-q4-major\\arm-none-eabi\
+ 161              		.file 2 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
+ 162              		.file 3 "C:\\ST\\STM32CubeCLT_1.18.0\\GNU-tools-for-STM32\\bin\\../lib/gcc/arm-none-eabi/13.3.1/..
  163              		.file 4 "./inc/stm32f765xx.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 reset.c
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:16     .text:00000000 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:25     .text:00000000 write_boot_flag_soft_reset
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:43     .text:0000000c $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:47     .text:00000010 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:55     .text:00000010 clear_boot_flag
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:72     .text:00000018 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:76     .text:0000001c $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:84     .text:0000001c is_soft_reset
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:112    .text:00000030 $d
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:116    .text:00000034 $t
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:124    .text:00000034 MX_RTC_Init
-C:\Users\JAEJUN~1\AppData\Local\Temp\cchyB3Je.s:155    .text:00000054 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:19     .text:00000000 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:26     .text:00000000 write_boot_flag_soft_reset
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:43     .text:0000000c $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:47     .text:00000010 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:54     .text:00000010 clear_boot_flag
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:71     .text:00000018 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:75     .text:0000001c $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:82     .text:0000001c is_soft_reset
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:110    .text:00000030 $d
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:114    .text:00000034 $t
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:121    .text:00000034 MX_RTC_Init
+C:\Users\JAEJUN~1\AppData\Local\Temp\cc6aseq9.s:155    .text:00000054 $d
 
 NO UNDEFINED SYMBOLS
