@@ -244,9 +244,9 @@ static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf
     if (TAG_ADDRESS->valid_flag == 0xA5A5A5A5) {
       uint32_t crc_result = 0;
       crc_result = CAL_CRC(hcrc);
-      char msg2[32];
-      sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
-      udp_client_send(msg2);
+      // char msg2[32];
+      // sprintf(msg2, "CRC=0x%08lX\r\n", crc_result);
+      // udp_client_send(msg2);
 
       static uint32_t Flash_Write_Address2;
 
@@ -264,7 +264,7 @@ static void IAP_wrq_recv_callback(void *_args, struct udp_pcb *upcb, struct pbuf
   	  }
     }
 #ifdef USE_PRINT
-    udp_client_send("[BOOT]  Reset the board \n");
+    // udp_client_send("[BOOT]  Reset the board \n");
     clear_boot_flag();
     NVIC_SystemReset();
 #endif

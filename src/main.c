@@ -184,7 +184,6 @@ static void  thread_main ( void  *argument)
 	}
 
 	udp_total_connect();
-	udp_client_send("Hello World!\n");
 
 	IAP_tftpd_init();
 
@@ -192,6 +191,7 @@ static void  thread_main ( void  *argument)
 	osDelay(1000);
 	HAL_IWDG_Refresh(&hiwdg);
 
+	
     // /* Initialize
 	// // start dhcp
 	// dhcp_start ( &gnetif);

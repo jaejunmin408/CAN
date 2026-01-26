@@ -12,7 +12,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 #define UDP_SERVER_PORT    8080   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT    10   /* define the UDP remote connection port */
+#define UDP_CLIENT_PORT    6010   /* define the UDP remote connection port */
 
 
 /* Private pv -----------------------------------------------------------*/
@@ -71,13 +71,13 @@ void udp_total_connect(void)
 void udp_client_send(const char *msg)
 {
     if (!upcb_boot) {
-        printf("[CHECK] UDP PCB not initialized\n");
+        printf("[BOOT]  UDP PCB not initialized\n");
         return;
     }
 
     struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, strlen(msg), PBUF_POOL);
     if (!p) {
-        printf("[CHECK] pbuf_alloc failed\n");
+        printf("[BOOT]  pbuf_alloc failed\n");
         return;
     }
 
@@ -85,7 +85,7 @@ void udp_client_send(const char *msg)
 
     err_t err = udp_send(upcb_boot, p);
     if (err != ERR_OK) {
-        printf("[CHECK] udp_send failed: %d\n", err);
+        printf("[BOOT]  udp_send failed: %d\n", err);
     }
     osDelay(1);
     pbuf_free(p);
